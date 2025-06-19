@@ -46,7 +46,7 @@ import noNamespace.SndngMailDocument;
 
 public class EgovXMLDoc {
 
-	// 파일구분자
+	// 파일구분자.
 	static final char FILE_SEPARATOR = File.separatorChar;
 	
 	static final String ACCESS_EXTERNAL_DTD = "http://javax.xml.XMLConstants/property/accessExternalDTD";
