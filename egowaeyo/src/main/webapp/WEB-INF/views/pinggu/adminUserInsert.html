@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[관리자모드] 사용자 관리 - 사용자 등록</title>
+  <link rel="stylesheet" href="css/adminUserInsert.css"><!--CSS-->
+  <link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script><!--tailwindcss cdn-->
+</head>
+<body>
+  <div class="main-container">
+    <div class="main-first-section">
+      <div class="main-small-title">
+        사용자 관리
+      </div>
+      <button class="text-[19px] rounded-sm w-20 h-11 bg-blue-400 text-white cursor-pointer">등록</button>
+    </div>
+    <div class="main-header-title">
+      사용자 등록
+    </div>
+    <div class="admin-user-sections">
+      <div class="left-admin-user-info">
+        <div class="user-info-title">
+          기본 정보
+        </div>
+        <div class="user-info-personal">
+          <div class="user-info-detail">
+              <span>아이디</span>
+              <input type="text" class="border border-gray-300 rounded-sm">
+          </div>
+          <div class="user-info-detail">
+              <span>비밀번호</span>
+              <input type="password" class="border border-gray-300 rounded-sm">
+          </div>
+          <div class="user-info-detail">
+              <span>비밀번호 확인</span>
+              <input type="password" class="border border-gray-300 rounded-sm">
+              <div class="user-info-tag">
+                <p> * 영문, 숫자, 특수문자 조합 </p>
+                <p> * 개인정보는 비밀번호에 사용불가해요. </p>
+              </div>
+          </div>
+          <div class="user-info-detail">
+              <span>이름</span>
+              <input type="text" class="border border-gray-300 rounded-sm">
+          </div>
+          <div class="user-info-detail-img">
+              <span>사진</span>
+              <div class="input-container">
+                <div class="file-upload-box">
+                  <div class="file-upload-section">
+                    <input type="file" accept=".png" name="pfile" id="pfile">
+                    <label for="pfile">
+                      <img src="/images/account_circle.png" alt="사용자 사진">
+                    </label>
+                    <button id="btnCan" class="border rounded-sm cursor-pointer">초기화</button>
+                  </div>
+                  <p>* 파일 지원 형식 : png</p>
+                </div>
+              </div>
+          </div>
+          <div class="user-info-detail-img">
+            <span>결재</span>
+            <div class="input-container">
+              <div class="file-upload-box">
+                <div class="file-upload-section">
+                  <input type="file" accept=".png" name="file" id="file">
+                  <label for="file">
+                    <img src="/images/Input_Inner.png" alt="사용자 결재 사진">
+                  </label>
+                  <button id="btnCan" class="border rounded-sm cursor-pointer">초기화</button>
+                </div>
+                  <p>* 파일 지원 형식 : png</p>
+                </div>
+              </div>
+          </div>
+          <div class="user-info-detail">
+            <span>생년월일</span>
+            <input type="date" class="border border-gray-300 rounded-sm">
+          </div>
+          <div class="user-info-detail">
+            <span>주소</span>
+            <input type="text" class="border border-gray-300 rounded-sm">
+          </div>
+          <div class="user-info-detail">
+            <span>연락처</span>
+            <input type="tel" class="border border-gray-300 rounded-sm">
+          </div>
+          <div class="user-info-detail">
+            <span>이메일</span>
+            <input type="email" class="border border-gray-300 rounded-sm">
+          </div>
+        </div>
+      </div>
+      <div class="right-admin-user-info">
+        <div class="user-info-title">
+          조직 정보
+        </div>
+        <div class="user-info-personal">
+          <div class="user-info-detail">
+            <div class="user-info-detail">
+              <span>소속</span>
+              <button id="btnIns" class="border rounded-sm cursor-pointer">+</button>  
+            </div>
+            <div class="user-info-detail">
+              <span>직급</span>
+                  <select name="rank" class="border border-gray-300 rounded-sm">
+                    <option value="" selected disabled hidden>직급을 선택해주세요.</option>
+                    <option value="CEO">사장</option>
+                  </select>
+            </div>
+            <div class="user-info-detail">
+              <sapn>사번</sapn>
+              <input type="text" class="border border-gray-300 rounded-sm">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 소속 추가 모달 -->
+  <!-- 배경 -->
+  <div class="fixed inset-0 bg-white bg-opacity-50 flex items-center justify-center z-50 hidden" id="modal">
+    <!-- 모달 본체 -->
+    <div class="border rounded-sm bg-white p-[60px] rounded shadow-lg max-w-2xl w-full min-h-100">
+      <div class="flex justify-between items-center">
+        <h2 class="text-xl font-bold mb-4">소속 선택</h2>
+        <div class="text-xl mb-4 cursor-pointer" id="modal-close"><img src="/images/x.png"></div>
+      </div>
+      <div class="flex justify-between items-center">
+        <input type="text" class="border border-gray-300 rounded-sm" placeholder="검색">
+        <div class="cursor-pointer" id="modal-search"><img src="/images/search.png"></div>
+      </div>
+      <p class="text-gray-700 mb-4">인사팀</p>
+      <div class="text-right">
+        <button class="bg-black text-white px-4 py-2 rounded cursor-pointer" id="BtnConfirm">선택</button>
+        <button class="bg-white text-black border px-4 py-2 rounded cursor-pointer" id="BtnCan">취소</button>
+      </div>
+    </div>
+  </div>
+</body>
+<script>
+
+  const modal = document.getElementById("modal");
+  const BtnConfirm = document.getElementById("BtnConfirm");
+  const BtnIns = document.getElementById("btnIns");
+  const ModalClose = document.getElementById("modal-close");
+
+  BtnConfirm.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  })
+
+  BtnIns.addEventListener("click", () => {
+    modal.classList.remove("hidden");
+  })
+
+  ModalClose.addEventListener("click", () => {
+    modal.classList.add("hidden");
+  })
+  
+</script>
+</html>
