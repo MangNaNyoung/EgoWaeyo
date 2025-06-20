@@ -6,15 +6,15 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>eGovFrame 공통 컴포넌트</title>
-
 <link href="<c:url value='/css/egovframework/com/cmm/main.css' />" rel="stylesheet" type="text/css">
-
+<link rel="shortcut icon" href="assets/images/favicon.svg" type="image/x-icon">
 <style type="text/css">
 link { color: #666666; text-decoration: none; }
 link:hover { color: #000000; text-decoration: none; }
 </style>
 </head>
 <body>
+  
 <div id="lnb">
  
 <c:set var="isMai" value="false"/>
