@@ -84,11 +84,18 @@
       class="org.thymeleaf.spring5.templateresolver.SpringResourceTemplateResolver"
       p:prefix="/WEB-INF/views/"
       p:suffix=".html"
-      p:characterEncoding="UTF-8" />
+      p:characterEncoding="UTF-8" 
+      p:cacheable="false"/>
 
 <bean id="thyTemplateEngine"
       class="org.thymeleaf.spring5.SpringTemplateEngine"
-      p:templateResolver-ref="thyTemplateResolver" />
+      p:templateResolver-ref="thyTemplateResolver" >
+      <property name="additionalDialects">
+      <set>
+      <bean class="nz.net.ultraq.thymeleaf.layoutdialect.LayoutDialect"></bean>
+      </set>
+      </property>
+      </bean>
 
 <bean id="thyViewResolver"	
       class="org.thymeleaf.spring5.view.ThymeleafViewResolver"
@@ -98,48 +105,15 @@
       p:viewNames="*.html"/>
       
 
-	
-	
-	
-	
 	<bean class="org.springframework.web.servlet.view.UrlBasedViewResolver" p:order="2"
 		  p:viewClass="org.springframework.web.servlet.view.JstlView"
 		  p:prefix="/WEB-INF/jsp/" p:suffix=".jsp"/> 
-		  <!-- 
-===== 1) Thymeleaf 영역 =====
-템플릿 위치·확장자 지정
-Thymeleaf 뷰 리졸버 설정
-<bean id="templateResolver" class="org.thymeleaf.templateresolver.ServletContextTemplateResolver" p:prefix="/WEB-INF/views" p:suffix=".html">
-       <property name="characterEncoding" value="UTF-8" />
-    <property name="templateMode" value="HTML" />
-    
-</bean>
- 
- <bean id="templateEngine" class="org.thymeleaf.spring5.SpringTemplateEngine">
-    <property name="templateResolver" ref="templateResolver" />
-</bean>
- 
-<bean id="viewResolver" class="org.thymeleaf.spring5.view.ThymeleafViewResolver"  p:order="2">
-    <property name="templateEngine" ref="templateEngine" /> 
-</bean> -->
-
-
-<!-- ===== 2) JSP 영역 ===== -->
-<!-- 기존 JSP UrlBasedViewResolver 유지, order=2 -->
-<!-- <bean class="org.springframework.web.servlet.view.UrlBasedViewResolver"
-      p:viewClass="org.springframework.web.servlet.view.JstlView"
-      p:prefix="/WEB-INF/jsp/"
-      p:suffix=".jsp"
-      p:viewNames="*.jsp"
-      p:order="1" />
-       -->
-      
-      
+   
 	<bean id="jsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
 		<property name="contentType" value="application/json;charset=UTF-8"/>
 	</bean>
 	
 	<!-- Facebook 설정 -->
-	<mvc:default-servlet-handler />
+	<mvc:resources mapping="/assets/**" location="/assets/" />
 
 </beans>

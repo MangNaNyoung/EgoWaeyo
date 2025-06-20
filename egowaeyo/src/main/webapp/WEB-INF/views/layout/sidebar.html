@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div id="sidebar" class="active" th:fragment="asideFragment">
+	<div class="sidebar-wrapper active" style="width: 5rem;">
+		<div class="sidebar-header">
+			<div class="d-flex justify-content-between">
+				<div class="logo">
+					<a href="index.html"></a>
+				</div>
+				<div class="toggler">
+					<a href="#" class="sidebar-hide d-xl-none d-block"><i
+						class="bi bi-x bi-middle"></i></a>
+				</div>
+			</div>
+		</div>
+		<div class="sidebar-menu">
+			<ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+				<li class="sidebar-title">Menu</li>
+
+				<li class="nav-item ">
+				<a href="index.html"	class='nav-link active p-3 border-bottom'> 
+					<i class="bi bi-grid-fill"></i> 
+					<span class="d-block">홈</span>
+				</a></li>
+
+				<li class="nav-item "><a href="#"	class='nav-link p-3 border-bottom'> 
+				<i class="bi bi-stack">
+				</i> <span class="d-block">일정</span>
+				</a></li>
+
+				<li class="nav-item "><a href="#" class='nav-link p-3 border-bottom'> 
+					<i class="bi bi-collection-fill"></i> 
+					<span class="d-block">결재</span>
+				</a></li>
+
+				<li class="nav-item "><a href="#" class='nav-link p-3 border-bottom'> 
+				<i class="bi bi-grid-1x2-fill"></i> 
+				<span class="d-block">일지</span>
+				</a></li>
+
+				<li class="nav-item "><a href="#" class='nav-link p-3 border-bottom'> 
+				<i class="bi bi-hexagon-fill"></i>
+				 <span class="d-block">게시판</span>
+				</a></li>
+
+				<li class="nav-item  "><a href="#" class='nav-link p-3 border-bottom'> 
+				<i	class="bi bi-file-earmark-medical-fill"></i>
+				 <span class="d-block">예약</span>
+				</a></li>
+
+				<li class="nav-item "><a href="#" class='nav-link p-3 border-bottom'> 
+				<i class="bi bi-pen-fill"></i>
+				 <span class="d-block">회의</span>
+				</a></li>
+
+				<li class="nav-item  "><a href="#" class='nav-link p-3 border-bottom'> 
+				<i class="bi bi-grid-1x2-fill"></i> 
+				<span class="d-block">근태</span>
+				</a></li>
+
+				<li class="nav-item  "><a href="#" class='nav-link p-3 border-bottom'> 
+				<i	class="bi bi-file-earmark-spreadsheet-fill"></i>
+				 <span class="d-block">메일</span>
+				</a></li>
+
+				<li class="nav-item  "><a
+					href="#" class='nav-link p-3 border-bottom'>
+						<i class="bi bi-cash"></i> <span class="d-block">관리</span>
+				</a></li>
+
+			</ul>
+		</div>
+		<button class="sidebar-toggler btn x">
+			<i data-feather="x"></i>
+		</button>
+	</div>
+</div>
+
+</html>
