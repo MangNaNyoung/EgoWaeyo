@@ -15,7 +15,7 @@ let sidebarItems = document.querySelectorAll('.nav-item.has-sub');
     })
 }*/
 
-window.addEventListener('DOMContentLoaded', (event) => {
+/*window.addEventListener('DOMContentLoaded', (event) => {
     var w = window.innerWidth;
     if(w < 1200) {
         document.getElementById('sidebar').classList.remove('active');
@@ -36,10 +36,19 @@ document.querySelector('.burger-btn').addEventListener('click', () => {
 document.querySelector('.sidebar-hide').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('active');
 
-})
+})*/
 
 
+document.addEventListener("DOMContentLoaded", function () {
+    const navLinks = document.querySelectorAll(".nav-link");
 
+    navLinks.forEach(link => {
+      link.addEventListener("click", function () {
+        navLinks.forEach(l => l.classList.remove("active")); // 기존 active 제거
+        this.classList.add("active"); // 현재 클릭된 메뉴에 active 추가
+      });
+    });
+  });
 
 
 // Perfect Scrollbar Init
@@ -50,5 +59,7 @@ if(typeof PerfectScrollbar == 'function') {
     });
 }
 
+
+
 // Scroll into active sidebar
-document.querySelector('.nav-item.active').scrollIntoView(false)
+//document.querySelector('.nav-item.active').scrollIntoView(false)

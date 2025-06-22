@@ -1,79 +1,87 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div id="sidebar" class="active" th:fragment="asideFragment">
-	<div class="sidebar-wrapper active" style="width: 5rem;">
+<div id="sidebar" class="d-flex" th:fragment="asideFragment">
+	<!-- 왼쪽 고정 사이드바 -->
+	<div class="sidebar-wrapper"
+		style="width: 5rem; position: fixed; top: 40px; left: 0; height: 100vh; background: #fff; z-index: 1000;">
 		<div class="sidebar-header">
 			<div class="d-flex justify-content-between">
-				<div class="logo">
-					<a href="index.html"></a>
-				</div>
-				<div class="toggler">
-					<a href="#" class="sidebar-hide d-xl-none d-block"><i
-						class="bi bi-x bi-middle"></i></a>
-				</div>
+
+				
 			</div>
 		</div>
 		<div class="sidebar-menu">
 			<ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-				<li class="sidebar-title">Menu</li>
-
-				<li class="nav-item ">
-				<a href="index.html"	class='nav-link active p-3 border-bottom'> 
-					<i class="bi bi-grid-fill"></i> 
-					<span class="d-block">홈</span>
+				<li class="nav-item "><a href="#"
+					class="nav-link main-menu p-3" data-target="home-panel"> <i
+						class="bi bi-house fs-4"></i> <span class="d-block small">홈</span>
+				</a></li>
+				<li class="nav-item "><a href="#"
+					class="nav-link main-menu p-3" data-target="calendar-panel"> <i
+						class="bi bi-calendar-week fs-4"></i> <span class="d-block small">일정</span>
+				</a></li>
+				<li class="nav-item"><a href="#" class="nav-link main-menu p-3"
+					data-target="approval-panel"> <i
+						class="bi bi-journal-check fs-4"></i> <span class="d-block small">결재</span>
+				</a></li>
+				<li class="nav-item "><a href="#" class='nav-link p-3 '> <i
+						class="bi bi-grid-1x2-fill"></i> <span class="d-block">일지</span>
+				</a></li>
+				<li class="nav-item "><a href="#"
+					class='nav-link p-3  '> <i
+						class="bi bi-hexagon-fill"></i> <span class="d-block">게시판</span>
+				</a></li>
+				<li class="nav-item  "><a href="#"
+					class='nav-link p-3  '> <i
+						class="bi bi-file-earmark-medical-fill"></i> <span class="d-block">예약</span>
 				</a></li>
 
-				<li class="nav-item "><a href="#"	class='nav-link p-3 border-bottom'> 
-				<i class="bi bi-stack">
-				</i> <span class="d-block">일정</span>
+				<li class="nav-item "><a href="#"
+					class='nav-link p-3  '> <i class="bi bi-pen-fill"></i>
+						<span class="d-block">회의</span>
 				</a></li>
-
-				<li class="nav-item "><a href="#" class='nav-link p-3 border-bottom'> 
-					<i class="bi bi-collection-fill"></i> 
-					<span class="d-block">결재</span>
+				<li class="nav-item  "><a href="#"
+					class='nav-link p-3  '> <i
+						class="bi bi-grid-1x2-fill"></i> <span class="d-block">근태</span>
 				</a></li>
-
-				<li class="nav-item "><a href="#" class='nav-link p-3 border-bottom'> 
-				<i class="bi bi-grid-1x2-fill"></i> 
-				<span class="d-block">일지</span>
+				<li class="nav-item  "><a href="#"
+					class='nav-link p-3  '> <i
+						class="bi bi-file-earmark-spreadsheet-fill"></i> <span
+						class="d-block">메일</span>
 				</a></li>
-
-				<li class="nav-item "><a href="#" class='nav-link p-3 border-bottom'> 
-				<i class="bi bi-hexagon-fill"></i>
-				 <span class="d-block">게시판</span>
+				<li class="nav-item  "><a href="#"
+					class='nav-link p-3  '> <i class="bi bi-cash"></i>
+						<span class="d-block">관리</span>
 				</a></li>
-
-				<li class="nav-item  "><a href="#" class='nav-link p-3 border-bottom'> 
-				<i	class="bi bi-file-earmark-medical-fill"></i>
-				 <span class="d-block">예약</span>
-				</a></li>
-
-				<li class="nav-item "><a href="#" class='nav-link p-3 border-bottom'> 
-				<i class="bi bi-pen-fill"></i>
-				 <span class="d-block">회의</span>
-				</a></li>
-
-				<li class="nav-item  "><a href="#" class='nav-link p-3 border-bottom'> 
-				<i class="bi bi-grid-1x2-fill"></i> 
-				<span class="d-block">근태</span>
-				</a></li>
-
-				<li class="nav-item  "><a href="#" class='nav-link p-3 border-bottom'> 
-				<i	class="bi bi-file-earmark-spreadsheet-fill"></i>
-				 <span class="d-block">메일</span>
-				</a></li>
-
-				<li class="nav-item  "><a
-					href="#" class='nav-link p-3 border-bottom'>
-						<i class="bi bi-cash"></i> <span class="d-block">관리</span>
-				</a></li>
-
 			</ul>
 		</div>
-		<button class="sidebar-toggler btn x">
-			<i data-feather="x"></i>
-		</button>
 	</div>
-</div>
 
+	<!-- 오른쪽 슬라이드 패널 -->
+	<div id="slide-panels">
+		
+		<div id="calendar-panel" class="p-4" style="display: none;">
+			<h5>내 캘린더</h5>
+			<ul>
+				<li> 일정 01</li>
+				<li> 프로젝트 회의</li>
+				<li> 현장 방문</li>
+			</ul>
+			<h5 class="mt-4">공유 캘린더</h5>
+			<ul>
+				<li> 부서 일정</li>
+				<li> 팀원 일정</li>
+			</ul>
+		</div>
+		<div id="approval-panel" class="p-4" style="display: none;">
+			<h5>결재함</h5>
+			<p>결재 요청 목록이 여기에 표시됩니다.</p>
+		</div>
+	</div>
+
+
+
+	<!-- jQuery -->
+
+</div>
 </html>
