@@ -18,6 +18,11 @@
 <link rel="stylesheet" th:href="@{/assets/css/app.css}">
 <link rel="shortcut icon" th:href="@{images/egovframework/com/ego/egowaeyofavicon.png}"
 	type="image/x-icon">
+<script
+	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 	<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
@@ -41,8 +46,6 @@ header {
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 	padding: 0 1rem;
 }
-
-
 
 #slide-panels {
 	position: fixed;
@@ -76,9 +79,14 @@ header {
 		<!-- contents start -->
 		<!-- 페이지 마다 내용이 바뀌는 공간을 미리 정의 -->
 		<div id="main-wrapper">
+		<div id="main">
+            <div class="page-heading">
+               
+            </div>
 			<main id="main-content" layout:fragment="content">
 				<!-- 각 페이지에서 삽입될 콘텐츠 영역 -->
 			</main>
+			</div>
 		</div>
 		<!-- <div id="rightcolumn" style="overflow: scroll">
 		</div> -->
@@ -103,16 +111,18 @@ header {
 		$(function() {
 			$('.main-menu').on('click', function(e) {
 				e.preventDefault();
-				
+
 				const target = $(this).data('target');
-				if(target == 'home-panel'){
+
+				if (target == 'home-panel') {
 					$('#slide-panels').fadeOut('fast');
-				}else{
-				$('#slide-panels').fadeIn('fast');
-				$('#slide-panels > div').hide();
-				$('#' + target).show();			
+				} else {
+					$('#slide-panels').fadeIn('fast');
+					$('#slide-panels > div').hide();
+					$('#' + target).show();
+
 				}
-				  // 드롭다운 토글 처리
+				// 드롭다운 토글 처리
 			});
 			    $('#bell-toggle').on('click', function (e) {
 			      e.stopPropagation();
@@ -135,7 +145,6 @@ header {
 			    });
 			
 		});
-		 
 	</script>
 </body>
 </html>
