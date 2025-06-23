@@ -16,7 +16,7 @@
 <link rel="stylesheet"
 	th:href="@{/assets/vendors/bootstrap-icons/bootstrap-icons.css}">
 <link rel="stylesheet" th:href="@{/assets/css/app.css}">
-<link rel="shortcut icon" th:href="@{/assets/images/favicon.svg}"
+<link rel="shortcut icon" th:href="@{images/egovframework/com/ego/egowaeyofavicon.png}"
 	type="image/x-icon">
 <script
 	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
@@ -25,10 +25,14 @@
 
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
+	<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
 <style>
+
+
 body, html {
 	margin: 0;
 	padding: 0;
+	 font-family: "42dot Sans", sans-serif;
 }
 
 header {
@@ -120,27 +124,26 @@ header {
 				}
 				// 드롭다운 토글 처리
 			});
-			$('#bell-toggle').on('click', function(e) {
-				e.stopPropagation();
-				$('#bell-menu').slideToggle(150);
-				$('#my-menu').slideUp(150);
-				console.log($('#my-menu'));
-			});
+			    $('#bell-toggle').on('click', function (e) {
+			      e.stopPropagation();
+			      $('#bell-menu').slideToggle(150);
+			      $('#my-menu').slideUp(150);
+			      console.log( $('#my-menu'));
+			    });
 
-			$('#my-toggle').on('click', function(e) {
-				e.stopPropagation();
-				//			      $('#my-menu').slideToggle(150);
-				$('#my-menu').css('display', 'block');
-				$('#bell-menu').slideUp(150);
-				console.log($('#bell-menu'));
-			});
+			    $('#my-toggle').on('click', function (e) {
+			      e.stopPropagation();
+			      $('#my-menu').slideToggle(150);
+			     // $('#my-menu').css('display','block');
+			      $('#bell-menu').slideUp(150);
+			      console.log( $('#bell-menu'));
+			    });
 
-			// 바깥 클릭 시 닫기
-			$(document).on('click', function() {
-				$('#bell-menu, #my-menu').slideUp(150);
-
-			});
-
+			    // 바깥 클릭 시 닫기
+			    $(document).on('click', function () {
+			      $('#bell-menu, #my-menu').slideUp(150);
+			    });
+			
 		});
 	</script>
 </body>
