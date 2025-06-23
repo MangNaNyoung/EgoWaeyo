@@ -1404,7 +1404,6 @@
 
 #main {
 	margin-left: 300px;
-	padding: 2rem
 }
 
 @media screen and (max-width:1199px) {
@@ -1418,7 +1417,9 @@
 }
 
 #main #main-content {
-	padding: 2rem
+
+	padding-top: 2rem
+
 }
 
 .page-heading {
