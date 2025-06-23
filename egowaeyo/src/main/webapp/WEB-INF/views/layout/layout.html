@@ -18,6 +18,11 @@
 <link rel="stylesheet" th:href="@{/assets/css/app.css}">
 <link rel="shortcut icon" th:href="@{/assets/images/favicon.svg}"
 	type="image/x-icon">
+<script
+	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 <style>
@@ -37,8 +42,6 @@ header {
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 	padding: 0 1rem;
 }
-
-
 
 #slide-panels {
 	position: fixed;
@@ -104,42 +107,41 @@ header {
 		$(function() {
 			$('.main-menu').on('click', function(e) {
 				e.preventDefault();
-				
+
 				const target = $(this).data('target');
-				console.log(target);
-				if(target == 'home-panel'){
+
+				if (target == 'home-panel') {
 					$('#slide-panels').fadeOut('fast');
-				}else{
-					console.log(target);
-				$('#slide-panels').fadeIn('fast');
-				$('#slide-panels > div').hide();
-				$('#' + target).show();			
+				} else {
+					$('#slide-panels').fadeIn('fast');
+					$('#slide-panels > div').hide();
+					$('#' + target).show();
+
 				}
-				  // 드롭다운 토글 처리
+				// 드롭다운 토글 처리
 			});
-			    $('#bell-toggle').on('click', function (e) {
-			      e.stopPropagation();
-			      $('#bell-menu').slideToggle(150);
-			      $('#my-menu').slideUp(150);
-			      console.log( $('#my-menu'));
-			    });
+			$('#bell-toggle').on('click', function(e) {
+				e.stopPropagation();
+				$('#bell-menu').slideToggle(150);
+				$('#my-menu').slideUp(150);
+				console.log($('#my-menu'));
+			});
 
-			    $('#my-toggle').on('click', function (e) {
-			      e.stopPropagation();
-//			      $('#my-menu').slideToggle(150);
-			      $('#my-menu').css('display','block');
-			      $('#bell-menu').slideUp(150);
-			      console.log( $('#bell-menu'));
-			    });
+			$('#my-toggle').on('click', function(e) {
+				e.stopPropagation();
+				//			      $('#my-menu').slideToggle(150);
+				$('#my-menu').css('display', 'block');
+				$('#bell-menu').slideUp(150);
+				console.log($('#bell-menu'));
+			});
 
-			    // 바깥 클릭 시 닫기
-			    $(document).on('click', function () {
-			      $('#bell-menu, #my-menu').slideUp(150);
-			   
-			    });
-			
+			// 바깥 클릭 시 닫기
+			$(document).on('click', function() {
+				$('#bell-menu, #my-menu').slideUp(150);
+
+			});
+
 		});
-		 
 	</script>
 </body>
 </html>
