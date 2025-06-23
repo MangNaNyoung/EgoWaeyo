@@ -72,9 +72,14 @@ header {
 		<!-- contents start -->
 		<!-- 페이지 마다 내용이 바뀌는 공간을 미리 정의 -->
 		<div id="main-wrapper">
+		<div id="main">
+            <div class="page-heading">
+               
+            </div>
 			<main id="main-content" layout:fragment="content">
 				<!-- 각 페이지에서 삽입될 콘텐츠 영역 -->
 			</main>
+			</div>
 		</div>
 		<!-- <div id="rightcolumn" style="overflow: scroll">
 		</div> -->
@@ -101,9 +106,11 @@ header {
 				e.preventDefault();
 				
 				const target = $(this).data('target');
+				console.log(target);
 				if(target == 'home-panel'){
 					$('#slide-panels').fadeOut('fast');
 				}else{
+					console.log(target);
 				$('#slide-panels').fadeIn('fast');
 				$('#slide-panels > div').hide();
 				$('#' + target).show();			
