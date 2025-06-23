@@ -23,7 +23,7 @@ public class ApprovalController {
     @GetMapping("/write")
     public String writeForm(Model model) {
         model.addAttribute("formList", approvalService.getFormList());
-        return "write.html";
+        return "approval/write.html";
     }
 
     @PostMapping("/write")
