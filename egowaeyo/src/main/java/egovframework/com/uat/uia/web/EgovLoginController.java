@@ -98,6 +98,7 @@ public class EgovLoginController {
 	@IncludedInfo(name = "로그인", listUrl = "/uat/uia/egovLoginUsr.do", order = 10, gid = 10)
 	@RequestMapping(value = "/uat/uia/egovLoginUsr.do")
 	public String loginUsrView(@ModelAttribute("loginVO") LoginVO loginVO, HttpServletRequest request, HttpServletResponse response, ModelMap model) throws Exception {
+		//사용자 관리 컴포넌트 유무 체크
 		if (EgovComponentChecker.hasComponent("mberManageService")) {
 			model.addAttribute("useMemberManage", "true");
 		}
@@ -160,6 +161,7 @@ public class EgovLoginController {
 					return "redirect:/uat/uia/egovLoginUsr.do";
 				}
 		    }else{
+		    	//로그인 메세지 !!! 로그인 안된이유, 로그인 유무 등등
 		    	model.addAttribute("loginMessage", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
 		    	return "redirect:/uat/uia/egovLoginUsr.do";
 		    }

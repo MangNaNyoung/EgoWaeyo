@@ -22,7 +22,6 @@
 	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 	<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
@@ -30,12 +29,11 @@
 
 
 body, html {
-	margin: 0;
-	padding: 0;
+	
 	 font-family: "42dot Sans", sans-serif;
 }
 
-header {
+.mainHeader header {
 	height: 60px;
 	background: #fff;
 	z-index: 1100;
@@ -62,14 +60,22 @@ header {
 	margin-left: 1rem;
 	padding: 0;
 }
+.no_dot {
+		list-style-type: none;
+    }
 </style>
+	<script
+		th:src="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 	<div id="app">
 
 		<!-- header start -->
+		<div class="mainHeader">
 		<div th:replace="~{layout/header :: headerFragment }"></div>
+		</div>
 		<!-- header end -->
 
 		<!-- aside start -->
@@ -99,13 +105,6 @@ header {
 
 	<!-- 페이지마다 작성될 스크립트 공간 정의 -->
 	<th:block layout:fragment="customJs"></th:block>
-	<script
-		th:src="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
-	<script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
-
-	<!-- <script th:src="@{/assets/vendors/apexcharts/apexcharts.js}"></script> -->
-	<!-- <script th:src="@{/assets/js/pages/dashboard.js}"></script> -->
-
 	<script th:src="@{/assets/js/main.js}"></script>
 	<script>
 		$(function() {
