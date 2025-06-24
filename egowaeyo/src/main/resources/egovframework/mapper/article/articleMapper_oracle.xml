@@ -5,39 +5,64 @@
 
 <mapper
 	namespace="egovframework.com.egowaeyo.article.mapper.ArticleMapper">
-<select id="findAll" resultType="egovframework.com.egowaeyo.article.VO.BoardVO">
-	SELECT * FROM ( SELECT rownum rn, TB.* FROM (
-                    SELECT
-                    a.NTT_ID, a.NTT_SJ, a.FRST_REGISTER_ID, NVL(b.USER_NM, a.NTCR_NM) as FRST_REGISTER_NM,
-                    TO_CHAR(a.FRST_REGIST_PNTTM, 'YYYY-MM-DD') as FRST_REGIST_PNTTM,
-                    a.RDCNT, a.PARNTSCTT_NO, a.ANSWER_AT, a.ANSWER_LC, a.USE_AT, a.ATCH_FILE_ID,
-                    a.BBS_ID, rtrim(a.NTCE_BGNDE) NTCE_BGNDE, rtrim(a.NTCE_ENDDE) NTCE_ENDDE, a.SJ_BOLD_AT, a.NOTICE_AT, a.SECRET_AT, c.COMMENT_CO
-			FROM COMTNBBS a
-			LEFT OUTER JOIN 
-				COMVNUSERMASTER b
-			ON a.FRST_REGISTER_ID = b.ESNTL_ID
-			LEFT OUTER JOIN
-				(SELECT NTT_ID, BBS_ID, COUNT(1) AS COMMENT_CO 
-				   FROM COMTNCOMMENT 
-				 WHERE USE_AT = 'Y' 
-				 GROUP BY NTT_ID, BBS_ID) c
-			ON a.NTT_ID = c.NTT_ID
-			AND a.BBS_ID = c.BBS_ID 
-			WHERE
-				a.BBS_ID = #{bbsId}
-			AND a.USE_AT = 'Y'
-			<if test="searchCnd == 0">AND
-					a.NTT_SJ LIKE '%' || #{searchWrd} || '%' 		
-			</if>
-			<if test="searchCnd == 1">AND
-					a.NTT_CN LIKE '%' || #{searchWrd} || '%' 		
-			</if>	
-			<if test="searchCnd == 2">AND
-					b.USER_NM LIKE '%' || #{searchWrd} || '%' 		
-			</if>				
-					
-			ORDER BY a.SORT_ORDR DESC, NTT_NO ASC
-			) TB )
-	
-</select>
+
+	<!-- 게시판 목록 조회(사이드바) -->
+	<select id="findBbsList"
+		resultType="egovframework.com.egowaeyo.article.VO.BoardVO">
+		SELECT
+		BBS_ID, BBS_NM, BBS_NM_EN, BBS_NM_CN, BBS_NM_JP, BBS_NM_FR, BBS_NM_DE,
+		BBS_NM_ES, BBS_NM_IT, BBS_NM_PT, BBS_NM_RU, BBS_NM_AR, BBS_NM_TR,
+		BBS_NM_VI, BBS_NM_ID, BBS_NM_TH
+		FROM COMTNBBS
+		WHERE USE_AT = 'Y'
+		AND BBS_ID NOT IN ('B0000001', 'B0000002', 'B0000003')
+		ORDER BY SORT_ORDR DESC
+	</select>
+
+	<!-- 게시판 게시글 조회 -->
+	<select id="findAll"
+		resultType="egovframework.com.egowaeyo.article.VO.BoardVO">
+		SELECT * FROM ( SELECT rownum rn, TB.* FROM (
+		SELECT
+		a.NTT_ID, a.NTT_SJ,
+		a.FRST_REGISTER_ID, NVL(b.USER_NM, a.NTCR_NM) as
+		FRST_REGISTER_NM,
+		TO_CHAR(a.FRST_REGIST_PNTTM, 'YYYY-MM-DD') as FRST_REGIST_PNTTM,
+		a.RDCNT, a.PARNTSCTT_NO, a.ANSWER_AT, a.ANSWER_LC, a.USE_AT,
+		a.ATCH_FILE_ID,
+		a.BBS_ID, rtrim(a.NTCE_BGNDE) NTCE_BGNDE,
+		rtrim(a.NTCE_ENDDE)
+		NTCE_ENDDE, a.SJ_BOLD_AT, a.NOTICE_AT, a.SECRET_AT,
+		c.COMMENT_CO
+		FROM COMTNBBS a
+		LEFT OUTER JOIN
+		COMVNUSERMASTER b
+		ON
+		a.FRST_REGISTER_ID = b.ESNTL_ID
+		LEFT OUTER JOIN
+		(SELECT NTT_ID, BBS_ID,
+		COUNT(1) AS COMMENT_CO
+		FROM COMTNCOMMENT
+		WHERE USE_AT = 'Y'
+		GROUP BY
+		NTT_ID, BBS_ID) c
+		ON a.NTT_ID = c.NTT_ID
+		AND a.BBS_ID = c.BBS_ID
+		WHERE
+		a.BBS_ID = #{bbsId}
+		AND a.USE_AT = 'Y'
+		<if test="searchCnd == 0">AND
+			a.NTT_SJ LIKE '%' || #{searchWrd} || '%'
+		</if>
+		<if test="searchCnd == 1">AND
+			a.NTT_CN LIKE '%' || #{searchWrd} || '%'
+		</if>
+		<if test="searchCnd == 2">AND
+			b.USER_NM LIKE '%' || #{searchWrd} || '%'
+		</if>
+
+		ORDER BY a.SORT_ORDR DESC, NTT_NO ASC
+		) TB )
+
+	</select>
 </mapper>

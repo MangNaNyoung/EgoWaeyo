@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<!-- 게시판 추가 모달창 예시 -->
+
+<!-- 게시판 추가 모달 -->
+<div th:fragment="addProjectModal" class="modal fade"
+	id="addProjectModal" tabindex="-1"
+	aria-labelledby="addProjectModalLabel" aria-hidden="true">
+	<div class="modal-dialog modal-lg" style="margin-top: 70px;">>
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="addProjectModalLabel">게시판 추가</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal"
+					aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<form>
+
+					<!-- 게시판 유형 선택 -->
+					<div class="mb-2">
+						<label class="form-label d-block-inline">게시판 유형</label>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input ms-1" type="radio" name="type"
+								id="type1" checked onclick="toggleParentBoard(false)"> <label
+								class="form-check-label ms-2" for="type1">게시판 추가</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" name="type"
+								id="type2" onclick="toggleParentBoard(true)"> <label
+								class="form-check-label" for="type2">하위 게시판 추가</label>
+						</div>
+					</div>
+
+					<!-- 상위게시판 선택 -->
+					<div class="mb-2 d-flex align-items-center">
+						<label for="parentBoard" class="form-label me-2">상위 게시판</label> <select
+							id="parentBoard" class="form-select ms-4" style="width: auto;"
+							disabled>
+							<option>선택</option>
+						</select>
+					</div>
+
+					<script>
+						function toggleParentBoard(enable) {
+							const parentBoard = document
+									.getElementById('parentBoard');
+							parentBoard.disabled = !enable;
+						}
+					</script>
+					
+					<!-- 게시판명 입력 -->
+					<div class="mb-3 d-flex align-items-center">
+						<label for="boardName" class="form-label me-2">게시판명 <span
+							class="text-danger">*</span></label> <input type="text" id="boardName"
+							class="form-control ms-4" placeholder="게시판명을 입력하세요"
+							style="width: auto;">
+					</div>
+
+					<!-- 게시판 사용여부 선택 -->
+					<div class="mb-3">
+						<label class="form-label d-block-inline">사용 여부</label>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input ms-1" type="radio" name="use" id="use1"
+								checked> <label class="form-check-label" for="use1">사용</label>
+						</div>
+						<div class="form-check form-check-inline ms-2">
+							<input class="form-check-input" type="radio" name="use" id="use2">
+							<label class="form-check-label" for="use2">미사용</label>
+						</div>
+					</div>
+
+					<!-- 게시판 읽기권한 선택 -->
+					<div class="mb-3">
+						<label class="form-label d-block">읽기 권한</label>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" name="read"
+								id="read1" checked> <label class="form-check-label"
+								for="read1">전체 사용자</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" name="read"
+								id="read2"> <label class="form-check-label" for="read2">사용자
+								선택</label>
+						</div>
+					</div>
+
+					<!-- 게시판 쓰기권한 선택 -->
+					<div class="mb-3">
+						<label class="form-label d-block">쓰기 권한</label>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" name="write"
+								id="write1" checked> <label class="form-check-label"
+								for="write1">전체 사용자</label>
+						</div>
+						<div class="form-check form-check-inline">
+							<input class="form-check-input" type="radio" name="write"
+								id="write2"> <label class="form-check-label"
+								for="write2">사용자 선택</label>
+						</div>
+					</div>
+
+					<!-- 게시판 관리권한 선택 -->
+					<div class="mb-3">
+						<label class="form-label">관리 권한</label>
+					</div>
+					<div class="row g-3">
+						<div class="col">
+							<label for="userSearch" class="form-label">전체 사용자</label> <input
+								type="text" id="userSearch" class="form-control"
+								placeholder="이름, 소속 입력"> <select multiple
+								class="form-select mt-2" size="6">
+								<option>고영서</option>
+							</select>
+						</div>
+						<div
+							class="col-auto d-flex flex-column justify-content-center gap-2">
+							<button type="button" class="btn btn-outline-secondary">&rarr;</button>
+							<button type="button" class="btn btn-outline-secondary">&larr;</button>
+						</div>
+						<div class="col">
+							<label for="selectedUsers" class="form-label">선택된 사용자 (0)</label>
+							<input type="text" id="selectedUsers" class="form-control"
+								placeholder="이름, 소속 입력">
+							<div class="border rounded mt-2 p-3 text-center text-muted"
+								style="height: 160px;">사용자가 없습니다.</div>
+						</div>
+					</div>
+				</form>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary"
+					data-bs-dismiss="modal">취소</button>
+				<button type="button" class="btn btn-primary">저장</button>
+			</div>
+		</div>
+	</div>
+</div>
+</html>
