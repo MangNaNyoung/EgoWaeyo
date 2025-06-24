@@ -8,8 +8,8 @@
 
 		<form th:action="@{/approval/write}" method="post" id="approvalForm"
 			style="flex: 1;">
-	<h4>문서기안 > 결재문서</h4>
-		<!-- 버튼구역 만들었습니-다.  -->
+			<h4>문서기안 > 결재문서</h4>
+			<!-- 버튼구역 만들었습니-다.  -->
 			<div
 				style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
 				<button type="button" onclick="openTemplateModal()">양식선택</button>
@@ -18,7 +18,7 @@
 				<button type="button" onclick="temporarySave()">임시저장</button>
 				<button type="submit" onclick="setEditorContent()">결재</button>
 			</div>
-		<!-- 드롭다운 영역 정리하였습니다. div에 스타일을 줘서 중앙정렬하였습니다람쥐.  -->
+			<!-- 드롭다운 영역 정리하였습니다. div에 스타일을 줘서 중앙정렬하였습니다람쥐.  -->
 			<div
 				style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
 				<label for="docType">결재종류:</label> <select id="docType"
@@ -53,7 +53,7 @@
 					<option>대외비</option>
 				</select>
 			</div>
-	<!-- web editor 구역입니다. -->
+			<!-- web editor 구역입니다. -->
 			<div style="margin-bottom: 1rem;">
 				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> <input
 					type="text" name="docTitle" required style="width: 100%;" /><br />
@@ -62,7 +62,7 @@
 			<div id="editor"></div>
 			<textarea name="docContent" id="docContent" style="display: none;"></textarea>
 		</form>
-	<!-- 화면 구성단에 있는 결재선을 구현하였습니다. -->
+		<!-- 화면 구성단에 있는 결재선을 구현하였습니다. -->
 		<aside
 			style="width: 300px; border-left: 1px solid #ccc; padding-left: 1rem;">
 			<div
@@ -88,13 +88,14 @@
 </section>
 <th:block layout:fragment="customJs">
 	<script>
-	   //toast editor를 부르기위한 함수입니다. 로드 확인을 위해 if문을 걸어 제약도 걸엇읍니다.
+		//toast editor를 부르기위한 함수입니다. 로드 확인을 위해 if문을 걸어 제약도 걸엇읍니다.
 		document.addEventListener("DOMContentLoaded", function() {
 			if (typeof toastui === 'undefined') {
 				console.error('ToastUI Editor가 로딩되지 않았습니다.');
 				return;
 			}
-			const editor = new toastui.Editor({
+			let editor;
+			editor = new toastui.Editor({
 				el : document.querySelector('#editor'),
 				height : '500px',
 				initialEditType : 'wysiwyg',
@@ -106,29 +107,41 @@
 				document.querySelector("#docContent").value = editor.getHTML();
 			};
 		});
-		
-		document.addEventListener("click", ()=>{
-			//openTemplateModal(양식모달)
-		});
-		
-		document.addEventListener("click", ()=>{
-			//resetAll(초기화)
-		});
-		
-		document.addEventListener("click", ()=>{
-			//attachedFile(문서첨부)
-		});
-		
-		document.addEventListener("click", ()=>{
-			//temporarySave(임시저장)
-		});
-		
-		document.addEventListener("click", ()=>{
-			//setEditorContent(결재)
-		});
-		
-		document.addEventListener("click", ()=>{
-			//openApprovalLineModal(결재선)
-		});
+
+		// 양식 선택
+		function openTemplateModal() {
+			alert("양식 선택 모달 열기 (미구현)");
+		}
+
+		// 초기화
+		function resetAll() {
+			document.getElementById("approvalForm").reset();
+			const editor = toastui.Editor.factory(); // 이미 생성된 editor 가져오기
+			editor.setHTML("");
+		}
+
+		// 결재문서 첨부
+		function attachedFile() {
+			alert("첨부 파일 다이얼로그");
+		}
+
+		// 임시저장
+		function temporarySave() {
+			const content = editor.getHTML();
+			const title = document.querySelector("input[name='docTitle']").value;
+
+			if (!title || !content) {
+				alert("제목과 내용을 입력해 주세요.");
+				return;
+			}
+
+			// 여기에 fetch/ajax로 임시 저장 처리 로직 작성 가능
+			alert("임시 저장 완료");
+		}
+
+		// 결재선 지정
+		function openApprovalLineModal() {
+			alert("결재선 지정 모달 열기");
+		}
 	</script>
 </html>
