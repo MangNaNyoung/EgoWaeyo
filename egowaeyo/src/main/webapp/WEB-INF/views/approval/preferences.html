@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+
+<main layout:fragment="content">
+
+	<h4>결재 환경 설정</h4>
+
+	<div>
+    <div class="tab-buttons">
+      <button onclick="showTab('basic')">기본 설정</button>
+      <button onclick="showTab('delegate')">부재/위임 설정</button>
+    </div>
+  <div id="basic" class="tab-content">
+		<div class="user-info-detail-img">
+			<label>서명관리</label>
+			<!-- 동익이한테 받아서 깔아두기 -->
+			<div class="input-container">
+				<div class="file-upload-box">
+					<div class="file-upload-section">
+						<input type="file" accept=".png" name="file" id="file"> <label
+							for="file"> <img src="/images/Input_Inner.png"
+							alt="사용자 결재 사진">
+						</label>
+						<button id="btnCan" class="border rounded-sm cursor-pointer">초기화</button>
+					</div>
+					<p>* 파일 지원 형식 : png</p>
+				</div>
+			</div>
+		</div>
+    <div>
+		<label>결재 작성 방식</label>
+		<!-- option 드롭다운  -->
+		<select id="approvalType" name="approvalType">
+      <option value="normal">일반 작성</option>
+	  	<option value="special">특수 작성</option>
+		</select>
+  </div>
+		<br>
+    <div>
+		<label>첨부 이미지 설정</label><br>
+		<!-- radio 방식? -->
+		<input type="radio" id="default" name="attachedImg" value="option1" checked>기본 사이즈로 표시<br>
+		<input type="radio" id="original" name="attachedImg" value="option2">원본 사이즈로 표시<br>
+		<input type="radio" id="filename" name="attachedImg" value="option3">파일명으로 표시
+	</div>
+  <div>
+	<button type="submit" onclick="btnSave">저장</button>
+	<button type="reset" onclick="btnCancel">취소</button>
+  </div>
+  </div>
+</div>
+<!--부재/위임 설정 페이지-->
+  <div id="delegate" class="tab-content" style="display:none;">
+<div>
+  <button type="button" onclick="modalOpen()">부재 추가</button>
+  <button type="button" onclick="deleteSelect()">삭제</button>
+  <select name="pagelist" id="list">
+    <option value="20">10</option>
+    <option value="20">20</option>
+    <option value="20">50</option>
+  </select>
+</div>
+<table>
+  <thead>
+    <tr>
+      <th><input type="checkbox" id="selectAll" onclick="toggleAll(this)"/></th>
+      <th>부재 시작</th>
+      <th>부재 종료</th>
+      <th>대결자</th>
+      <th>부재 사유</th>
+      <th>사용 여부</th>
+    </tr>
+  </thead>
+  <tbody id="delegateList">
+    <tr>
+      <td colspan="6" style="text-align: center;">저장된 부재 목록이 없습니다.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="pagination">
+  <span>&lt;</span><span class="current">1</span><span>&gt;</span>
+</div>
+</div><!--delegate end-->
+
+</main>
+
+<script>
+  function showTab(tabId) {
+    const tabs = document.querySelectorAll('.tab-content');
+    tabs.forEach(tab => tab.style.display = 'none'); // 모든 탭 숨김
+    document.getElementById(tabId).style.display = 'block'; // 선택된 탭만 보임
+  }
+
+  // 기본 탭 활성화 (초기 로딩 시)
+  window.onload = () => showTab('basic');
+</script>
+</html>
