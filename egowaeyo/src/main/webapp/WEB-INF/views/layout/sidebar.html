@@ -5,10 +5,7 @@
 	<div class="sidebar-wrapper"
 		style="width: 5rem; position: fixed; top: 40px; left: 0; height: 100vh; background: #fff; z-index: 1000;">
 		<div class="sidebar-header">
-			<div class="d-flex justify-content-between">
-
-				
-			</div>
+			<div class="d-flex justify-content-between"></div>
 		</div>
 		<div class="sidebar-menu">
 			<ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
@@ -31,46 +28,40 @@
 					class='nav-link p-3  main-menu ' data-target="board-panel"> <i
 						class="bi bi-hexagon-fill"></i> <span class="d-block">게시판</span>
 				</a></li>
-				<li class="nav-item  "><a href="#"
-					class='nav-link p-3  '> <i
-						class="bi bi-file-earmark-medical-fill"></i> <span class="d-block">예약</span>
+				<li class="nav-item  "><a href="#" class='nav-link p-3  '>
+						<i class="bi bi-file-earmark-medical-fill"></i> <span
+						class="d-block">예약</span>
 				</a></li>
-
-				<li class="nav-item "><a href="#"
-					class='nav-link p-3  '> <i class="bi bi-pen-fill"></i>
-						<span class="d-block">회의</span>
+				<li class="nav-item "><a href="#" class='nav-link p-3  '> <i
+						class="bi bi-pen-fill"></i> <span class="d-block">회의</span>
 				</a></li>
-				<li class="nav-item  "><a href="#"
-					class='nav-link p-3  '> <i
-						class="bi bi-grid-1x2-fill"></i> <span class="d-block">근태</span>
+				<li class="nav-item  "><a href="#" class='nav-link p-3  '>
+						<i class="bi bi-grid-1x2-fill"></i> <span class="d-block">근태</span>
 				</a></li>
-				<li class="nav-item  "><a href="#"
-					class='nav-link p-3  '> <i
-						class="bi bi-file-earmark-spreadsheet-fill"></i> <span
+				<li class="nav-item  "><a href="#" class='nav-link p-3  '>
+						<i class="bi bi-file-earmark-spreadsheet-fill"></i> <span
 						class="d-block">메일</span>
 				</a></li>
-				<li class="nav-item  "><a href="#"
-					class='nav-link p-3  '> <i class="bi bi-cash"></i>
-						<span class="d-block">관리</span>
+				<li class="nav-item  "><a href="#" class='nav-link p-3  '>
+						<i class="bi bi-cash"></i> <span class="d-block">관리</span>
 				</a></li>
 			</ul>
 		</div>
 	</div>
-
 	<!-- 오른쪽 슬라이드 패널 -->
 	<div id="slide-panels">
-		
+
 		<div id="calendar-panel" class="p-4" style="display: none;">
 			<h5>내 캘린더</h5>
 			<ul>
-				<li> 일정 01</li>
-				<li> 프로젝트 회의</li>
-				<li> 현장 방문</li>
+				<li>일정 01</li>
+				<li>프로젝트 회의</li>
+				<li>현장 방문</li>
 			</ul>
 			<h5 class="mt-4">공유 캘린더</h5>
 			<ul>
-				<li> 부서 일정</li>
-				<li> 팀원 일정</li>
+				<li>부서 일정</li>
+				<li>팀원 일정</li>
 			</ul>
 		</div>
 		<div id="approval-panel" class="p-4" style="display: none;">
@@ -79,25 +70,43 @@
 		</div>
 		<div id="board-panel" class="p-4" style="display: none;">
 			<h5>게시판</h5>
-			<hr>
-				<span>📌공지사항</span>
-			<hr>
+
+			<ul class="no_dot ps-0">
+				<li class="ps-0">📌공지사항</li>
+			</ul>
+
 			<span class="mt-4 fw-bold">프로젝트</span>
-			<ul>
-				<span> JPA프로젝트</span>
-				 <span style="float: right;">⚙</span><br />
-				<span> Spring프로젝트</span>
-				 <span style="float: right;">⚙</span><br />
-				<span style="color:gray; font-size:11pt;">+ 프로젝트추가</span>
+			<ul class="no_dot">
+				<li>JPA프로젝트 <span style="float: right;"><img class="img-icon" th:src="@{/assets/images/icon/manage.png}"></span></li>
+			</ul>
+			<ul class="no_dot">
+				<li><span data-bs-toggle="modal"
+					data-bs-target="#addProjectModal">+ 프로젝트추가</span>
 			</ul>
 		</div>
-		
-		
+
 	</div>
-	
+	<div th:replace="article/addProjectModal :: addProjectModal"></div>
 
 
 	<!-- jQuery -->
+	<script>
+  function openModal() {
+    fetch('addProjectModal.html')
+      .then(response => response.text())
+      .then(html => {
+        const modalContainer = document.getElementById('modal-container');
+        modalContainer.innerHTML = html;
+        modalContainer.classList.remove('hidden');
+      })
+      .catch(error => console.error('Error loading modal:', error));
+  }
 
+  function closeModal() {
+    const modalContainer = document.getElementById('modal-container');
+    modalContainer.classList.add('hidden');
+    modalContainer.innerHTML = ''; // 모달 내용 초기화
+  }
+</script>
 </div>
 </html>

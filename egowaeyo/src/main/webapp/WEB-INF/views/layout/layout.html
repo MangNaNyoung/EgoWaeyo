@@ -22,20 +22,15 @@
 	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
-
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 	<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
 <style>
-
-
 body, html {
-	margin: 0;
-	padding: 0;
+	
 	 font-family: "42dot Sans", sans-serif;
 }
-
-header {
+.mainHeader header {
 	height: 60px;
 	background: #fff;
 	z-index: 1100;
@@ -46,42 +41,52 @@ header {
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 	padding: 0 1rem;
 }
-
 #slide-panels {
 	position: fixed;
 	top: 60px;
 	left: 5rem;
 	width: 250px;
 	height: 100vh;
-	background: #f8f9fa;
+	background: #F8F9FA;
 	display: none;
 	z-index: 900;
 }
-
 #main-wrapper {
 	margin-left: 1rem;
 	padding: 0;
 }
+.no_dot {
+		list-style-type: none;
+    }
+.minnn{
+        min-height: 80vh;
+    }
+    .img-icon{
+        width: 15px;
+        height: 15px;
+    }
+   
 </style>
+	<script
+		th:src="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
+	<script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 	<div id="app">
-
 		<!-- header start -->
+		<div class="mainHeader">
 		<div th:replace="~{layout/header :: headerFragment }"></div>
+		</div>
 		<!-- header end -->
-
 		<!-- aside start -->
 		<div th:replace="~{layout/sidebar :: asideFragment }"></div>
 		<!-- aside end -->
-
 		<!-- contents start -->
 		<!-- 페이지 마다 내용이 바뀌는 공간을 미리 정의 -->
-		<div id="main-wrapper">
+		<div id="main-wrapper" class="minnn">
 		<div id="main">
             <div class="page-heading">
-               
             </div>
 			<main id="main-content" layout:fragment="content">
 				<!-- 각 페이지에서 삽입될 콘텐츠 영역 -->
@@ -91,36 +96,24 @@ header {
 		<!-- <div id="rightcolumn" style="overflow: scroll">
 		</div> -->
 		<!-- contents end -->
-
 		<!-- footer start -->
 		<div th:replace="~{layout/footer :: footerFragment }"></div>
 		<!-- footer end -->
 	</div>
-
 	<!-- 페이지마다 작성될 스크립트 공간 정의 -->
 	<th:block layout:fragment="customJs"></th:block>
-	<script
-		th:src="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
-	<script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
-
-	<!-- <script th:src="@{/assets/vendors/apexcharts/apexcharts.js}"></script> -->
-	<!-- <script th:src="@{/assets/js/pages/dashboard.js}"></script> -->
-
 	<script th:src="@{/assets/js/main.js}"></script>
 	<script>
 		$(function() {
 			$('.main-menu').on('click', function(e) {
 				e.preventDefault();
-
 				const target = $(this).data('target');
-
 				if (target == 'home-panel') {
 					$('#slide-panels').fadeOut('fast');
 				} else {
 					$('#slide-panels').fadeIn('fast');
 					$('#slide-panels > div').hide();
 					$('#' + target).show();
-
 				}
 				// 드롭다운 토글 처리
 			});
@@ -130,7 +123,6 @@ header {
 			      $('#my-menu').slideUp(150);
 			      console.log( $('#my-menu'));
 			    });
-
 			    $('#my-toggle').on('click', function (e) {
 			      e.stopPropagation();
 			      $('#my-menu').slideToggle(150);
@@ -138,7 +130,6 @@ header {
 			      $('#bell-menu').slideUp(150);
 			      console.log( $('#bell-menu'));
 			    });
-
 			    // 바깥 클릭 시 닫기
 			    $(document).on('click', function () {
 			      $('#bell-menu, #my-menu').slideUp(150);
