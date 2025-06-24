@@ -185,6 +185,7 @@ function fnInit() {
     parent.frames["_top"].location.reload();
 }
 
+// 로그인 폼 선택
 function fnLoginTypeSelect(objName){
 
 		document.getElementById("typeGnr").className = "";

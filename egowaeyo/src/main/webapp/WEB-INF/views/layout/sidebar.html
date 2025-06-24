@@ -79,16 +79,20 @@
 		</div>
 		<div id="board-panel" class="p-4" style="display: none;">
 			<h5>게시판</h5>
-			<hr>
-				<span>📌공지사항</span>
-			<hr>
+			
+			<ul class="no_dot ps-0">
+				<li class="ps-0">:압정:공지사항</li>
+			</ul>
+		
 			<span class="mt-4 fw-bold">프로젝트</span>
-			<ul>
-				<span> JPA프로젝트</span>
-				 <span style="float: right;">⚙</span><br />
-				<span> Spring프로젝트</span>
-				 <span style="float: right;">⚙</span><br />
-				<span style="color:gray; font-size:11pt;">+ 프로젝트추가</span>
+			<ul class="no_dot">
+				<li>JPA프로젝트 <span style="float: right;">:톱니바퀴:</span></li>
+				<li>Spring프로젝트 <span style="float: right;">:톱니바퀴:</span></li>
+			</ul>
+			<ul class="no_dot">
+				<li>
+				<span data-bs-toggle="modal" data-bs-target="#addProjectModal">+
+                  프로젝트추가</span>
 			</ul>
 		</div>
 		
