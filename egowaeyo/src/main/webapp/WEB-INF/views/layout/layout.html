@@ -27,7 +27,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
 <style>
 body, html {
-	
+	background: #fff;
 	 font-family: "42dot Sans", sans-serif;
 }
 .mainHeader header {
@@ -48,18 +48,19 @@ body, html {
 	width: 250px;
 	height: 100vh;
 	background: #F8F9FA;
+	border-right : 1px solid;
 	display: none;
 	z-index: 900;
 }
 #main-wrapper {
-	margin-left: 1rem;
+	
 	padding: 0;
 }
 .no_dot {
 		list-style-type: none;
     }
 .minnn{
-        min-height: 80vh;
+        min-height: 90vh;
     }
     .img-icon{
         width: 15px;
@@ -103,16 +104,22 @@ body, html {
 	<th:block layout:fragment="customJs"></th:block>
 	<script th:src="@{/assets/js/main.js}"></script>
 	<script>
+	let currentTarget = '';
 		$(function() {
 			$('.main-menu').on('click', function(e) {
 				e.preventDefault();
 				const target = $(this).data('target');
-				if (target == 'home-panel') {
+				if (target == 'home-panel' || target == currentTarget) {
 					$('#slide-panels').fadeOut('fast');
+					$('#main').css('margin-left','100px')
+					currentTarget = '';
+					$(this).toggleClass('active')
 				} else {
+					$('#main').css('margin-left','330px')
 					$('#slide-panels').fadeIn('fast');
 					$('#slide-panels > div').hide();
 					$('#' + target).show();
+					currentTarget = target;
 				}
 				// 드롭다운 토글 처리
 			});

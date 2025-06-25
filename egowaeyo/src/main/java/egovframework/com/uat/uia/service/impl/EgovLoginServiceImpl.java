@@ -16,6 +16,7 @@ import egovframework.com.uat.uia.service.EgovLoginService;
 import egovframework.com.utl.fcc.service.EgovNumberUtil;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.com.utl.sim.service.EgovFileScrty;
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 일반 로그인, 인증서 로그인을 처리하는 비즈니스 구현 클래스
@@ -39,6 +40,7 @@ import egovframework.com.utl.sim.service.EgovFileScrty;
  *  </pre>
  */
 @Service("loginService")
+@Log4j2
 public class EgovLoginServiceImpl extends EgovAbstractServiceImpl implements EgovLoginService {
 
     @Resource(name="loginDAO")
@@ -86,7 +88,7 @@ public class EgovLoginServiceImpl extends EgovAbstractServiceImpl implements Ego
     	// 1. 입력한 비밀번호를 암호화한다.
 		String enpassword = EgovFileScrty.encryptPassword(vo.getPassword(), vo.getId());
     	vo.setPassword(enpassword);
-
+    	log.info("------------------------------------------------------"+enpassword);
     	// 2. 아이디와 암호화된 비밀번호가 DB와 일치하는지 확인한다.
     	LoginVO loginVO = loginDAO.actionLogin(vo);
 

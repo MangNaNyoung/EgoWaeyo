@@ -45,7 +45,9 @@ document.addEventListener("DOMContentLoaded", function () {
     navLinks.forEach(link => {
       link.addEventListener("click", function () {
         navLinks.forEach(l => l.classList.remove("active")); // 기존 active 제거
+      
         this.classList.add("active"); // 현재 클릭된 메뉴에 active 추가
+		
       });
     });
   });

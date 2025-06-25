@@ -8,7 +8,7 @@ public class test {
 	private static final Logger LOGGER = LoggerFactory.getLogger(test.class);
 	 
 	//계정암호화키 키
-	public String algorithmKey = "minyoung0017!";
+	public String algorithmKey = "12344545";
  
 	//계정암호화 알고리즘(MD5, SHA-1, SHA-256)
 	public String algorithm = "SHA-256";

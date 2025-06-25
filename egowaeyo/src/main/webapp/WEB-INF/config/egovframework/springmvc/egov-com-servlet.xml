@@ -137,6 +137,7 @@
 	</bean>
 
 	<!-- Facebook 설정 -->
+	<mvc:default-servlet-handler/>
 	<mvc:resources mapping="/assets/**" location="/assets/" />
 	<mvc:resources mapping="/images/**" location="/images/"
 		cache-period="3600" />
