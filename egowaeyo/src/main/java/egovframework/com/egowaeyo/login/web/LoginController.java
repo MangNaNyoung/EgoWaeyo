@@ -56,5 +56,9 @@ public class LoginController {
 			return "redirect:/uat/uia/egovLoginUsr.do";
 		}
 	}
+	@RequestMapping("/tests")
+	public String pagetest() {
+		return "pinggu/adminUserInsert.html";
+	}
 	
 }
