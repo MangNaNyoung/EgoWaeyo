@@ -1,15 +1,9 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <div id="header" th:fragment="headerFragment">
-<header >
+<header class='mb-3'>
                 <nav class="navbar navbar-expand navbar-light ">
                     <div class="container-fluid">
-                        <div class="fw-bold fs-4">EGOWAEYO</div>
-
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
+                         <div class="fw-bold fs-4">EGOWAEYO</div>
                         <div class="collapse navbar-collapse" id="navbarSupportedContent">
                             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
                                 <li class="nav-item dropdown me-1">
@@ -46,11 +40,11 @@
                                         </div>
                                         <div class="user-img d-flex align-items-center">
                                             <div class="avatar avatar-md">
-                                                <img th:src="@{assets/images/faces/1.jpg}">
+                                                <img th:src="@{/assets/images/faces/1.jpg}">
                                             </div>
                                         </div>
-                               		 </a>
                                     </div>
+                                </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                                     <li>
                                         <h6 class="dropdown-header">Hello, John!</h6>
@@ -69,9 +63,10 @@
                                 </ul>
                             </div>
                         </div>
+                    </div>
                 </nav>
             </header>
-                    </div>
+        </div>
 <script>
 
 </script>
