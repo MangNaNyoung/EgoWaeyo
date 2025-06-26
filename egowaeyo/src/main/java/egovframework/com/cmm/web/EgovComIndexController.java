@@ -201,7 +201,6 @@ public class EgovComIndexController {
 	
 	@RequestMapping("/test")
 	public String testLeaf() {
-		
 				return "test.html";
 	}
 	

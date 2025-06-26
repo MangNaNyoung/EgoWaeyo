@@ -136,8 +136,7 @@
     const modalContainer = document.getElementById('modal-container');
     modalContainer.classList.add('hidden');
     modalContainer.innerHTML = ''; // 모달 내용 초기화
-  }
-  
+  }  
   // 사이드바 게시판 목록
 	document.addEventListener("DOMContentLoaded", function () {
 		fetch('/egowaeyo/bbsMaster/bbsNames')
@@ -154,7 +153,7 @@
 					const listItem = document.createElement("li");
 					listItem.innerHTML = `${bbsNm}
 						<img data-bs-toggle="modal" data-bs-target="#editProjectModal" 
-                        class="img-icon" src="egowaeyo/assets/images/icon/manage.png" style="z-index: 1000; cursor: pointer;">
+                        class="img-icon" src="/egowaeyo/assets/images/icon/manage.png" style="cursor: pointer;">
 					`;
 					projectList.appendChild(listItem);
 				});
