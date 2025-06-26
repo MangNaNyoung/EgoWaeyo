@@ -22,6 +22,7 @@ public class BbsMasterController {
 	 * @GetMapping("/bbsMasterList") public String bbsMasterList() { return
 	 * "article/BbsMaster.html"; // 게시판 목록 페이지로 이동 }
 	 */
+	
 	// 데이터 가져오기
 	@GetMapping("/bbsNames")
 	@ResponseBody
