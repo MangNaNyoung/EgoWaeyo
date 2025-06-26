@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Login</title>
+<link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
 <style type="text/css">
 * {
 	font-family: "42dot Sans", sans-serif;
@@ -15,6 +16,7 @@
 html, body {
 	width: 100%;
 	height: 100%;
+	background-color : #fff;
 }
 
 .main_container {
@@ -112,23 +114,32 @@ html, body {
 	rel="stylesheet">
 <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
 	rel="stylesheet">
+<link rel="shortcut icon" th:href="@{images/egovframework/com/ego/egowaeyofavicon.png}"
+	type="image/x-icon">
+ <link rel="stylesheet"
+	th:href="@{/assets/vendors/bootstrap-icons/bootstrap-icons.css}">
+<script th:src="@{/assets/js/bootstrap.bundle.min.js}"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css"> 
 </head>
 <body>
-	<div class="main_container">
+	<div class="main_container login_form">
 		<div class="login_box">
 			<div class="login_center">
-				<form name="login_form" action="">
+				<form th:object="${loginVO}" action="">
+				<div class="d-none" ><input type="text" th:field="*{userSe}" value="USR"></div>
 					<div class="login-image">
 						<img th:src="@{images/egovframework/com/ego/egoWAEYO.png}" alt="로그인 title">
 					</div>
 					<div class="input-box">
-						<i class="bx bxs-user"></i> <input type="text" name="user_id"
+						<i class="bx bxs-user"></i> <input type="text" th:field="*{id}" 
 							placeholder="아이디" required>
 					</div>
 					<div class="input-box">
 						<i class="bx bxs-lock-alt"></i> <input type="password"
-							name="user_pw" placeholder="비밀번호" required>
+							th:field="*{password}" placeholder="비밀번호" required>
 					</div>
 					<input type="checkbox" class="input-box-checkbox"> 아이디 저장
 					<button type="submit" class="btn">로그인</button>
@@ -137,4 +148,54 @@ html, body {
 		</div>
 	</div>
 </body>
+<script>
+function actionLogin() {
+	if (document.loginForm.id.value =="") {
+        //alert("<spring:message code="comUatUia.validate.idCheck" />"); <%-- 아이디를 입력하세요 --%>
+    } else if (document.loginForm.password.value =="") {
+        //alert("<spring:message code="comUatUia.validate.passCheck" />"); <%-- 비밀번호를 입력하세요 --%>
+    } else {
+        document.loginForm.action="";
+        //document.loginForm.j_username.value = document.loginForm.userSe.value + document.loginForm.username.value;
+        //document.loginForm.action="<c:url value='/j_spring_security_check'/>";
+        document.loginForm.submit();
+    }
+}
+
+function setCookie (name, value, expires) {
+    document.cookie = name + "=" + escape (value) + "; path=/; expires=" + expires.toGMTString();
+}
+
+function getCookie(Name) {
+    var search = Name + "=";
+    if (document.cookie.length > 0) { // 쿠키가 설정되어 있다면
+        offset = document.cookie.indexOf(search);
+        if (offset != -1) { // 쿠키가 존재하면
+            offset += search.length;
+            // set index of beginning of value
+            end = document.cookie.indexOf(";", offset);
+            // 쿠키 값의 마지막 위치 인덱스 번호 설정
+            if (end == -1)
+                end = document.cookie.length;
+            return unescape(document.cookie.substring(offset, end));
+        }
+    }
+    return "";
+}
+
+function saveid(form) {
+    var expdate = new Date();
+    // 기본적으로 30일동안 기억하게 함. 일수를 조절하려면 * 30에서 숫자를 조절하면 됨
+    if (form.checkId.checked)
+        expdate.setTime(expdate.getTime() + 1000 * 3600 * 24 * 30); // 30일
+    else
+        expdate.setTime(expdate.getTime() - 1); // 쿠키 삭제조건
+    setCookie("saveid", form.id.value, expdate);
+}
+
+function getid(form) {
+	form.checkId.checked = ((form.id.value = getCookie("saveid")) != "");
+}
+
+</script>
 </html>
