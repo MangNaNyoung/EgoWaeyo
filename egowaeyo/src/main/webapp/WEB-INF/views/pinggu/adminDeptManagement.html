@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+  >
+<section layout:fragment="content">
+<style>
+body {
+   font-family: "42dot Sans", sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+/* list-style-type: none; */
+
+.dept-selected{
+  background-color: #8ec5ff !important;
+}
+
+
+.dept-hover:hover{
+  background-color: #d1d5dc;
+  cursor: pointer;
+}
+</style>
+
+ <div class="main-container d-flex m-4 flex-column">
+   <div class="main-first-section">
+     <div class="main-small-title d-bolck pb-4">
+       조직 관리
+     </div>
+     <div class="main-header-title fs-3 fw-bold pb-5">
+       조직 현황
+     </div>
+   </div>
+   <div class="main-second-section d-flex justify-content-between flex-row pb-4">
+     <div class="button-section">
+       <button class="border border-dark px-3 rounded-2" id="deptInsert" data-bs-toggle="modal" data-bs-target="#exampleModal">부서추가</button>
+       <button class="border border-dark px-3 rounded-2" id="dedptUpdate">부서수정</button>
+       <button class="border border-dark px-3 rounded-2" id="deptDel">부서삭제</button>
+     </div>
+     <div>
+       <div class="input-group">
+         <div class="search-section input-group-text">
+           <select class="form-select" aria-label="Default select example">
+             <option selected>전체</option>
+             <option value="1">이름</option>
+             <option value="2">아이디</option>
+             <option value="3">직급</option>
+             <option value="4">사번</option>
+             <option value="5">내선번호</option>
+           </select>
+         <!-- 검색창 -->
+         <input type="text" class="py-1" placeholder="검색" id="all-search-input"> <!-- id 값 중복 불가 'search-input' -> 'all-search-input' 으로 변경 -->
+         </div>
+         <button class="border cursor-pointer" id="modal-search">
+           <img src="/images/search.png" alt="검색">
+         </button>
+       </div>
+     </div>
+   </div>
+   <div class="main-tf-section d-flex flex-row">
+     <div class="main-third-section me-5">
+       <div class="search-section">
+         <!-- 검색창 -->
+         <input type="text" class="" placeholder="검색" id="search-input">
+         <button class="cursor-pointer border border-0 ps-3" id="modal-search">
+           <img src="/images/search.png" alt="검색">
+         </button>
+       </div>
+       <div class="dept-list-section pt-3">
+         <!-- 부서 리스트 목록 -->
+         <div class="">
+           <ul class="list-group list-group-flush" id="department-list">
+             <li class="list-group-item p-2 dept-hover rounded-2" role="button" data-dept="임원">임원</li>
+             <li class="list-group-item p-2 dept-hover rounded-2" role="button" data-dept="인사팀">인사팀</li>
+             <li class="list-group-item p-2 dept-hover rounded-2" role="button" data-dept="재무팀">재무팀</li>
+             <li class="list-group-item p-2 dept-hover rounded-2" role="button" data-dept="개발팀">개발팀</li>
+             <li class="list-group-item p-2 dept-hover rounded-2" role="button" data-dept="품질보증팀">품질보증팀</li>
+             <li class="list-group-item p-2 dept-hover rounded-2" role="button" data-dept="기획팀">기획팀</li>
+             <li class="list-group-item p-2 dept-hover rounded-2" role="button" data-dept="영업팀">영업팀</li>
+           </ul>
+         </div>
+       </div>
+     </div>
+     <div class="main-fourth-section flex-fill">
+       <div class="dept-people-section">
+         <table class="table">
+           <thead>
+             <tr>
+               <th class=""><input type="checkbox"></th>
+               <th class="">이름</th>
+               <th class="">아이디</th>
+               <th class="">소속부서</th>
+               <th class="">직급</th>
+               <th class="">사번</th>
+               <th class="">내선번호</th>
+               <th class="">휴대폰</th>
+             </tr>
+           </thead>
+           <tbody>
+             <tr>
+               <td class="py-3"><input type="checkbox"></td>
+               <td class="py-3">김민지</td>
+               <td class="py-3">KimMinJi</td>
+               <td class="py-3">보안팀</td>
+               <td class="py-3">보안팀장</td>
+               <td class="py-3">250000</td>
+               <td class="py-3">4681</td>
+               <td class="py-3">010-0000-0000</td>
+             </tr>
+           </tbody>
+         </table>
+       </div>
+     </div>
+   </div>
+ </div>
+
+ <!-- 부서추가 모달 -->
+ <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">부서추가</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action="">
+            <div class="mb-3">
+              <label for="Dept" class="form-dept">부서명</label>
+                <input type="text" class="form-control">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary">부서추가</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+    const searchInput = document.getElementById("search-input"); // 검색 입력창
+    const departmentList = document.getElementById("department-list"); // 소속 목록
+    const selectedDepartment = document.getElementById("selectedDepartment"); // 선택된 소속 표시창
+    const deptInsert = document.getElementById("deptInsert"); // 부서추가 버튼
+    const modal = document.querySelector(".modal"); // 부서추가 모달
+
+    const departments = [
+      "임원",
+      "인사팀",
+      "재무팀",
+      "개발팀",
+      "품질보증팀",
+      "기획팀",
+      "영업팀"
+    ];
+
+    departmentList.addEventListener("click", (e) => {
+    const deptItems = e.target.closest("[data-dept]");
+    if (deptItems){
+      const prevSelected = departmentList.querySelector(".dept-selected");
+      if (prevSelected) {
+        prevSelected.classList.remove("dept-selected");
+      }
+
+      deptItems.classList.add("dept-selected");
+      currentSelectedDepartment = deptItems.getAttribute("data-dept");
+    }
+  })
+
+    function searchDepartments() {
+
+    const searchTerm = searchInput.value.toLowerCase().trim();
+
+    if(searchTerm === ""){
+      showAllDepartments();
+      return;
+    }
+
+    const filterdDepts = departments.filter(dept => 
+      dept.toLowerCase().includes(searchTerm)
+    );
+
+    displayDepartments(filterdDepts);
+
+  }
+
+  function showAllDepartments() {
+    displayDepartments(departments);
+  }
+
+  function displayDepartments(deptList) {
+    departmentList.innerHTML = "";
+
+    deptList.forEach(dept => {
+      const li = document.createElement("li");
+      li.className = "list-group-item p-2 dept-hover rounded-2";
+      li.setAttribute("data-dept", dept);
+      li.textContent = `${dept}`;
+      departmentList.appendChild(li);
+    });
+  }
+
+  searchInput.addEventListener("input", searchDepartments);
+
+  
+
+</script>
+
+</html>
