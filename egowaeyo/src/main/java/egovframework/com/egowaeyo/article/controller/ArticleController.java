@@ -37,7 +37,7 @@ public class ArticleController {
 	// 게시글 작성화면으로 이동
 	@GetMapping("/articleRegister")
 	public String home(Locale locale, Model model) {
-	    return "article/ArticleRegist.html";
+	    return "/article/ArticleRegist.html";
 	}
 	
 	// 게시글 등록
