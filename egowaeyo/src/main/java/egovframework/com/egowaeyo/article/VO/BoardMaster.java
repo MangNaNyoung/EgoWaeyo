@@ -23,8 +23,8 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 @SuppressWarnings("serial")
 public class BoardMaster implements Serializable {
-    
-    /** 게시판 아이디 */
+	
+	/** 게시판 아이디 */
     private String bbsId = "";
     
     /** 게시판 소개 */
@@ -101,8 +101,8 @@ public class BoardMaster implements Serializable {
     
     /** 만족도조사 */
     private String stsfdgAt = "";
-    ////-------------------------------
-
+    ////-------------------------------    
+    
     /**
      * bbsId attribute를 리턴한다.
      * 

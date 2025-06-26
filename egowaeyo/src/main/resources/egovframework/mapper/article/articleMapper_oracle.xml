@@ -19,6 +19,9 @@
 		ORDER BY SORT_ORDR DESC
 	</select>
 
+    <!-- 게시판 추가 -->
+
+	
 	<!-- 게시판 게시글 조회 -->
 	<select id="findAll"
 		resultType="egovframework.com.egowaeyo.article.VO.BoardVO">
