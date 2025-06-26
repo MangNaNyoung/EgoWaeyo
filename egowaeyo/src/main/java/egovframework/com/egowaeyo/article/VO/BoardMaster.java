@@ -24,6 +24,12 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @SuppressWarnings("serial")
 public class BoardMaster implements Serializable {
 	
+	/** 사용자id */
+	private String emplyrId = "";
+	
+	/** 권한코드 */
+	private String authorCode = "";
+	
 	/** 게시판 아이디 */
     private String bbsId = "";
     
@@ -102,6 +108,42 @@ public class BoardMaster implements Serializable {
     /** 만족도조사 */
     private String stsfdgAt = "";
     ////-------------------------------    
+    
+    /**
+     * emplyrId attribute를 리턴한다.
+     * 
+     * @return the emplyrId
+     */
+    public String getEmplyrId() {
+    	return emplyrId;
+    }
+    /**
+     * emplyrId attribute 값을 설정한다.
+     * 
+     * @param emplyrId
+     *            the emplyrId to set
+     */
+    public void setEmplyrId(String emplyrId) {
+	this.emplyrId = emplyrId;
+    }
+    
+    /**
+     * authorCode attribute를 리턴한다.
+     * 
+     * @return the authorCode
+     */
+    public String getAuthorCode() {
+    	return authorCode;
+    }
+    /**
+     * authorCode attribute 값을 설정한다.
+     * 
+     * @param authorCode
+     *            the authorCode to set
+     */
+    public void setAuthorCode(String authorCode) {
+	this.authorCode = authorCode;
+    }
     
     /**
      * bbsId attribute를 리턴한다.

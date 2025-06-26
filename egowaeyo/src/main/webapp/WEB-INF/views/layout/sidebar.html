@@ -82,10 +82,11 @@
 				<li class="ps-0">📌공지사항</li>
 			</ul>
 
-			<span class="mt-4 fw-bold">프로젝트</span>
+			<!-- <ul class="mt-4 fw-bold parentsProjects">
+			프로젝트 목록이 동적으로 추가됩니다.
+			</ul> -->
 			<ul class="no_dot project">
-				<!-- <li>JPA프로젝트 <span style="float: right;"><img data-bs-toggle="modal"
-					data-bs-target="#editProjectModal" class="img-icon" th:src="@{/assets/images/icon/manage.png}"></span></li> -->
+				<!-- 프로젝트 목록이 동적으로 추가됩니다. -->
 			</ul>
 			<ul class="no_dot">
 				<li><span data-bs-toggle="modal"
@@ -151,14 +152,16 @@
 				projectList.innerHTML = ""; // 기존 항목 초기화
 				data.forEach(bbsNm => {
 					const listItem = document.createElement("li");
-					listItem.innerHTML = `<span>${bbsNm}</span>
+					listItem.innerHTML = `${bbsNm}
 						<img data-bs-toggle="modal" data-bs-target="#editProjectModal" 
-                        class="img-icon" th:src="@{/assets/images/icon/manage.png}" style="z-index: 1000; cursor: pointer;">
+                        class="img-icon" src="egowaeyo/assets/images/icon/manage.png" style="z-index: 1000; cursor: pointer;">
 					`;
 					projectList.appendChild(listItem);
 				});
 			})
 			.catch(error => console.error('Error fetching bbs names:', error));
+		
+		
 	});
 
         
