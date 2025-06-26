@@ -1107,7 +1107,7 @@
 
 .navbar {
 	height: 90px;
-	padding: 1.5rem
+	
 }
 
 .navbar .navbar-brand img {
@@ -1417,7 +1417,7 @@
 }
 
 #main #main-content {
-	padding-top: 2rem
+	padding-top: 3rem
 }
 
 .page-heading {
