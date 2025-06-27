@@ -50,15 +50,15 @@
 	</div>
 	<!-- 오른쪽 슬라이드 패널 -->
 	<div id="slide-panels" >
-		<!-- 사이드 메뉴 생성시 원본 참고 
-		<div id="board-panel" class="p-4 mt-5" style="display: none;">
+		사이드 메뉴 생성시 원본 참고 
+		<!-- <div id="board-panel" class="p-4 mt-5" style="display: none;">
    			<h5>게시판</h5>
    			ul 태그 -> 메뉴묶음
     		<ul class="no_dot ps-0">
     		  세부 메뉴 넣을곳
     		</ul>
-    	</div> -->
-
+    	</div>
+ -->
 		<div id="calendar-panel" class="p-4 mt-5" style="display: none;">
 			<h5>내 캘린더</h5>
 			<ul>
@@ -76,17 +76,17 @@
 			<h5>결재함</h5>
 			<p>결재 요청 목록이 여기에 표시됩니다.</p>
 		</div>
-		<div id="board-panel" class="p-4 mt-5" style="display: none;">
+		<!-- <div id="board-panel" class="p-4 mt-5" style="display: none;">
       <h5>게시판</h5>
 			<ul class="no_dot ps-0">
 				<li class="ps-0">📌공지사항</li>
 			</ul>
 
-			<!-- <ul class="mt-4 fw-bold parentsProjects">
+			<ul class="mt-4 fw-bold parentsProjects">
 			프로젝트 목록이 동적으로 추가됩니다.
-			</ul> -->
+			</ul>
 			<ul class="no_dot project">
-				<!-- 프로젝트 목록이 동적으로 추가됩니다. -->
+				프로젝트 목록이 동적으로 추가됩니다.
 			</ul>
 			<ul class="no_dot">
 				<li><span data-bs-toggle="modal"
@@ -96,12 +96,12 @@
 	</div>
 	<div th:replace="article/addProjectModal :: addProjectModal"></div>
 	<div th:replace="article/editProjectModal :: editProjectModal"></div>
-
-
+ -->
+</div>
 	<!-- jQuery -->
 	<script>
 	
-	// 프로젝트 추가 모달
+/* 	// 프로젝트 추가 모달
   function openModal() {
     fetch('addProjectModal.html')
       .then(response => response.text())
@@ -163,7 +163,7 @@
 		
 	});
 
-        
+         */
 </script>
 </div>
 </html>
