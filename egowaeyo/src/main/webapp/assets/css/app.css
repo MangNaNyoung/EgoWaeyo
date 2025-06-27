@@ -545,7 +545,7 @@
 }
 
 .form-group.with-title .form-control:focus ~label, .form-group.with-title dataTable-input:focus
-	~label {
+	 ~label {
 	border-left: 1px solid #435ebe;
 	border-top: 1px solid #435ebe;
 	border-right: 1px solid #435ebe
@@ -1107,7 +1107,7 @@
 
 .navbar {
 	height: 90px;
-	padding: 1.5rem
+	
 }
 
 .navbar .navbar-brand img {
@@ -1403,7 +1403,7 @@
 }
 
 #main {
-	margin-left: 300px;
+	margin-left: 100px;
 }
 
 @media screen and (max-width:1199px) {
@@ -1417,9 +1417,7 @@
 }
 
 #main #main-content {
-
-	padding-top: 2rem
-
+	padding-top: 3rem
 }
 
 .page-heading {

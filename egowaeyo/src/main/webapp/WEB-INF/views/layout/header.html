@@ -1,39 +1,72 @@
 <html xmlns:th="http://www.thymeleaf.org">
   <div id="header" th:fragment="headerFragment">
-<header class="d-flex justify-content-between align-items-center px-4 shadow-sm" style="height: 60px; position: fixed; top: 0; left: 0; right: 0; z-index: 1100; background: white;">
-  <div class="fw-bold fs-4">EGOWAEYO</div>
-
-  <div class="d-flex align-items-center gap-3 position-relative">
-    <!-- 알림 아이콘 + 배지 -->
-    <div class="position-relative dropdown-trigger" id="bell-toggle" style="cursor: pointer;">
-      <i class="bi bi-bell fs-4 text-dark"></i>
-      <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">2</span>
-      <!-- 알림 드롭다운 -->
-      <div class="dropdown-menu shadow-sm bg-white p-2" id="bell-menu" style="display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 200px; z-index: 2000; ">
-        <p class="mb-1"> 새로운 알림</p>
-        <hr class="my-1" />
-        <p class="mb-0">- 프로젝트 일정 알림</p>
-        <p class="mb-0">- 회의 시작 10분 전</p>
-      </div>
-    </div>
-
-    <!-- 사용자 아바타 -->
-    <div class="position-relative dropdown-trigger" id="my-toggle" style="cursor: pointer; ">
-      <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1px solid #ddd;">
-      <img th:src="@{/assets/images/faces/2.jpg}" alt="user" style="width: 100%; height: 100%; object-fit: cover;">
-      </div>
-      <!-- 사용자 드롭다운 -->
-      <div class="dropdown-menu shadow-sm bg-white p-2" id="my-menu" style="display: none; position: absolute; top: 100%; left: 50%; transform: translateX(-50%); width: 150px; z-index: 2000; ">
-        <p class="mb-1">사용자</p>
-        <hr class="my-1" />
-        <a href="#" class="d-block text-decoration-none text-dark">내 정보</a>
-        <a href="#" class="d-block text-decoration-none text-dark">로그아웃</a>
-      </div>
-    </div>
-  </div>
-</header>
-
-  </div>
+<header class='mb-3'>
+                <nav class="navbar navbar-expand navbar-light ">
+                    <div class="container-fluid">
+                         <div class="fw-bold fs-4">EGOWAEYO</div>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                                <li class="nav-item dropdown me-1">
+                                    <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i class='bi bi-envelope bi-sub fs-4 text-gray-600'></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                        <li>
+                                            <h6 class="dropdown-header">Mail</h6>
+                                        </li>
+                                        <li><a class="dropdown-item" href="#">No new mail</a></li>
+                                    </ul>
+                                </li>
+                                <li class="nav-item dropdown me-3">
+                                    <a class="nav-link active dropdown-toggle" href="#" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i class='bi bi-bell bi-sub fs-4 text-gray-600'></i>
+                                    </a>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                        <li>
+                                            <h6 class="dropdown-header">Notifications</h6>
+                                        </li>
+                                        <li><a class="dropdown-item">No notification available</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                            <div class="dropdown">
+                                <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <div class="user-menu d-flex">
+                                        <div class="user-name text-end me-3">
+                                            <h6 class="mb-0 text-gray-600">John Ducky</h6>
+                                            <p class="mb-0 text-sm text-gray-600">Administrator</p>
+                                        </div>
+                                        <div class="user-img d-flex align-items-center">
+                                            <div class="avatar avatar-md">
+                                                <img th:src="@{/assets/images/faces/1.jpg}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                    <li>
+                                        <h6 class="dropdown-header">Hello, John!</h6>
+                                    </li>
+                                    <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-person me-2"></i> My
+                                            Profile</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-gear me-2"></i>
+                                            Settings</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-wallet me-2"></i>
+                                            Wallet</a></li>
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li><a class="dropdown-item" href="#"><i
+                                                class="icon-mid bi bi-box-arrow-left me-2"></i> Logout</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+            </header>
+        </div>
 <script>
 
 </script>

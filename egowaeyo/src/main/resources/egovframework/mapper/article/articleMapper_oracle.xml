@@ -19,6 +19,9 @@
 		ORDER BY SORT_ORDR DESC
 	</select>
 
+    <!-- 게시판 추가 -->
+
+	
 	<!-- 게시판 게시글 조회 -->
 	<select id="findAll"
 		resultType="egovframework.com.egowaeyo.article.VO.BoardVO">
@@ -65,4 +68,30 @@
 		) TB )
 
 	</select>
+	
+	<!-- 게시판 작성 -->
+	<insert id="articleInsert" parameterType="egovframework.com.egowaeyo.article.VO.BoardVO">
+	<selectKey keyProperty="nttNo" resultType="java.lang.Long" order="BEFORE">
+			SELECT NVL(MAX(SORT_ORDR),0)+1 AS NTT_NO  FROM COMTNBBS
+			WHERE BBS_ID = #{bbsId}
+		</selectKey>
+		
+			INSERT INTO COMTNBBS
+			(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR, 
+			 NTCR_ID, NTCR_NM, PASSWORD, RDCNT, 
+			 NTCE_BGNDE, NTCE_ENDDE, ANSWER_AT,  			   
+			 PARNTSCTT_NO, NTT_NO, ANSWER_LC, ATCH_FILE_ID,
+			 FRST_REGISTER_ID, FRST_REGIST_PNTTM, USE_AT,
+			 SJ_BOLD_AT, NOTICE_AT, SECRET_AT, BLOG_ID
+			 )
+			VALUES
+			( #{nttId}, #{bbsId}, #{nttSj}, #{nttCn}, #{nttId}, 
+			  #{ntcrId}, #{ntcrNm}, #{password}, #{inqireCo}, 
+			  #{ntceBgnde}, #{ntceEndde}, #{replyAt}, 
+			  #{parnts}, 1, #{replyLc}, #{atchFileId},
+			  #{frstRegisterId}, SYSDATE, 'Y',
+			  #{sjBoldAt}, #{noticeAt}, #{secretAt}, #{blogId}
+			)
+	</insert>
+	
 </mapper>

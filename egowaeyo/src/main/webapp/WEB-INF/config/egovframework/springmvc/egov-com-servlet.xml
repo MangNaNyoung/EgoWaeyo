@@ -135,8 +135,13 @@
 		<property name="contentType"
 			value="application/json;charset=UTF-8" />
 	</bean>
+	<bean id="validator"
+      class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+
+<mvc:annotation-driven validator="validator"/>
 
 	<!-- Facebook 설정 -->
+	<mvc:default-servlet-handler/>
 	<mvc:resources mapping="/assets/**" location="/assets/" />
 	<mvc:resources mapping="/images/**" location="/images/"
 		cache-period="3600" />

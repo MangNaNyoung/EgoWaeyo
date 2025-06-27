@@ -35,6 +35,9 @@
 <validator:javascript formName="userManageVO" staticJavascript="false" xhtml="true" cdata="false"/>
 <script type="text/javascript" src="<c:url value='/js/egovframework/com/sym/ccm/zip/EgovZipPopup.js' />" ></script>
 <script src="<c:url value='/js/egovframework/com/cmm/jquery.js' />"></script>
+<link rel="stylesheet"
+	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script type="text/javaScript" language="javascript" defer="defer">
 /*********************************************************
  * 초기화

@@ -27,7 +27,7 @@ public class LoginController {
 	 * 로그인 페이지 이동
 	 */
 	@RequestMapping("/goToLogin")
-	public String goToLogin() {
+	public String goToLogin(@ModelAttribute("loginVO")LoginVO loginVO) {
 		return "login/login.html";
 	}
 	/*
@@ -55,6 +55,10 @@ public class LoginController {
 			model.addAttribute("loginMessage", egovMessageSource.getMessage("fail.common.login",request.getLocale()));
 			return "redirect:/uat/uia/egovLoginUsr.do";
 		}
+	}
+	@RequestMapping("/tests")
+	public String pagetest() {
+		return "pinggu/adminUserInsert.html";
 	}
 	
 }

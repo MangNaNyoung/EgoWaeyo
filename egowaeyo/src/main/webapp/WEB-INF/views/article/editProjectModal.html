@@ -3,32 +3,19 @@
 
 <!-- 게시판 추가 모달 -->
 <
-<div th:fragment="addProjectModal" class="modal fade"
-	id="addProjectModal" tabindex="-1"
-	aria-labelledby="addProjectModalLabel" aria-hidden="true">
+<div th:fragment="editProjectModal" class="modal fade"
+	id="editProjectModal" tabindex="-1"
+	aria-labelledby="editProjectModalLabel" aria-hidden="true">
 	<div class="modal-dialog modal-lg"
 		style="max-width: 970px; height:850px; margin-top: 70px;">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="addProjectModalLabel">게시판 추가</h5>
+				<h5 class="modal-title" id="editProjectModalLabel">게시판 관리</h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"
 					aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<form>
-					<!-- 게시판 유형 선택 -->
-					<div class="mb-5">
-						<div class="form-check form-check-inline">
-							<input class="form-check-input ms-1" type="radio" name=""
-								id="type1" checked onclick="toggleParentBoard(false)"> <label
-								class="form-check-label ms-2" for="type1">게시판 추가</label>
-						</div>
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="type"
-								id="type2" onclick="toggleParentBoard(true)"> <label
-								class="form-check-label" for="type2">하위 게시판 추가</label>
-						</div>
-					</div>
 
 					<!-- 상위게시판 선택 -->
 					<div class="mb-3 d-flex align-items-center">
@@ -38,13 +25,6 @@
 							<option>선택</option>
 						</select>
 					</div>
-					<script>
-						function toggleParentBoard(enable) {
-							const parentBoard = document
-									.getElementById('parentBoard');
-							parentBoard.disabled = !enable;
-						}
-					</script>
 
 					<!-- 게시판명 입력 -->
 					<div class="mb-3 d-flex align-items-center">
