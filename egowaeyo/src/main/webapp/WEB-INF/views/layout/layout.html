@@ -27,7 +27,7 @@
 	<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
 <style>
 body, html {
-	background: #fff;
+	
 	 font-family: "42dot Sans", sans-serif;
 }
 .mainHeader header {
@@ -114,12 +114,15 @@ body, html {
 			$('.main-menu').on('click', function(e) {
 				e.preventDefault();
 				const target = $(this).data('target');
-				if (target == 'home-panel' || target == currentTarget) {
+				if (target == 'home-panel' || target == currentTarget || target == 'calendar-panel' || target =='board-panel') {					
 					$('#slide-panels').fadeOut('fast');
 					$('#main').css('margin-left','100px')
 					currentTarget = '';
 					$(this).toggleClass('active')
-				} else {
+					if(target == 'home-panel'){
+						location.href="/egowaeyo/test"
+					}
+				} else if(target !='board-panel'&& target!='calendar-panel') {
 					$('#main').css('margin-left','330px')
 					$('#slide-panels').fadeIn('fast');
 					$('#slide-panels > div').hide();

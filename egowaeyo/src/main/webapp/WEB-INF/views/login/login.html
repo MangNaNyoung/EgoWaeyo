@@ -125,11 +125,13 @@ html, body {
 	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css"> 
 </head>
 <body>
-	<div class="main_container login_form">
+	<div class="main_container loginForm">
 		<div class="login_box">
 			<div class="login_center">
-				<form th:object="${loginVO}" th:action="@{loginAction}">
-				<div class="d-none" ><input type="text" th:field="*{userSe}" value="USR"></div>
+				<form name="loginForm" th:object="${loginVO}" th:action="@{/uat/uia/actionLogin.do}" method="post">
+				<div class="d-none" ><input type="text" name="userSe" value="USR">
+				<input name="j_username" type="hidden"/>
+				</div>
 					<div class="login-image">
 						<img th:src="@{images/egovframework/com/ego/egoWAEYO.png}" alt="로그인 title">
 					</div>
@@ -141,61 +143,27 @@ html, body {
 						<i class="bx bxs-lock-alt"></i> <input type="password"
 							th:field="*{password}" placeholder="비밀번호" required>
 					</div>
-					<input type="checkbox" class="input-box-checkbox"> 아이디 저장
+					<input name="checkId" type="checkbox" class="input-box-checkbox"> 아이디 저장
 					<button type="submit" class="btn">로그인</button>
 				</form>
 			</div>
 		</div>
 	</div>
 </body>
-<script>
+<script th:inline="javascript">
 function actionLogin() {
 	if (document.loginForm.id.value =="") {
         //alert("<spring:message code="comUatUia.validate.idCheck" />"); <%-- 아이디를 입력하세요 --%>
     } else if (document.loginForm.password.value =="") {
         //alert("<spring:message code="comUatUia.validate.passCheck" />"); <%-- 비밀번호를 입력하세요 --%>
     } else {
-        document.loginForm.action="";
+        document.loginForm.action="/uat/uia/actionLogin.do";
         //document.loginForm.j_username.value = document.loginForm.userSe.value + document.loginForm.username.value;
-        //document.loginForm.action="<c:url value='/j_spring_security_check'/>";
+  
         document.loginForm.submit();
     }
 }
 
-function setCookie (name, value, expires) {
-    document.cookie = name + "=" + escape (value) + "; path=/; expires=" + expires.toGMTString();
-}
-
-function getCookie(Name) {
-    var search = Name + "=";
-    if (document.cookie.length > 0) { // 쿠키가 설정되어 있다면
-        offset = document.cookie.indexOf(search);
-        if (offset != -1) { // 쿠키가 존재하면
-            offset += search.length;
-            // set index of beginning of value
-            end = document.cookie.indexOf(";", offset);
-            // 쿠키 값의 마지막 위치 인덱스 번호 설정
-            if (end == -1)
-                end = document.cookie.length;
-            return unescape(document.cookie.substring(offset, end));
-        }
-    }
-    return "";
-}
-
-function saveid(form) {
-    var expdate = new Date();
-    // 기본적으로 30일동안 기억하게 함. 일수를 조절하려면 * 30에서 숫자를 조절하면 됨
-    if (form.checkId.checked)
-        expdate.setTime(expdate.getTime() + 1000 * 3600 * 24 * 30); // 30일
-    else
-        expdate.setTime(expdate.getTime() - 1); // 쿠키 삭제조건
-    setCookie("saveid", form.id.value, expdate);
-}
-
-function getid(form) {
-	form.checkId.checked = ((form.id.value = getCookie("saveid")) != "");
-}
 
 </script>
 </html>
