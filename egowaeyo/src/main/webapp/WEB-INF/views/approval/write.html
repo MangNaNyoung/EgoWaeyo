@@ -12,7 +12,7 @@
 			<!-- 버튼구역 만들었습니-다.  -->
 			<div
 				style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
-				<button type="button" onclick="openTemplateModal()">양식선택</button>
+				<button type="button" onclick="openModal('templateModal')">양식선택</button>
 				<button type="reset" onclick="resetAll()">초기화</button>
 				<button type="button" onclick="attachedFile()">결재문서첨부</button>
 				<button type="button" onclick="temporarySave()">임시저장</button>
@@ -68,7 +68,7 @@
 			<div
 				style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
 				<h4 style="margin: 0;">결재선</h4>
-				<button type="button" onclick="openApprovalLineModal()">결재선
+				<button type="button" onclick="openModal('approvalLineModal')">결재선
 					지정</button>
 			</div>
 			<div class="approval-box">
@@ -84,6 +84,89 @@
 				<p>선택된 사용자 없음</p>
 			</div>
 		</aside>
+	</div>
+	
+	<!-- 결재선 지정 모달 -->
+<div id="approvalLineModal" class="modal" style="display: none; position: fixed; top: 10%; left: 10%; width: 80%; height: 80%; background: white; border: 1px solid #ccc; z-index: 1000; padding: 1rem; overflow: auto;">
+  <h4>결재선 지정</h4>
+
+  <div style="display: flex; gap: 1rem;">
+    <!-- 1. 조직도 영역 -->
+    <div style="flex: 1;">
+      <div style="border: 1px solid #ccc; height: 200px;">[1] 조직도</div>
+      <div style="margin-top: 1rem;">
+        <select>
+          <option>전체</option>
+          <option>부서</option>
+        </select>
+        <input type="text" placeholder="검색어 입력" />
+        <button>검색</button>
+      </div>
+      <table border="1" width="100%" style="margin-top: 0.5rem;">
+        <thead>
+          <tr><th></th><th>이름</th><th>호칭</th><th>부서</th></tr>
+        </thead>
+        <tbody>
+          <!-- 예시 -->
+          <tr><td><input type="checkbox" /></td><td>홍길동</td><td>대리</td><td>개발팀</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- 2. 결재/수신/참조 영역 -->
+    <div style="flex: 1;">
+      <div>
+        <select>
+          <option>기안</option>
+          <option>결재</option>
+          <option>참조</option>
+        </select>
+        <input type="text" placeholder="이름 검색" />
+        <button>추가</button>
+      </div>
+
+      <div style="margin-top: 1rem; border: 1px solid #ccc; padding: 0.5rem; height: 100px;">수신: 표시할 내용이 없습니다.</div>
+      <div style="margin-top: 1rem; border: 1px solid #ccc; padding: 0.5rem; height: 100px;">참조: 표시할 내용이 없습니다.</div>
+    </div>
+  </div>
+
+  <div style="text-align: right; margin-top: 1rem;">
+    <button onclick="applyApprovalLine()">결재선 적용</button>
+    <button onclick="closeModal('approvalLineModal')">닫기</button>
+  </div>
+</div>
+
+
+	<div id="templateModal" class="modal"
+		style="display: none; position: fixed; top: 10%; left: 10%; width: 60%; height: 60%; background: white; border: 1px solid #ccc; z-index: 1000; padding: 1rem; overflow: auto;">
+		<h4>결재양식</h4>
+
+		<div style="display: flex; gap: 1rem;">
+			<!-- 1. 카테고리 -->
+			<div style="flex: 1; border: 1px solid #ccc;">
+				<ul>
+					<li>기안</li>
+					<li>품의</li>
+					<li>지출결의</li>
+					<li>출장계</li>
+					<!-- ... -->
+				</ul>
+			</div>
+
+			<!-- 2. 양식 리스트 -->
+			<div style="flex: 2; border: 1px solid #ccc;">
+				<ul>
+					<li>품의서</li>
+					<li>계약요청서</li>
+					<li>채용품의서</li>
+					<li>인사발령품의서</li>
+				</ul>
+			</div>
+		</div>
+
+		<div style="text-align: right; margin-top: 1rem;">
+			<button onclick="closeModal('templateModal')">닫기</button>
+		</div>
 	</div>
 </section>
 <th:block layout:fragment="customJs">
@@ -109,15 +192,21 @@
 		});
 
 		// 양식 선택
+
 		function openTemplateModal() {
-			alert("양식 선택 모달 열기 (미구현)");
+			document.getElementById(id).style.display = "block";
+		}
+		function closeModal(id) {
+			document.getElementById(id).style.display = "none";
+
 		}
 
 		// 초기화
 		function resetAll() {
 			document.getElementById("approvalForm").reset();
-			const editor = toastui.Editor.factory(); // 이미 생성된 editor 가져오기
-			editor.setHTML("");
+			if (window.editor) {
+				window.editor.setHTML("");
+			}
 		}
 
 		// 결재문서 첨부
@@ -140,8 +229,9 @@
 		}
 
 		// 결재선 지정
-		function openApprovalLineModal() {
-			alert("결재선 지정 모달 열기");
+		function applyApprovalLine() {
+			alert("결재선이 적용되었습니다!");
+			closeModal('approvalLineModal');
 		}
 	</script>
 </html>
