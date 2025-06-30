@@ -4,594 +4,626 @@
 <!-- 게시판 추가 모달 -->
 <
 <div th:fragment="addProjectModal" class="modal fade"
-	id="addProjectModal" tabindex="-1"
-	aria-labelledby="addProjectModalLabel" aria-hidden="true">
-	<div class="modal-dialog modal-lg"
-		style="max-width: 970px; height:850px; margin-top: 70px;">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h5 class="modal-title" id="addProjectModalLabel">게시판 추가</h5>
-				<button type="button" class="btn-close" data-bs-dismiss="modal"
-					aria-label="Close"></button>
-			</div>
-			<div class="modal-body">
-				<form>
-					<!-- 게시판 유형 선택 -->
-					<div class="mb-5">
-						<div class="form-check form-check-inline">
-							<input class="form-check-input ms-1" type="radio" name=""
-								id="type1" checked onclick="toggleParentBoard(false)"> <label
-								class="form-check-label ms-2" for="type1">게시판 추가</label>
-						</div>
-						<div class="form-check form-check-inline">
-							<input class="form-check-input" type="radio" name="type"
-								id="type2" onclick="toggleParentBoard(true)"> <label
-								class="form-check-label" for="type2">하위 게시판 추가</label>
-						</div>
-					</div>
+   id="addProjectModal" tabindex="-1"
+   aria-labelledby="addProjectModalLabel" aria-hidden="true">
+   <div class="modal-dialog modal-lg"
+      style="max-width: 970px; height: 850px; margin-top: 70px;">
+      <div class="modal-content">
+         <div class="modal-header">
+            <h5 class="modal-title" id="addProjectModalLabel">게시판 추가</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"
+               aria-label="Close"></button>
+         </div>
+         <div class="modal-body">
+            <form>
+               <!-- 게시판 유형 선택 -->
+               <div class="mb-5">
+                  <div class="form-check form-check-inline">
+                     <input class="form-check-input ms-1" type="radio"
+                        name="boardType" id="type1" checked
+                        onclick="toggleParentBoard(false)"> <label
+                        class="form-check-label ms-2" for="type1">게시판 추가</label>
+                  </div>
+                  <div class="form-check form-check-inline">
+                     <input class="form-check-input" type="radio" name="boardType"
+                        id="type2" onclick="toggleParentBoard(true)"> <label
+                        class="form-check-label" for="type2">하위 게시판 추가</label>
+                  </div>
 
-					<!-- 상위게시판 선택 -->
-					<div class="mb-3 d-flex align-items-center">
-						<label for="parentBoard" class="form-label me-2 ms-4">상위
-							게시판</label> <select id="parentBoard" class="form-select ms-4"
-							style="width: auto;" disabled>
-							<option>선택</option>
-						</select>
-					</div>
-					<script>
-						function toggleParentBoard(enable) {
-							const parentBoard = document
-									.getElementById('parentBoard');
-							parentBoard.disabled = !enable;
-						}
-					</script>
 
-					<!-- 게시판명 입력 -->
-					<div class="mb-3 d-flex align-items-center">
-						<label for="boardName" class="form-label me-2 ms-4">게시판명 <span
-							class="text-danger">*</span></label> <input type="text" id="boardName"
-							class="form-control ms-4" placeholder="게시판명을 입력하세요"
-							style="width: auto;">
-					</div>
+               </div>
 
-					<!-- 게시판 사용여부 선택 -->
-					<div class="mb-3">
-						<label class="form-label d-block-inline ms-4">사용 여부</label>
-						<div class="form-check form-check-inline">
-							<input class="form-check-input ms-1" type="radio" name="use"
-								id="use1" checked> <label class="form-check-label"
-								for="use1">사용</label>
-						</div>
-						<div class="form-check form-check-inline ms-2">
-							<input class="form-check-input" type="radio" name="use" id="use2">
-							<label class="form-check-label" for="use2">미사용</label>
-						</div>
-					</div>
+               <!-- 상위게시판 선택 -->
+               <div class="mb-3 d-flex align-items-center">
+                  <label for="parentBoard" class="form-label me-2 ms-4">상위
+                     게시판</label> <select id="parentBoard" class="form-select ms-4"
+                     style="width: auto;">
+                     <option value="">상위 게시판을 선택하세요</option>
+                  </select>
+               </div>
 
-					<!-- 사용자별 설정 -->
-					<div class="modal-wrap position-relative">
-						<div class="d-flex align-items-center mb-2">
-							<span class="setting-title">사용자별 설정</span>
-						</div>
-						<div class="main-area">
-							<!-- 좌측 조직 트리 -->
-							<div class="left-panel">
-								<ul class="tree-list">
-									<li>EGOWAEYO <span class="arrow">&#9660;</span></li>
-									<li>인사팀</li>
-									<li>재무팀</li>
-									<li>개발팀</li>
-									<li>품질보증팀</li>
-									<li>기획팀</li>
-									<li>영업팀</li>
-									<li>보안팀</li>
-								</ul>
-							</div>
+               <!-- 게시판명 입력 -->
+               <div class="mb-3 d-flex align-items-center">
+                  <label for="boardName" class="form-label me-2 ms-4">게시판명 <span
+                     class="text-danger">*</span></label> <input type="text" id="boardName"
+                     class="form-control ms-4" placeholder="게시판명을 입력하세요"
+                     style="width: auto;">
+               </div>
 
-							<!-- 중앙 부서/사원 리스트 -->
-							<div class="center-panel">
-								<div class="search-box">
-									<input type="text" placeholder=""> <span
-										class="search-icon"> <svg width="18" height="18"
-											fill="none" stroke="#bbb" stroke-width="2"
-											viewBox="0 0 24 24">
-        <circle cx="11" cy="11" r="7" />
-        <line x1="16" y1="16" x2="21" y2="21" />
-      </svg>
-									</span>
-								</div>
-								<div class="dept-list-wrap">
-									<div class="dept-list-header">
-										<input type="checkbox" id="dept1" checked> <label
-											for="dept1" class="mb-0" style="font-weight: 500;">재무팀</label>
-									</div>
-									<ul class="dept-list">
-										<li>김민식 (팀장) <span class="dept">영업팀</span></li>
-										<li>오세경 (과장) <span class="dept">영업팀</span></li>
-										<li>고영서 (대리) <span class="dept">영업팀</span></li>
-										<li>정운충 (사원) <span class="dept">영업팀</span></li>
-										<li>김지수 (사원) <span class="dept">영업팀</span></li>
-										<li>정은애 (사원) <span class="dept">영업팀</span></li>
-									</ul>
-								</div>
-							</div>
+               <!-- 게시판 사용여부 선택 -->
+               <div class="mb-3">
+                  <label class="form-label d-block-inline ms-4">사용 여부</label>
+                  <div class="form-check form-check-inline">
+                     <input class="form-check-input ms-1" type="radio" name="use"
+                        id="use1" checked> <label class="form-check-label"
+                        for="use1">사용</label>
+                  </div>
+                  <div class="form-check form-check-inline ms-2">
+                     <input class="form-check-input" type="radio" name="use" id="use2">
+                     <label class="form-check-label" for="use2">미사용</label>
+                  </div>
+               </div>
 
-							<!-- 버튼을 dept-list와 right-panel 사이에 배치 -->
-							<div class="dept-btns">
-								<div
-									style="display: inline-flex; align-items: center; gap: 8px;">
-									<button class="btn btn-sm">읽기</button>
-									<img class="arrow-icon"
-										th:src="@{/assets/images/icon/arrowtwo.png}">
-								</div>
-								<div
-									style="display: inline-flex; align-items: center; gap: 8px;">
-									<button class="btn btn-sm">쓰기</button>
-									<img class="arrow-icon"
-										th:src="@{/assets/images/icon/arrowtwo.png}">
-								</div>
-								<div
-									style="display: inline-flex; align-items: center; gap: 8px;">
-									<button class="btn btn-sm">관리</button>
-									<img class="arrow-icon"
-										th:src="@{/assets/images/icon/arrowtwo.png}">
-								</div>
-							</div>
+               <!-- 사용자별 설정 -->
+               <div class="modal-wrap position-relative">
+                  <div class="d-flex align-items-center mb-2">
+                     <span class="setting-title">사용자별 설정</span>
+                  </div>
+                  <div class="main-area">
+                     <!-- 좌측 조직 트리 -->
+                     <div class="left-panel">
+                        <ul class="tree-list">
+                        <p class="egowaeyo">Egowaeyo</p>
+                        
+                        </ul>
+                     </div>
 
-							<div class="right-panel">
-								<div class="right-box">
-									김민식 (팀장)<br> 오세경 (과장)
-								</div>
+                     <!-- 중앙 부서/사원 리스트 -->
+                     <div class="center-panel">
+                        <div class="search-box">
+                           <input type="text" placeholder=""> <span
+                              class="search-icon"> <svg width="18" height="18"
+                                 fill="none" stroke="#bbb" stroke-width="2"
+                                 viewBox="0 0 24 24"> <circle cx="11" cy="11" r="7" />
+                              <line x1="16" y1="16" x2="21" y2="21" /></svg>
+                           </span>
+                        </div>
+                        <div class="dept-list-wrap">
+                           <div class="dept-list-header">
+                              <label for="dept1" class="mb-0" style="font-weight: 500;"></label>
+                           </div>
+                           <ul class="dept-list">
 
-								<div class="right-box">
-									김지수 (사원)<br> 정은애 (사원)
-								</div>
+                           </ul>
+                        </div>
+                     </div>
 
-								<div class="right-box"></div>
-							</div>
-						</div>
-					</div>
-				</form>
-			</div>
-			<div class="modal-footer">
-				<button type="button" class="btn btn-secondary"
-					data-bs-dismiss="modal">취소</button>
-				<button type="button" class="btn btn-primary">저장</button>
-			</div>
-		</div>
-	</div>
-	<style>
-body {
-	background: #fff;
-	font-family: 'Noto Sans KR', sans-serif;
+                     <!-- 버튼을 dept-list와 right-panel 사이에 배치 -->
+                     <div class="dept-btns">
+                        <div
+                           style="display: inline-flex; align-items: center; gap: 8px;">
+                           <button class="btn btn-sm" id="readButton">읽기</button>
+                           <img class="arrow-icon"
+                              th:src="@{/assets/images/icon/arrowtwo.png}">
+                        </div>
+                        <div
+                           style="display: inline-flex; align-items: center; gap: 8px;">
+                           <button class="btn btn-sm" id="writeButton">쓰기</button>
+                           <img class="arrow-icon"
+                              th:src="@{/assets/images/icon/arrowtwo.png}">
+                        </div>
+                        <div
+                           style="display: inline-flex; align-items: center; gap: 8px;">
+                           <button class="btn btn-sm" id="manageButton">관리</button>
+                           <img class="arrow-icon"
+                              th:src="@{/assets/images/icon/arrowtwo.png}">
+                        </div>
+                     </div>
+
+                     <div class="right-panel">
+                        <div class="right-box">
+                        </div>
+
+                        <div class="right-box">
+                        </div>
+
+                        <div class="right-box"></div>
+                     </div>
+                  </div>
+               </div>
+            </form>
+         </div>
+         <div class="modal-footer">
+            <button id="saveButton" class="btn btn-primary">저장</button>
+            <button id="cancelButton" class="btn btn-secondary"
+               data-bs-dismiss="modal">취소</button>
+         </div>
+      </div>
+   </div>
+   <script>
+   // 게시판 유형 선택
+   function toggleParentBoard(showParentBoard) {
+       const parentBoardSelect = document.getElementById("parentBoard");
+       if (showParentBoard) {
+           parentBoardSelect.style.display = "block"; // 상위 게시판 선택 표시
+       } else {
+           parentBoardSelect.style.display = "none"; // 상위 게시판 선택 숨김
+       }
+   }
+   
+   //상위게시판 선택
+   document.addEventListener("DOMContentLoaded", function () {
+      fetch('/egowaeyo/bbsMaster/combbs')
+      .then(response => {
+         if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+         }
+         return response.json();
+      })
+      .then(data => {
+         console.log("Fetched Data:", data); // 데이터 확인
+         const parentBoardSelect = document.getElementById("parentBoard");
+         parentBoardSelect.innerHTML = '<option value="">상위 게시판을 선택하세요</option>'; // 기본 옵션 추가
+
+         data.forEach(item => {
+            const option = document.createElement("option");
+            option.value = item.CODE_NM; // 정확한 키 이름 사용
+            option.textContent = item.CODE_NM; // 정확한 키 이름 사용
+            parentBoardSelect.appendChild(option);
+         });
+      })
+      .catch(error => console.error('Error fetching combbs:', error));
+   });
+   
+   //부서, 사원 불러오기(사용자별 설정)
+         document.addEventListener("DOMContentLoaded", function () {
+            const treeList = document.querySelector(".tree-list");
+            const deptList = document.querySelector(".dept-list");
+            const deptHeader = document.querySelector(".dept-list-header");
+            const searchBox = document.querySelector(".search-box input");
+
+            let allUsers = []; // 모든 사원 데이터를 저장
+            let selectedDepts = new Set(); // 선택된 부서 목록
+            let selectedUsers = new Set(); // 선택된 사원 목록
+            let currentDeptUsers = []; // 현재 선택된 부서의 사원 데이터를 저장
+
+            // 서버에서 데이터를 가져옴
+            fetch('/egowaeyo/bbsMaster/selectDeptEmp')
+               .then(response => {
+                  if (!response.ok) {
+                     throw new Error(`HTTP error! status: ${response.status}`);
+                  }
+                  return response.json(); // JSON 형식으로 변환
+               })
+               .then(data => {
+                  allUsers = data; // 모든 데이터를 저장
+                  const uniqueOrgnztNm = [...new Set(data.map(item => item.orgnztNm))];
+
+                  // tree-list 초기화 및 orgnztNm 추가
+                  
+                  uniqueOrgnztNm.forEach(orgnztNm => {
+                     const newLi = document.createElement("li");
+                     newLi.textContent = orgnztNm;
+                     treeList.appendChild(newLi);
+                  });
+
+                  // tree-list의 클릭 이벤트 위임
+                  treeList.addEventListener("click", function (event) {
+                     if (event.target.tagName === "LI") {
+                        const selectedOrgnztNm = event.target.textContent.trim();
+
+                        // 선택 상태 토글
+                        if (selectedDepts.has(selectedOrgnztNm)) {
+                           selectedDepts.delete(selectedOrgnztNm);
+                           event.target.style.backgroundColor = ""; // 선택 해제
+                        } else {
+                           selectedDepts.add(selectedOrgnztNm);
+                           event.target.style.backgroundColor = "#f0f8ff"; // 선택 추가
+                        }
+
+                        // 선택된 부서의 사원 필터링
+                        currentDeptUsers = allUsers.filter(emp => selectedDepts.has(emp.orgnztNm));
+
+                        // dept-list 업데이트
+                        updateDeptList(currentDeptUsers);
+
+                        // 체크박스와 라벨 업데이트
+                        updateDeptHeader();
+                     }
+                  });
+               })
+               .catch(error => console.error("Error fetching data:", error));
+
+            // 검색 이벤트 처리
+            searchBox.addEventListener("input", function () {
+               const searchText = searchBox.value.trim().toLowerCase();
+
+               // 부서 선택 여부에 따라 필터링
+               const filteredUsers = (currentDeptUsers.length > 0 ? currentDeptUsers : allUsers).filter(user =>
+                  user.userNm.toLowerCase().includes(searchText) ||
+                  (user.ofcpsNm && user.ofcpsNm.toLowerCase().includes(searchText))
+               );
+
+               // dept-list 업데이트
+               updateDeptList(filteredUsers);
+            });
+
+            // dept-list 업데이트 함수
+            function updateDeptList(users) {
+               deptList.innerHTML = ""; // 기존 리스트 초기화
+               users.forEach(user => {
+                  const newLi = document.createElement("li");
+                  newLi.textContent = `${user.userNm} (${user.ofcpsNm || "직책 없음"})`;
+
+                  // 선택된 사원 배경색 유지
+                  if (selectedUsers.has(user.userNm)) {
+                     newLi.style.backgroundColor = "#f0f8ff";
+                  }
+
+                  // 클릭 이벤트 추가
+                  newLi.addEventListener("click", function () {
+                     if (selectedUsers.has(user.userNm)) {
+                        selectedUsers.delete(user.userNm);
+                        newLi.style.backgroundColor = ""; // 선택 해제
+                     } else {
+                        selectedUsers.add(user.userNm);
+                        newLi.style.backgroundColor = "#f0f8ff"; // 선택 추가
+                     }
+                  });
+
+                  deptList.appendChild(newLi);
+               });
+            }
+
+            // dept-header 업데이트 함수
+            function updateDeptHeader() {
+               deptHeader.innerHTML = ""; // 기존 헤더 초기화
+               selectedDepts.forEach(dept => {
+                  const checkbox = document.createElement("input");
+                  checkbox.type = "checkbox";
+                  checkbox.checked = false;
+
+                  const label = document.createElement("label");
+                  label.textContent = dept;
+                  label.style.fontWeight = "500";
+
+                    // 체크박스 이벤트 추가
+                     checkbox.addEventListener("change", function () {
+                         if (checkbox.checked) {
+                             // 부서 선택 시 해당 부서의 사원 추가
+                             allUsers
+                                 .filter(user => user.orgnztNm === dept)
+                                 .forEach(user => selectedUsers.add(user.userNm));
+                         } else {
+                             // 부서 선택 해제 시 해당 부서의 사원 제거
+                             allUsers
+                                 .filter(user => user.orgnztNm === dept)
+                                 .forEach(user => selectedUsers.delete(user.userNm));
+                         }
+
+                         // dept-list 업데이트
+                         updateDeptList(currentDeptUsers);
+                     });
+                    
+                  deptHeader.appendChild(checkbox);
+                  deptHeader.appendChild(label);
+               });
+            }
+         });
+   
+   //권한 처리
+document.addEventListener("DOMContentLoaded", function () {
+    const readButton = document.getElementById("readButton");
+    const writeButton = document.getElementById("writeButton");
+    const manageButton = document.getElementById("manageButton");
+    const deptList = document.querySelector(".dept-list"); // 사원 리스트
+
+    if (!deptList) {
+        console.error("deptList 요소를 찾을 수 없습니다.");
+        return;
+    }
+
+    function addToRightBox(buttons, selectedUsers) {
+        buttons.forEach(button => {
+            const rightBox = button.closest(".dept-btns")?.nextElementSibling?.querySelector(".right-box");
+            if (rightBox) {
+                selectedUsers.forEach(user => {
+                    // 중복 방지
+                    if (!Array.from(rightBox.children).some(child => child.textContent === user)) {
+                        const newDiv = document.createElement("div");
+                        newDiv.textContent = user;
+                        rightBox.appendChild(newDiv);
+                    }
+                });
+            } else {
+                console.error("right-box를 찾을 수 없습니다.");
+            }
+        });
+    }
+
+    function getSelectedUsers() {
+        return Array.from(deptList.querySelectorAll("li.selected")).map(li => li.textContent.trim());
+    }
+
+    function handleButtonClick(buttons) {
+        const selectedUsers = getSelectedUsers();
+        if (selectedUsers.length === 0) {
+            alert("선택된 사원이 없습니다.");
+            return;
+        }
+        addToRightBox(buttons, selectedUsers);
+    }
+
+    if (readButton) {
+        readButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            handleButtonClick([readButton]);
+        });
+    } else {
+        console.error("readButton 요소를 찾을 수 없습니다.");
+    }
+
+    if (writeButton) {
+        writeButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            handleButtonClick([readButton, writeButton]);
+        });
+    } else {
+        console.error("writeButton 요소를 찾을 수 없습니다.");
+    }
+
+    if (manageButton) {
+        manageButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            handleButtonClick([readButton, writeButton, manageButton]);
+        });
+    } else {
+        console.error("manageButton 요소를 찾을 수 없습니다.");
+    }
+
+    // 사원 선택 시 클래스 추가
+    deptList.addEventListener("click", function (event) {
+        const target = event.target;
+        if (target.tagName === "LI") {
+            target.classList.toggle("selected"); // 선택된 사원에 클래스 추가/제거
+        }
+    });
+});
+
+   </script>
+
+   <style>
+body, html {
+   background: #faf9f7;
+   font-family: 'Noto Sans KR', sans-serif;
 }
-
+.egowaeyo{
+   font-size: 20px;
+   font-weight: 700;
+   color: #222;
+   margin-bottom: 8px;
+	margin-bottom:10px;
+}
 .arrow-icon {
-	width: 14px;
-	height: 14px;
-	margin-left: 8px;
-	filter: invert(68%) sepia(0%) saturate(0%) hue-rotate(240deg)
-		brightness(104%) contrast(89%);
+   width: 14px;
+   height: 14px;
+   margin-left: 8px;
+   filter: invert(68%) sepia(0%) saturate(0%) hue-rotate(240deg)
+      brightness(104%) contrast(89%);
 }
 
 .modal-wrap {
-	padding: 24px;
-	background: #fff;
+   padding: 24px;
+   background: #fff;
 }
 
 .modal-close {
-	position: absolute;
-	top: 24px;
-	right: 32px;
-	font-size: 28px;
-	color: #888;
-	background: none;
-	border: none;
-	cursor: pointer;
+   position: absolute;
+   top: 24px;
+   right: 32px;
+   font-size: 28px;
+   color: #888;
+   background: none;
+   border: none;
+   cursor: pointer;
 }
 
 .setting-title {
-	font-size: 18px;
-	font-weight: 700;
-	margin-bottom: 8px;
+   font-size: 18px;
+   font-weight: 700;
+   margin-bottom: 8px;
 }
 
 .setting-checkbox {
-	font-size: 16px;
-	font-weight: 500;
-	margin-left: 24px;
-	display: flex;
-	align-items: center;
-	gap: 4px;
+   font-size: 16px;
+   font-weight: 500;
+   margin-left: 24px;
+   display: flex;
+   align-items: center;
+   gap: 4px;
 }
 
 .main-area {
-	display: flex;
-	gap: 15px;
-	margin-top: 16px;
-	align-items: flex-start;
+   display: flex;
+   gap: 15px;
+   margin-top: 16px;
+   align-items: flex-start;
 }
 
 .left-panel {
-	width: 230px;
-	background: #fff;
-	border: 1.5px solid #e5e5e5;
-	border-radius: 12px;
-	padding: 10px 18px 10px 18px;
-	height: 304px;
-	box-sizing: border-box;
-}
-
-.tree-list {
-	list-style: none;
-	padding-left: 0;
-	margin: 0;
-}
-
-.tree-list li {
-	font-size: 16px;
-	margin-bottom: 10px;
-	padding-left: 8px;
-	color: #444;
-	position: relative;
-}
-
-.tree-list li:not(:first-child)::before {
-	content: '— ';
-	color: #888;
-	margin-right: 2px;
-}
-
-.tree-list li:first-child {
-	font-weight: 700;
-	font-size: 17px;
-	margin-bottom: 18px;
-	color: #222;
-	letter-spacing: 1px;
-	padding-left: 0;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.tree-list li:first-child::before {
-	content: '';
-}
-
-.tree-list li:first-child .arrow {
-	font-size: 18px;
-	color: #222;
-	margin-left: 6px;
-	transform: translateY(1px);
-}
-
-.center-panel {
-	display: flex;
-	flex-direction: column;
-	gap: 12px;
+   width: 230px;
+   background: #fff;
+   border: 1.5px solid #e5e5e5;
+   border-radius: 12px;
+   padding: 10px 18px;
+   height: 304px;
+   box-sizing: border-box;
 }
 
 .search-box {
-	display: flex;
-	align-items: center;
-	margin-bottom: 0;
+   display: flex;
+   align-items: center;
+   margin-bottom: 0;
 }
 
 .search-box input {
-	width: 300px;
-	border: 1.5px solid #e5e5e5;
-	border-radius: 8px;
-	height: 38px;
-	padding: 0 38px 0 12px;
-	font-size: 15px;
-	background: #fff;
+   width: 300px;
+   border: 1.5px solid #e5e5e5;
+   border-radius: 8px;
+   height: 38px;
+   padding: 0 38px 0 12px;
+   font-size: 15px;
+   background: #fff;
 }
 
 .search-box .search-icon {
-	position: relative;
-	left: -32px;
-	color: #bbb;
-	font-size: 18px;
-	pointer-events: none;
+   position: relative;
+   left: -32px;
+   color: #bbb;
+   font-size: 18px;
+   pointer-events: none;
 }
 
 .dept-list-wrap {
-	border: 1.5px solid #e5e5e5;
-	border-radius: 8px;
-	background: #faf9f7;
-	padding: 12px 0 12px 0;
+   border: 1.5px solid #e5e5e5;
+   border-radius: 8px;
+   background: #faf9f7;
+   padding: 12px 0;
+   width: 300px;
 }
 
 .dept-list-header {
-	display: flex;
-	align-items: center;
-	font-size: 16px;
-	font-weight: 500;
-	margin-bottom: 8px;
-	padding-left: 16px;
-	gap: 6px;
+   display: flex;
+   align-items: center;
+   font-size: 16px;
+   font-weight: 500;
+   margin-bottom: 8px;
+   padding-left: 16px;
+   gap: 6px;
 }
 
 .dept-list-header input[type="checkbox"] {
-	margin-right: 2px;
-	accent-color: #222;
+   margin-right: 2px;
+   accent-color: #222;
 }
 
 .dept-list {
-	list-style: none;
-	padding: 0 16px;
-	margin: 0;
+   list-style: none;
+   padding: 0 16px;
+   margin: 0;
 }
 
 .dept-list li {
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	font-size: 15px;
-	margin-bottom: 4px;
-	color: #444;
-	height: 28px;
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+   font-size: 15px;
+   margin-bottom: 4px;
+   color: #444;
+   height: 28px;
 }
 
 .dept-list .dept {
-	color: #bbb;
-	font-size: 15px;
-	margin-left: 6px;
+   color: #bbb;
+   font-size: 15px;
+   margin-left: 6px;
 }
 
-.dept-btns {
-	display: flex;
-	flex-direction: column; /* 세로 배치 */
-	gap: 70px; /* 버튼 간 간격을 16px로 증가 */
-	justify-content: flex-start;
-	align-items: center;
-	padding-top: 60px;
-}
+
 
 .dept-btns .btn {
-	background: #f6f5e9;
-	border: 1px solid #d6d3b3;
-	color: #444;
-	font-size: 13px;
-	border-radius: 4px;
-	/* padding: 2px 12px; */
-	min-width: 70px;
-	text-align: center;
-	transition: background 0.2s;
-	box-shadow: none;
+   background: #f6f5e9;
+   border: 1px solid #d6d3b3;
+   color: #444;
+   font-size: 13px;
+   border-radius: 4px;
+   min-width: 70px;
+   text-align: center;
+   transition: background 0.2s;
+   box-shadow: none;
 }
 
 .dept-btns .btn:hover {
-	background: #ecead2;
+   background: #ecead2;
+   color: #222;
 }
 
 .right-panel {
-	display: flex;
-	flex-direction: column;
-	gap: 24px;
-	min-width: 220px;
-	max-width: 260px;
-	align-items: flex-start;
-	margin-top: 32px; /* right-panel을 아래로 내리기 위해 margin-top 추가 */
+   display: flex;
+   flex-direction: column;
+   gap: 24px;
+   min-width: 220px;
+   max-width: 260px;
+   align-items: flex-start;
+   margin-top: 32px;
 }
 
 .right-box {
-	border: 1.5px solid #e5e5e5;
-	border-radius: 10px;
-	background: #faf9f7;
-	min-height: 70px;
-	padding: 16px 18px;
-	font-size: 15px;
-	color: #222;
-	margin-bottom: 0;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	width: 220px;
-	box-sizing: border-box;
+   border: 1.5px solid #e5e5e5;
+   border-radius: 10px;
+   background: #faf9f7;
+   min-height: 70px;
+
+   padding: 16px 18px;
+   font-size: 15px;
+   color: #222;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   width: 220px;
+   box-sizing: border-box;
 }
 
 .arrow {
-	font-size: 22px;
-	color: #bdbdbd;
-	margin: 0 2px;
-	vertical-align: middle;
-	align-self: center;
+   font-size: 22px;
+   color: #bdbdbd;
+   margin: 0 8px;
+   vertical-align: middle;
+   align-self: center;
 }
 
 @media ( max-width : 900px) {
-	.main-area {
-		flex-direction: column;
-		gap: 16px;
-	}
-	.left-panel, .center-panel, .right-panel {
-		min-width: 0;
-		max-width: 100%;
-	}
-	.right-panel {
-		flex-direction: row;
-		gap: 12px;
-	}
-	.right-box {
-		min-width: 120px;
-		width: 100%;
-	}
+   .main-area {
+      flex-direction: column;
+      gap: 16px;
+   }
+   .left-panel, .center-panel, .right-panel {
+      min-width: 0;
+      max-width: 100%;
+   }
+   .right-panel {
+      flex-direction: row;
+      gap: 12px;
+   }
+   .right-box {
+      min-width: 120px;
+      width: 100%;
+   }
 }
 
 @media ( max-width : 600px) {
-	.modal-wrap {
-		padding: 8px;
-	}
-	.main-area {
-		flex-direction: column;
-		gap: 8px;
-	}
-	.left-panel, .center-panel, .right-panel {
-		padding: 8px 4px;
-	}
-	.right-panel {
-		flex-direction: column;
-		gap: 8px;
-	}
-	.right-box {
-		padding: 8px 8px;
-	}
+   .modal-wrap {
+      padding: 8px;
+   }
+   .main-area {
+      flex-direction: column;
+      gap: 8px;
+   }
+   .left-panel, .center-panel, .right-panel {
+      padding: 8px 4px;
+   }
+   .right-panel {
+      flex-direction: column;
+      gap: 8px;
+   }
+   .right-box {
+      padding: 8px 8px;
+   }
 }
-/* 체크박스와 텍스트 정렬 */
+
 input[type="checkbox"] {
-	vertical-align: middle;
-	accent-color: #222;
-}
-/* 전체 배경색 */
-html, body {
-	background: #faf9f7;
-}
-
-html, body {
-	background: #faf9f7;
-	font-family: 'Noto Sans KR', sans-serif;
-}
-
-.modal-close {
-	position: absolute;
-	top: 24px;
-	right: 32px;
-	font-size: 28px;
-	color: #888;
-	background: none;
-	border: none;
-	cursor: pointer;
-}
-
-.arrow {
-	font-size: 22px;
-	color: #bdbdbd;
-	margin: 0 8px;
-	vertical-align: middle;
-	align-self: center;
-}
-
-.right-box {
-	min-height: 70px;
-	background: #faf9f7;
-	border-radius: 10px;
-	border: 1.5px solid #e5e5e5;
-	padding: 16px 18px;
-	width: 220px;
-	box-sizing: border-box;
-}
-
-.tree-list {
-	list-style: none;
-	padding-left: 0;
-	margin: 0;
-}
-
-.tree-list li {
-	font-size: 1rem;
-	margin-bottom: 10px;
-	color: #444;
-}
-
-.tree-list li:not(:first-child)::before {
-	content: '— ';
-	color: #888;
-	margin-right: 2px;
-}
-
-.tree-list li:first-child {
-	font-weight: 700;
-	font-size: 1.08rem;
-	margin-bottom: 18px;
-	color: #222;
-	letter-spacing: 1px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
-
-.tree-list li:first-child::before {
-	content: '';
-}
-
-.tree-list li:first-child .arrow {
-	font-size: 18px;
-	color: #222;
-	margin-left: 6px;
-}
-
-.dept-list .dept {
-	color: #bbb;
-	font-size: 1rem;
-	margin-left: 6px;
-}
-
-.dept-btns .btn {
-	background: #f6f5e9;
-	border: 1px solid #d6d3b3;
-	color: #444;
-	font-size: 13px;
-	border-radius: 4px;
-	min-width: 70px;
-}
-
-.dept-btns .btn:last-child {
-	margin-bottom: 0;
-}
-
-.dept-btns .btn:hover {
-	background: #ecead2;
-	color: #222;
-}
-
-.dept-list-wrap {
-	border: 1.5px solid #e5e5e5;
-	border-radius: 8px;
-	background: #faf9f7;
-	padding: 12px 0;
-	width: 300px;
-}
-
-.dept-list-header {
-	display: flex;
-	align-items: center;
-	font-size: 16px;
-	font-weight: 500;
-	margin-bottom: 8px;
-	padding-left: 16px;
-	gap: 6px;
-}
-
-@media ( max-width : 900px) {
-	.main-area {
-		flex-direction: column !important;
-		gap: 16px !important;
-	}
-	.right-panel {
-		flex-direction: row !important;
-		gap: 12px !important;
-	}
-	.right-box {
-		min-width: 120px;
-		width: 100%;
-	}
-}
-
-@media ( max-width : 600px) {
-	.modal-wrap {
-		padding: 8px;
-	}
-	.main-area {
-		flex-direction: column !important;
-		gap: 8px !important;
-	}
-	.right-panel {
-		flex-direction: column !important;
-		gap: 8px !important;
-	}
-	.right-box {
-		padding: 8px 8px;
-	}
+   vertical-align: middle;
+   accent-color: #222;
 }
 </style>
 </div>
