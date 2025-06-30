@@ -1,4 +1,4 @@
-package egovframework.com.egowaeyo.article.VO;
+package egovframework.com.egowaeyo.bbsMaster.VO;
 
 import java.io.Serializable;
 
