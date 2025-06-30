@@ -27,7 +27,7 @@
 
     <egov-security:config id="securityConfig"
 		loginUrl="/goToLogin"
-		logoutSuccessUrl="/EgovContent.do"
+		logoutSuccessUrl="/goToLogin"
 		loginFailureUrl="/goToLogin?login_error=1"
 		accessDeniedUrl="/sec/ram/accessDenied.do"
 
@@ -49,7 +49,7 @@
 		concurrentExpiredUrl="/EgovContent.do"
 		errorIfMaximumExceeded="false"
 
-		defaultTargetUrl="/EgovContent.do"
+		defaultTargetUrl="/test"
 		alwaysUseDefaultTargetUrl="true"
 
 		sniff="true"

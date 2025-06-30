@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import javax.annotation.Resource;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +15,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
 
 import egovframework.com.cmm.IncludedCompInfoVO;
 import egovframework.com.cmm.LoginVO;
@@ -201,6 +202,8 @@ public class EgovComIndexController {
 	
 	@RequestMapping("/test")
 	public String testLeaf() {
+		
+		
 				return "test.html";
 	}
 	

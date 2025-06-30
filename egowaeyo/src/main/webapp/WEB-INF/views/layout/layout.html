@@ -20,8 +20,10 @@
 	type="image/x-icon">
 <script
 	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+	<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+	<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 	<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
@@ -77,7 +79,7 @@ body, html {
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 </head>
-<body>
+<body onload="init()">
 	<div id="app">
 		<!-- header start -->
 		<div class="mainHeader">
@@ -151,5 +153,129 @@ body, html {
 			
 		});
 	</script>
+	<script  th:inline="javascript">
+	// 화면 호출시 로그인 한 사용자의 정보와 최근 서버시간, 세션만료 시간을 가져 온다.
+
+function getCookie(cname) {
+	  var name = cname + "=";
+	  var decodedCookie = decodeURIComponent(document.cookie);
+	  var ca = decodedCookie.split(';');
+	  for(var i = 0; i <ca.length; i++) {
+	    var c = ca[i];
+	    while (c.charAt(0) == ' ') {
+	      c = c.substring(1);
+	    }
+	    if (c.indexOf(name) == 0) {
+	      return c.substring(name.length, c.length);
+	    }
+	  }
+	  return "";
+	}
+
+	function pad(n, width) {
+	  n = n + '';
+	  return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
+	}
+
+var objLeftTime;
+var objClickInfo;
+var latestTime;
+var expireTime;
+var timeInterval = 1000; // 1초 간격 호출
+var firstLocalTime = 0;
+var elapsedLocalTime = 0;
+var stateExpiredTime = false;
+var logoutUrl = "uat/uia/actionLogout.do";
+var timer;
+
+function init() {
+	 $.ajax("getSessionTime").done(
+			 function(result){
+				 if(result.loginVO != null){
+				     console.log(result.egovLatestServerTime)
+					 latestTime = result.egovLatestServerTime ; //getCookie("egovLatestServerTime")
+					 expireTime = result.egovExpireSessionTime	 ; //getCookie("egovExpireSessionTime");
+					objLeftTime = document.getElementById("leftTimeInfo");
+					console.log(objLeftTime)
+					if (objLeftTime == null) {
+						console.log("'leftTimeInfo' ID is not exist!");
+						return;
+					}
+					objClickInfo = document.getElementById("clickInfo");
+					//console.log(objLeftTime.textContent);
+				
+					
+					console.log("latestServerTime = "+latestTime);
+					console.log("expireSessionTime = "+expireTime);
+					
+					elapsedTime = 0;
+					firstLocalTime = (new Date()).getTime();
+					showRemaining();
+					
+					timer = setInterval(showRemaining, timeInterval); // 1초 간격 호출
+				 }
+			 });
+}
+
+function showRemaining() {
+	elapsedLocalTime = (new Date()).getTime() - firstLocalTime;
+	
+	var timeRemaining = expireTime - latestTime - elapsedLocalTime;
+	if ( timeRemaining < timeInterval ) {
+		clearInterval(timer);
+		objLeftTime.innerHTML = "00:00:00";
+		objClickInfo.text = '시간 만료'; //시간만료
+		stateExpiredTime = true;
+		alert('세션시간이 만료되었습니다.');//로그인 세션시간이 만료 되었습니다.
+		// reload content main page
+		$("#sessionInfo").hide();
+
+		parent.frames["_content"].location.href = logoutUrl;
+		//parent.frames["_content"].location.reload();
+
+		return;
+	}
+	var timeHour = Math.floor(timeRemaining/1000/60 / 60); 
+	var timeMin = Math.floor((timeRemaining/1000/60) % 60);
+	var timeSec = Math.floor((timeRemaining/1000) % 60);
+	//objLeftTime.textContent = pad(timeHour,2) +":"+ pad(timeMin,2) +":"+ pad(timeSec,2);
+	//objLeftTime.outerText = pad(timeHour,2) +":"+ pad(timeMin,2) +":"+ pad(timeSec,2);
+	objLeftTime.innerHTML = pad(timeHour,2) +":"+ pad(timeMin,2) +":"+ pad(timeSec,2);
+	//console.log("call showRemaining() = "+objLeftTime.innerHTML);
+}
+
+function reqTimeAjax() {
+	
+	if (stateExpiredTime==true) {
+		alert('시간을 연장 할 수 없습니다.');//시간을 연장할수 없습니다.
+		return;
+	}
+	
+	$.ajax({
+	    url:'uat/uia/refreshSessionTimeout.do', //request 보낼 서버의 경로
+	    type:'get', // 메소드(get, post, put 등)
+	    data:{}, //보낼 데이터
+	    success: function(data) {
+	        //서버로부터 정상적으로 응답이 왔을 때 실행
+   
+      	init();
+	        //alert("정상수신 , data = "+data);
+	    },
+	    error: function(err) {
+	    	alert("err : "+err);
+	        //서버로부터 응답이 정상적으로 처리되지 못햇을 때 실행
+	    	//alert("오류발생 , error="+err.state());
+	    }
+	});
+	return false;
+}
+
+function logout() {
+	$("#sessionInfo").hide();
+
+	$(location).attr('href',logoutUrl);
+}
+
+</script>
 </body>
 </html>
