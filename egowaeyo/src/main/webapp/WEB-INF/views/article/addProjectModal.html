@@ -52,13 +52,14 @@
 					<div class="mb-3">
 						<label class="form-label d-block-inline ms-4">사용 여부</label>
 						<div class="form-check form-check-inline">
-							<input class="form-check-input ms-1" type="radio" name="use"
-								id="use1" checked> <label class="form-check-label"
-								for="use1">사용</label>
+							<input class="form-check-input ms-1" type="radio" name="useAt"
+								value="Y" id="use1" checked> <label
+								class="form-check-label" for="use1">사용</label>
 						</div>
 						<div class="form-check form-check-inline ms-2">
-							<input class="form-check-input" type="radio" name="use" id="use2">
-							<label class="form-check-label" for="use2">미사용</label>
+							<input class="form-check-input" type="radio" name="useAt"
+								value="N" id="use2"> <label class="form-check-label"
+								for="use2">미사용</label>
 						</div>
 					</div>
 
@@ -79,7 +80,7 @@
 							<!-- 중앙 부서/사원 리스트 -->
 							<div class="center-panel overflow-auto">
 								<div class="search-box">
-									<input type="text" placeholder="" > <span
+									<input type="text" placeholder=""> <span
 										class="search-icon"> <svg width="18" height="18"
 											fill="none" stroke="#bbb" stroke-width="2"
 											viewBox="0 0 24 24"> <circle cx="11" cy="11" r="7" />
@@ -137,39 +138,51 @@
 		</div>
 	</div>
 	<script>
-   // 게시판 유형 선택
-	function toggleParentBoard(enableParentBoard) {
-    const parentBoardSelect = document.getElementById("parentBoard");
-    if (enableParentBoard) {
-        parentBoardSelect.disabled = false; // 활성화
-    } else {
-        parentBoardSelect.disabled = true; // 비활성화
-    }
-}
-   
-   //상위게시판 선택
-   document.addEventListener("DOMContentLoaded", function () {
-      fetch('/egowaeyo/bbsMaster/combbs')
-      .then(response => {
-         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-         }
-         return response.json();
-      })
-      .then(data => {
-         console.log("Fetched Data:", data); // 데이터 확인
-         const parentBoardSelect = document.getElementById("parentBoard");
-         parentBoardSelect.innerHTML = '<option value="">상위 게시판을 선택하세요</option>'; // 기본 옵션 추가
+	
+	 document.addEventListener("DOMContentLoaded", function () {
+	        setTimeout(() => {
+	            toggleParentBoard(true);
+	        }, 1000);
+	        
+	        
+	    });
 
-         data.forEach(item => {
-            const option = document.createElement("option");
-            option.value = item.CODE_NM; // 정확한 키 이름 사용
-            option.textContent = item.CODE_NM; // 정확한 키 이름 사용
-            parentBoardSelect.appendChild(option);
-         });
-      })
-      .catch(error => console.error('Error fetching combbs:', error));
-   });
+	// 게시판 유형 선택
+		function toggleParentBoard(enableParentBoard) {
+	    	const parentBoardSelect = document.getElementById("parentBoard"); // 변수 정의 및 DOM 요소 가져오기
+	    	if (enableParentBoard) {
+	        	parentBoardSelect.disabled = false; // 활성화
+	    		} else {
+	        		parentBoardSelect.disabled = true; // 비활성화
+	    		}
+		}
+   
+		//상위게시판 선택
+		   document.addEventListener("DOMContentLoaded", function () {
+		      fetch('/egowaeyo/bbsMaster/combbs')
+		      .then(response => {
+		         if (!response.ok) {
+		            throw new Error(`HTTP error! status: ${response.status}`);
+		         }
+		         return response.json();
+		        
+		      })
+		      .then(data => {
+		         console.log("Fetched Data:", data); // 데이터 확인
+		         const parentBoardSelect = document.getElementById("parentBoard");
+		         parentBoardSelect.innerHTML = '<option value="">상위 게시판을 선택하세요</option>'; // 기본 옵션 추가
+
+		         data.forEach(item => {
+		            const option = document.createElement("option");
+		            option.value = item.CODE;
+		            option.textContent = item.CODE_NM; // 정확한 키 이름 사용
+		            parentBoardSelect.appendChild(option);
+		         });
+		      })
+		      .catch(error => console.error('Error fetching combbs:', error));
+		   });
+   
+   
    
    //부서, 사원 불러오기(사용자별 설정)
          document.addEventListener("DOMContentLoaded", function () {
@@ -230,7 +243,7 @@
                })
                .catch(error => console.error("Error fetching data:", error));
 
-            // 검색 이벤트 처리
+         // 검색 이벤트 처리
             searchBox.addEventListener("input", function () {
                const searchText = searchBox.value.trim().toLowerCase();
 
@@ -271,6 +284,7 @@
                });
             }
 
+
             // dept-header 업데이트 함수
             function updateDeptHeader() {
                deptHeader.innerHTML = ""; // 기존 헤더 초기화
@@ -307,136 +321,211 @@
             }
          });
    
-   //권한 처리
-document.addEventListener("DOMContentLoaded", function () {
-    const readButton = document.getElementById("readButton");
-    const writeButton = document.getElementById("writeButton");
-    const manageButton = document.getElementById("manageButton");
-    const deptList = document.querySelector(".dept-list"); // 사원 리스트
-
-    if (!deptList) {
-        console.error("deptList 요소를 찾을 수 없습니다.");
-        return;
-    }
-
-
-    function addToRightBox(buttons, selectedUsers) {
-        buttons.forEach(button => {
-            // 버튼의 ID에 따라 올바른 right-box 선택
-            let rightBox;
-            if (button.id === "readButton") {
-                rightBox = document.querySelector(".right-panel .right-box:nth-child(1)");
-            } else if (button.id === "writeButton") {
-                rightBox = document.querySelector(".right-panel .right-box:nth-child(2)");
-            } else if (button.id === "manageButton") {
-                rightBox = document.querySelector(".right-panel .right-box:nth-child(3)");
-            }
-
-            if (rightBox) {
-                selectedUsers.forEach(user => {
-                    // 중복 방지
-                    if (!Array.from(rightBox.children).some(child => child.textContent === user)) {
-                        const newDiv = document.createElement("div");
-                        newDiv.textContent = user;
-                        rightBox.appendChild(newDiv);
-                    }
-                });
-            } else {
-                console.error("right-box를 찾을 수 없습니다.");
-            }
-        });
-    }
-
-
-    function getSelectedUsers() {
-        return Array.from(deptList.querySelectorAll("li.selected")).map(li => li.textContent.trim());
-    }
-
-    function handleButtonClick(buttons) {
-        const selectedUsers = getSelectedUsers();
-        if (selectedUsers.length === 0) {
-            alert("선택된 사원이 없습니다.");
-            return;
-        }
-        addToRightBox(buttons, selectedUsers);
-    }
-
-    if (readButton) {
-        readButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            handleButtonClick([readButton]);
-        });
-    } else {
-        console.error("readButton 요소를 찾을 수 없습니다.");
-    }
-
-    if (writeButton) {
-        writeButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            handleButtonClick([readButton, writeButton]);
-        });
-    } else {
-        console.error("writeButton 요소를 찾을 수 없습니다.");
-    }
-
-    if (manageButton) {
-        manageButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            handleButtonClick([readButton, writeButton, manageButton]);
-        });
-    } else {
-        console.error("manageButton 요소를 찾을 수 없습니다.");
-    }
-
-    // 사원 선택 시 클래스 추가
-    deptList.addEventListener("click", function (event) {
-        const target = event.target;
-        if (target.tagName === "LI") {
-            target.classList.toggle("selected"); // 선택된 사원에 클래스 추가/제거
-        }
-    });
-});
    
-   
-document.getElementById("saveButton").addEventListener("click", function () { const boardName = document.getElementById("boardName").value; const boardType = document.querySelector('input[name="boardType"]:checked').value; 
-// '게시판 추가' 또는 '하위 게시판 추가' 
-const parentBoard = document.getElementById("parentBoard").value; 
-// 하위 게시판 선택 시 
-const useAt = document.querySelector('input[name="useAt"]:checked').value; 
-// 'Y' 또는 'N' 
-const selectedRights = Array.from(document.querySelectorAll("#right-panel .right-box input:checked")) .map(input => input.value); // 선택된 권한
+       //권한 처리
+     	document.addEventListener("DOMContentLoaded", function () {
+     		const readButton = document.getElementById("readButton");
+     		const writeButton = document.getElementById("writeButton");
+     		const manageButton = document.getElementById("manageButton");
+     		const deptList = document.querySelector(".dept-list"); // 사원 리스트
+     		const saveButton = document.getElementById("saveButton");
 
-//서버로 전송할 데이터 구성
-const requestData = {
- boardName: boardName,
- boardType: boardType,
- parentBoard: parentBoard,
- useAt: useAt,
- selectedRights: selectedRights
-};
+     		if (!deptList) {
+     			console.error("deptList 요소를 찾을 수 없습니다.");
+     			return;
+     		}
 
-//AJAX 요청
-fetch("/bbsMaster/saveBoard", {
- method: "POST",
- headers: {
-     "Content-Type": "application/json"
- },
- body: JSON.stringify(requestData)
-})
- .then(response => response.json())
- .then(data => {
-     if (data.success) {
-         alert("게시판이 성공적으로 저장되었습니다.");
-         location.reload(); // 페이지 새로고침
-     } else {
-         alert("저장 중 오류가 발생했습니다: " + data.error);
-     }
- })
- .catch(error => {
-     console.error("Error saving board:", error);
-     alert("저장 중 오류가 발생했습니다.");
- });
-});
+     		function addToRightBox(buttons, selectedUsers) {
+     			buttons.forEach(button => {
+     				let rightBox;
+     				if (button.id === "readButton") {
+     					rightBox = document.querySelector(".right-panel .right-box:nth-child(1)");
+     				} else if (button.id === "writeButton") {
+     					rightBox = document.querySelector(".right-panel .right-box:nth-child(2)");
+     				} else if (button.id === "manageButton") {
+     					rightBox = document.querySelector(".right-panel .right-box:nth-child(3)");
+     				}
+
+     				if (rightBox) {
+     					selectedUsers.forEach(user => {
+     						if (!Array.from(rightBox.children).some(child => child.textContent === user)) {
+     							const newDiv = document.createElement("div");
+     							newDiv.textContent = user;
+     							rightBox.appendChild(newDiv);
+     						}
+     					});
+     				} else {
+     					console.error("right-box를 찾을 수 없습니다.");
+     				}
+     			});
+     		}
+
+     		function getSelectedUsers() {
+     			return Array.from(deptList.querySelectorAll("li.selected")).map(li => li.textContent.trim());
+     		}
+
+     		function handleButtonClick(buttons) {
+     			const selectedUsers = getSelectedUsers();
+     			if (selectedUsers.length === 0) {
+     				alert("선택된 사원이 없습니다.");
+     				return;
+     			}
+     			addToRightBox(buttons, selectedUsers);
+     		}
+
+     		if (readButton) {
+     			readButton.addEventListener("click", function (event) {
+     				event.preventDefault();
+     				handleButtonClick([readButton]);
+     			});
+     		} else {
+     			console.error("readButton 요소를 찾을 수 없습니다.");
+     		}
+
+     		if (writeButton) {
+     			writeButton.addEventListener("click", function (event) {
+     				event.preventDefault();
+     				handleButtonClick([readButton, writeButton]);
+     			});
+     		} else {
+     			console.error("writeButton 요소를 찾을 수 없습니다.");
+     		}
+
+     		if (manageButton) {
+     			manageButton.addEventListener("click", function (event) {
+     				event.preventDefault();
+     				handleButtonClick([readButton, writeButton, manageButton]);
+     			});
+     		} else {
+     			console.error("manageButton 요소를 찾을 수 없습니다.");
+     		}
+
+     		deptList.addEventListener("click", function (event) {
+     			const target = event.target;
+     			if (target.tagName === "LI") {
+     				target.classList.toggle("selected");
+     			}
+     		});
+
+     		if (saveButton) {
+     		    saveButton.addEventListener("click", function () {
+     		        const boardNameInput = document.getElementById("boardName");
+     		        const boardName = boardNameInput ? boardNameInput.value : "";
+     		        const boardType = document.querySelector('input[name="boardType"]:checked').value;
+     		        const parentBoardElement = document.getElementById("parentBoard");
+     		        const parentBoard = parentBoardElement ? parentBoardElement.value : "";
+     		        const useAtElement = document.querySelector('input[name="useAt"]:checked');
+     		        const useAt = useAtElement ? useAtElement.value : "Y";
+     		        const selectedRights = Array.from(document.querySelectorAll(".right-panel .right-box div"))
+     		            .map(div => div.textContent.trim());
+
+     		        if (!boardName) {
+     		            alert("게시판명을 입력하세요.");
+     		            return;
+     		        }
+
+     		        if (!parentBoard) {
+     		            alert("상위 게시판을 선택하세요.");
+     		            return;
+     		        }
+
+     		        const requestData = {
+     		            boardName: boardName,
+     		            boardType: boardType,
+     		            parentBoard: parentBoard,
+     		            useAt: useAt,
+     		            selectedRights: selectedRights
+     		        };
+
+     		        fetch('/egowaeyo/bbsMaster/saveBoard', {
+     		            method: "POST",
+     		            headers: {
+     		                "Content-Type": "application/json"
+     		            },
+     		            body: JSON.stringify(requestData)
+     		        })
+     		        .then(response => {
+     		            if (!response.ok) {
+     		                throw new Error(`HTTP error! status: ${response.status}`);
+     		            }
+     		            return response.json();
+     		        })
+     		        .then(data => {
+     		            if (data.success) {
+     		                alert("게시판이 성공적으로 저장되었습니다.");
+     		            } else {
+     		                alert("저장 중 오류가 발생했습니다: " + data.error);
+     		            }
+     		        })
+     		        .catch(error => {
+     		            console.error("Error saving board:", error);
+     		            alert("저장 중 오류가 발생했습니다.");
+     		        });
+     		    });
+     		} else {
+     		    console.error("saveButton 요소를 찾을 수 없습니다.");
+     		}
+     	});
+        
+     	document.addEventListener("DOMContentLoaded", function () {
+     	 const saveButton = document.getElementById("saveButton");
+
+     	    if (saveButton) {
+     	        saveButton.addEventListener("click", function () {
+     	            const parentBoardSelect = document.getElementById("parentBoard");
+
+     	            // parentBoard가 비활성화된 경우 처리
+     	            if (parentBoardSelect.disabled) {
+     	                console.log("parentBoard가 비활성화 상태입니다.");
+     	                return;
+     	            }
+
+     	            const parentBoard = parentBoardSelect.value;
+     	            console.log("parentBoard 값:", parentBoard);
+
+     	            if (!parentBoard) {
+     	                alert("상위 게시판을 선택하세요.");
+     	                return;
+     	            }
+     	        });
+     	    } else {
+     	        console.error("saveButton 요소를 찾을 수 없습니다.");
+     	    }
+     	});
+
+     	document.addEventListener("DOMContentLoaded", function () {
+     	    const saveButton = document.getElementById("saveButton");
+
+     	    if (saveButton) {
+     	        saveButton.addEventListener("click", function () {
+     	            const parentBoardSelect = document.getElementById("parentBoard");
+
+     	            if (!parentBoardSelect) {
+     	                console.error("parentBoard 요소를 찾을 수 없습니다.");
+     	                alert("상위 게시판 선택 요소가 없습니다.");
+     	                return;
+     	            }
+
+     	            if (parentBoardSelect.disabled) {
+     	                console.log("parentBoard가 비활성화 상태입니다.");
+     	                return;
+     	            }
+
+     	            const parentBoard = parentBoardSelect.value;
+     	            console.log("parentBoard 값:", parentBoard);
+
+     	            if (!parentBoard) {
+     	                alert("상위 게시판을 선택하세요.");
+     	                return;
+     	            }
+
+     	            // 저장 로직 실행
+     	        });
+     	    } else {
+     	        console.error("saveButton 요소를 찾을 수 없습니다.");
+     	    }
+     	});
+
 
    </script>
 
