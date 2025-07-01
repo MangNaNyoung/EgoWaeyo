@@ -92,7 +92,7 @@ body {
 	gap: 16px;
 }
 
-#slide {
+#slide {    
 	position: fixed;
 	top: 60px;
 	left: 5rem;
@@ -138,9 +138,11 @@ body {
 	}
 }
 </style>
-	<!-- 상단 헤더 -->
-	<div class="d-flex">
+	<!-- 전체 문서를 감싸는 div 시작-->
+	<div class="d-flex"> 
+	<!-- slide를 감싸는 div 시작-->           
 		<div id="slid" class="col-2">
+	<!-- slid 내용 시작 -->
 			<div id="board-panel" class="p-4 ps-0 mt-5">
 				<h5>게시판</h5>
 				<ul class="no_dot ps-0">
@@ -157,9 +159,13 @@ body {
 					<li><span data-bs-toggle="modal"
 						data-bs-target="#addProjectModal">+ 프로젝트추가</span></li>
 				</ul>
-			</div>
-		</div>
+			</div> <!-- slide 내용 끝 -->
+			
+		</div><!-- slide 감싸는 div 끝 -->
+		
+		<!-- 내용(원본) 감싸는 div -->
 		<div class="flex-grow-1 ">
+		<!-- 내용(원본) 시작  -->
 			<div class="custom-header">
 				<div class="container-fluid">
 					<div class="d-flex align-items-center justify-content-between">
@@ -212,11 +218,16 @@ body {
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-	</div>
+			</div><!-- 내용(원본) 끝 -->
+			
+		</div><!-- 원본(내용) 내용 끝 -->
+		
+	</div><!-- 전체 문서를 감싸는 태그 끝-->
+	
+	<!-- 모달은 바깥으로 빼서 넣어주세요 -->
 	<div th:replace="article/addProjectModal :: addProjectModal"></div>
 	<div th:replace="article/editProjectModal :: editProjectModal"></div>
+	<!-- 스크립트도 복사해서 가져가면 됩니다 -->
 	<script>
 	function openModal() {
     fetch('addProjectModal.html')

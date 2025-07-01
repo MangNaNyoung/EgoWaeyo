@@ -14,44 +14,44 @@
 						class="bi bi-house fs-4"></i> <span class="d-block small">홈</span>
 				</a></li>
 				<li class="nav-item "><a href="#"
-					class="nav-link main-menu p-3" data-target="calendar-panel"> <i
+					class="nav-link main-menu p-3 nope" data-target="calendar-panel"> <i
 						class="bi bi-calendar-week fs-4"></i> <span class="d-block small">일정</span>
 				</a></li>
 				<li class="nav-item"><a href="#" class="nav-link main-menu p-3"
 					data-target="approval-panel"> <i
 						class="bi bi-journal-check fs-4"></i> <span class="d-block small">결재</span>
 				</a></li>
-				<li class="nav-item "><a href="#" class='nav-link p-3 '> <i
+				<li class="nav-item "><a href="#" class='nav-link main-menu p-3' data-target="journal-panel"> <i
 						class="bi bi-grid-1x2-fill"></i> <span class="d-block">일지</span>
 				</a></li>
 				<li class="nav-item "><a href="#"
-					class='nav-link p-3  main-menu ' data-target="board-panel"> <i
+					class='nav-link main-menu p-3 nope' data-target="board-panel"> <i
 						class="bi bi-hexagon-fill"></i> <span class="d-block">게시판</span>
 				</a></li>
-				<li class="nav-item  "><a href="#" class='nav-link p-3  '>
+				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="booking-panel">
 						<i class="bi bi-file-earmark-medical-fill"></i> <span
 						class="d-block">예약</span>
 				</a></li>
-				<li class="nav-item "><a href="#" class='nav-link p-3  '> <i
+				<li class="nav-item "><a href="#" class='nav-link main-menu p-3' data-target="meeting-panel"> <i
 						class="bi bi-pen-fill"></i> <span class="d-block">회의</span>
 				</a></li>
-				<li class="nav-item  "><a href="#" class='nav-link p-3  '>
+				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3 nope' data-target="apendance-panel">
 						<i class="bi bi-grid-1x2-fill"></i> <span class="d-block">근태</span>
 				</a></li>
-				<li class="nav-item  "><a href="#" class='nav-link p-3  '>
+				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="mailing-panel">
 						<i class="bi bi-file-earmark-spreadsheet-fill"></i> <span
 						class="d-block">메일</span>
 				</a></li>
-				<li class="nav-item  "><a href="#" class='nav-link p-3  '>
+				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="managing-panel">
 						<i class="bi bi-cash"></i> <span class="d-block">관리</span>
 				</a></li>
 			</ul>
 		</div>
 	</div>
 	<!-- 오른쪽 슬라이드 패널 -->
-	<div id="slide-panels" >
-		사이드 메뉴 생성시 원본 참고 
-	
+	<div id="slide-panels">
+		사이드 메뉴 생성시 원본 참고
+
 		<div id="calendar-panel" class="p-4 mt-5" style="display: none;">
 			<h5>내 캘린더</h5>
 			<ul>
@@ -69,8 +69,27 @@
 			<h5>결재함</h5>
 			<p>결재 요청 목록이 여기에 표시됩니다.</p>
 		</div>
-		
-</div>
+		<div id="journal-panel" class="p-4 mt-5" style="display: none;">
+			<h5>일지</h5>
+			<p>일지</p>
+		</div>
+		<div id="booking-panel" class="p-4 mt-5" style="display: none;">
+			<h5>예약</h5>
+			<p>예약 요청 목록이 여기에 표시됩니다.</p>
+		</div>
+		<div id="meeting-panel" class="p-4 mt-5" style="display: none;">
+			<h5>회의</h5>
+			<p>회의</p>
+		</div>
+		<div id="mailing-panel" class="p-4 mt-5" style="display: none;">
+			<h5>메일</h5>
+			<p>메일 목록</p>
+		</div>
+		<div id="managing-panel" class="p-4 mt-5" style="display: none;">
+			<h5>관리</h5>
+			<p>관리 목록</p>
+		</div>
+	</div>
 	<!-- jQuery -->
 
 </div>
