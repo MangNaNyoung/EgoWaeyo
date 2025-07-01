@@ -5,10 +5,10 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import egovframework.com.egowaeyo.approval.VO.ApprovalBoxVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalFormVO;
 import egovframework.com.egowaeyo.approval.mapper.ApprovalMapper;
-
 
 @Service
 public class ApprovalServiceImpl implements ApprovalService {
@@ -26,4 +26,13 @@ public class ApprovalServiceImpl implements ApprovalService {
 		approvalMapper.insertApprovalDoc(vo);
 	}
 
+	@Override
+	public List<ApprovalBoxVO> selectBoxListByUser(String empId) {
+		return approvalMapper.selectBoxListByUser(empId);
+	}
+
+	@Override
+	public void updateBoxRead(int boxId) {
+		approvalMapper.updateBoxRead(boxId);
+	}
 }

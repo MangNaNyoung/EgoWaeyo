@@ -7,17 +7,37 @@
 	namespace="egovframework.com.egowaeyo.approval.mapper.ApprovalMapper">
 
 	<select id="selectFormList"
-        resultType="egovframework.com.egowaeyo.approval.VO.ApprovalFormVO">
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalFormVO">
 		SELECT apprform_id, apprform_name FROM approval_form
 	</select>
 
 	<insert id="insertApprovalDoc"
-        parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
 		INSERT INTO approval_doc (
-		doc_id, doc_title, EMPLYR_ID, doc_status, created_dt, apprform_id
+		doc_id, doc_title, EMPLYR_ID,
+		doc_status, created_dt, apprform_id
 		) VALUES (
-		#{docId}, #{docTitle}, #{emplId}, #{docStatus}, #{createdDt}, #{apprformId}
+		#{docId}, #{docTitle},
+		#{emplId}, #{docStatus}, #{createdDt}, #{apprformId}
 		)
 	</insert>
 
+	 <!-- 목록 조회 -->
+    <select id="selectBoxListByUser" parameterType="String" resultType="egovframework.com.egowaeyo.approval.VO.ApprovalBoxVO">
+        SELECT 
+            box_id, EMPLYR_ID, box_type, box_read, box_dt, doc_id
+        FROM 
+            approval_box
+        WHERE 
+            EMPLYR_ID = #{empId}
+        ORDER BY box_dt DESC
+    </select>
+
+    <!-- 읽음 상태로 업데이트 -->
+    <update id="updateBoxRead" parameterType="int">
+        UPDATE approval_box
+        SET box_read = 'Y'
+        WHERE box_id = #{boxId}
+    </update>
+    
 </mapper>
