@@ -27,6 +27,10 @@
 <link rel="stylesheet"
 	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 	<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
+	<script src="
+https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js
+"></script>
+
 <style>
 body, html {
 	
@@ -72,6 +76,13 @@ body, html {
         height: 18px;
         float: right;
     }
+   .dash-hi  {
+		height : 800px;
+	}
+.log{
+	width : 280px;
+	height : 45px;
+}
 </style>
 	<script
 		th:src="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
@@ -189,7 +200,7 @@ var logoutUrl = "uat/uia/actionLogout.do";
 var timer;
 
 function init() {
-	 $.ajax("getSessionTime").done(
+	 $.ajax("/egowaeyo/getSessionTime").done(
 			 function(result){
 				 if(result.loginVO != null){
 				     console.log(result.egovLatestServerTime)

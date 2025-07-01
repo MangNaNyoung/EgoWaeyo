@@ -51,14 +51,7 @@
 	<!-- 오른쪽 슬라이드 패널 -->
 	<div id="slide-panels" >
 		사이드 메뉴 생성시 원본 참고 
-		<!-- <div id="board-panel" class="p-4 mt-5" style="display: none;">
-   			<h5>게시판</h5>
-   			ul 태그 -> 메뉴묶음
-    		<ul class="no_dot ps-0">
-    		  세부 메뉴 넣을곳
-    		</ul>
-    	</div>
- -->
+	
 		<div id="calendar-panel" class="p-4 mt-5" style="display: none;">
 			<h5>내 캘린더</h5>
 			<ul>
@@ -76,94 +69,9 @@
 			<h5>결재함</h5>
 			<p>결재 요청 목록이 여기에 표시됩니다.</p>
 		</div>
-		<!-- <div id="board-panel" class="p-4 mt-5" style="display: none;">
-      <h5>게시판</h5>
-			<ul class="no_dot ps-0">
-				<li class="ps-0">📌공지사항</li>
-			</ul>
-
-			<ul class="mt-4 fw-bold parentsProjects">
-			프로젝트 목록이 동적으로 추가됩니다.
-			</ul>
-			<ul class="no_dot project">
-				프로젝트 목록이 동적으로 추가됩니다.
-			</ul>
-			<ul class="no_dot">
-				<li><span data-bs-toggle="modal"
-					data-bs-target="#addProjectModal">+ 프로젝트추가</span></li>
-			</ul>
-		</div> 
-	</div>
-	<div th:replace="article/addProjectModal :: addProjectModal"></div>
-	<div th:replace="article/editProjectModal :: editProjectModal"></div>
- -->
+		
 </div>
 	<!-- jQuery -->
-	<script>
-	
-/* 	// 프로젝트 추가 모달
-  function openModal() {
-    fetch('addProjectModal.html')
-      .then(response => response.text())
-      .then(html => {
-        const modalContainer = document.getElementById('modal-container');
-        modalContainer.innerHTML = html;
-        modalContainer.classList.remove('hidden');
-      })
-      .catch(error => console.error('Error loading modal:', error));
-  }
 
-  function closeModal() {
-    const modalContainer = document.getElementById('modal-container');
-    modalContainer.classList.add('hidden');
-    modalContainer.innerHTML = ''; // 모달 내용 초기화
-  }
-  
-  
-  // 프로젝트 수정 모달
-  function openModal() {
-    fetch('editProjectModal.html')
-      .then(response => response.text())
-      .then(html => {
-        const modalContainer = document.getElementById('modal-container');
-        modalContainer.innerHTML = html;
-        modalContainer.classList.remove('hidden');
-      })
-      .catch(error => console.error('Error loading modal:', error));
-  }
-
-  function closeModal() {
-    const modalContainer = document.getElementById('modal-container');
-    modalContainer.classList.add('hidden');
-    modalContainer.innerHTML = ''; // 모달 내용 초기화
-  }  
-  // 사이드바 게시판 목록
-	document.addEventListener("DOMContentLoaded", function () {
-		fetch('/egowaeyo/bbsMaster/bbsNames')
-			.then(response => {
-				if (!response.ok) {
-					throw new Error('Network response was not ok');
-				}
-				return response.json();
-			})
-			.then(data => {
-				const projectList = document.querySelector("#board-panel ul.project");
-				projectList.innerHTML = ""; // 기존 항목 초기화
-				data.forEach(bbsNm => {
-					const listItem = document.createElement("li");
-					listItem.innerHTML = `${bbsNm}
-						<img data-bs-toggle="modal" data-bs-target="#editProjectModal" 
-                        class="img-icon" src="/egowaeyo/assets/images/icon/manage.png" style="cursor: pointer;">
-					`;
-					projectList.appendChild(listItem);
-				});
-			})
-			.catch(error => console.error('Error fetching bbs names:', error));
-		
-		
-	});
-
-         */
-</script>
 </div>
 </html>
