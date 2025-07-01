@@ -129,6 +129,7 @@ body, html {
 			$('.main-menu').on('click', function(e) {
 				e.preventDefault();
 				const target = $(this).data('target');
+				sessionStorage.setItem('key',target)
 				if (target == 'home-panel' || target == currentTarget || target == 'calendar-panel' || target =='board-panel') {					
 					$('#slide-panels').fadeOut('fast');
 					$('#main').css('margin-left','100px')
@@ -168,7 +169,6 @@ body, html {
 	</script>
 	<script  th:inline="javascript">
 	// 화면 호출시 로그인 한 사용자의 정보와 최근 서버시간, 세션만료 시간을 가져 온다.
-
 function getCookie(cname) {
 	  var name = cname + "=";
 	  var decodedCookie = decodeURIComponent(document.cookie);
@@ -189,7 +189,7 @@ function getCookie(cname) {
 	  n = n + '';
 	  return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
 	}
-
+var activedBtn;
 var objLeftTime;
 var objClickInfo;
 var latestTime;
@@ -200,7 +200,7 @@ var elapsedLocalTime = 0;
 var stateExpiredTime = false;
 var logoutUrl = "uat/uia/actionLogout.do";
 var timer;
-
+var outPanList = $('.nope').map(function(){return $(this).data("target");}).get()
 function init() {
 	 $.ajax("/egowaeyo/getSessionTime").done(
 			 function(result){
@@ -228,6 +228,28 @@ function init() {
 					timer = setInterval(showRemaining, timeInterval); // 1초 간격 호출
 				 }
 			 });
+	 activedBtn = sessionStorage.getItem("key");
+	 //console.log(activedBtn)
+			 //console.log(outPanList)
+	 //if(activedBtn != null){
+		if(true){ 
+	 $('.nav-link.p-3.main-menu').each(function(index, item){
+		 let target = $(this).data('target')
+		 //console.log(target)
+		 if(target != null && target == activedBtn){
+			 $(this).toggleClass('active')
+			  if ($.inArray(target,outPanList)==1) {
+				  $('#main').css('margin-left','330px')
+					$('#slide-panels').fadeIn('fast');
+					$('#slide-panels > div').hide();
+					$('#' + target).show();
+					  }
+		 }
+		 
+	 })
+	 }
+
+	 
 }
 
 function showRemaining() {
