@@ -22,4 +22,8 @@ public interface BbsMasterMapper {
 
     String getMaxBbsTyCode();
 
+    void insertCommonDetailCode(Map<String, Object> params);
+    
+    String selectCodeByCodeNm(String codeNm);
+
 }

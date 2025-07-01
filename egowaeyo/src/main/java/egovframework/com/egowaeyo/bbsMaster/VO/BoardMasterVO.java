@@ -65,9 +65,11 @@ public class BoardMasterVO extends BoardMaster implements Serializable {
     /** 최초 등록자명 */
     private String frstRegisterNm = "";
 
+    private String bbsTyCode = "";
+    
     /** 게시판유형 코드명 */
     private String bbsTyCodeNm = "";
-
+    
     /** 템플릿 명 */
     private String tmplatNm = "";
 
@@ -345,7 +347,27 @@ public class BoardMasterVO extends BoardMaster implements Serializable {
     public void setFrstRegisterNm(String frstRegisterNm) {
 	this.frstRegisterNm = frstRegisterNm;
     }
+    
+    /**
+     * bbsTyCodeNm attribute를 리턴한다.
+     * 
+     * @return the bbsTyCodeNm
+     */
+    public String getBbsTyCode() {
+	return bbsTyCode;
+    }
 
+    /**
+     * bbsTyCodeNm attribute 값을 설정한다.
+     * 
+     * @param bbsTyCodeNm
+     *            the bbsTyCodeNm to set
+     */
+    public void setBbsTyCode(String bbsTyCode) {
+	this.bbsTyCode = bbsTyCode;
+    }
+    
+    
     /**
      * bbsTyCodeNm attribute를 리턴한다.
      * 

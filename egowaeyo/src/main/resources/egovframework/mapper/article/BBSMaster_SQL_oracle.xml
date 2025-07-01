@@ -77,6 +77,12 @@
 		'Y', 3, #{useAt},
 		#{frstRegisterId}, SYSDATE)
 	</insert>
+	
+	<select id="selectCodeByCodeNm" parameterType="String" resultType="String">
+    SELECT CODE, CODE_NM
+    FROM COMTCCMMNDETAILCODE
+    WHERE CODE LIKE 'BBST%' AND CODE_NM = #{codeNm}
+</select>
 
 	<!-- MAX공통코드 조회(상위 게시판) -->
 	<select id="getMaxBbsTyCode" resultType="string">

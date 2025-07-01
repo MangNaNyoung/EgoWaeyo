@@ -21,6 +21,8 @@ public interface BbsMasterService {
 	// 모달
 	List<Map<String, String>> getCombbs();
 	List<BoardMasterVO> getDeptEmp();
+	void insertCommonDetailCode(Map<String, Object> params);
+	String selectCodeByCodeNm(String codeNm);
 
 	// 사이드바
 	Map<String, List<String>> getGroupedBbsData();
