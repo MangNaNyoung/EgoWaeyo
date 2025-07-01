@@ -4,9 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,7 +69,7 @@ public class BbsMasterController {
 			boardMaster.setBbsTyCode(bbsTyCode);
 
 			bbsMasterService.insertBBSMaster(boardMaster);
-			insertCommonDetailCode(bbsTyCode, bbsName, useAt);
+			insertCommonDetailCode(bbsTyCode, bbsName, useAt, getCurrentUserId());
 
 			response.put("success", true);
 		} catch (Exception e) {
@@ -78,17 +79,78 @@ public class BbsMasterController {
 		return response;
 	}
 
+	private String getCurrentUserId() {
+		return SecurityContextHolder.getContext().getAuthentication().getName();
+	}
+
 	// 게시판 추가
-	@PostMapping("/register")
-	public String registerBbsMaster(@RequestBody BoardMasterVO boardMaster) {
+	@PostMapping("/saveBoard")
+	@ResponseBody
+	public Map<String, Object> saveBoard(@RequestBody Map<String, Object> requestData) {
+		Map<String, Object> response = new HashMap<>();
 		try {
+			String boardName = (String) requestData.get("boardName");
+			String boardType = (String) requestData.get("boardType");
+			String parentBoard = (String) requestData.get("parentBoard");
+			String useAt = (String) requestData.get("useAt");
+			List<String> selectedRights = (List<String>) requestData.get("selectedRights");
+			String currentUserId = getCurrentUserId(); // 현재 로그인된 사용자 ID 가져오기
+
+			// bbsId 생성
+			String bbsId = bbsMasterService.getNextStringId() + RandomStringUtils.randomAlphabetic(10);
+			bbsMasterService.saveBoard(boardName, boardType, parentBoard, useAt, selectedRights, currentUserId);
+
+			// BBSTYCODE 결정
+			String bbsTyCode;
+			if ("게시판 추가".equals(boardType)) {
+				String maxCode = bbsMasterService.getMaxBbsTyCode();
+				int nextCode = Integer.parseInt(maxCode.substring(4)) + 1;
+				bbsTyCode = String.format("BBST%02d", nextCode);
+
+				// insertCommonDetailCode 실행
+				bbsMasterService.insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
+			} else {
+				bbsTyCode = parentBoard;
+			}
+
+			// insertBBSMaster 실행
+			BoardMasterVO boardMaster = new BoardMasterVO();
+			boardMaster.setBbsId(bbsId);
+			boardMaster.setBbsNm(boardName);
+			boardMaster.setBbsTyCode(bbsTyCode);
+			boardMaster.setUseAt(useAt);
+			boardMaster.setFrstRegisterId(currentUserId);
 			bbsMasterService.insertBBSMaster(boardMaster);
-			return "게시판이 성공적으로 추가되었습니다.";
+
+			// 권한 결정 및 insertBBSMasterAuth 실행
+			String authorCode = determineAuthorCode(selectedRights);
+			BoardMasterVO auth = new BoardMasterVO();
+			auth.setEmplyrId(currentUserId);
+			auth.setBbsId(bbsId);
+			auth.setAuthorCode(authorCode);
+			bbsMasterService.insertBBSMasterAuth(auth);
+
+			response.put("success", true);
 		} catch (Exception e) {
-			e.printStackTrace();
-			return "게시판 추가에 실패했습니다.";
+			response.put("success", false);
+			response.put("error", e.getMessage());
+		}
+		return response;
+	}
+
+	private String determineAuthorCode(List<String> selectedRights) {
+		if (selectedRights.contains("관리권한")) {
+			return "A-003";
+		} else if (selectedRights.contains("쓰기권한")) {
+			return "A-002";
+		} else if (selectedRights.contains("읽기권한")) {
+			return "A-001";
+		} else {
+			throw new IllegalArgumentException("유효하지 않은 권한입니다.");
 		}
 	}
+	
+	
 
 	private String generateBbsTyCode() {
 		// 가장 큰 BBS_TY_CODE 조회 후 +1
@@ -97,9 +159,9 @@ public class BbsMasterController {
 		return String.format("BBST%02d", nextCode);
 	}
 
-	private void insertCommonDetailCode(String bbsTyCode, String bbsName, String useAt) {
+	private void insertCommonDetailCode(String bbsTyCode, String bbsName, String useAt, String currentUserId) {
 		// COMTCCMMNDETAILCODE 테이블에 삽입
-		bbsMasterService.insertCommonDetailCode(bbsTyCode, bbsName, useAt);
+		bbsMasterService.insertCommonDetailCode(bbsTyCode, bbsName, useAt, currentUserId);
 	}
 
 	// 사이드바

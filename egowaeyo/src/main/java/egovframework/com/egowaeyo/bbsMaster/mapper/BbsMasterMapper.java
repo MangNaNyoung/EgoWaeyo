@@ -6,18 +6,20 @@ import java.util.Map;
 import egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO;
 
 public interface BbsMasterMapper {
-   List<Map<String, String>> selectCombbs();
-   
-   List<BoardMasterVO> selectDeptEmp();
 
-   List<Map<String, String>> selectGroupedBbsData();
+	List<Map<String, String>> selectCombbs();
 
-   public int insertBBSMaster(BoardMasterVO boardMaster);
+    List<BoardMasterVO> selectDeptEmp();
 
-   public int insertBBSMasterAuth(BoardMasterVO auth);
+    List<Map<String, String>> selectGroupedBbsData();
 
-   void insertCommonDetailCode(String bbsTyCode, String bbsName, String useAt);
+    int insertBBSMaster(BoardMasterVO boardMaster);
 
-   String getMaxBbsTyCode();
+    int insertBBSMasterAuth(BoardMasterVO auth);
+
+    void insertCommonDetailCode(String bbsTyCode, String bbsName, String useAt, String currentUserId);
+    String getNextStringId();
+
+    String getMaxBbsTyCode();
 
 }
