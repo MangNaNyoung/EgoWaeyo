@@ -29,10 +29,6 @@ public class LoginController {
 		return "login/login.html";
 	}
 	
-	@RequestMapping("/tests")
-	public String pagetest() {
-		return "pinggu/adminUserInsert.html";
-	}
 	@RequestMapping("/calendar")
 	public String goToCal() {
 		return "calendar/myCalendar.html";
