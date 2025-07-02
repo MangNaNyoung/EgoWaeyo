@@ -8,9 +8,23 @@ body {
 	background: #fff;
 }
 
+.custom-title {
+	font-size: 20px;
+	font-weight: 700;
+	margin-bottom: 0;
+	letter-spacing: -1px;
+}
+
+.custom-header {
+	background: #fafafa;
+	border-bottom: 2px solid #e5e5e5;
+	padding: 25px 10px 20px 10px;
+	margin-bottom: 0;
+}
+
 .post-list-item {
 	border-bottom: 1px solid #f2f2f2;
-	padding: 32px 0 0 0;
+	padding: 25px 0 25px 0;
 	display: flex;
 	align-items: flex-start;
 }
@@ -21,6 +35,7 @@ body {
 	background: #e5e5e5;
 	border-radius: 50%;
 	margin-right: 16px;
+	margin-top: 5px;
 	flex-shrink: 0;
 }
 
@@ -106,20 +121,21 @@ body {
 			<div class="custom-header">
 				<div class="container-fluid">
 					<div class="d-flex align-items-center justify-content-between">
-						<div class="custom-title">JPA 프로젝트</div>
+						<div class="custom-title"></div>
 
 						<!-- 폼 시작 -->
-						<form class="search-bar d-flex align-items-center gap-2">
-							<select class="form-select">
+						<form class="search-bar d-flex align-items-center gap-2 me-4"
+							style="width: 800px;">
+							<select class="form-select" style="width: 200px;">
 								<option>전체 게시판</option>
-							</select> <select class="form-select">
-								<option>제목</option>
-								<option>내용</option>
+							</select> <select class="form-select" style="width: 200px;">
+								<option>제목+내용</option>
 								<option>작성자</option>
-							</select> <input class="form-control" type="text" placeholder="검색어를 입력하세요">
+							</select> <input class="form-control" type="text" style="width: 200px;"
+								placeholder="검색어를 입력하세요">
 							<button
-								class="btn btn-primary d-flex align-items-center justify-content-center"
-								type="submit">
+								class="btn btn-dark d-flex align-items-center justify-content-center"
+								type="submit" style="height: 38px;">
 								<span class="visually-hidden">검색</span>
 								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
 									fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
@@ -127,7 +143,8 @@ body {
 										d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
                      </svg>
 							</button>
-							<button class="btn btn-success" type="button">글쓰기</button>
+							<button class="btn btn-success"
+								style="width: 100px; margin-left: 100px;" type="button">글쓰기</button>
 						</form>
 					</div>
 				</div>
@@ -144,7 +161,8 @@ body {
 							<span class="post-count">5</span>
 						</div>
 						<div class="post-meta">
-							<span>이민영 대리님</span> <span>2025-06-12</span> <span>16:54</span>
+							<span class="post-writer">이민영 대리님</span> <span class="post-dt">2025-06-12</span>
+							<span class="post-tm">16:54</span>
 						</div>
 					</div>
 				</div>
@@ -230,7 +248,8 @@ body {
 						const listItem = document.createElement("li");
 						// li 태그에 no_dot 클래스 추가
 					    listItem.classList.add("no_dot");
-					    listItem.setAttribute("style", "margin-left:-20px;");
+					    listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
+			
 						
 						// img 태그 생성
 						const img = document.createElement("img");
@@ -257,10 +276,80 @@ body {
 			})
 			.catch(error => console.error('Error fetching grouped BBS data:', error));
 	});
+  
+  	// 게시판명 클릭 -> 헤더명 변경
+	document.addEventListener("DOMContentLoaded", function () {
+    const parentProjectsList = document.querySelector("ul.parentsProjects");
+    const customTitle = document.querySelector(".custom-title");
+    const postListContainer = document.querySelector(".container-fluid.px-4");
+
+    // 기본값 설정
+    /*
+    if (customTitle) {
+        customTitle.textContent = "공지사항"; 
+    }
+    */
+    if (parentProjectsList && customTitle) {
+        parentProjectsList.addEventListener("click", function (event) {
+            const target = event.target;
+            const bbsId = target.dataset.bbsId;
+            console.log("bbsId:", bbsId); // bbsId 값 디버깅
+
+            // 하위 게시판(bbsNm)만 클릭했는지 확인
+            if (target.tagName === "LI" && target.closest("ul") !== parentProjectsList && target.textContent) {
+                const selectedBoardName = target.textContent.trim();
+                
+                customTitle.textContent = selectedBoardName; // custom-title 업데이트
+                
+            }
+            // 게시글 데이터 가져오기
+            fetch(`/egowaeyo/article/selectBbsAll?bbsId=${bbsId}`)
+                .then(response => response.json())
+                .then(data => {
+                	 console.log("Fetched Data:", data);
+                    // 기존 게시글 초기화
+                    postListContainer.innerHTML = "";
+
+                    // 게시글 리스트 렌더링
+                    data.forEach(item => {
+                        // 날짜와 시간 분리
+                        const [date, time] = item.FRST_REGIST_PNTTM.split(" ");
+
+                        // 게시글 요소 생성
+                        const postItem = document.createElement("div");
+                        postItem.classList.add("post-list-item");
+
+                        postItem.innerHTML = `
+                            <div class="avatar"></div>
+                            <div>
+                                <div>
+                                    <span class="post-title">${item.NTT_SJ}</span>
+                                    <span class="post-icon">&#128337;</span>
+                                    <span class="post-count">${item.RDCNT}</span>
+                                </div>
+                                <div class="post-meta">
+                                    <span class="post-writer">${item.USER_NM}</span>
+                                    <span class="post-dt">${date.replace(/-/g, "/")}</span>
+                                    <span class="post-tm">${time}</span>
+                                </div>
+                            </div>
+                        `;
+
+                        // 게시글 추가
+                        postListContainer.appendChild(postItem);
+                    });
+                })
+                .catch(error => console.error("Error fetching posts:", error));
+        });
+    }
+    
+});
+
 	
   
 
 </script>
+	</div>
 </main>
 
 </html>
