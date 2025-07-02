@@ -9,21 +9,24 @@ public interface BbsMasterMapper {
 
 	List<Map<String, String>> selectCombbs();
 
-    List<BoardMasterVO> selectDeptEmp();
+	List<BoardMasterVO> selectDeptEmp();
 
-    List<Map<String, String>> selectGroupedBbsData();
+	List<Map<String, String>> selectGroupedBbsData();
 
-    int insertBBSMaster(BoardMasterVO boardMaster);
+	int insertBBSMaster(BoardMasterVO boardMaster);
 
-    int insertBBSMasterAuth(BoardMasterVO auth);
+	int insertBBSMasterAuth(BoardMasterVO auth);
 
-    void insertCommonDetailCode(String bbsTyCode, String bbsName, String useAt, String currentUserId);
-    String getNextStringId();
+	void saveBoardAuth(List<Map<String, String>> selectedRights, String bbsId);
 
-    String getMaxBbsTyCode();
+	void insertCommonDetailCode(String bbsTyCode, String bbsName, String useAt, String currentUserId);
 
-    void insertCommonDetailCode(Map<String, Object> params);
-    
-    String selectCodeByCodeNm(String codeNm);
+	String getNextStringId();
+
+	String getMaxBbsTyCode();
+
+	void insertCommonDetailCode(Map<String, Object> params);
+
+	String selectCodeByCodeNm(String codeNm);
 
 }
