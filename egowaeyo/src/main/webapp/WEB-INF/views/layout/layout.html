@@ -136,7 +136,7 @@ body, html {
 					currentTarget = '';
 					$(this).toggleClass('active')
 					if(target == 'home-panel'){
-						location.href="/egowaeyo/test"
+						location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+".do"
 					}
 				} else if(target !='board-panel'&& target!='calendar-panel') {
 					$('#main').css('margin-left','330px')
@@ -184,7 +184,7 @@ function getCookie(cname) {
 	  }
 	  return "";
 	}
-
+	
 	function pad(n, width) {
 	  n = n + '';
 	  return n.length >= width ? n : new Array(width - n.length + 1).join('0') + n;
@@ -217,7 +217,7 @@ function init() {
 					objClickInfo = document.getElementById("clickInfo");
 					//console.log(objLeftTime.textContent);
 				
-					
+					console.log("data = "+ result.tip );
 					console.log("latestServerTime = "+latestTime);
 					console.log("expireSessionTime = "+expireTime);
 					
@@ -244,12 +244,9 @@ function init() {
 					$('#slide-panels > div').hide();
 					$('#' + target).show();
 					  }
-		 }
-		 
+		 }		 
 	 })
-	 }
-
-	 
+	 }	 
 }
 
 function showRemaining() {
@@ -265,7 +262,7 @@ function showRemaining() {
 		// reload content main page
 		$("#sessionInfo").hide();
 
-		parent.frames["_content"].location.href = logoutUrl;
+		$(location).attr('href',logoutUrl);
 		//parent.frames["_content"].location.reload();
 
 		return;

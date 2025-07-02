@@ -49,7 +49,7 @@
 		concurrentExpiredUrl="/EgovContent.do"
 		errorIfMaximumExceeded="false"
 
-		defaultTargetUrl="/test"
+		defaultTargetUrl="/home.do"
 		alwaysUseDefaultTargetUrl="true"
 
 		sniff="true"

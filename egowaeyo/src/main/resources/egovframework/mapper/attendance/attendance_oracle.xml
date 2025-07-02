@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="egovframework.mapper.attendance.AttendanceMapper">
+	<select id="getAttend" resultType="AttendVO" parameterType="String">
+		SELECT
+				CHECKDATE,
+				TO_CHAR(TO_DATE(CHECKDATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS CHECKDATE,
+				EMPLYR_ID,
+				CHECKIN,
+				TO_CHAR(TO_DATE(CHECKIN, 'HH24MI'), 'HH24:MI') AS CHECKIN,
+				CHECKOUT,
+				TO_CHAR(TO_DATE(CHECKOUT, 'HH24MI'), 'HH24:MI') AS CHECKOUT,
+				INSTATE,
+				OUTSTATE,
+				OVER_CHECK_TIME,
+				CHECK_TIME
+		FROM ATTENDANCE
+		WHERE #{id}
+		ORDER BY CHECKDATE
+	</select>
+
+
+</mapper>

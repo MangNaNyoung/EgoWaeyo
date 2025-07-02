@@ -51,6 +51,7 @@ public class LoginController {
 				Cookie c = cookies[i] ;
 				// 저장된 쿠키 이름을 가져온다
 				String cName = c.getName();
+				System.out.println("cName====================================="+cName);
 				loginVO.setName(cName);
 				// 쿠키값을 가져온다
 				String cValue = c.getValue() ;
@@ -60,6 +61,7 @@ public class LoginController {
 				if ("egovExpireSessionTime".equals(cName)) {
 					egovExpireSessionTime = cValue;
 				}
+				map.put("tip",cName);
 			}
 		}
 		map.put("loginVO", principal.getName());

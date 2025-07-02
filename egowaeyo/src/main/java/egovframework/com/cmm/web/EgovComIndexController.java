@@ -200,7 +200,7 @@ public class EgovComIndexController {
 	}
 	
 	
-	@RequestMapping("/test")
+	@RequestMapping("/home.do")
 	public String testLeaf() {
 		
 		
