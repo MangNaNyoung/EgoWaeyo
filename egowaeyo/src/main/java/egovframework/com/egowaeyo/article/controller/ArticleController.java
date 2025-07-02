@@ -2,6 +2,7 @@ package egovframework.com.egowaeyo.article.controller;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,9 +30,32 @@ public class ArticleController {
 	// 게시글 목록화면으로 이동
 	@GetMapping("/articleList")
 	public String listPage(Model model, BoardVO vo) {
-			 List<BoardVO> data = articleservice.findAll(vo);
-			model.addAttribute("list",data);
-		return "article/ArticleList.html";
+	    // selectBbsAll 호출
+	    Map<String, Object> data = articleservice.selectBbsAll(vo);
+
+	    if (data == null || data.get("list") == null) {
+	        log.error("No data found for bbsId: {}", vo.getBbsId());
+	        model.addAttribute("list", List.of()); // 빈 리스트 전달
+	        return "article/ArticleList.html";
+	    }
+
+	    // 필요한 데이터 추출
+	    Object listObject = data.get("list");
+	    if (listObject instanceof List<?>) {
+	        List<?> rawList = (List<?>) listObject;
+	        if (!rawList.isEmpty() && rawList.get(0) instanceof BoardVO) {
+	            List<BoardVO> list = (List<BoardVO>) rawList;
+	            model.addAttribute("list", list);
+	        } else {
+	            log.error("Invalid data type in list for bbsId: {}", vo.getBbsId());
+	            model.addAttribute("list", List.of()); // 빈 리스트 전달
+	        }
+	    } else {
+	        log.error("Invalid list object for bbsId: {}", vo.getBbsId());
+	        model.addAttribute("list", List.of()); // 빈 리스트 전달
+	    }
+
+	    return "article/ArticleList.html";
 	}
 	
 	// 게시글 작성화면으로 이동

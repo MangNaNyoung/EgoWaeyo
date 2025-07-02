@@ -10,23 +10,47 @@
 	<select id="findBbsList"
 		resultType="egovframework.com.egowaeyo.article.VO.BoardVO">
 		SELECT
-		BBS_ID, BBS_NM, BBS_NM_EN, BBS_NM_CN, BBS_NM_JP, BBS_NM_FR, BBS_NM_DE,
-		BBS_NM_ES, BBS_NM_IT, BBS_NM_PT, BBS_NM_RU, BBS_NM_AR, BBS_NM_TR,
+		BBS_ID, BBS_NM, BBS_NM_EN, BBS_NM_CN, BBS_NM_JP,
+		BBS_NM_FR, BBS_NM_DE,
+		BBS_NM_ES, BBS_NM_IT, BBS_NM_PT, BBS_NM_RU,
+		BBS_NM_AR, BBS_NM_TR,
 		BBS_NM_VI, BBS_NM_ID, BBS_NM_TH
 		FROM COMTNBBS
 		WHERE USE_AT = 'Y'
-		AND BBS_ID NOT IN ('B0000001', 'B0000002', 'B0000003')
+		AND BBS_ID NOT IN ('B0000001', 'B0000002',
+		'B0000003')
 		ORDER BY SORT_ORDR DESC
 	</select>
 
-    <!-- 게시판 추가 -->
-
-	<select id="selectBBSAll">
-	SELECT * FROM COMTNBBS
-    WHERE BBS_ID = #{bbsId}
+	<!-- 게시판 게시글 상세조회 -->
+	<select id="selectBbsDetail">
+		SELECT
+		a.NTT_SJ, a.NTCR_ID, a.NTCR_NM, a.NTT_NO, a.NTT_CN,
+		a.PASSWORD, a.FRST_REGISTER_ID, b.USER_NM as FRST_REGISTER_NM,
+		TO_CHAR(a.FRST_REGIST_PNTTM, 'YYYY-MM-DD') as FRST_REGIST_PNTTM,
+		a.NTCE_BGNDE, a.NTCE_ENDDE, a.RDCNT,
+		a.USE_AT, a.ATCH_FILE_ID, a.BBS_ID, a.NTT_ID,
+		a.SJ_BOLD_AT, a.NOTICE_AT, a.SECRET_AT,
+		a.PARNTSCTT_NO, a.ANSWER_AT, a.ANSWER_LC, a.SORT_ORDR,
+		c.BBS_TY_CODE, c.REPLY_POSBL_AT,
+		c.FILE_ATCH_POSBL_AT, c.ATCH_POSBL_FILE_NUMBER, c.BBS_NM
+		FROM
+		COMTNBBS a
+		LEFT OUTER JOIN
+		COMVNUSERMASTER b
+		ON a.FRST_REGISTER_ID = b.ESNTL_ID
+		LEFT OUTER JOIN
+		COMTNBBSMASTER c
+		ON a.BBS_ID = c.BBS_ID
+		WHERE
+		a.BBS_ID = #{bbsId}
+		AND
+		a.NTT_ID = #{nttId}
+		AND a.USE_AT = 'Y'
 	</select>
-	<!-- 게시판 게시글 조회 -->
-	<select id="findAll"
+
+	<!-- 게시판별 게시글 조회 -->
+	<select id="selectBbsAll"
 		resultType="egovframework.com.egowaeyo.article.VO.BoardVO">
 		SELECT * FROM ( SELECT rownum rn, TB.* FROM (
 		SELECT
@@ -69,32 +93,67 @@
 
 		ORDER BY a.SORT_ORDR DESC, NTT_NO ASC
 		) TB )
-
 	</select>
-	
+
+	<!-- 게시판 리스트 카운트 -->
+	<select id="selectArticleListCnt"
+		parameterType="egovframework.com.cop.bbs.service.BoardVO"
+		resultType="java.lang.Integer">
+
+		SELECT
+		COUNT(a.NTT_ID)
+		FROM
+		COMTNBBS a
+		LEFT OUTER JOIN
+		COMVNUSERMASTER b
+		ON
+		a.FRST_REGISTER_ID = b.ESNTL_ID
+		WHERE
+		a.BBS_ID = #{bbsId}
+		AND a.USE_AT =
+		'Y'
+
+		<if test="searchCnd == 0">AND
+			a.NTT_SJ LIKE '%' || #{searchWrd} || '%'
+		</if>
+		<if test="searchCnd == 1">AND
+			a.NTT_CN LIKE '%' || #{searchWrd} || '%'
+		</if>
+		<if test="searchCnd == 2">AND
+			b.USER_NM LIKE '%' || #{searchWrd} || '%'
+		</if>
+	</select>
+
 	<!-- 게시판 작성 -->
-	<insert id="articleInsert" parameterType="egovframework.com.egowaeyo.article.VO.BoardVO">
-	<selectKey keyProperty="nttNo" resultType="java.lang.Long" order="BEFORE">
-			SELECT NVL(MAX(SORT_ORDR),0)+1 AS NTT_NO  FROM COMTNBBS
-			WHERE BBS_ID = #{bbsId}
+	<insert id="articleInsert"
+		parameterType="egovframework.com.egowaeyo.article.VO.BoardVO">
+		<selectKey keyProperty="nttNo" resultType="java.lang.Long"
+			order="BEFORE">
+			SELECT NVL(MAX(SORT_ORDR),0)+1 AS NTT_NO FROM COMTNBBS
+			WHERE
+			BBS_ID = #{bbsId}
 		</selectKey>
-		
-			INSERT INTO COMTNBBS
-			(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR, 
-			 NTCR_ID, NTCR_NM, PASSWORD, RDCNT, 
-			 NTCE_BGNDE, NTCE_ENDDE, ANSWER_AT,  			   
-			 PARNTSCTT_NO, NTT_NO, ANSWER_LC, ATCH_FILE_ID,
-			 FRST_REGISTER_ID, FRST_REGIST_PNTTM, USE_AT,
-			 SJ_BOLD_AT, NOTICE_AT, SECRET_AT, BLOG_ID
-			 )
-			VALUES
-			( #{nttId}, #{bbsId}, #{nttSj}, #{nttCn}, #{nttId}, 
-			  #{ntcrId}, #{ntcrNm}, #{password}, #{inqireCo}, 
-			  #{ntceBgnde}, #{ntceEndde}, #{replyAt}, 
-			  #{parnts}, 1, #{replyLc}, #{atchFileId},
-			  #{frstRegisterId}, SYSDATE, 'Y',
-			  #{sjBoldAt}, #{noticeAt}, #{secretAt}, #{blogId}
-			)
+
+		INSERT INTO COMTNBBS
+		(NTT_ID, BBS_ID, NTT_SJ, NTT_CN, SORT_ORDR,
+		NTCR_ID, NTCR_NM, PASSWORD, RDCNT,
+		NTCE_BGNDE, NTCE_ENDDE, ANSWER_AT,
+		PARNTSCTT_NO, NTT_NO, ANSWER_LC, ATCH_FILE_ID,
+		FRST_REGISTER_ID,
+		FRST_REGIST_PNTTM, USE_AT,
+		SJ_BOLD_AT, NOTICE_AT, SECRET_AT, BLOG_ID
+		)
+		VALUES
+		( #{nttId}, #{bbsId}, #{nttSj}, #{nttCn}, #{nttId},
+		#{ntcrId},
+		#{ntcrNm}, #{password}, #{inqireCo},
+		#{ntceBgnde}, #{ntceEndde},
+		#{replyAt},
+		#{parnts}, 1, #{replyLc}, #{atchFileId},
+		#{frstRegisterId},
+		SYSDATE, 'Y',
+		#{sjBoldAt}, #{noticeAt}, #{secretAt}, #{blogId}
+		)
 	</insert>
-	
+
 </mapper>
