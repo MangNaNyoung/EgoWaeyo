@@ -10,11 +10,10 @@
     <!-- 상단 버튼 -->
     <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
       <div style="display: flex; gap: 0.5rem;">
-        <button>수신반송</button>
+        <button>수신접수</button>
         <button>수신기안</button>
         <button>기안</button>
         <button>복사</button>
-        <button>공람함</button>
         <button>인쇄/다운로드</button>
       </div>
       <div style="display: flex; gap: 0.5rem;">
@@ -47,11 +46,11 @@
         { header: '기안자', name: 'empno', width: 100 },
         { header: '공개여부', name: 'open_yn', width: 100 },
         { header: '기안일시', name: 'created_dt', width: 150 },
-        { header: '완료일시', name: 'final_dt', width: 150 }
+       // { header: '완료일시', name: 'final_dt', width: 150 }
       ],
       data: [],
-      rowHeaders: ['rowNum'],
-      bodyHeight: 300
+     // rowHeaders: ['rowNum'],
+      bodyHeight: 500
     });
 
     function handleSearch() {

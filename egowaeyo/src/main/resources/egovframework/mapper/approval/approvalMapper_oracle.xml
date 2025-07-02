@@ -22,22 +22,52 @@
 		)
 	</insert>
 
-	 <!-- 목록 조회 -->
-    <select id="selectBoxListByUser" parameterType="String" resultType="egovframework.com.egowaeyo.approval.VO.ApprovalBoxVO">
-        SELECT 
-            box_id, EMPLYR_ID, box_type, box_read, box_dt, doc_id
-        FROM 
-            approval_box
-        WHERE 
-            EMPLYR_ID = #{empId}
-        ORDER BY box_dt DESC
-    </select>
+	<!-- 개인 수신함 -->
+	<select id="selectReceiveList" parameterType="String"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		SELECT ad.*
+		FROM approval_doc ad
+		JOIN approval_line al ON
+		ad.doc_id = al.doc_id
+		WHERE al.approver_id = #{empId}
+		AND al.line_status
+		= '진행중'
+	</select>
 
-    <!-- 읽음 상태로 업데이트 -->
-    <update id="updateBoxRead" parameterType="int">
-        UPDATE approval_box
-        SET box_read = 'Y'
-        WHERE box_id = #{boxId}
-    </update>
-    
+	<!-- 부서 수신함 -->
+	<select id="selectDeptReceiveList" parameterType="String"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		SELECT ad.*
+		FROM approval_doc ad
+		JOIN emp e ON ad.EMPLYR_ID =
+		e.EMPLYR_ID
+		WHERE e.DEPT_ID = #{deptId}
+		AND ad.doc_status = '진행중'
+	</select>
+
+	<!-- 임시보관함 -->
+	<select id="selectTempList" parameterType="String"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalTempVO">
+		SELECT * FROM approval_temp WHERE EMPLYR_ID = #{empId}
+	</select>
+
+	<!-- 참조(공람)자로 들어간 모든 문서 -->
+	<select id="selectReferenceList" parameterType="String"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalCcVO">
+		SELECT
+		ac.cc_id,
+		ac.EMPLYR_ID,
+		ac.cc_status,
+		ac.read_dt,
+		ac.doc_id,
+		ad.doc_title,
+		ad.EMPLYR_ID AS drafter_name,
+		ad.doc_status,
+		ad.created_dt,
+		ad.final_dt
+		FROM approval_cc ac
+		JOIN approval_doc ad ON ac.doc_id = ad.doc_id
+		WHERE ac.EMPLYR_ID = #{empId}
+		ORDER BY ad.created_dt DESC
+	</select>
 </mapper>
