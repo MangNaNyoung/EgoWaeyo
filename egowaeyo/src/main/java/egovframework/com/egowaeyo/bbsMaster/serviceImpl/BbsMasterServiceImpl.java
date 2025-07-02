@@ -12,7 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO;
 import egovframework.com.egowaeyo.bbsMaster.mapper.BbsMasterMapper;
@@ -56,50 +55,66 @@ public class BbsMasterServiceImpl implements BbsMasterService {
         bbsMasterMapper.insertCommonDetailCode(params);
     }
 
+	
 	@Override
 	@Transactional
 	public void saveBoard(String boardName, String boardType, String parentBoard, String useAt,
-            List<String> selectedRights, String currentUserId) {
+	                      List<Map<String, String>> selectedRights, String currentUserId) {
+	    // 게시판 ID 생성
+	    String bbsId = getNextStringId().substring(0, 20) + RandomStringUtils.randomAlphabetic(10);
 
-// 게시판 ID 생성
-String bbsId = getNextStringId().substring(0, 20) + RandomStringUtils.randomAlphabetic(10);
+	    // 게시판 유형 코드 결정
+	    String bbsTyCode;
+	    if ("게시판 추가".equals(boardType)) {
+	        String maxCode = getMaxBbsTyCode();
+	        int nextCode = Integer.parseInt(maxCode.substring(4)) + 1;
+	        bbsTyCode = String.format("BBST%02d", nextCode);
 
-String bbsTyCode;
+	        insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
+	    } else {
+	        bbsTyCode = selectCodeByCodeNm(parentBoard);
+	        if (bbsTyCode == null) {
+	            throw new IllegalArgumentException("상위 게시판 이름 '" + parentBoard + "'에 해당하는 CODE를 찾을 수 없습니다.");
+	        }
+	    }
 
-// 게시판 유형에 따라 처리
-if ("게시판 추가".equals(boardType)) {
-// 새로운 게시판 유형 코드 생성
-String maxCode = getMaxBbsTyCode();
-int nextCode = Integer.parseInt(maxCode.substring(4)) + 1;
-bbsTyCode = String.format("BBST%02d", nextCode);
+	    // 게시판 정보 저장
+	    BoardMasterVO boardMaster = new BoardMasterVO();
+	    boardMaster.setBbsId(bbsId);
+	    boardMaster.setBbsNm(boardName);
+	    boardMaster.setBbsTyCode(bbsTyCode);
+	    boardMaster.setUseAt(useAt);
+	    boardMaster.setFrstRegisterId(currentUserId);
+	    insertBBSMaster(boardMaster);
 
-// 공통 상세 코드 삽입
-insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
-} else {
-// 상위 게시판 이름을 기반으로 코드 조회
-bbsTyCode = bbsMasterMapper.selectCodeByCodeNm(parentBoard);
-if (bbsTyCode == null) {
-  throw new IllegalArgumentException("상위 게시판 이름 '" + parentBoard + "'에 해당하는 CODE를 찾을 수 없습니다.");
-}
-}
+	    // 권한 정보 저장
+	    saveBoardAuth(selectedRights, bbsId);
+	}
+	public void saveBoardAuth(List<Map<String, String>> selectedRights, String bbsId) {
+	    if (selectedRights == null || selectedRights.isEmpty()) {
+	        throw new IllegalArgumentException("권한이 선택되지 않았습니다.");
+	    }
 
-// 게시판 정보 저장
-BoardMasterVO boardMaster = new BoardMasterVO();
-boardMaster.setBbsId(bbsId);
-boardMaster.setBbsNm(boardName);
-boardMaster.setBbsTyCode(bbsTyCode);
-boardMaster.setUseAt(useAt);
-boardMaster.setFrstRegisterId(currentUserId);
-bbsMasterMapper.insertBBSMaster(boardMaster);
+	    for (Map<String, String> right : selectedRights) {
+	        String emplyrId = right.get("emplyrId");
+	        String authorCode = right.get("authorCode");
 
-// 권한 설정
-String authorCode = determineAuthorCode(selectedRights);
-BoardMasterVO auth = new BoardMasterVO();
-auth.setEmplyrId(currentUserId);
-auth.setBbsId(bbsId);
-auth.setAuthorCode(authorCode);
-bbsMasterMapper.insertBBSMasterAuth(auth);
-}
+	        if (emplyrId == null || authorCode == null || authorCode.isBlank()) {
+	            logger.warn("권한 정보 누락 - emplyrId: {}, authorCode: {}", emplyrId, authorCode);
+	            continue;
+	        }
+
+	        BoardMasterVO auth = new BoardMasterVO();
+	        auth.setEmplyrId(emplyrId);
+	        auth.setBbsId(bbsId);
+	        auth.setAuthorCode(authorCode);
+
+	        insertBBSMasterAuth(auth); // db저장
+	        logger.info("삽입 중: emplyrId={}, bbsId={}, authorCode={}", emplyrId, bbsId, authorCode);
+
+	    }
+	}
+
 	@Override
 	public int insertBBSMaster(BoardMasterVO boardMaster) {
 	    try {
@@ -115,19 +130,29 @@ bbsMasterMapper.insertBBSMasterAuth(auth);
 	public int insertBBSMasterAuth(BoardMasterVO auth) {
 		return bbsMasterMapper.insertBBSMasterAuth(auth);
 	}
-
+	
 
 	
 	private String determineAuthorCode(List<String> selectedRights) {
-		if (selectedRights.contains("관리권한")) {
-			return "A-003";
-		} else if (selectedRights.contains("쓰기권한")) {
-			return "A-002";
-		} else {
-			return "A-001";
-		}
-	}
+	    if (selectedRights == null || selectedRights.isEmpty()) {
+	        throw new IllegalArgumentException("권한이 선택되지 않았습니다.");
+	    }
 
+	    // 권한 이름만 추출
+	    List<String> rights = selectedRights.stream()
+	        .map(right -> right.replaceAll("\\(.*?\\)", "").trim()) // 괄호와 그 안의 내용을 제거
+	        .collect(Collectors.toList());
+
+	    if (rights.contains("관리권한")) {
+	        return "A-003";
+	    } else if (rights.contains("쓰기권한")) {
+	        return "A-002";
+	    } else if (rights.contains("읽기권한")) {
+	        return "A-001";
+	    } else {
+	        throw new IllegalArgumentException("유효하지 않은 권한입니다.");
+	    }
+	}
 	// 사이드바
 	   @Override
 	   public Map<String, List<String>> getGroupedBbsData() {
@@ -149,9 +174,12 @@ bbsMasterMapper.insertBBSMasterAuth(auth);
 	}
 
 	@Override
-	public String selectCodeByCodeNm(@RequestBody String codeNm) {
-	    // 매퍼를 호출하여 codeNm에 해당하는 코드를 반환
-	    return bbsMasterMapper.selectCodeByCodeNm(codeNm);
+	public String selectCodeByCodeNm(String codeNm) {
+	    String code = bbsMasterMapper.selectCodeByCodeNm(codeNm);
+	    if (code == null) {
+	        throw new IllegalArgumentException("상위 게시판 이름 '" + codeNm + "'에 해당하는 CODE를 찾을 수 없습니다.");
+	    }
+	    return code;
 	}
 
 

@@ -137,396 +137,470 @@
 			</div>
 		</div>
 	</div>
+
 	<script>
-	
-	 document.addEventListener("DOMContentLoaded", function () {
-	        setTimeout(() => {
-	            toggleParentBoard(true);
-	        }, 1000);
-	        
-	        
-	    });
 
-	// 게시판 유형 선택
-		function toggleParentBoard(enableParentBoard) {
-	    	const parentBoardSelect = document.getElementById("parentBoard"); // 변수 정의 및 DOM 요소 가져오기
-	    	if (enableParentBoard) {
-	        	parentBoardSelect.disabled = false; // 활성화
-	    		} else {
-	        		parentBoardSelect.disabled = true; // 비활성화
-	    		}
-		}
+
+	document.addEventListener("DOMContentLoaded", function () {
+		// parentBoard 활성화/비활성화 함수
+	    function toggleParentBoard(isEnabled) {
+	        const parentBoardElement = document.getElementById("parentBoard");
+	        if (parentBoardElement) {
+	            parentBoardElement.disabled = !isEnabled; // disabled 속성 제어
+	        } else {
+	            console.error("상위 게시판 요소를 찾을 수 없습니다.");
+	        }
+	    }
+
+	    // 전역에서 접근 가능하도록 함수 등록
+	    window.toggleParentBoard = toggleParentBoard;
    
-		//상위게시판 선택
-		   document.addEventListener("DOMContentLoaded", function () {
-		      fetch('/egowaeyo/bbsMaster/combbs')
-		      .then(response => {
-		         if (!response.ok) {
-		            throw new Error(`HTTP error! status: ${response.status}`);
-		         }
-		         return response.json();
-		        
-		      })
-		      .then(data => {
-		         console.log("Fetched Data:", data); // 데이터 확인
-		         const parentBoardSelect = document.getElementById("parentBoard");
-		         parentBoardSelect.innerHTML = '<option value="">상위 게시판을 선택하세요</option>'; // 기본 옵션 추가
+	//상위게시판 데이터 가져오기
+		fetch('/egowaeyo/bbsMaster/combbs')
+		.then(response => {
+			if (!response.ok) {
+		    	throw new Error(`HTTP error! status: ${response.status}`);
+		    }
+		    return response.json();
+		})
+		.then(data => {
+			console.log("Fetched Data:", data); // 데이터 확인
+		    const parentBoardSelect = document.getElementById("parentBoard");
+		    parentBoardSelect.innerHTML = '<option value="">상위 게시판을 선택하세요</option>'; // 기본 옵션 추가
 
-		         data.forEach(item => {
-		            const option = document.createElement("option");
-		            option.value = item.CODE;
-		            option.textContent = item.CODE_NM; // 정확한 키 이름 사용
-		            parentBoardSelect.appendChild(option);
-		         });
-		      })
-		      .catch(error => console.error('Error fetching combbs:', error));
-		   });
+		    data.forEach(item => {
+		    	const option = document.createElement("option");
+		        option.value = item.CODE_NM;
+		        option.textContent = item.CODE_NM; // 정확한 키 이름 사용
+		        parentBoardSelect.appendChild(option);
+		    });
+		 })
+		 .catch(error => console.error('Error fetching combbs:', error));
    
    
    
-   //부서, 사원 불러오기(사용자별 설정)
-         document.addEventListener("DOMContentLoaded", function () {
-            const treeList = document.querySelector(".tree-list");
-            const deptList = document.querySelector(".dept-list");
-            const deptHeader = document.querySelector(".dept-list-header");
-            const searchBox = document.querySelector(".search-box input");
+   	//부서, 사원 불러오기(사용자별 설정)
+   	const treeList = document.querySelector(".tree-list");
+   	const deptList = document.querySelector(".dept-list");
+   	const deptHeader = document.querySelector(".dept-list-header");
+   	const searchBox = document.querySelector(".search-box input");
+   	
+   	let allUsers = []; // 모든 사원 데이터를 저장
+   	let selectedDepts = new Set(); // 선택된 부서 목록
+   	let selectedUsers = new Set(); // 선택된 사원 목록
+   	let currentDeptUsers = []; // 현재 선택된 부서의 사원 데이터를 저장
 
-            let allUsers = []; // 모든 사원 데이터를 저장
-            let selectedDepts = new Set(); // 선택된 부서 목록
-            let selectedUsers = new Set(); // 선택된 사원 목록
-            let currentDeptUsers = []; // 현재 선택된 부서의 사원 데이터를 저장
+	// 서버에서 데이터를 가져옴
+	fetch('/egowaeyo/bbsMaster/selectDeptEmp')
+	.then(response => {
+		if (!response.ok) {
+        	throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json(); // JSON 형식으로 변환
+    })
+    .then(data => {
+    	allUsers = data; // 모든 데이터를 저장
+        const uniqueOrgnztNm = [...new Set(data.map(item => item.orgnztNm))];
 
-            // 서버에서 데이터를 가져옴
-            fetch('/egowaeyo/bbsMaster/selectDeptEmp')
-               .then(response => {
-                  if (!response.ok) {
-                     throw new Error(`HTTP error! status: ${response.status}`);
-                  }
-                  return response.json(); // JSON 형식으로 변환
-               })
-               .then(data => {
-                  allUsers = data; // 모든 데이터를 저장
-                  const uniqueOrgnztNm = [...new Set(data.map(item => item.orgnztNm))];
+        // tree-list 초기화 및 orgnztNm 추가
+        uniqueOrgnztNm.forEach(orgnztNm => {
+			const newLi = document.createElement("li");
+           	newLi.textContent = orgnztNm;
+            treeList.appendChild(newLi);
+        });
 
-                  // tree-list 초기화 및 orgnztNm 추가
-                  
-                  uniqueOrgnztNm.forEach(orgnztNm => {
-                     const newLi = document.createElement("li");
-                     newLi.textContent = orgnztNm;
-                     treeList.appendChild(newLi);
-                  });
+        // tree-list의 클릭 이벤트 위임
+        treeList.addEventListener("click", function (event) {
+        	if (event.target.tagName === "LI") {
+            	const selectedOrgnztNm = event.target.textContent.trim();
 
-                  // tree-list의 클릭 이벤트 위임
-                  treeList.addEventListener("click", function (event) {
-                     if (event.target.tagName === "LI") {
-                        const selectedOrgnztNm = event.target.textContent.trim();
+                // 선택 상태 토글
+                if (selectedDepts.has(selectedOrgnztNm)) {
+                	selectedDepts.delete(selectedOrgnztNm);
+                    event.target.style.backgroundColor = ""; // 선택 해제
+                } else {
+                	selectedDepts.add(selectedOrgnztNm);
+                    event.target.style.backgroundColor = "#f0f8ff"; // 선택 추가
+                }
 
-                        // 선택 상태 토글
-                        if (selectedDepts.has(selectedOrgnztNm)) {
-                           selectedDepts.delete(selectedOrgnztNm);
-                           event.target.style.backgroundColor = ""; // 선택 해제
-                        } else {
-                           selectedDepts.add(selectedOrgnztNm);
-                           event.target.style.backgroundColor = "#f0f8ff"; // 선택 추가
-                        }
+                // 선택된 부서의 사원 필터링
+                currentDeptUsers = allUsers.filter(emp => selectedDepts.has(emp.orgnztNm));
+				// dept-list 업데이트
+                updateDeptList(currentDeptUsers);
+				// 체크박스와 라벨 업데이트
+                updateDeptHeader();
+			}
+		});
+	})
+    .catch(error => console.error("Error fetching data:", error));
 
-                        // 선택된 부서의 사원 필터링
-                        currentDeptUsers = allUsers.filter(emp => selectedDepts.has(emp.orgnztNm));
+    // 검색 이벤트 처리
+    searchBox.addEventListener("input", function () {
+    	const searchText = searchBox.value.trim().toLowerCase();
 
-                        // dept-list 업데이트
-                        updateDeptList(currentDeptUsers);
+        // 부서 선택 여부에 따라 필터링
+        const filteredUsers = (currentDeptUsers.length > 0 ? currentDeptUsers : allUsers).filter(user => user.userNm.toLowerCase().includes(searchText) || (user.ofcpsNm && user.ofcpsNm.toLowerCase().includes(searchText)));
 
-                        // 체크박스와 라벨 업데이트
-                        updateDeptHeader();
-                     }
-                  });
-               })
-               .catch(error => console.error("Error fetching data:", error));
-
-         // 검색 이벤트 처리
-            searchBox.addEventListener("input", function () {
-               const searchText = searchBox.value.trim().toLowerCase();
-
-               // 부서 선택 여부에 따라 필터링
-               const filteredUsers = (currentDeptUsers.length > 0 ? currentDeptUsers : allUsers).filter(user =>
-                  user.userNm.toLowerCase().includes(searchText) ||
-                  (user.ofcpsNm && user.ofcpsNm.toLowerCase().includes(searchText))
-               );
-
-               // dept-list 업데이트
-               updateDeptList(filteredUsers);
-            });
-
-            // dept-list 업데이트 함수
-            function updateDeptList(users) {
-               deptList.innerHTML = ""; // 기존 리스트 초기화
-               users.forEach(user => {
-                  const newLi = document.createElement("li");
-                  newLi.textContent = `${user.userNm} (${user.ofcpsNm || "직책 없음"})`;
-
-                  // 선택된 사원 배경색 유지
-                  if (selectedUsers.has(user.userNm)) {
-                     newLi.style.backgroundColor = "#f0f8ff";
-                  }
-
-                  // 클릭 이벤트 추가
-                  newLi.addEventListener("click", function () {
-                     if (selectedUsers.has(user.userNm)) {
-                        selectedUsers.delete(user.userNm);
-                        newLi.style.backgroundColor = ""; // 선택 해제
-                     } else {
-                        selectedUsers.add(user.userNm);
-                        newLi.style.backgroundColor = "#f0f8ff"; // 선택 추가
-                     }
-                  });
-
-                  deptList.appendChild(newLi);
-               });
-            }
-
-
-            // dept-header 업데이트 함수
-            function updateDeptHeader() {
-               deptHeader.innerHTML = ""; // 기존 헤더 초기화
-               selectedDepts.forEach(dept => {
-                  const checkbox = document.createElement("input");
-                  checkbox.type = "checkbox";
-                  checkbox.checked = false;
-
-                  const label = document.createElement("label");
-                  label.textContent = dept;
-                  label.style.fontWeight = "500";
-
-                    // 체크박스 이벤트 추가
-                     checkbox.addEventListener("change", function () {
-                         if (checkbox.checked) {
-                             // 부서 선택 시 해당 부서의 사원 추가
-                             allUsers
-                                 .filter(user => user.orgnztNm === dept)
-                                 .forEach(user => selectedUsers.add(user.userNm));
-                         } else {
-                             // 부서 선택 해제 시 해당 부서의 사원 제거
-                             allUsers
-                                 .filter(user => user.orgnztNm === dept)
-                                 .forEach(user => selectedUsers.delete(user.userNm));
-                         }
-
-                         // dept-list 업데이트
-                         updateDeptList(currentDeptUsers);
-                     });
-                    
-                  deptHeader.appendChild(checkbox);
-                  deptHeader.appendChild(label);
-               });
-            }
-         });
-   
-   
-       //권한 처리
-     	document.addEventListener("DOMContentLoaded", function () {
-     		const readButton = document.getElementById("readButton");
-     		const writeButton = document.getElementById("writeButton");
-     		const manageButton = document.getElementById("manageButton");
-     		const deptList = document.querySelector(".dept-list"); // 사원 리스트
-     		const saveButton = document.getElementById("saveButton");
-
-     		if (!deptList) {
-     			console.error("deptList 요소를 찾을 수 없습니다.");
-     			return;
-     		}
-
-     		function addToRightBox(buttons, selectedUsers) {
-     			buttons.forEach(button => {
-     				let rightBox;
-     				if (button.id === "readButton") {
-     					rightBox = document.querySelector(".right-panel .right-box:nth-child(1)");
-     				} else if (button.id === "writeButton") {
-     					rightBox = document.querySelector(".right-panel .right-box:nth-child(2)");
-     				} else if (button.id === "manageButton") {
-     					rightBox = document.querySelector(".right-panel .right-box:nth-child(3)");
-     				}
-
-     				if (rightBox) {
-     					selectedUsers.forEach(user => {
-     						if (!Array.from(rightBox.children).some(child => child.textContent === user)) {
-     							const newDiv = document.createElement("div");
-     							newDiv.textContent = user;
-     							rightBox.appendChild(newDiv);
-     						}
-     					});
-     				} else {
-     					console.error("right-box를 찾을 수 없습니다.");
-     				}
-     			});
-     		}
-
-     		function getSelectedUsers() {
-     			return Array.from(deptList.querySelectorAll("li.selected")).map(li => li.textContent.trim());
-     		}
-
-     		function handleButtonClick(buttons) {
-     			const selectedUsers = getSelectedUsers();
-     			if (selectedUsers.length === 0) {
-     				alert("선택된 사원이 없습니다.");
-     				return;
-     			}
-     			addToRightBox(buttons, selectedUsers);
-     		}
-
-     		if (readButton) {
-     			readButton.addEventListener("click", function (event) {
-     				event.preventDefault();
-     				handleButtonClick([readButton]);
-     			});
-     		} else {
-     			console.error("readButton 요소를 찾을 수 없습니다.");
-     		}
-
-     		if (writeButton) {
-     			writeButton.addEventListener("click", function (event) {
-     				event.preventDefault();
-     				handleButtonClick([readButton, writeButton]);
-     			});
-     		} else {
-     			console.error("writeButton 요소를 찾을 수 없습니다.");
-     		}
-
-     		if (manageButton) {
-     			manageButton.addEventListener("click", function (event) {
-     				event.preventDefault();
-     				handleButtonClick([readButton, writeButton, manageButton]);
-     			});
-     		} else {
-     			console.error("manageButton 요소를 찾을 수 없습니다.");
-     		}
-
-     		deptList.addEventListener("click", function (event) {
-     			const target = event.target;
-     			if (target.tagName === "LI") {
-     				target.classList.toggle("selected");
-     			}
-     		});
-
-     		if (saveButton) {
-     		    saveButton.addEventListener("click", function () {
-     		        const boardNameInput = document.getElementById("boardName");
-     		        const boardName = boardNameInput ? boardNameInput.value : "";
-     		        const boardType = document.querySelector('input[name="boardType"]:checked').value;
-     		        const parentBoardElement = document.getElementById("parentBoard");
-     		        const parentBoard = parentBoardElement ? parentBoardElement.value : "";
-     		        const useAtElement = document.querySelector('input[name="useAt"]:checked');
-     		        const useAt = useAtElement ? useAtElement.value : "Y";
-     		        const selectedRights = Array.from(document.querySelectorAll(".right-panel .right-box div"))
-     		            .map(div => div.textContent.trim());
-
-     		        if (!boardName) {
-     		            alert("게시판명을 입력하세요.");
-     		            return;
-     		        }
-
-     		        if (!parentBoard) {
-     		            alert("상위 게시판을 선택하세요.");
-     		            return;
-     		        }
-
-     		        const requestData = {
-     		            boardName: boardName,
-     		            boardType: boardType,
-     		            parentBoard: parentBoard,
-     		            useAt: useAt,
-     		            selectedRights: selectedRights
-     		        };
-
-     		        fetch('/egowaeyo/bbsMaster/saveBoard', {
-     		            method: "POST",
-     		            headers: {
-     		                "Content-Type": "application/json"
-     		            },
-     		            body: JSON.stringify(requestData)
-     		        })
-     		        .then(response => {
-     		            if (!response.ok) {
-     		                throw new Error(`HTTP error! status: ${response.status}`);
-     		            }
-     		            return response.json();
-     		        })
-     		        .then(data => {
-     		            if (data.success) {
-     		                alert("게시판이 성공적으로 저장되었습니다.");
-     		            } else {
-     		                alert("저장 중 오류가 발생했습니다: " + data.error);
-     		            }
-     		        })
-     		        .catch(error => {
-     		            console.error("Error saving board:", error);
-     		            alert("저장 중 오류가 발생했습니다.");
-     		        });
-     		    });
-     		} else {
-     		    console.error("saveButton 요소를 찾을 수 없습니다.");
-     		}
-     	});
         
-     	document.addEventListener("DOMContentLoaded", function () {
-     	 const saveButton = document.getElementById("saveButton");
+     // dept-header에서 체크박스 이벤트 처리 시
+        checkbox.addEventListener("change", function () {
+            const deptUsers = allUsers.filter(user => user.orgnztNm === dept);
 
-     	    if (saveButton) {
-     	        saveButton.addEventListener("click", function () {
-     	            const parentBoardSelect = document.getElementById("parentBoard");
+            if (checkbox.checked) {
+                deptUsers.forEach(user => selectedUsers.add(user.userNm));
+            } else {
+                deptUsers.forEach(user => selectedUsers.delete(user.userNm));
+            }
 
-     	            // parentBoard가 비활성화된 경우 처리
-     	            if (parentBoardSelect.disabled) {
-     	                console.log("parentBoard가 비활성화 상태입니다.");
-     	                return;
-     	            }
+            // 🔁 현재 필터링된 사용자 목록 기준으로 dept-list 다시 렌더링
+            deptUsers.forEach(user => {
+        const li = Array.from(deptList.children).find(item =>
+            item.textContent.includes(user.userNm)
+        );
+        if (li) {
+            if (checkbox.checked) {
+                li.classList.add("selected");
+                li.style.backgroundColor = "#f0f8ff";
+            } else {
+                li.classList.remove("selected");
+                li.style.backgroundColor = "";
+            }
+        }
+    });
 
-     	            const parentBoard = parentBoardSelect.value;
-     	            console.log("parentBoard 값:", parentBoard);
+            const searchText = searchBox.value.trim().toLowerCase();
+            const filteredUsers = (currentDeptUsers.length > 0 ? currentDeptUsers : allUsers).filter(user =>
+                user.userNm.toLowerCase().includes(searchText) ||
+                (user.ofcpsNm && user.ofcpsNm.toLowerCase().includes(searchText))
+            );
 
-     	            if (!parentBoard) {
-     	                alert("상위 게시판을 선택하세요.");
-     	                return;
-     	            }
-     	        });
-     	    } else {
-     	        console.error("saveButton 요소를 찾을 수 없습니다.");
-     	    }
-     	});
+            // 🧠 dept-list 업데이트로 선택 스타일 반영
+            updateDeptList(filteredUsers);
+        });
 
-     	document.addEventListener("DOMContentLoaded", function () {
-     	    const saveButton = document.getElementById("saveButton");
+	});
 
-     	    if (saveButton) {
-     	        saveButton.addEventListener("click", function () {
-     	            const parentBoardSelect = document.getElementById("parentBoard");
+    function addUserToRightBox(user) {
+  	  const readBox = document.querySelectorAll(".right-box")[0];
 
-     	            if (!parentBoardSelect) {
-     	                console.error("parentBoard 요소를 찾을 수 없습니다.");
-     	                alert("상위 게시판 선택 요소가 없습니다.");
-     	                return;
-     	            }
+  	  // 중복 방지 (이미 있는 ID면 추가 안 함)
+  	  if (readBox.querySelector(`[data-id="${user.emplyrId}"]`)) return;
 
-     	            if (parentBoardSelect.disabled) {
-     	                console.log("parentBoard가 비활성화 상태입니다.");
-     	                return;
-     	            }
+  	  const userDiv = document.createElement("div");
+  	  userDiv.textContent = `${user.userNm} (${user.ofcpsNm || "직책 없음"})`;
+  	  userDiv.dataset.id = user.emplyrId;
 
-     	            const parentBoard = parentBoardSelect.value;
-     	            console.log("parentBoard 값:", parentBoard);
+  	  readBox.appendChild(userDiv);
+  	}
+    // dept-list 업데이트 함수
+    function updateDeptList(users) {
+    	const selectedRights = [];
+    	deptList.innerHTML = ""; // 기존 리스트 초기화
+        users.forEach(user => {
+        	const newLi = document.createElement("li");
+            newLi.textContent = `${user.userNm} (${user.ofcpsNm || "직책 없음"})`;
+            newLi.dataset.id = user.emplyrId;
+            const userId= newLi.dataset.id;
 
-     	            if (!parentBoard) {
-     	                alert("상위 게시판을 선택하세요.");
-     	                return;
-     	            }
+            const readBox = document.querySelectorAll(".right-box")[0];
+            readBox.appendChild(newLi);
 
-     	            // 저장 로직 실행
-     	        });
-     	    } else {
-     	        console.error("saveButton 요소를 찾을 수 없습니다.");
-     	    }
-     	});
+            const displayText = newLi.textContent.trim();
 
 
+
+            // 선택된 사원 배경색 유지
+            if (selectedUsers.has(user.emplyrId)) {
+            	newLi.classList.add("selected");
+            	newLi.style.backgroundColor = "#f0f8ff";
+            }
+
+            // 클릭 이벤트 추가
+            newLi.addEventListener("click", function () {
+            	if (selectedUsers.has(user.userNm)) {
+                	selectedUsers.delete(user.userNm);
+                    newLi.style.backgroundColor = ""; // 선택 해제
+                    newLi.classList.remove("selected"); // 선택 해제
+
+                } else {
+                	selectedUsers.add(user.userNm);
+                 	newLi.style.backgroundColor = "#f0f8ff"; // 선택 추가
+                 	newLi.classList.add("selected"); // 선택 추가
+                 	
+                 	addUserToRightBox(user);
+   
+                }
+            	
+            	 // 💡 여기서 관련 부서의 체크박스 상태를 갱신!
+                const deptName = user.orgnztNm;
+                const deptUsers = allUsers.filter(u => u.orgnztNm === deptName);
+                const allSelected = deptUsers.every(u => selectedUsers.has(u.userNm));
+
+                const checkbox = Array.from(deptHeader.querySelectorAll("input[type='checkbox']")).find(cb => {
+                    return cb.nextSibling?.textContent === deptName;
+                });
+
+                if (checkbox) checkbox.checked = allSelected;
+            });
+            deptList.appendChild(newLi);
+        });
+	}
+    
+
+
+
+   	// dept-header 업데이트 함수
+   	function updateDeptHeader() {
+		deptHeader.innerHTML = ""; // 기존 헤더 초기화
+        selectedDepts.forEach(dept => {
+        	const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.checked = false;
+
+            const label = document.createElement("label");
+            label.textContent = dept;
+            label.style.fontWeight = "500";
+            
+            const searchText = searchBox.value.trim().toLowerCase();
+            const filteredUsers = (currentDeptUsers.length > 0 ? currentDeptUsers : allUsers).filter(user =>
+                user.userNm.toLowerCase().includes(searchText) ||
+                (user.ofcpsNm && user.ofcpsNm.toLowerCase().includes(searchText))
+            );
+
+            
+            // 체크박스 이벤트 추가
+            checkbox.addEventListener("change", function () {
+            	if (checkbox.checked) {
+                	// 부서 선택 시 해당 부서의 사원 추가
+                    allUsers.filter(user => user.orgnztNm === dept).forEach(user => selectedUsers.add(user.userNm));
+                    } else {
+                    	// 부서 선택 해제 시 해당 부서의 사원 제거
+                    	allUsers.filter(user => user.orgnztNm === dept).forEach(user => selectedUsers.delete(user.userNm));
+                    }
+
+                    // dept-list 업데이트
+                    updateDeptList(currentDeptUsers);
+         	});
+            deptHeader.appendChild(checkbox);
+           	deptHeader.appendChild(label);   	
+        });
+    }
+   	function addToRightBox(buttons, selectedUsers) {
+			buttons.forEach(button => {
+				let rightBox;
+				if (button.id === "readButton") {
+					rightBox = document.querySelector(".right-panel .right-box:nth-child(1)");
+				} else if (button.id === "writeButton") {
+					rightBox = document.querySelector(".right-panel .right-box:nth-child(2)");
+				} else if (button.id === "manageButton") {
+					rightBox = document.querySelector(".right-panel .right-box:nth-child(3)");
+				}
+
+				if (rightBox) {
+					selectedUsers.forEach(user => {
+						if (!Array.from(rightBox.children).some(child => child.textContent === user)) {
+							const newDiv = document.createElement("div");
+							newDiv.textContent = user;
+							rightBox.appendChild(newDiv);
+						}
+					});
+				} else {
+					console.error("right-box를 찾을 수 없습니다.");
+				}
+			});
+		}
+
+		function getSelectedUsers() {
+			return Array.from(deptList.querySelectorAll("li.selected")).map(li => li.textContent.trim());
+		}
+
+		function handleButtonClick(buttons) {
+			const selectedUsers = getSelectedUsers();
+			if (selectedUsers.length === 0) {
+				alert("선택된 사원이 없습니다.");
+				return;
+			}
+			addToRightBox(buttons, selectedUsers);
+		}
+
+		if (readButton) {
+			readButton.addEventListener("click", function (event) {
+				event.preventDefault();
+				handleButtonClick([readButton]);
+			});
+		} else {
+			console.error("readButton 요소를 찾을 수 없습니다.");
+		}
+
+		if (writeButton) {
+			writeButton.addEventListener("click", function (event) {
+				event.preventDefault();
+				handleButtonClick([readButton, writeButton]);
+			});
+		} else {
+			console.error("writeButton 요소를 찾을 수 없습니다.");
+		}
+
+		if (manageButton) {
+			manageButton.addEventListener("click", function (event) {
+				event.preventDefault();
+				handleButtonClick([readButton, writeButton, manageButton]);
+			});
+		} else {
+			console.error("manageButton 요소를 찾을 수 없습니다.");
+		}
+		
+		// 오른쪽 박스에서 사용자 제거 이벤트 추가
+	    const rightBoxes = document.querySelectorAll(".right-panel .right-box");
+    rightBoxes.forEach((box, index) => {
+        box.addEventListener("click", function (event) {
+            const target = event.target;
+            if (target.tagName === "DIV") {
+                const user = target.textContent;
+
+                // 읽기 박스에서 삭제 시
+                if (index === 0) {
+                    box.removeChild(target);
+                }
+
+                // 쓰기 박스에서 삭제 시
+                if (index === 1) {
+                    box.removeChild(target);
+                    const manageBox = document.querySelector(".right-panel .right-box:nth-child(3)");
+                    Array.from(manageBox.children).forEach(child => {
+                        if (child.textContent === user) {
+                            manageBox.removeChild(child);
+                        }
+                    });
+                }
+
+                // 관리 박스에서 삭제 시
+                if (index === 2) {
+                	 box.removeChild(target);
+
+                     // 쓰기 박스와 읽기 박스에서도 삭제
+                     const writeBox = document.querySelector(".right-panel .right-box:nth-child(2)");
+                     const readBox = document.querySelector(".right-panel .right-box:nth-child(1)");
+
+                     [writeBox, readBox].forEach(otherBox => {
+                         Array.from(otherBox.children).forEach(child => {
+                             if (child.textContent === user) {
+                                 otherBox.removeChild(child);
+                             }
+                         });
+                     });
+                }
+            }
+        });
+    });
+   
+   
+//권한 처리
+ const saveButton = document.getElementById("saveButton");
+    if (saveButton) {
+    	 saveButton.addEventListener("click", function () {
+    		 const boardNameInput = document.getElementById("boardName");
+			  const boardName = boardNameInput ? boardNameInput.value : "";
+			  const boardType = document.querySelector('input[name="boardType"]:checked')?.value;
+			  const parentBoardElement = document.getElementById("parentBoard");
+			  const parentBoard = parentBoardElement ? parentBoardElement.value : "";
+			  const useAt = document.querySelector('input[name="useAt"]:checked')?.value || "Y";
+			  const rightBoxes = document.querySelectorAll(".right-panel .right-box");
+				
+			  const rightsMap = {
+					  read: Array.from(rightBoxes[0].children).map(div => div.dataset.id),
+					  write: Array.from(rightBoxes[1].children).map(div => div.dataset.id),
+					  manage: Array.from(rightBoxes[2].children).map(div => div.dataset.id)
+			  };
+			  
+			  ["읽기", "쓰기", "관리"].forEach((label, i) => {
+				  Array.from(rightBoxes[i].children).forEach(div => {
+				    console.log(`${label} 권한 박스 사용자 →`, div.textContent.trim(), "ID:", div.dataset.id);
+				  });
+				});
+
+			  const allUsers = new Set([...rightsMap.read, ...rightsMap.write, ...rightsMap.manage]);
+			  const selectedRights = [];
+
+			  allUsers.forEach(user => {
+			    const hasRead = rightsMap.read.includes(user);
+			    const hasWrite = rightsMap.write.includes(user);
+			    const hasManage = rightsMap.manage.includes(user);
+
+			    let authorCode = "A-001"; // 기본: 읽기만
+			    if (hasWrite && hasManage) {
+			      authorCode = "A-003";
+			    } else if (hasWrite) {
+			      authorCode = "A-002";
+			    }
+
+			    selectedRights.push({
+			      emplyrId: user,
+			      authorCode: authorCode
+			     /*  displayName: findDisplayNameById(user)  */
+
+			    });
+			  });
+
+			    
+			    console.log("선택된 권한:", selectedRights);
+		       
+			  if (!boardName) {
+				  alert("게시판명을 입력하세요.");
+				  return;
+			  }
+
+			  if (!parentBoard) {
+				  alert("상위 게시판을 선택하세요.");
+				  return;
+			  }
+
+			  if (selectedRights.length === 0) {
+			       alert("권한을 선택하세요.");
+			       return;
+			   }
+
+			  const requestData = {
+				  boardName: boardName,
+				  boardType: boardType,
+				  parentBoard: parentBoard,
+				  useAt: useAt,
+				  selectedRights: selectedRights
+			  };
+
+			  fetch('/egowaeyo/bbsMaster/saveBoard', {
+				  method: "POST",
+				  headers: {
+					  "Content-Type": "application/json"
+				  },
+				  body: JSON.stringify(requestData)
+			  })
+				  .then(response => {
+					  if (!response.ok) {
+						  throw new Error(`HTTP error! status: ${response.status}`);
+					  }
+					  return response.json();
+				  })
+				  .then(data => {
+					  if (data.success) {
+						  alert("게시판이 성공적으로 저장되었습니다.");
+					  } else {
+						  alert("저장 중 오류가 발생했습니다: " + data.error);
+					  }
+				  })
+				  .catch(error => alert(`저장 중 오류가 발생했습니다: ${error.message}`));
+         });
+
+} else {
+console.error("saveButton 요소를 찾을 수 없습니다.");
+}
+    
+});
+	
+
+     			
+
+   
    </script>
 
 	<style>

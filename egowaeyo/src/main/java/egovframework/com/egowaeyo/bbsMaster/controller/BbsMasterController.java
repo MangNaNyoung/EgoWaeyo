@@ -139,11 +139,9 @@ public class BbsMasterController {
 	        logger.info("게시판 정보 저장 완료: {}", boardMaster);
 
 	        // 권한 결정 및 insertBBSMasterAuth 실행
-	        String authorCode = determineAuthorCode(selectedRights);
 	        BoardMasterVO auth = new BoardMasterVO();
 	        auth.setEmplyrId(currentUserId);
 	        auth.setBbsId(bbsId);
-	        auth.setAuthorCode(authorCode);
 	        bbsMasterService.insertBBSMasterAuth(auth);
 	        logger.info("권한 정보 저장 완료: {}", auth);
 
