@@ -1,235 +1,228 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}"
-  >
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
 <section layout:fragment="content">
-<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-<style>
-body {
-    font-family: "42dot Sans", sans-serif;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <style>
+    body {
+      font-family: "42dot Sans", sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-:root{
-  --file-title-color: #999999;
-}
+    :root {
+      --file-title-color: #999999;
+    }
 
-.main-container{
-  display: flex;
-  margin: 25px;
-  flex-direction: column;
-  color: #000 !important;
-}
+    .main-container {
+      display: flex;
+      margin: 25px;
+      flex-direction: column;
+      color: #000 !important;
+    }
 
-.main-first-section{
-  display: flex;
-  justify-content: space-between;
-}
+    .main-first-section {
+      display: flex;
+      justify-content: space-between;
+    }
 
-.main-small-title{
-  display: block;
-  padding-bottom: 25px;
-}
+    .main-small-title {
+      display: block;
+      padding-bottom: 25px;
+    }
 
-.main-header-title{
-  display: block;
-  font-size: 30px;
-  font-weight: bold;
-}
+    .main-header-title {
+      display: block;
+      font-size: 30px;
+      font-weight: bold;
+    }
 
-.admin-user-sections{
-  display: flex;
-  gap: 40px;
-}
+    .admin-user-sections {
+      display: flex;
+      gap: 40px;
+    }
 
-.left-admin-user-info{
-  width: 33%;
-}
+    .left-admin-user-info {
+      width: 33%;
+    }
 
-.user-info-title{
-  font-weight: bold;
-  font-size: 23px;
-  padding: 35px 0 10px 0;
-}
+    .user-info-title {
+      font-weight: bold;
+      font-size: 23px;
+      padding: 35px 0 10px 0;
+    }
 
-.user-info-personal{
-  display: flex;
-  flex-direction: column;
-}
+    .user-info-personal {
+      display: flex;
+      flex-direction: column;
+    }
 
-.user-info-detail {
-  margin-left: auto;
-  margin-bottom: 25px;
-}
+    .user-info-detail {
+      margin-left: auto;
+      margin-bottom: 25px;
+    }
 
-.user-info-detail-img {
-  margin-left: auto;
-  margin-bottom: 25px;
-  display: flex;
-  justify-content: flex-start;
-}
+    .user-info-detail-img {
+      margin-left: auto;
+      margin-bottom: 25px;
+      display: flex;
+      justify-content: flex-start;
+    }
 
-.input-container {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
+    .input-container {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
 
-.user-info-detail p, .input-container p, .user-info-tag p {
-  text-align: left;
-  width: 100%;
-  font-size: 13px;
-  color: var(--file-title-color);
-  margin-top: 10px;
-  width: 200px;
-}
+    .user-info-detail p,
+    .input-container p,
+    .user-info-tag p {
+      text-align: left;
+      width: 100%;
+      font-size: 13px;
+      color: var(--file-title-color);
+      margin-top: 10px;
+      width: 200px;
+    }
 
-.user-info-tag {
-  margin-left: 110px;
-}
+    .user-info-tag {
+      margin-left: 110px;
+    }
 
-.user-info-tag p:first-child{
-  margin-top: 10px;
-}
+    .user-info-tag p:first-child {
+      margin-top: 10px;
+    }
 
-.user-info-detail input {
-  width: 200px;
-  margin-left: 20px;
-}
+    .user-info-detail input {
+      width: 200px;
+      margin-left: 20px;
+    }
 
-.user-info-detail select {
-  width: 200px;
-  height: 25px;
-  margin-left: 20px;
-}
+    .user-info-detail select {
+      width: 200px;
+      height: 25px;
+      margin-left: 20px;
+    }
 
-.user-info-detail-img #btnCan1, .user-info-detail-img #btnCan2{
-  width: 100px;
-  height: 25px;
-}
+    .user-info-detail-img #btnCan1,
+    .user-info-detail-img #btnCan2 {
+      width: 100px;
+      height: 25px;
+    }
 
-.user-info-detail #btnIns {
-  width: 30px;
-  height: 30px;
-  margin-left: 20px;
-}
+    .user-info-detail #btnIns {
+      width: 30px;
+      height: 30px;
+      margin-left: 20px;
+    }
 
-.user-info-detail button {
-  width: 30px;
-  height: 30px;
-}
+    .user-info-detail button {
+      width: 30px;
+      height: 30px;
+    }
 
-.user-info-detail-img input[type="file"] {
-  width:0; 
-  height:0;
-  padding:0;
-  overflow:"hidden"; 
-  border:0;
-}
+    .user-info-detail-img input[type="file"] {
+      width: 0;
+      height: 0;
+      padding: 0;
+      overflow: "hidden";
+      border: 0;
+    }
 
-.file-upload-box{
-  width: 200px;
-  height: 130px;
-  margin-left: 24px;
-  display: flex;
-  flex-direction: column;
-}
+    .file-upload-box {
+      width: 200px;
+      height: 130px;
+      margin-left: 24px;
+      display: flex;
+      flex-direction: column;
+    }
 
-.file-upload-section{
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-}
+    .file-upload-section {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
 
-.right-admin-user-info{
-  width: 33%;
-}
+    .right-admin-user-info {
+      width: 33%;
+    }
 
-.modal-padding {
-  padding: 25px;
-}
+    .modal-padding {
+      padding: 25px;
+    }
 
-.alert-modal {
-  display: none;
-  position: fixed;
-  z-index: 100;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.4);
-}
+    .alert-modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.4);
+    }
 
-.alert-modal-info{
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  border: 1px solid #888;
-  width: 310px;            
-  height: 180px;
-  border-radius: 15px;
-  background-color: #ffffff;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-}
+    .alert-modal-info {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: 1px solid #888;
+      width: 310px;
+      height: 180px;
+      border-radius: 15px;
+      background-color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
 
-.bi {
-    width: auto !important;
-    height: auto !important;
-}
-</style>
+    .bi {
+      width: auto !important;
+      height: auto !important;
+    }
+  </style>
 
-<div class="main-container">
-  <div class="main-first-section">
-    <div class="main-small-title">
-      사용자 관리
+  <div class="main-container">
+    <div class="main-first-section">
+      <div class="main-small-title">사용자 관리</div>
+      <button class="!text-[19px] !rounded-sm !w-20 !h-11 !bg-blue-400 !text-white !cursor-pointer">등록</button>
     </div>
-    <button class="!text-[19px] !rounded-sm !w-20 !h-11 !bg-blue-400 !text-white !cursor-pointer">등록</button>
-  </div>
-  <div class="main-header-title">
-    사용자 등록
-  </div>
-  <div class="admin-user-sections">
-    <div class="left-admin-user-info">
-      <div class="user-info-title">
-        기본 정보
-      </div>
-      <div class="user-info-personal">
-        <div class="user-info-detail">
-            <span>아이디</span>
-            <input type="text" class="!border !border-gray-400 !rounded-sm">
-        </div>
-        <div class="user-info-detail">
-            <span>비밀번호</span>
-            <input type="password" class="!border !border-gray-400 !rounded-sm">
-        </div>
-        <div class="user-info-detail">
-            <span>비밀번호 확인</span>
-            <input type="password" class="!border !border-gray-400 !rounded-sm">
+    <div class="main-header-title">사용자 등록</div>
+    <div class="admin-user-sections">
+      <div class="left-admin-user-info">
+        <div class="user-info-title">기본 정보</div>
+        <div class="user-info-personal">
+          <div class="user-info-detail">
+            <span>아이디</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
+          </div>
+          <div class="user-info-detail">
+            <span>비밀번호</span> <input type="password" class="!border !border-gray-400 !rounded-sm">
+          </div>
+          <div class="user-info-detail">
+            <span>비밀번호 확인</span> <input type="password" class="!border !border-gray-400 !rounded-sm">
             <div class="user-info-tag">
-              <p> * 8자 이내로 만들어주세요. </p>
+              <p>* 8자 이내로 만들어주세요.</p>
             </div>
-        </div>
-        <div class="user-info-detail">
-            <span>이름</span>
-            <input type="text" class="!border !border-gray-400 !rounded-sm">
-        </div>
-        <div class="user-info-detail-img">
+          </div>
+          <div class="user-info-detail">
+            <span>이름</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
+          </div>
+          <div class="user-info-detail-img">
             <span>사진</span>
             <div class="input-container">
               <div class="file-upload-box">
                 <div class="file-upload-section">
                   <input type="file" accept=".png" name="pfile" id="pfile">
-                  <label for="pfile"> <!--프로필 파일-->
+                  <label for="pfile">
+                    <!--프로필 파일-->
                     <!-- <img src="/images/account_circle.png" class="cursor-pointer pImage" id="ppreviewImage" style="width: 130px; height: 100px;" alt="사용자 사진"> -->
-	                 <img src="assets/images/icon/account_circle.svg" class="cursor-pointer pImage" id="ppreviewImage" style="width: 130px; height: 100px;" alt="사용자 사진"> 
+                    <img src="assets/images/icon/account_circle.svg" class="cursor-pointer pImage" id="ppreviewImage"
+                      style="width: 130px; height: 100px;" alt="사용자 사진">
                   </label>
                   <div class="image-preview">
                     <!--<img id="previewImage" src="#" alt="이미지 미리보기" style="display: none;">-->
@@ -239,282 +232,305 @@ body {
                 <p>* 파일 지원 형식 : png</p>
               </div>
             </div>
-        </div>
-        <div class="user-info-detail-img">
-          <span>결재</span>
-          <div class="input-container">
-            <div class="file-upload-box">
-              <div class="file-upload-section">
-                <input type="file" accept=".png" name="sfile" id="sfile">
-                <label for="sfile"> <!--결재 파일-->
-                  <img src="assets/images/icon/Input_Inner.png" class="cursor-pointer sImage" id="spreviewImage" style="width: 130px; height: 110px;" alt="사용자 결재 사진">
-                </label>
-                <div class="image-preview">
+          </div>
+          <div class="user-info-detail-img">
+            <span>결재</span>
+            <div class="input-container">
+              <div class="file-upload-box">
+                <div class="file-upload-section">
+                  <input type="file" accept=".png" name="sfile" id="sfile">
+                  <label for="sfile">
+                    <!--결재 파일--> <img src="assets/images/icon/Input_Inner.png" class="cursor-pointer sImage"
+                      id="spreviewImage" style="width: 130px; height: 110px;" alt="사용자 결재 사진">
+                  </label>
+                  <div class="image-preview">
                     <!--<img id="previewImage" src="#" alt="이미지 미리보기" style="display: none;">-->
+                  </div>
+                  <button id="btnCan2" class="!border !rounded-sm !cursor-pointer">초기화</button>
                 </div>
-                <button id="btnCan2" class="!border !rounded-sm !cursor-pointer">초기화</button>
-              </div>
                 <p>* 파일 지원 형식 : png</p>
               </div>
             </div>
-        </div>
-        <div class="user-info-detail">
-          <span>생년월일</span>
-          <input type="date" class="!border !border-gray-400 !rounded-sm">
-        </div>
-        <div class="user-info-detail">
-          <span>주소</span>
-          <input type="text" class="!border !border-gray-400 !rounded-sm">
-        </div>
-        <div class="user-info-detail">
-          <span>연락처</span>
-          <input type="tel" class="!border !border-gray-400 !rounded-sm">
-        </div>
-        <div class="user-info-detail">
-          <span>이메일</span>
-          <input type="email" class="!border !border-gray-400 !rounded-sm">
-        </div>
-      </div>
-    </div>
-    <div class="right-admin-user-info">
-      <div class="user-info-title">
-        조직 정보
-      </div>
-      <div class="user-info-personal">
-        <div class="user-info-detail">
-          <div class="user-info-detail">
-            <span>소속</span>
-            <button id="btnIns" class="!border !rounded-sm !cursor-pointer">+</button> 
-            <input type="text" class="!border !border-gray-400 !rounded-sm !text-gray-500" placeholder="소속을 선택해주세요." id="selectedDepartment" readonly>
           </div>
           <div class="user-info-detail">
-            <span>직급</span>
-                <select name="rank" class="!border !border-gray-400 !rounded-sm">
-                  <option value="" selected disabled hidden>직급을 선택해주세요.</option>
-                  <option value="CEO">사장</option>
-                </select>
+            <span>생년월일</span> <input type="date" class="!border !border-gray-400 !rounded-sm">
           </div>
           <div class="user-info-detail">
-            <sapn>사번</sapn>
-            <input type="text" class="!border !border-gray-400 !rounded-sm">
+            <span>주소</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
+          </div>
+          <div class="user-info-detail">
+            <span>연락처</span> <input type="tel" class="!border !border-gray-400 !rounded-sm">
+          </div>
+          <div class="user-info-detail">
+            <span>이메일</span> <input type="email" class="!border !border-gray-400 !rounded-sm">
+          </div>
+        </div>
+      </div>
+      <div class="right-admin-user-info">
+        <div class="user-info-title">조직 정보</div>
+        <div class="user-info-personal">
+          <div class="user-info-detail">
+            <div class="user-info-detail">
+              <span>소속</span>
+              <button id="btnIns" class="!border !rounded-sm !cursor-pointer">+</button>
+              <input type="text" class="!border !border-gray-400 !rounded-sm !text-gray-500" placeholder="소속을 선택해주세요."
+                id="selectedDepartment" readonly>
+            </div>
+            <div class="user-info-detail">
+              <span>직급</span> 
+              <select name="rank" class="!border !border-gray-400 !rounded-sm" id="selectposition">
+                <option value="" selected>직급을 선택해주세요.</option>
+                <option value=""></option>
+              </select>
+            </div>
+            <div class="user-info-detail">
+              <sapn>사번</sapn>
+              <input type="text" class="!border !border-gray-400 !rounded-sm">
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<!-- 소속 추가 모달 -->
-<!-- 배경 -->
-<div class="fixed inset-0 bg-transparent flex items-center justify-center z-50 hidden modal-title" id="modal">
-  <!-- 모달 본체 -->
-  <div class="!border !rounded-sm !bg-white modal-padding !shadow-lg !max-w-2xl !w-full">
-    <div class="!flex !justify-between !items-center !mb-6">
-      <h2 class="!text-xl !font-bold">소속 선택</h2>
-      <div class="!text-xl !cursor-pointer" id="modal-close">
-        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-lg" viewBox="0 0 16 16">
-  			<path d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z"/>
-		</svg>
+  <!-- 소속 추가 모달 -->
+  <!-- 배경 -->
+  <div class="fixed inset-0 bg-transparent flex items-center justify-center z-50 hidden modal-title" id="modal">
+    <!-- 모달 본체 -->
+    <div class="!border !rounded-sm !bg-white modal-padding !shadow-lg !max-w-2xl !w-full">
+      <div class="!flex !justify-between !items-center !mb-6">
+        <h2 class="!text-xl !font-bold">소속 선택</h2>
+        <div class="!text-xl !cursor-pointer" id="modal-close">
+          <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-x-lg"
+            viewBox="0 0 16 16">
+            <path
+              d="M2.146 2.854a.5.5 0 1 1 .708-.708L8 7.293l5.146-5.147a.5.5 0 0 1 .708.708L8.707 8l5.147 5.146a.5.5 0 0 1-.708.708L8 8.707l-5.146 5.147a.5.5 0 0 1-.708-.708L7.293 8z" />
+          </svg>
+        </div>
+      </div>
+
+      <div class="flex gap-2 mb-6">
+        <input type="text" class="!flex-1 !border !border-gray-300 !rounded-sm !px-3 !py-2" placeholder="검색"
+          id="search-input">
+        <button class="!px-3 !py-2 !cursor-pointer" id="modal-search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-search"
+            viewBox="0 0 16 16">
+            <path
+              d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="!border !border-gray-300 !rounded-sm p-4 mb-6 min-h-[200px]">
+        <ul class="!space-y-2" id="department-list">
+          <!-- <li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="임원">• 임원</li> -->
+        </ul>
+      </div>
+
+      <div class="flex justify-end gap-2">
+        <button class="!bg-black !text-white !px-6 !py-2 !rounded !cursor-pointer !hover:bg-gray-800"
+          id="BtnConfirm">선택</button>
+        <button
+          class="!bg-white !text-black !border !border-gray-300 !px-6 !py-2 !rounded !cursor-pointer !hover:bg-gray-50"
+          id="BtnCan">취소</button>
       </div>
     </div>
-    
-    <div class="flex gap-2 mb-6">
-      <input type="text" class="!flex-1 !border !border-gray-300 !rounded-sm !px-3 !py-2" placeholder="검색" id="search-input">
-      <button class="!px-3 !py-2 !cursor-pointer" id="modal-search">
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-  			<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-		</svg>
-      </button>
-    </div>
-    
-    <div class="!border !border-gray-300 !rounded-sm p-4 mb-6 min-h-[200px]">
-      <ul class="!space-y-2" id="department-list">
-        <li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="임원">• 임원</li>
-        <li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="인사팀">• 인사팀</li>
-        <li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="재무팀">• 재무팀</li>
-        <li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="개발팀">• 개발팀</li>
-        <li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="품질보증팀">• 품질보증팀</li>
-        <li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="기획팀">• 기획팀</li>
-        <li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="영업팀">• 영업팀</li>
-      </ul>
-    </div>
-    
-    <div class="flex justify-end gap-2">
-      <button class="!bg-black !text-white !px-6 !py-2 !rounded !cursor-pointer !hover:bg-gray-800" id="BtnConfirm">선택</button>
-      <button class="!bg-white !text-black !border !border-gray-300 !px-6 !py-2 !rounded !cursor-pointer !hover:bg-gray-50" id="BtnCan">취소</button>
+  </div>
+
+  <div class="alert-modal">
+    <div class="alert-modal-info">
+      <div class="!pb-7 !text-xl">소속을 다시 선택해주세요.</div>
+      <button type="button"
+        class="!bg-black !text-white !px-6 !py-2 !rounded !cursor-pointer !hover:bg-gray-800 !text-base btnOK">확인</button>
     </div>
   </div>
-</div>
-
-<div class="alert-modal">
-  <div class="alert-modal-info">
-    <div class="!pb-7 !text-xl">소속을 다시 선택해주세요.</div>
-    <button type="button" class="!bg-black !text-white !px-6 !py-2 !rounded !cursor-pointer !hover:bg-gray-800 !text-base btnOK">확인</button>
-  </div>
-</div>
-<script>
-
-const modal = document.getElementById("modal"); // 모달 전체
-const btnConfirm = document.getElementById("BtnConfirm"); // 모달 선택버튼
-const btnCan = document.getElementById("BtnCan"); // 모달 취소버튼
-const btnIns = document.getElementById("btnIns"); // 모달 열기버튼 (+)
-const modalClose = document.getElementById("modal-close"); // 모달 닫기버튼 (X)
-const searchInput = document.getElementById("search-input"); // 검색 입력창
-const departmentList = document.getElementById("department-list"); // 소속 목록
-const selectedDepartment = document.getElementById("selectedDepartment"); // 선택된 소속 표시창
-const alertModal = document.querySelector(".alert-modal");
-const btnOK = document.querySelector(".btnOK");
-const btnCan1 = document.getElementById("btnCan1");
-const btnCan2 = document.getElementById("btnCan2");
+  <script>
+    const modal = document.getElementById("modal"); // 모달 전체
+    const btnConfirm = document.getElementById("BtnConfirm"); // 모달 선택버튼
+    const btnCan = document.getElementById("BtnCan"); // 모달 취소버튼
+    const btnIns = document.getElementById("btnIns"); // 모달 열기버튼 (+)
+    const modalClose = document.getElementById("modal-close"); // 모달 닫기버튼 (X)
+    const searchInput = document.getElementById("search-input"); // 검색 입력창
+    const departmentList = document.getElementById("department-list"); // 소속 목록
+    const selectedDepartment = document.getElementById("selectedDepartment"); // 선택된 소속 표시창
+    const alertModal = document.querySelector(".alert-modal");
+    const btnOK = document.querySelector(".btnOK");
+    const btnCan1 = document.getElementById("btnCan1");
+    const btnCan2 = document.getElementById("btnCan2");
+    const selectPosition = document.getElementById("selectposition");
 
 
-const departments = [
-  "임원",
-  "인사팀",
-  "재무팀",
-  "개발팀",
-  "품질보증팀",
-  "기획팀",
-  "영업팀"
-];
+    const departments = [
+      "임원",
+      "인사팀",
+      "재무팀",
+      "개발팀",
+      "품질보증팀",
+      "기획팀",
+      "영업팀"
+    ];
 
-let currentSelectedDepartment = "";
+    let currentSelectedDepartment = "";
 
-function closeModal() {
-  modal.classList.add("hidden");
-  const deptItems = DepartmentList.querySelectorAll("div[data-dept]");
-  deptItems.forEach(item=>{
-    item.classList.remove("bg-blue-300");
-  });
-  currentSelectedDepartment = "";
-
-}
-
-modalClose.addEventListener("click", closeModal);
-btnCan.addEventListener("click", closeModal);
-
-btnIns.addEventListener("click", () => {
-  modal.classList.remove("hidden");
-})
-
-departmentList.addEventListener("click", (e) => {
-  const deptItems = e.target.closest("[data-dept]");
-  if (deptItems){
-    const prevSelected = departmentList.querySelector(".bg-blue-300");
-    if (prevSelected) {
-      prevSelected.classList.remove("bg-blue-300");
+    function closeModal() {
+      modal.classList.add("hidden");
+      const deptItems = departmentList.querySelectorAll("div[data-dept]");
+      deptItems.forEach(item => {
+        item.classList.remove("bg-blue-300");
+      });
+      currentSelectedDepartment = "";
+      $('#department-list').children().remove();
     }
 
-    deptItems.classList.add("bg-blue-300");
-    currentSelectedDepartment = deptItems.getAttribute("data-dept");
-  }
-})
+    modalClose.addEventListener("click", closeModal);
+    btnCan.addEventListener("click", closeModal);
 
-btnConfirm.addEventListener("click", () => {
-  if (currentSelectedDepartment) {
-    selectedDepartment.value = currentSelectedDepartment;
-    closeModal();
-  } else {
-    //alert("소속을 선택해주세요.");
-    alertModal.style.display = 'block';
-  }
-})
+    btnIns.addEventListener("click", () => {
+      modal.classList.remove("hidden");
+      $.ajax("deptlist")
+        .then((datas) => {
+          datas.forEach(e => {
+            $('#department-list').append(
+              `<li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="${e.departmentsId}">${e.departmentsName}</li>`
+              )
+          })
+        })
 
-btnOK.addEventListener("click", () => {
-  alertModal.style.display = 'none';
-})
+    })
 
-function searchDepartments() {
+    // 모달에서 부서를 클릭했을 때
+    departmentList.addEventListener("click", (e) => {
+      const deptItems = e.target.closest("[data-dept]");
+      if (deptItems) {
+        const prevSelected = departmentList.querySelector(".bg-blue-300");
+        if (prevSelected) {
+          prevSelected.classList.remove("bg-blue-300");
+        }
 
-  const searchTerm = searchInput.value.toLowerCase().trim();
+        deptItems.classList.add("bg-blue-300");
+        // currentSelectedDepartment = deptItems.getAttribute("data-dept");
+      }
+    })
 
-  if(searchTerm === ""){
-    showAllDepartments();
-    return;
-  }
+    // 모달에서 선택버튼을 클릭 시
+    btnConfirm.addEventListener("click", () => {
+      const prevSelected = departmentList.querySelector(".bg-blue-300");
+      if (prevSelected) {
+        selectedDepartment.value = prevSelected.innerHTML;
+        selectedDepartment.setAttribute("data-dept", prevSelected.getAttribute("data-dept"));
+        closeModal();
+      } else {
+        //alert("소속을 선택해주세요.");
+        alertModal.style.display = 'block';
+      }
+    })
 
-  const filterdDepts = departments.filter(dept => 
-    dept.toLowerCase().includes(searchTerm)
-  );
+    btnOK.addEventListener("click", () => {
+      alertModal.style.display = 'none';
+    })
 
-  displayDepartments(filterdDepts);
+    function searchDepartments() {
 
-}
+      const searchTerm = searchInput.value.toLowerCase().trim();
 
-function showAllDepartments() {
-  displayDepartments(departments);
-}
+      if (searchTerm === "") {
+        showAllDepartments();
+        return;
+      }
 
-function displayDepartments(deptList) {
-  departmentList.innerHTML = "";
+      const filterdDepts = departments.filter(dept =>
+        dept.toLowerCase().includes(searchTerm)
+      );
 
-  deptList.forEach(dept => {
-    const li = document.createElement("li");
-    li.className = "p-2 hover:bg-gray-300 cursor-pointer rounded";
-    li.setAttribute("data-dept", dept);
-    li.textContent = `${dept}`;
-    departmentList.appendChild(li);
-  });
-}
+      displayDepartments(filterdDepts);
 
-searchInput.addEventListener("input", searchDepartments);
-document.getElementById("modal-search").addEventListener("click", searchDepartments);
-
-const pimageFile = document.getElementById('pfile'); // 프로필 사진 이미지 라벨
-const simageFile = document.getElementById('sfile'); // 결재 사진 이미지 라벨
-const pimagePreview = document.getElementById('ppreviewImage'); // 프로필 사진 미리보기
-const simagePreview = document.getElementById('spreviewImage'); // 결재 사진 미리보기
-const pImage = document.querySelector(".pImage");
-const sImage = document.querySelector(".sImage");
-const bi = document.querySelector(".bi");
-
-// 각 사진 이미지 미리보기
-pimageFile.addEventListener('change', function(event){
-  const file1 = event.target.files[0];
-
-  if(file1){
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      pimagePreview.src = e.target.result;
-      pimagePreview.style.display = 'block';
     }
 
-    reader.readAsDataURL(file1);
-  } else {
-    pimagePreview.style.display = 'none';
-  }
-})
-
-simageFile.addEventListener('change', function(event){
-  const file2 = event.target.files[0];
-
-  if(file2){
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      simagePreview.src = e.target.result;
-      simagePreview.style.display = 'block';
+    function showAllDepartments() {
+      displayDepartments(departments);
     }
 
-    reader.readAsDataURL(file2);
-  } else {
-    simagePreview.style.display = 'none';
-  }
-})
+    function displayDepartments(deptList) {
+      departmentList.innerHTML = "";
 
-// 프로필 사진, 결재 이미지 초기화 버튼
-btnCan1.addEventListener("click", () => {
+      deptList.forEach(dept => {
+        const li = document.createElement("li");
+        li.className = "p-2 hover:bg-gray-300 cursor-pointer rounded";
+        li.setAttribute("data-dept", dept);
+        li.textContent = `${dept}`;
+        departmentList.appendChild(li);
+      });
+    }
+    
+    selectPosition.addEventListener("click", () => {
+	   	$.ajax("deptpos")
+	       .then((datas) => {
+	         datas.forEach(e => {
+	           $('#selectposition').append(
+	             `<option value="${e.positionId}">${e.positionName}</option>`
+	             )
+	         })
+	       })
+    })
 
-  pImage.src = "assets/images/icon/account_circle.svg";
+    searchInput.addEventListener("input", searchDepartments);
+    document.getElementById("modal-search").addEventListener("click", searchDepartments);
 
-})
+    const pimageFile = document.getElementById('pfile'); // 프로필 사진 이미지 라벨
+    const simageFile = document.getElementById('sfile'); // 결재 사진 이미지 라벨
+    const pimagePreview = document.getElementById('ppreviewImage'); // 프로필 사진 미리보기
+    const simagePreview = document.getElementById('spreviewImage'); // 결재 사진 미리보기
+    const pImage = document.querySelector(".pImage");
+    const sImage = document.querySelector(".sImage");
+    const bi = document.querySelector(".bi");
 
-btnCan2.addEventListener("click", () => {
+    // 각 사진 이미지 미리보기
+    pimageFile.addEventListener('change', function (event) {
+      const file1 = event.target.files[0];
 
-  sImage.src = "assets/images/icon/Input_Inner.png";
+      if (file1) {
+        const reader = new FileReader();
 
-})
+        reader.onload = (e) => {
+          pimagePreview.src = e.target.result;
+          pimagePreview.style.display = 'block';
+        }
 
-</script>
+        reader.readAsDataURL(file1);
+      } else {
+        pimagePreview.style.display = 'none';
+      }
+    })
+
+    simageFile.addEventListener('change', function (event) {
+      const file2 = event.target.files[0];
+
+      if (file2) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          simagePreview.src = e.target.result;
+          simagePreview.style.display = 'block';
+        }
+
+        reader.readAsDataURL(file2);
+      } else {
+        simagePreview.style.display = 'none';
+      }
+    })
+
+    // 프로필 사진, 결재 이미지 초기화 버튼
+    btnCan1.addEventListener("click", () => {
+
+      pImage.src = "assets/images/icon/account_circle.svg";
+
+    })
+
+    btnCan2.addEventListener("click", () => {
+
+      sImage.src = "assets/images/icon/Input_Inner.png";
+
+    })
+  </script>
 </section>
+
 </html>

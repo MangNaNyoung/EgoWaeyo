@@ -1,6 +1,5 @@
 package egovframework.com.egowaeyo.article.serviceImpl;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,21 +12,23 @@ import egovframework.com.egowaeyo.article.service.ArticleService;
 @Service
 public class ArticleServiceImpl implements ArticleService {
 
-	@Autowired ArticleMapper articleMapper;
-	
+	@Autowired
+	ArticleMapper articleMapper;
 
 	@Override
 	public int articleInsert(BoardVO vo) {
 		return articleMapper.articleInsert(vo);
 	}
 
-
 	@Override
 	public Map<String, Object> selectBbsAll(BoardVO boardVO) {
-		 return articleMapper.selectBbsAll(boardVO);
+		return articleMapper.selectBbsAll(boardVO);
 	}
 
-	
+	@Override
+	public Map<String, Object> selectArticleDetail(BoardVO boardVO) {
 
+		return articleMapper.selectArticleDetail(boardVO);
+	}
 
 }

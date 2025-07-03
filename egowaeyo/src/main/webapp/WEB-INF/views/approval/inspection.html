@@ -6,7 +6,7 @@
 <section layout:fragment="content">
   <div class="page-container" style="padding: 2rem;">
 
-    <h3 style="margin-bottom: 1rem;">[개인] 참조함</h3>
+    <h3 style="margin-bottom: 1rem;">[개인] 공람함</h3>
 
     <!-- 버튼 영역 -->
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
@@ -21,11 +21,6 @@
 
       <!-- 우측 검색 필터 -->
       <div style="display: flex; gap: 0.5rem;">
-        <select name="ccFilter">
-          <option value="all">참조 전체</option>
-          <option value="ref">참조 미확인</option>
-          <option value="view">참조 확인</option>
-        </select>
         <select name="docFilter">
           <option value="all">전체</option>
           <option value="form1">제목</option>
@@ -33,7 +28,7 @@
           <option value="form3">기안자</option>
         </select>
         <input type="text" id="searchKeyword" placeholder="검색어 입력" style="width: 160px;">
-        <button onclick="handleSearch()">조회</button>
+        <button onclick="handleSearch()">검색</button>
         <button onclick="handleReset()">초기화</button>
         <button style="background-color: #eee; color: #333;" onclick="openAdvancedSearch()">상세검색</button>
       </div>
@@ -48,11 +43,11 @@
       el: document.getElementById('grid'),
       columns: [
         { header: '문서번호', name: 'doc_id', width: 120 },
-        { header: '제목', name: 'doc_title', width: 250 },
-        { header: '기안자', name: 'drafter_name', width: 120 },
         { header: '결재상태', name: 'doc_status', width: 100 },
-        { header: '참조구분', name: 'cc_status', width: 100 },
-        { header: '열람일시', name: 'read_dt', width: 150 },
+        { header: '종류', name: 'cc_status', width: 100 },
+        { header: '양식', name: '', width: 120 },
+        { header: '제목', name: '', width: 250 },
+        { header: '기안자', name: '', width: 150 },
         { header: '기안일시', name: 'created_dt', width: 150 },
         { header: '완료일시', name: 'final_dt', width: 150 }
       ],
