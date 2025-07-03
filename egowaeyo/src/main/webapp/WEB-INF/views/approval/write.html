@@ -8,7 +8,7 @@
 
 		<form th:action="@{/approval/write}" method="post" id="approvalForm"
 			style="flex: 1;">
-			<h4>문서기안 > 결재문서</h4>
+			<h4>결재문서</h4>
 			<!-- 버튼구역 만들었습니-다.  -->
 			<div
 				style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
@@ -43,14 +43,19 @@
 					<option>1년</option>
 					<option>3년</option>
 					<option>5년</option>
+					<option>10년</option>
+					<option>영구</option>
 				</select> <label for="docStatus">공개여부:</label> <select id="docStatus"
 					name="docStatus">
 					<option>공개</option>
 					<option>비공개</option>
 				</select> <label for="docSecurity">보안등급:</label> <select id="docSecurity"
 					name="docSecurity">
-					<option>일반</option>
+					<option>1급</option>
+					<option>2급</option>
+					<option>3급</option>
 					<option>대외비</option>
+					<option>공개</option>
 				</select>
 			</div>
 			<!-- web editor 구역입니다. -->

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<head>
+  <title>결재문서 출력</title>
+  <style>
+    /* 출력용 CSS */
+    @media print {
+      .no-print { display: none; }
+    }
+    body { font-family: sans-serif; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    td, th { border: 1px solid #aaa; padding: 8px; }
+  </style>
+</head>
+<body>
+
+  <div class="no-print" style="text-align:right; margin-bottom:10px;">
+    <button onclick="window.print()">인쇄</button>
+    <button onclick="downloadPDF()"> PDF 저장</button>
+  </div>
+
+  <h2 style="text-align:center;" th:text="${detail.approform_name}">문서제목</h2>
+
+  <table>
+    <tr><th>문서번호</th><td th:text="${detail.doc_id}"></td><th>기안부서</th><td th:text="${detail.dept_name}"></td></tr>
+    <tr><th>기안자</th><td th:text="${detail.emp_name}"></td><th>보존연한</th><td th:text="${detail.retention}"></td></tr>
+    <tr><th>공개여부</th><td th:text="${detail.open_yn}"></td><th>보안등급</th><td th:text="${detail.sec_level}"></td></tr>
+  </table>
+
+  <div style="margin-top: 20px;" th:utext="${detail.approval_content}">본문 내용</div>
+
+</body>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script>
+  function downloadPDF() {
+    const element = document.body;
+    html2pdf().set({
+      margin: 10,
+      filename: 'approval_doc.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    }).from(element).save();
+  }
+</script>
+
+</html>
