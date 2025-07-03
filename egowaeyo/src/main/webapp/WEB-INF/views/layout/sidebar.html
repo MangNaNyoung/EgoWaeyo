@@ -10,7 +10,7 @@
 		<div class="sidebar-menu">
 			<ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
 				<li class="nav-item "><a href="#"
-					class="nav-link main-menu p-3" data-target="home-panel"> <i
+					class="nav-link main-menu p-3 nope" data-target="home-panel"> <i
 						class="bi bi-house fs-4"></i> <span class="d-block small">홈</span>
 				</a></li>
 				<li class="nav-item "><a href="#"
@@ -25,7 +25,7 @@
 						class="bi bi-grid-1x2-fill"></i> <span class="d-block">일지</span>
 				</a></li>
 				<li class="nav-item "><a href="#"
-					class='nav-link main-menu p-3 nope' data-target="board-panel"> <i
+					class='nav-link main-menu p-3 nope' data-target="article-panel"> <i
 						class="bi bi-hexagon-fill"></i> <span class="d-block">게시판</span>
 				</a></li>
 				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="booking-panel">
@@ -36,7 +36,7 @@
 						class="bi bi-pen-fill"></i> <span class="d-block">회의</span>
 				</a></li>
 				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="attendance-panel">
-						<i class="bi bi-grid-1x2-fill"></i> <span class="d-block">근태</span>
+						<i class="bi bi-calendar-check"></i><span class="d-block">근태</span>
 				</a></li>
 				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="mailing-panel">
 						<i class="bi bi-file-earmark-spreadsheet-fill"></i> <span
@@ -83,7 +83,7 @@
 		</div>
 		<div id="attendance-panel" class="p-4 mt-5" style="display: none;">
 			<h5>근태</h5>
-			<p><a>내 출퇴근 내역</a></p>
+			<p><a th:href="@{/attendance/attendance.do}">내 출퇴근 내역</a></p>
 			<p>근태문서</p>
 			<ul>
 				<li><a>내 신청 문서</a></li>

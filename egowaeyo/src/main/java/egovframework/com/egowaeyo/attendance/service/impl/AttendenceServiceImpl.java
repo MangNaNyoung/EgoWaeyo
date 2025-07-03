@@ -15,9 +15,8 @@ public class AttendenceServiceImpl implements AttendanceService {
 	@Autowired AttendanceMapper AttendMapper;
 	
 	@Override
-	public List<AttendVO> getAttend(String id) {
-		
-		return AttendMapper.getAttend(id);
+	public List<AttendVO> getAttend(AttendVO vo) {
+		return AttendMapper.getAttend(vo);
 	}
 
 }

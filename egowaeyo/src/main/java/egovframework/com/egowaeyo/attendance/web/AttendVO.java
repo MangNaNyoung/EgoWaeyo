@@ -13,4 +13,6 @@ public class AttendVO {
 	String outstate;
 	String over_check_time;
 	String check_time;
+	String startDate;
+	String endDate;
 }

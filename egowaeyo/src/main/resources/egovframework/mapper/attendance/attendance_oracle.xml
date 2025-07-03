@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="egovframework.mapper.attendance.AttendanceMapper">
-	<select id="getAttend" resultType="AttendVO" parameterType="String">
+	<select id="getAttend" resultType="AttendVO" parameterType="AttendVO">
 		SELECT
 				CHECKDATE,
 				TO_CHAR(TO_DATE(CHECKDATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS CHECKDATE,
@@ -15,7 +15,15 @@
 				OVER_CHECK_TIME,
 				CHECK_TIME
 		FROM ATTENDANCE
-		WHERE #{id}
+		<where>
+			<if test="emplyr_id != null and emplyr_id != ''" >
+			 AND emplyr_id = #{emplyr_id}
+			</if>
+			<if test="start_date != null and start_date != '' and end_date != null and end_date =''" >
+				AND BETWEEN ${start_date} AND ${end_date}
+			</if>
+		</where>
+		WHERE #{emplyr_id}
 		ORDER BY CHECKDATE
 	</select>
 
