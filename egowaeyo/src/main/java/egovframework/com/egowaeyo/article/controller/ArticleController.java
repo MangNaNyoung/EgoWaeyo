@@ -28,7 +28,7 @@ public class ArticleController {
 	final ArticleService articleservice;
 
 	// 게시글 목록화면으로 이동
-	@GetMapping("/articleList")
+	@GetMapping("/articleList.do")
 	public String listPage(Model model, BoardVO vo) {
 		// selectBbsAll 호출
 		Map<String, Object> data = articleservice.selectBbsAll(vo);
