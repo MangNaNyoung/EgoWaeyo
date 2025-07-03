@@ -16,7 +16,7 @@
 		<typeAlias alias="FileVO"			type="egovframework.com.cmm.service.FileVO" />
 		<typeAlias alias="ComDefaultCodeVO" type="egovframework.com.cmm.ComDefaultCodeVO" />
 		<typeAlias alias="comDefaultVO"		type="egovframework.com.cmm.ComDefaultVO" />
-		<typeAlias alias="AttendVO"		type="egovframework.com.egowaeyo.attendance.web.AttendVO" />
+	  	<package name="egovframework.com.egowaeyo"/>
 	</typeAliases>
     
 </configuration>
