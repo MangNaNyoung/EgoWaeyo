@@ -1,5 +1,9 @@
 package egovframework.com.egowaeyo.admin.service;
 
-public interface AdminUserService {
+import java.util.List;
 
+public interface AdminUserService {
+	
+	public List<DeptVO> getDept(DeptVO dept);
+	public List<PosVO> getPos(PosVO pos);
 }
