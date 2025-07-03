@@ -2,7 +2,6 @@ package egovframework.com.egowaeyo.approval.service;
 
 import java.util.List;
 
-import egovframework.com.egowaeyo.approval.VO.ApprovalBoxVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalFormVO;
