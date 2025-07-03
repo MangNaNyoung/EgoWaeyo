@@ -309,39 +309,46 @@ body {
 						
 						// 게시글 불러오기
 						fetch(`/egowaeyo/article/selectBbsAll?bbsId=${encodeURIComponent(bbsId)}`)
-							.then(res => {
-								if (!res.ok) throw new Error("게시글 요청 실패");
-								return res.json();
-							})
-							.then(posts => {
-								postListContainer.innerHTML = ""; // 기존 게시글 초기화
+						  .then(res => {
+						    if (!res.ok) throw new Error("게시글 요청 실패");
+						    return res.json();  // 서버에서 여러 게시글을 JSON 배열로 반환
+						  })
+						  .then(posts => {
+						    const postListContainer = document.querySelector(".container-fluid.px-4");
+						    postListContainer.innerHTML = ""; // 기존 게시글 초기화
 
-								posts.forEach(post => {
-									const postItem = document.createElement("div");
-									postItem.className = "post-list-item";
-									postItem.innerHTML = `
-              							<div class="avatar"></div>
-              							<div>
-                						<div>
-                  						<span class="post-title">${post.title}</span>
-                  						<span class="post-icon">&#128337;</span>
-                  						<span class="post-count">${post.commentCount || 0}</span>
-                						</div>
-                						<div class="post-meta">
-                  						<span class="post-writer">${post.writer}</span>
-                  						<span class="post-dt">${post.date}</span>
-                  						<span class="post-tm">${post.time}</span>
-               							</div>
-              							</div>
-            						`;
-									postListContainer.appendChild(postItem);
-								});
-							})
-							.catch(err => {
-								console.error("게시글 불러오기 실패:", err);
-								postListContainer.innerHTML = "<p>게시글을 불러오지 못했습니다.</p>";
-							});
-					}
+						    // posts가 배열인 경우
+						    if (Array.isArray(posts) && posts.length > 0) {
+						      posts.forEach(post => {
+						        const postItem = document.createElement("div");
+						        postItem.className = "post-list-item";
+						        postItem.innerHTML = `
+						          <div class="avatar"></div>
+						          <div>
+						            <div>
+						              <span class="post-title">${post.nttSj}</span> 
+						              <span class="post-icon">👁</span>
+						              <span class="post-count">${post.inqireCo}</span>
+						            </div>
+						            <div class="post-meta">
+						              <span class="post-writer">${post.frstRegisterNm}</span>
+						              <span class="post-dt">${post.frstRegisterPnttm.split(' ')[0]}</span>
+						              <span class="post-tm">${post.frstRegisterPnttm.split(' ')[1]}</span>
+						            </div>
+						          </div>
+						        `;
+						        postListContainer.appendChild(postItem);
+						      });
+						    } else {
+						      postListContainer.innerHTML = "<p>게시글이 없습니다.</p>";
+						    }
+						  })
+						  .catch(err => {
+						    console.error("게시글 불러오기 실패:", err);
+						    postListContainer.innerHTML = "<p>게시글을 불러오지 못했습니다.</p>";
+						  });
+						}
+						
 				});
 			});
 			

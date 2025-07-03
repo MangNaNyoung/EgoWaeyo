@@ -1,8 +1,8 @@
+
 package egovframework.com.egowaeyo.article.controller;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,53 +25,38 @@ import lombok.extern.log4j.Log4j2;
 @Controller
 public class ArticleController {
 
-	final ArticleService articleservice;
+	private final ArticleService articleservice;
 
 	// 게시글 목록화면으로 이동
 	@GetMapping("/articleList.do")
 	public String listPage(Model model, BoardVO vo) {
 		// selectBbsAll 호출
-		Map<String, Object> data = articleservice.selectBbsAll(vo);
+		List<BoardVO> list = articleservice.selectBbsAll(vo);
 
-		if (data == null || data.get("list") == null) {
+		if (list == null || list.isEmpty()) {
 			log.error("No data found for bbsId: {}", vo.getBbsId());
 			model.addAttribute("list", List.of()); // 빈 리스트 전달
-			return "article/ArticleList.html";
-		}
-
-		// 필요한 데이터 추출
-		Object listObject = data.get("list");
-		if (listObject instanceof List<?>) {
-			List<?> rawList = (List<?>) listObject;
-			if (!rawList.isEmpty() && rawList.get(0) instanceof BoardVO) {
-				List<BoardVO> list = (List<BoardVO>) rawList;
-				model.addAttribute("list", list);
-			} else {
-				log.error("Invalid data type in list for bbsId: {}", vo.getBbsId());
-				model.addAttribute("list", List.of()); // 빈 리스트 전달
-			}
 		} else {
-			log.error("Invalid list object for bbsId: {}", vo.getBbsId());
-			model.addAttribute("list", List.of()); // 빈 리스트 전달
+			model.addAttribute("list", list); // 조회된 리스트 전달
 		}
 
 		return "article/ArticleList.html";
 	}
 
+	// 게시글 목록 조회 API
 	@GetMapping("/selectBbsAll")
 	@ResponseBody
 	public List<BoardVO> selectBbsAll(@RequestParam(value = "bbsId", required = false) String bbsId) {
-		if (bbsId == null || bbsId.isEmpty()) {
-			throw new IllegalArgumentException("bbsId is required");
-		}
-		BoardVO vo = new BoardVO();
-		vo.setBbsId(bbsId);
-		Map<String, Object> data = articleservice.selectBbsAll(vo);
-		return (List<BoardVO>) data.get("list");
+	    if (bbsId == null || bbsId.isEmpty()) {
+	        throw new IllegalArgumentException("bbsId is required");
+	    }
+	    BoardVO vo = new BoardVO();
+	    vo.setBbsId(bbsId);
+	    return articleservice.selectBbsAll(vo);
 	}
 
 	// 게시글 작성화면으로 이동
-	@GetMapping("/articleRegister")
+	@GetMapping("/articleRegister.do")
 	public String home(Locale locale, Model model) {
 		return "/article/ArticleRegist.html";
 	}
@@ -82,17 +67,17 @@ public class ArticleController {
 		for (MultipartFile file : files) {
 			if (!file.isEmpty()) {
 				// 파일 저장 로직 추가
-				System.out.println("파일 이름: " + file.getOriginalFilename());
+				log.info("파일 이름: {}", file.getOriginalFilename());
 			}
 		}
 		articleservice.articleInsert(vo);
 		rttr.addAttribute("result", vo.getRowNo());
-		return "redirect:articleList";
+		return "redirect:articleList.do";
 	}
 
-	@GetMapping("/articleDetail")
+	// 게시글 상세화면으로 이동
+	@GetMapping("/articleDetail.do")
 	public String articleDetail() {
 		return "article/ArticleDetail.html"; // HTML 파일 반환
 	}
-
 }
