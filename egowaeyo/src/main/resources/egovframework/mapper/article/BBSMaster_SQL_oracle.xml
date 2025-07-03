@@ -32,8 +32,10 @@
 	<!-- 사이드바 -->
 	<select id="selectGroupedBbsData" resultType="map">
 		SELECT
-		NVL(A.CODE_NM, 'UNKNOWN') AS codeNm,
-		NVL(B.BBS_NM, 'UNKNOWN') AS bbsNm
+        A.CODE AS "code",
+		NVL(A.CODE_NM, 'UNKNOWN') AS "codeNm",
+		NVL(B.BBS_NM, 'UNKNOWN') AS "bbsNm",
+		B.BBS_ID as "bbsId"
 		FROM
 		COMTCCMMNDETAILCODE A
 		LEFT JOIN
@@ -42,7 +44,7 @@
 		A.CODE =
 		B.BBS_TY_CODE
 		WHERE
-		A.CODE LIKE 'BBST%'
+		A.CODE_ID = 'COM101'
 	</select>
 
 	<!-- 상위 게시판 목록 조회(공통코드 조회) -->
