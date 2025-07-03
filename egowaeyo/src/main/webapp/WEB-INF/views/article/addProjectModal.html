@@ -2,7 +2,6 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <!-- 게시판 추가 모달 -->
-<
 <div th:fragment="addProjectModal" class="modal fade"
 	id="addProjectModal" tabindex="-1"
 	aria-labelledby="addProjectModalLabel" aria-hidden="true">
@@ -91,7 +90,7 @@
 									<div class="dept-list-header">
 										<label for="dept1" class="mb-0" style="font-weight: 500;"></label>
 									</div>
-									<ul class="dept-list">
+									<ul class="dept-list" id="employeeSelect">
 
 									</ul>
 								</div>
@@ -170,7 +169,7 @@
 
 		    data.forEach(item => {
 		    	const option = document.createElement("option");
-		        option.value = item.CODE_NM;
+		        option.value = item.CODE;
 		        option.textContent = item.CODE_NM; // 정확한 키 이름 사용
 		        parentBoardSelect.appendChild(option);
 		    });
@@ -241,6 +240,7 @@
         // 부서 선택 여부에 따라 필터링
         const filteredUsers = (currentDeptUsers.length > 0 ? currentDeptUsers : allUsers).filter(user => user.userNm.toLowerCase().includes(searchText) || (user.ofcpsNm && user.ofcpsNm.toLowerCase().includes(searchText)));
 
+        updateDeptList(filteredUsers); // 이 한 줄로 필터 반영
         
      // dept-header에서 체크박스 이벤트 처리 시
         checkbox.addEventListener("change", function () {
@@ -281,56 +281,47 @@
 	});
 
     function addUserToRightBox(user) {
-  	  const readBox = document.querySelectorAll(".right-box")[0];
+    	const readBox = document.querySelectorAll(".right-box")[0];
 
-  	  // 중복 방지 (이미 있는 ID면 추가 안 함)
-  	  if (readBox.querySelector(`[data-id="${user.emplyrId}"]`)) return;
+        // 중복 방지 (이미 있는 ID면 추가 안 함)
+        if (readBox.querySelector(`[data-id="${user.emplyrId}"]`)) return;
 
-  	  const userDiv = document.createElement("div");
-  	  userDiv.textContent = `${user.userNm} (${user.ofcpsNm || "직책 없음"})`;
-  	  userDiv.dataset.id = user.emplyrId;
+        if (!user.emplyrId) {
+            console.error("emplyrId가 누락된 사용자 데이터:", user);
+            return; // 누락된 데이터는 추가하지 않음
+        }
 
-  	  readBox.appendChild(userDiv);
-  	}
+        const userDiv = document.createElement("div");
+        userDiv.textContent = `${user.userNm} (${user.ofcpsNm || "직책 없음"})`;
+        userDiv.dataset.id = user.emplyrId; // emplyrId를 data-id로 설정
+
+        readBox.appendChild(userDiv);
+    }
     // dept-list 업데이트 함수
-    function updateDeptList(users) {
-    	const selectedRights = [];
-    	deptList.innerHTML = ""; // 기존 리스트 초기화
-        users.forEach(user => {
-        	const newLi = document.createElement("li");
-            newLi.textContent = `${user.userNm} (${user.ofcpsNm || "직책 없음"})`;
-            newLi.dataset.id = user.emplyrId;
-            const userId= newLi.dataset.id;
+   function updateDeptList(users) {
+    deptList.innerHTML = ""; // 기존 리스트 초기화
+    users.forEach(user => {
+        const newLi = document.createElement("li");
+        newLi.textContent = `${user.userNm} (${user.ofcpsNm || "직책 없음"})`;
+        newLi.dataset.id = user.emplyrId;
 
-            const readBox = document.querySelectorAll(".right-box")[0];
-            readBox.appendChild(newLi);
+        // 선택된 사원 배경색 유지
+        if (selectedUsers.has(user.emplyrId)) {
+    newLi.classList.add("selected");
+    newLi.style.backgroundColor = "#f0f8ff";
+}
 
-            const displayText = newLi.textContent.trim();
-
-
-
-            // 선택된 사원 배경색 유지
+        // 클릭 이벤트 추가
+        newLi.addEventListener("click", function () {
             if (selectedUsers.has(user.emplyrId)) {
-            	newLi.classList.add("selected");
-            	newLi.style.backgroundColor = "#f0f8ff";
+                selectedUsers.delete(user.emplyrId);
+                newLi.style.backgroundColor = ""; // 선택 해제
+                newLi.classList.remove("selected"); // 선택 해제
+            } else {
+            	selectedUsers.add(user.emplyrId);
+                newLi.style.backgroundColor = "#f0f8ff"; // 선택 추가
+                newLi.classList.add("selected"); // 선택 추가
             }
-
-            // 클릭 이벤트 추가
-            newLi.addEventListener("click", function () {
-            	if (selectedUsers.has(user.userNm)) {
-                	selectedUsers.delete(user.userNm);
-                    newLi.style.backgroundColor = ""; // 선택 해제
-                    newLi.classList.remove("selected"); // 선택 해제
-
-                } else {
-                	selectedUsers.add(user.userNm);
-                 	newLi.style.backgroundColor = "#f0f8ff"; // 선택 추가
-                 	newLi.classList.add("selected"); // 선택 추가
-                 	
-                 	addUserToRightBox(user);
-   
-                }
-            	
             	 // 💡 여기서 관련 부서의 체크박스 상태를 갱신!
                 const deptName = user.orgnztNm;
                 const deptUsers = allUsers.filter(u => u.orgnztNm === deptName);
@@ -344,8 +335,9 @@
             });
             deptList.appendChild(newLi);
         });
-	}
-    
+}
+            	
+
 
 
 
@@ -370,17 +362,25 @@
             
             // 체크박스 이벤트 추가
             checkbox.addEventListener("change", function () {
-            	if (checkbox.checked) {
-                	// 부서 선택 시 해당 부서의 사원 추가
-                    allUsers.filter(user => user.orgnztNm === dept).forEach(user => selectedUsers.add(user.userNm));
-                    } else {
-                    	// 부서 선택 해제 시 해당 부서의 사원 제거
-                    	allUsers.filter(user => user.orgnztNm === dept).forEach(user => selectedUsers.delete(user.userNm));
-                    }
+    const deptUsers = allUsers.filter(user => user.orgnztNm === dept);
 
-                    // dept-list 업데이트
-                    updateDeptList(currentDeptUsers);
-         	});
+    if (checkbox.checked) {
+        // 선택된 부서의 모든 사원을 선택에 추가
+        deptUsers.forEach(user => selectedUsers.add(user.emplyrId));
+    } else {
+        // 해당 부서의 모든 사원 선택 해제
+        deptUsers.forEach(user => selectedUsers.delete(user.emplyrId));
+    }
+
+    // 🔁 dept-list 업데이트해서 UI에도 반영
+    const searchText = searchBox.value.trim().toLowerCase();
+    const filteredUsers = (currentDeptUsers.length > 0 ? currentDeptUsers : allUsers).filter(user =>
+        user.userNm.toLowerCase().includes(searchText) ||
+        (user.ofcpsNm && user.ofcpsNm.toLowerCase().includes(searchText))
+    );
+
+    updateDeptList(filteredUsers);  // 여기서 배경색 등 UI 갱신
+});
             deptHeader.appendChild(checkbox);
            	deptHeader.appendChild(label);   	
         });
@@ -461,6 +461,16 @@
                 // 읽기 박스에서 삭제 시
                 if (index === 0) {
                     box.removeChild(target);
+                    const writeBox = document.querySelector(".right-panel .right-box:nth-child(2)");
+                    const manageBox = document.querySelector(".right-panel .right-box:nth-child(3)");
+
+                    [writeBox, manageBox].forEach(otherBox => {
+                        Array.from(otherBox.children).forEach(child => {
+                            if (child.textContent === user) {
+                                otherBox.removeChild(child);
+                            }
+                        });
+                    });
                 }
 
                 // 쓰기 박스에서 삭제 시
@@ -477,130 +487,178 @@
                 // 관리 박스에서 삭제 시
                 if (index === 2) {
                 	 box.removeChild(target);
-
-                     // 쓰기 박스와 읽기 박스에서도 삭제
-                     const writeBox = document.querySelector(".right-panel .right-box:nth-child(2)");
-                     const readBox = document.querySelector(".right-panel .right-box:nth-child(1)");
-
-                     [writeBox, readBox].forEach(otherBox => {
-                         Array.from(otherBox.children).forEach(child => {
-                             if (child.textContent === user) {
-                                 otherBox.removeChild(child);
-                             }
-                         });
-                     });
                 }
             }
         });
     });
    
-   
+ // 사원 선택 박스에서 선택된 사원들의 ID를 가져오기
+    function getSelectedEmployees() {
+    	const employeeSelect = document.getElementById('employeeSelect');
+        if (!employeeSelect) {
+            console.error("employeeSelect 요소를 찾을 수 없습니다.");
+            return []; // 빈 배열 반환하여 오류 방지
+        }
+
+        const selectedOptions = employeeSelect.selectedOptions;
+        let selectedEmployees = [];
+
+        for (let option of selectedOptions) {
+            selectedEmployees.push({
+                emplyrId: option.value,  // 선택된 사원의 ID
+                authorCode: 'A-003'      // 예시로 'A-003' 권한 코드 설정
+            });
+        }
+
+        return selectedEmployees;
+}
 //권한 처리
  const saveButton = document.getElementById("saveButton");
     if (saveButton) {
     	 saveButton.addEventListener("click", function () {
     		 const boardNameInput = document.getElementById("boardName");
-			  const boardName = boardNameInput ? boardNameInput.value : "";
-			  const boardType = document.querySelector('input[name="boardType"]:checked')?.value;
-			  const parentBoardElement = document.getElementById("parentBoard");
-			  const parentBoard = parentBoardElement ? parentBoardElement.value : "";
-			  const useAt = document.querySelector('input[name="useAt"]:checked')?.value || "Y";
-			  const rightBoxes = document.querySelectorAll(".right-panel .right-box");
-				
-			  const rightsMap = {
-					  read: Array.from(rightBoxes[0].children).map(div => div.dataset.id),
-					  write: Array.from(rightBoxes[1].children).map(div => div.dataset.id),
-					  manage: Array.from(rightBoxes[2].children).map(div => div.dataset.id)
-			  };
-			  
-			  ["읽기", "쓰기", "관리"].forEach((label, i) => {
-				  Array.from(rightBoxes[i].children).forEach(div => {
-				    console.log(`${label} 권한 박스 사용자 →`, div.textContent.trim(), "ID:", div.dataset.id);
-				  });
-				});
+    	        const boardName = boardNameInput ? boardNameInput.value : "";
+    	        const boardType = document.querySelector('input[name="boardType"]:checked')?.value;
+    	        const parentBoardElement = document.getElementById("parentBoard");
+    	        const parentBoard = parentBoardElement ? parentBoardElement.value : "";
+    	        const useAt = document.querySelector('input[name="useAt"]:checked')?.value || "Y";
+    	        const rightBoxes = document.querySelectorAll(".right-panel .right-box");
 
-			  const allUsers = new Set([...rightsMap.read, ...rightsMap.write, ...rightsMap.manage]);
-			  const selectedRights = [];
+    	        const rightsMap = {
+    	        		read: Array.from(rightBoxes[0].children).map(div => div.dataset.id).filter(id => id),
+    	        	    write: Array.from(rightBoxes[1].children).map(div => div.dataset.id).filter(id => id),
+    	        	    manage: Array.from(rightBoxes[2].children).map(div => div.dataset.id).filter(id => id)
+    	        };
 
-			  allUsers.forEach(user => {
-			    const hasRead = rightsMap.read.includes(user);
-			    const hasWrite = rightsMap.write.includes(user);
-			    const hasManage = rightsMap.manage.includes(user);
+    	        // 권한 코드에 따라 권한 부여
+    	        const selectedRights = [];
 
-			    let authorCode = "A-001"; // 기본: 읽기만
-			    if (hasWrite && hasManage) {
-			      authorCode = "A-003";
-			    } else if (hasWrite) {
-			      authorCode = "A-002";
-			    }
+    	     // 모든 사용자에 대해 권한 코드 설정
+    	        allUsers.forEach(user => {
+    	            // emplyrId가 null이거나 undefined인 경우는 제외
+    	            if (!user.emplyrId) {
+    	                console.error("emplyrId가 누락된 사용자 데이터:", user);
+    	                return; // 누락된 데이터는 추가하지 않음
+    	            }
 
-			    selectedRights.push({
-			      emplyrId: user,
-			      authorCode: authorCode
-			     /*  displayName: findDisplayNameById(user)  */
+    	            let authorCode = "A-000"; // 기본: 권한없음
+    	            if (rightsMap.read.includes(user.emplyrId)){
+    	            	authorCode = "A-001";
+    	            } else if(rightsMap.write.includes(user.emplyrId) && rightsMap.manage.includes(user.emplyrId)) {
+    	                authorCode = "A-003"; // 읽기+쓰기+관리
+    	            } else if (rightsMap.read.includes(user.emplyrId) && rightsMap.write.includes(user.emplyrId)) {
+    	                authorCode = "A-002"; // 읽기+쓰기
+    	            }
 
-			    });
-			  });
+    	            selectedRights.push({
+    	                emplyrId: user.emplyrId,   // 사원 ID
+    	                authorCode: authorCode // 권한 코드
+    	            });
+    	        });
 
-			    
-			    console.log("선택된 권한:", selectedRights);
-		       
-			  if (!boardName) {
-				  alert("게시판명을 입력하세요.");
-				  return;
-			  }
+    	     // getSelectedEmployees()에서 선택된 사용자들의 권한을 추가
+    	        const selectedEmployees = getSelectedEmployees(); // getSelectedEmployees 호출
+    	        selectedEmployees.forEach(employee => {
+    	            const existingUser = selectedRights.find(user => user.emplyrId === employee.emplyrId);
+    	            if (!existingUser) {
+    	                selectedRights.push({
+    	                    emplyrId: employee.emplyrId,
+    	                    authorCode: employee.authorCode
+    	                });
+    	            }
+    	        });
+    	        
+    	        rightsMap.manage.forEach(emplyrId => {
+    	            const existingUser = selectedRights.find(user => user.emplyrId === emplyrId);
+    	            if (existingUser) {
+    	                existingUser.authorCode = "A-003"; // 관리 권한
+    	            } else {
+    	                selectedRights.push({ emplyrId, authorCode: "A-003" });
+    	            }
+    	        });
 
-			  if (!parentBoard) {
-				  alert("상위 게시판을 선택하세요.");
-				  return;
-			  }
+    	        // 입력 검증
+    	        if (!boardName) {
+    	            alert("게시판명을 입력하세요.");
+    	            return;
+    	        }
 
-			  if (selectedRights.length === 0) {
-			       alert("권한을 선택하세요.");
-			       return;
-			   }
+    	        if (!parentBoard) {
+    	            alert("상위 게시판을 선택하세요.");
+    	            return;
+    	        }
 
-			  const requestData = {
-				  boardName: boardName,
-				  boardType: boardType,
-				  parentBoard: parentBoard,
-				  useAt: useAt,
-				  selectedRights: selectedRights
-			  };
+    	        if (selectedRights.length === 0) {
+    	            alert("권한을 선택하세요.");
+    	            return;
+    	        }
 
-			  fetch('/egowaeyo/bbsMaster/saveBoard', {
-				  method: "POST",
-				  headers: {
-					  "Content-Type": "application/json"
-				  },
-				  body: JSON.stringify(requestData)
-			  })
-				  .then(response => {
-					  if (!response.ok) {
-						  throw new Error(`HTTP error! status: ${response.status}`);
-					  }
-					  return response.json();
-				  })
-				  .then(data => {
-					  if (data.success) {
-						  alert("게시판이 성공적으로 저장되었습니다.");
-					  } else {
-						  alert("저장 중 오류가 발생했습니다: " + data.error);
-					  }
-				  })
-				  .catch(error => alert(`저장 중 오류가 발생했습니다: ${error.message}`));
-         });
+    	        const requestData = {
+    	            boardName: boardName,
+    	            boardType: boardType,
+    	            parentBoard: parentBoard,
+    	            useAt: useAt,
+    	            selectedRights: selectedRights // 권한 정보 포함
+    	        };
 
-} else {
-console.error("saveButton 요소를 찾을 수 없습니다.");
-}
+    	        console.log("전송할 데이터:", requestData);
+
+    	        fetch('/egowaeyo/bbsMaster/saveBoard', {
+    	            method: "POST",
+    	            headers: {
+    	                "Content-Type": "application/json"
+    	            },
+    	            body: JSON.stringify(requestData)
+    	        })
+    	        .then(response => {
+    	            if (!response.ok) {
+    	                throw new Error(`HTTP error! status: ${response.status}`);
+    	            }
+    	            return response.json();
+    	        })
+    	        .then(data => {
+    	            if (data.success) {
+    	                alert("게시판이 성공적으로 저장되었습니다.");
+    	            } else {
+    	                alert("저장 중 오류가 발생했습니다: " + data.error);
+    	            }
+    	        })
+    	        .catch(error => alert(`저장 중 오류가 발생했습니다: ${error.message}`));
+    	    });
+    	} else {
+    	    console.error("saveButton 요소를 찾을 수 없습니다.");
+    	}
     
-});
+ // 서버에서 데이터 저장 로직
+    app.post('/egowaeyo/bbsMaster/saveBoard', (req, res) => {
+        const { boardName, boardType, parentBoard, useAt, selectedRights } = req.body;
+
+        // 게시판 테이블에 게시판 저장 (DB에 저장하는 부분)
+        const boardId = saveBoardToDB(boardName, boardType, parentBoard, useAt);
+
+        // 권한 테이블에 권한 정보 저장 (selectedRights 사용)
+        selectedRights.forEach(right => {
+            const { emplyrId, authorCode } = right;
+            savePermissionToDB(boardId, emplyrId, authorCode);  // DB에 권한 정보 저장
+        });
+
+        res.json({ success: true });
+    });
+
+    // DB 저장 로직
+    function saveBoardToDB(boardName, boardType, parentBoard, useAt) {
+        // 게시판을 DB에 저장하고 게시판 ID 반환
+        const boardId = db.insert('board', { boardName, boardType, parentBoard, useAt });
+        return boardId;
+    }
+
+    function savePermissionToDB(boardId, emplyrId, authorCode) {
+        // 권한 테이블에 권한 정보 저장
+        db.insert('permissions', { boardId, emplyrId, authorCode });
+    }
+        });
 	
-
-     			
-
-   
+	   
    </script>
 
 	<style>
