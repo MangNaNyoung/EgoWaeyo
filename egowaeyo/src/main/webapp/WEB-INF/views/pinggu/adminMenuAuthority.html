@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}"
+  >
+<section layout:fragment="content">
+<link rel="stylesheet" th:href="@{/assets/css/admin/adminMenuAuthority.css}">
+
+  <div class="main-container d-flex m-4 flex-column">
+    <div class="main-first-section">
+      <div class="main-small-title d-bolck pb-4">
+        기본 관리
+      </div>
+      <div class="main-header-section">
+        <div class="main-header-title fs-3 fw-bold">
+          메뉴 운영 권한 관리
+        </div>
+      </div>
+      <div class="mb-5 p-3 d-flex justify-content-end border-dark-subtle border-bottom">
+        <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0">저장</button>
+      </div>
+    </div>
+    <div class="main-stff-section d-flex flex-row flex-fill">
+      <div class="main-stf-section d-flex flex-column" style="width: 600px;">
+        <div class="main-second-section-height mb-3" style="height: 300px;">
+          <div class="main-second-section border border-dark rounded-3 overflow-auto h-100 p-2">
+            <div class="sticky-top d-flex justify-content-between mb-2">
+              <!-- 검색창 -->
+              <input type="text" class="form-control border border-dark" placeholder="검색" id="all-search-input">
+              <!-- id 값 중복 불가 'search-input' -> 'all-search-input' 으로 변경 -->
+              <button class="border-0 cursor-pointer ms-2" id="modal-search">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-search"
+                  viewBox="0 0 16 16">
+                  <path
+                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                </svg>
+              </button>
+            </div>
+            <ul class="tree">
+              <li>
+                <input type="checkbox" id="root">
+                <label for="root">전체 사내주소록</label>
+                <ul>
+                  <li>
+                    <input type="checkbox" id="node1">
+                    <label for="node1">임원</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node11">
+                        <label for="node11" class="lastTree">사장 임성욱</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node12">
+                        <label for="node12" class="lastTree">부사장 정상윤</label>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="node2">
+                    <label for="node2">인사팀</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node21">
+                        <label for="node21" class="lastTree">인사팀장 권동익</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node22">
+                        <label for="node22" class="lastTree">대리 오만석</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node23">
+                        <label for="node23" class="lastTree">사원 임형석</label>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="node3">
+                    <label for="node3">재무팀</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node31">
+                        <label for="node31" class="lastTree">재무팀장 김민준</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node32">
+                        <label for="node32" class="lastTree">대리 박서아</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node33">
+                        <label for="node33" class="lastTree">사원 이도현</label>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="node4">
+                    <label for="node4">개발팀</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node41">
+                        <label for="node41" class="lastTree">개발팀장 최유나</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node42">
+                        <label for="node42" class="lastTree">대리 정하준</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node43">
+                        <label for="node43" class="lastTree">사원 송지원</label>
+                      </li>
+                    </ul>
+                  <li>
+                    <input type="checkbox" id="node5">
+                    <label for="node5">품질보증팀</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node51">
+                        <label for="node51" class="lastTree">품질보증팀장 강민서</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node52">
+                        <label for="node52" class="lastTree">대리 오서준</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node53">
+                        <label for="node53" class="lastTree">사원 윤채영</label>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="node6">
+                    <label for="node6">기획팀</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node61">
+                        <label for="node61" class="lastTree">기획팀장 장건우</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node62">
+                        <label for="node62" class="lastTree">대리 임수영</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node63">
+                        <label for="node63" class="lastTree">사원 한지석</label>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="node7">
+                    <label for="node7">영업팀</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node71">
+                        <label for="node71" class="lastTree">영업팀장 신예원</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node72">
+                        <label for="node72" class="lastTree">대리 고태현</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node73">
+                        <label for="node73" class="lastTree">사원 백혜진</label>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="node8">
+                    <label for="node8">보안팀</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node81">
+                        <label for="node81" class="lastTree">보안팀장 김민지</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node82">
+                        <label for="node82" class="lastTree">대리 남재현</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node83">
+                        <label for="node83" class="lastTree">사원 문시은</label>
+                      </li>
+                    </ul>
+                  </li>
+                  <li>
+                    <input type="checkbox" id="node9">
+                    <label for="node9">고객지원팀</label>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node91">
+                        <label for="node91" class="lastTree">고객지원팀장 손흥민</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node92">
+                        <label for="node92" class="lastTree">대리 서민재</label>
+                      </li>
+                    </ul>
+                    <ul>
+                      <li>
+                        <input type="checkbox" id="node93">
+                        <label for="node93" class="lastTree">사원 류아름</label>
+                      </li>
+                    </ul>
+                  </li>
+                </ul>
+          </div>
+        </div>
+        <div class="main-third-section mb-3">
+          <div class="third-button d-flex justify-content-center py-3 gap-3">
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-down"
+              viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1" />
+            </svg>
+            <button class="border border-dark px-4 py-2 rounded-2 bg-dark text-white border-0">추가</button>
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-arrow-up"
+              viewBox="0 0 16 16">
+              <path fill-rule="evenodd"
+                d="M8 15a.5.5 0 0 0 .5-.5V2.707l3.146 3.147a.5.5 0 0 0 .708-.708l-4-4a.5.5 0 0 0-.708 0l-4 4a.5.5 0 1 0 .708.708L7.5 2.707V14.5a.5.5 0 0 0 .5.5" />
+            </svg>
+            <button class="border border-dark px-4 py-2 rounded-2 bg-danger text-white border-0">삭제</button>
+          </div>
+        </div>
+        <!--추가, 삭제 버튼 그룹-->
+        <div class="main-fourth-section d-flex flex-column flex-fill">
+          <div class="border border-dark rounded-3 overflow-auto p-2" style="height: 300px;">
+            <table class="table table-sm mb-0">
+              <thead class="table-light sticky-top">
+                <tr>
+                  <th class=""><input type="checkbox"></th>
+                  <th class="">소속부서</th>
+                  <th class="">직급</th>
+                  <th class="">이름</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="py-3"><input type="checkbox"></td>
+                  <td class="py-3">보안팀</td>
+                  <td class="py-3">보안팀장</td>
+                  <td class="py-3">김민지</td>
+                </tr>
+                <tr>
+                  <td class="py-3"><input type="checkbox"></td>
+                  <td class="py-3">보안팀</td>
+                  <td class="py-3">보안팀장</td>
+                  <td class="py-3">김민지</td>
+                </tr>
+                <tr>
+                  <td class="py-3"><input type="checkbox"></td>
+                  <td class="py-3">보안팀</td>
+                  <td class="py-3">보안팀장</td>
+                  <td class="py-3">김민지</td>
+                </tr>
+                <tr>
+                  <td class="py-3"><input type="checkbox"></td>
+                  <td class="py-3">보안팀</td>
+                  <td class="py-3">보안팀장</td>
+                  <td class="py-3">김민지</td>
+                </tr>
+                <tr>
+                  <td class="py-3"><input type="checkbox"></td>
+                  <td class="py-3">보안팀</td>
+                  <td class="py-3">보안팀장</td>
+                  <td class="py-3">김민지</td>
+                </tr>
+                <tr>
+                  <td class="py-3"><input type="checkbox"></td>
+                  <td class="py-3">보안팀</td>
+                  <td class="py-3">보안팀장</td>
+                  <td class="py-3">김민지</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!--권한 추가할 전사 박스-->
+      <div class="main-fifth-section d-flex flex-fill ms-3">
+        <div class="w-100 h-100 d-flex flex-column">
+          <div class="border border-dark rounded-3 overflow-auto p-4 flex-fill" style="height: 300px;">
+            <div class="main-management-section pb-5">
+              <div class="management-title fs-3 fw-bold pb-4">
+                기본 관리자(모든 권한)
+              </div>
+              <input type="checkbox" id="all-manage">
+              <label for="all-manage">모든 관리 권한 부여</label>
+            </div>
+            <div class="detail-management-section">
+              <div class="detail-management-title fs-3 fw-bold pb-4">
+                권한 설정
+              </div>
+              <input type="checkbox" id="detail-manage">
+              <label for="detail-manage" class="mb-3">일정</label>
+              <div class="ms-5 mt-3 mb-5">
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">일정</label>
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">일정</label>
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">일정</label>
+              </div>
+              <input type="checkbox" id="detail-manage">
+              <label for="detail-manage" class="mb-3">결재</label>
+              <div class="ms-5 mt-3 mb-5">
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">결재</label>
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">결재</label>
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">결재</label>
+              </div>
+              <input type="checkbox" id="detail-manage">
+              <label for="detail-manage" class="mb-3">일지</label>
+              <div class="ms-5 mt-3 mb-5">
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">일지</label>
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">일지</label>
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">일지</label>
+              </div>
+              <input type="checkbox" id="detail-manage">
+              <label for="detail-manage" class="mb-3">예약</label>
+              <div class="ms-5 mt-3 mb-5">
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">예약</label>
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">예약</label>
+                <input type="checkbox" id="detail-manage">
+                <label for="detail-manage" class="me-5">예약</label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</html>
