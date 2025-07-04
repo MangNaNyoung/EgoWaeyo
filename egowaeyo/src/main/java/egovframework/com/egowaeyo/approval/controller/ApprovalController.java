@@ -9,12 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
+import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalTempVO;
 import egovframework.com.egowaeyo.approval.service.ApprovalService;
@@ -96,6 +98,14 @@ public class ApprovalController {
 	public List<ApprovalCcVO> referenceList(HttpSession session) {
 	    String empId = (String) session.getAttribute("loginId");
 	    return approvalService.getReferenceList(empId);
+	}
+	
+	//프린팅 
+	@GetMapping("/approval/print/{docId}")
+	public String printApproval(@PathVariable String docId, Model model) {
+	    ApprovalDetailVO detail = approvalService.getApprovalDetail(docId);
+	    model.addAttribute("detail", detail);
+	    return "approval/print.html"; 
 	}
 
 }

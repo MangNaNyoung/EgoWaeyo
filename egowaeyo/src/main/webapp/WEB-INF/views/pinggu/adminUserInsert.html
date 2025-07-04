@@ -2,295 +2,126 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout/layout}">
 <section layout:fragment="content">
+  <link rel="stylesheet" th:href="@{/assets/css/admin/adminUserInsert.css}">
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <style>
-    body {
-      font-family: "42dot Sans", sans-serif;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --file-title-color: #999999;
-    }
-
-    .main-container {
-      display: flex;
-      margin: 25px;
-      flex-direction: column;
-      color: #000 !important;
-    }
-
-    .main-first-section {
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .main-small-title {
-      display: block;
-      padding-bottom: 25px;
-    }
-
-    .main-header-title {
-      display: block;
-      font-size: 30px;
-      font-weight: bold;
-    }
-
-    .admin-user-sections {
-      display: flex;
-      gap: 40px;
-    }
-
-    .left-admin-user-info {
-      width: 33%;
-    }
-
-    .user-info-title {
-      font-weight: bold;
-      font-size: 23px;
-      padding: 35px 0 10px 0;
-    }
-
-    .user-info-personal {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .user-info-detail {
-      margin-left: auto;
-      margin-bottom: 25px;
-    }
-
-    .user-info-detail-img {
-      margin-left: auto;
-      margin-bottom: 25px;
-      display: flex;
-      justify-content: flex-start;
-    }
-
-    .input-container {
-      display: flex;
-      flex-direction: column;
-      flex: 1;
-    }
-
-    .user-info-detail p,
-    .input-container p,
-    .user-info-tag p {
-      text-align: left;
-      width: 100%;
-      font-size: 13px;
-      color: var(--file-title-color);
-      margin-top: 10px;
-      width: 200px;
-    }
-
-    .user-info-tag {
-      margin-left: 110px;
-    }
-
-    .user-info-tag p:first-child {
-      margin-top: 10px;
-    }
-
-    .user-info-detail input {
-      width: 200px;
-      margin-left: 20px;
-    }
-
-    .user-info-detail select {
-      width: 200px;
-      height: 25px;
-      margin-left: 20px;
-    }
-
-    .user-info-detail-img #btnCan1,
-    .user-info-detail-img #btnCan2 {
-      width: 100px;
-      height: 25px;
-    }
-
-    .user-info-detail #btnIns {
-      width: 30px;
-      height: 30px;
-      margin-left: 20px;
-    }
-
-    .user-info-detail button {
-      width: 30px;
-      height: 30px;
-    }
-
-    .user-info-detail-img input[type="file"] {
-      width: 0;
-      height: 0;
-      padding: 0;
-      overflow: "hidden";
-      border: 0;
-    }
-
-    .file-upload-box {
-      width: 200px;
-      height: 130px;
-      margin-left: 24px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .file-upload-section {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .right-admin-user-info {
-      width: 33%;
-    }
-
-    .modal-padding {
-      padding: 25px;
-    }
-
-    .alert-modal {
-      display: none;
-      position: fixed;
-      z-index: 100;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.4);
-    }
-
-    .alert-modal-info {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      border: 1px solid #888;
-      width: 310px;
-      height: 180px;
-      border-radius: 15px;
-      background-color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      text-align: center;
-    }
-
-    .bi {
-      width: auto !important;
-      height: auto !important;
-    }
-  </style>
 
   <div class="main-container">
     <div class="main-first-section">
       <div class="main-small-title">사용자 관리</div>
-      <button class="!text-[19px] !rounded-sm !w-20 !h-11 !bg-blue-400 !text-white !cursor-pointer">등록</button>
+      <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0" type="submit">등록</button>
+      <!-- 부트스트랩 사용 -->
     </div>
     <div class="main-header-title">사용자 등록</div>
-    <div class="admin-user-sections">
-      <div class="left-admin-user-info">
-        <div class="user-info-title">기본 정보</div>
-        <div class="user-info-personal">
-          <div class="user-info-detail">
-            <span>아이디</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
-          </div>
-          <div class="user-info-detail">
-            <span>비밀번호</span> <input type="password" class="!border !border-gray-400 !rounded-sm">
-          </div>
-          <div class="user-info-detail">
-            <span>비밀번호 확인</span> <input type="password" class="!border !border-gray-400 !rounded-sm">
-            <div class="user-info-tag">
-              <p>* 8자 이내로 만들어주세요.</p>
+    <form id="userForm" role="form" action="AdminUserIns" method="post" enctype="multipart/form-data">
+      <div class="admin-user-sections">
+        <div class="left-admin-user-info">
+          <div class="user-info-title">기본 정보</div>
+          <div class="user-info-personal">
+            <div class="user-info-detail">
+              <span>아이디</span> <input type="text" name="" class="!border !border-gray-400 !rounded-sm">
             </div>
-          </div>
-          <div class="user-info-detail">
-            <span>이름</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
-          </div>
-          <div class="user-info-detail-img">
-            <span>사진</span>
-            <div class="input-container">
-              <div class="file-upload-box">
-                <div class="file-upload-section">
-                  <input type="file" accept=".png" name="pfile" id="pfile">
-                  <label for="pfile">
-                    <!--프로필 파일-->
-                    <!-- <img src="/images/account_circle.png" class="cursor-pointer pImage" id="ppreviewImage" style="width: 130px; height: 100px;" alt="사용자 사진"> -->
-                    <img src="assets/images/icon/account_circle.svg" class="cursor-pointer pImage" id="ppreviewImage"
-                      style="width: 130px; height: 100px;" alt="사용자 사진">
-                  </label>
-                  <div class="image-preview">
-                    <!--<img id="previewImage" src="#" alt="이미지 미리보기" style="display: none;">-->
+            <div class="user-info-detail">
+              <span>비밀번호</span> <input type="password" class="!border !border-gray-400 !rounded-sm">
+            </div>
+            <div class="user-info-detail">
+              <span>이름</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
+            </div>
+            <div class="user-info-detail-img">
+              <span>사진</span>
+              <div class="input-container">
+                <div class="file-upload-box">
+                  <div class="file-upload-section">
+                    <input type="file" accept=".png" name="pfile" id="pfile">
+                    <label for="pfile">
+                      <!--프로필 파일-->
+                      <!-- <img src="/images/account_circle.png" class="cursor-pointer pImage" id="ppreviewImage" style="width: 130px; height: 100px;" alt="사용자 사진"> -->
+                      <img src="assets/images/icon/account_circle.svg" class="cursor-pointer pImage" id="ppreviewImage"
+                        style="width: 130px; height: 100px;" alt="사용자 사진">
+                    </label>
+                    <div class="image-preview">
+                      <!--<img id="previewImage" src="#" alt="이미지 미리보기" style="display: none;">-->
+                    </div>
+                    <button id="btnCan1" class="!border !rounded-sm !cursor-pointer">초기화</button>
                   </div>
-                  <button id="btnCan1" class="!border !rounded-sm !cursor-pointer">초기화</button>
+                  <p>* 파일 지원 형식 : png</p>
                 </div>
-                <p>* 파일 지원 형식 : png</p>
               </div>
             </div>
-          </div>
-          <div class="user-info-detail-img">
-            <span>결재</span>
-            <div class="input-container">
-              <div class="file-upload-box">
-                <div class="file-upload-section">
-                  <input type="file" accept=".png" name="sfile" id="sfile">
-                  <label for="sfile">
-                    <!--결재 파일--> <img src="assets/images/icon/Input_Inner.png" class="cursor-pointer sImage"
-                      id="spreviewImage" style="width: 130px; height: 110px;" alt="사용자 결재 사진">
-                  </label>
-                  <div class="image-preview">
-                    <!--<img id="previewImage" src="#" alt="이미지 미리보기" style="display: none;">-->
+            <div class="user-info-detail-img">
+              <span>결재</span>
+              <div class="input-container">
+                <div class="file-upload-box">
+                  <div class="file-upload-section">
+                    <input type="file" accept=".png" name="sfile" id="sfile">
+                    <label for="sfile">
+                      <!--결재 파일--> <img src="assets/images/icon/Input_Inner.png" class="cursor-pointer sImage"
+                        id="spreviewImage" style="width: 130px; height: 110px;" alt="사용자 결재 사진">
+                    </label>
+                    <div class="image-preview">
+                      <!--<img id="previewImage" src="#" alt="이미지 미리보기" style="display: none;">-->
+                    </div>
+                    <button id="btnCan2" class="!border !rounded-sm !cursor-pointer">초기화</button>
                   </div>
-                  <button id="btnCan2" class="!border !rounded-sm !cursor-pointer">초기화</button>
+                  <p>* 파일 지원 형식 : png</p>
                 </div>
-                <p>* 파일 지원 형식 : png</p>
               </div>
             </div>
-          </div>
-          <div class="user-info-detail">
-            <span>생년월일</span> <input type="date" class="!border !border-gray-400 !rounded-sm">
-          </div>
-          <div class="user-info-detail">
-            <span>주소</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
-          </div>
-          <div class="user-info-detail">
-            <span>연락처</span> <input type="tel" class="!border !border-gray-400 !rounded-sm">
-          </div>
-          <div class="user-info-detail">
-            <span>이메일</span> <input type="email" class="!border !border-gray-400 !rounded-sm">
-          </div>
-        </div>
-      </div>
-      <div class="right-admin-user-info">
-        <div class="user-info-title">조직 정보</div>
-        <div class="user-info-personal">
-          <div class="user-info-detail">
             <div class="user-info-detail">
-              <span>소속</span>
-              <button id="btnIns" class="!border !rounded-sm !cursor-pointer">+</button>
-              <input type="text" class="!border !border-gray-400 !rounded-sm !text-gray-500" placeholder="소속을 선택해주세요."
-                id="selectedDepartment" readonly>
+              <span>생년월일</span> <input type="date" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>직급</span> 
-              <select name="rank" class="!border !border-gray-400 !rounded-sm" id="selectposition">
-                <option value="" selected>직급을 선택해주세요.</option>
-                <option value=""></option>
-              </select>
+              <span>주소</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <sapn>사번</sapn>
-              <input type="text" class="!border !border-gray-400 !rounded-sm">
+              <span>연락처</span> <input type="tel" class="!border !border-gray-400 !rounded-sm">
+            </div>
+            <div class="user-info-detail">
+              <span>이메일</span> <input type="email" class="!border !border-gray-400 !rounded-sm">
+            </div>
+            <div class="user-info-detail">
+              <span>성별</span>
+	            <div class="form-check">
+	              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+	              <label class="form-check-label" for="flexRadioDefault1">
+	                남
+	              </label>
+	            </div>
+	            <div class="form-check">
+	              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+	              <label class="form-check-label" for="flexRadioDefault2">
+	                여
+	              </label>
+	            </div>
             </div>
           </div>
         </div>
+        <div class="right-admin-user-info">
+          <div class="user-info-title">조직 정보</div>
+          <div class="user-info-personal">
+            <div class="user-info-detail">
+              <div class="user-info-detail">
+                <span>소속</span>
+                <button id="btnIns" class="!border !rounded-sm !cursor-pointer">+</button>
+                <input type="text" class="!border !border-gray-400 !rounded-sm !text-gray-500" placeholder="소속을 선택해주세요."
+                  id="selectedDepartment" readonly>
+              </div>
+              <div class="user-info-detail">
+                <span>직급</span>
+                <select name="rank" class="!border !border-gray-400 !rounded-sm" id="selectposition">
+                  <option value="" selected>직급을 선택해주세요.</option>
+                  <option th:each="position : ${posi}" th:value="${position?.positionId}"
+                    th:text="${position?.positionName}"></option>
+                </select>
+              </div>
+              <div class="user-info-detail">
+                <span>사번</span>
+                <input type="text" class="!border !border-gray-400 !rounded-sm">
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
+    </form>
   </div>
   <!-- 소속 추가 모달 -->
   <!-- 배경 -->
@@ -391,7 +222,7 @@
           datas.forEach(e => {
             $('#department-list').append(
               `<li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="${e.departmentsId}">${e.departmentsName}</li>`
-              )
+            )
           })
         })
 
@@ -460,17 +291,17 @@
         departmentList.appendChild(li);
       });
     }
-    
-    selectPosition.addEventListener("click", () => {
-	   	$.ajax("deptpos")
-	       .then((datas) => {
-	         datas.forEach(e => {
-	           $('#selectposition').append(
-	             `<option value="${e.positionId}">${e.positionName}</option>`
-	             )
-	         })
-	       })
-    })
+
+    /*     selectPosition.addEventListener("click", () => {
+    	   	$.ajax("deptpos")
+    	       .then((datas) => {
+    	         datas.forEach(e => {
+    	           $('#selectposition').append(
+    	             `<option value="${e.positionId}">${e.positionName}</option>`
+    	             )
+    	         })
+    	       })
+        }) */
 
     searchInput.addEventListener("input", searchDepartments);
     document.getElementById("modal-search").addEventListener("click", searchDepartments);
