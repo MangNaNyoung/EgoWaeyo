@@ -1,0 +1,22 @@
+body {
+   font-family: "42dot Sans", sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+}
+
+.main-container{
+	color: #000 !important;
+}
+
+/* list-style-type: none; */
+
+.dept-selected{
+  background-color: #8ec5ff !important;
+}
+
+
+.dept-hover:hover{
+  background-color: #d1d5dc;
+  cursor: pointer;
+}

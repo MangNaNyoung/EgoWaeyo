@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+<section layout:fragment="content">
+
+<body>
+  <div class="main-container d-flex m-4 flex-column">
+    <div class="main-first-section">
+      <div class="main-small-title d-bolck pb-4">
+        조직 관리
+      </div>
+      <div class="main-header-section d-flex justify-content-between flex-row">
+        <div class="main-header-title fs-3 fw-bold pb-5">
+          사원통합관리
+        </div>
+        <div>
+          <div class="input-group">
+            <div class="search-section input-group-text">
+              <select class="form-select" aria-label="Default select example">
+                <option selected>전체</option>
+                <option value="1">이름</option>
+                <option value="2">아이디</option>
+                <option value="3">직급</option>
+                <option value="4">사번</option>
+                <option value="5">내선번호</option>
+              </select>
+            <!-- 검색창 -->
+            <input type="text" class="py-1 form-control form-control-lg" placeholder="검색" id="all-search-input"> <!-- id 값 중복 불가 'search-input' -> 'all-search-input' 으로 변경 -->
+            </div>
+            <button class="border cursor-pointer" id="modal-search">
+              <img src="/images/search.png" alt="검색">
+            </button>
+          </div>
+        </div><!-- 사원통합관리 ==== 검색 input 창 -->
+      </div>
+      <div class="mb-5 p-3 d-flex justify-content-start flex-row border-dark-subtle border-top border-bottom">
+        <div class="d-flex justify-content-between flex-row">
+          <div class="emp-title me-5">
+            현재 사원 수
+          </div>
+          <div class="current-number-emp me-2">
+            80명
+          </div>
+        </div>
+        <div class="text-warning bg-dark">
+          정상 (70명) 중지 (10명)
+        </div>
+      </div>
+    </div>
+    <div class="main-second-section d-flex justify-content-between flex-row pb-4">
+      <div class="button-section">
+        <button class="border border-dark px-3 py-1 rounded-2" id="deptInsert" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
+        <button class="border border-dark px-3 py-1 rounded-2" id="dedptUpdate">사원삭제</button>
+        <button class="border border-dark px-3 py-1 rounded-2" id="deptDel">비밀번호 초기화</button>
+        <button class="border border-dark px-3 py-1 rounded-2" id="deptDel">계정중지</button>
+      </div>
+      <div>
+      </div>
+    </div>
+    <div class="main-tf-section d-flex flex-row">
+      <div class="main-fourth-section flex-fill">
+        <div class="dept-people-section">
+          <table class="table">
+            <thead>
+              <tr>
+                <th class=""><input type="checkbox"></th>
+                <th class="">이름</th>
+                <th class="">아이디</th>
+                <th class="">소속부서</th>
+                <th class="">직급</th>
+                <th class="">사번</th>
+                <th class="">내선번호</th>
+                <th class="">휴대폰</th>
+                <th class="">계정상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="py-3"><input type="checkbox"></td>
+                <td class="py-3">김민지</td>
+                <td class="py-3">KimMinJi</td>
+                <td class="py-3">보안팀</td>
+                <td class="py-3">보안팀장</td>
+                <td class="py-3">250000</td>
+                <td class="py-3">4681</td>
+                <td class="py-3">010-0000-0000</td>
+                <td class="py-3">정상</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</body>
+</html>
