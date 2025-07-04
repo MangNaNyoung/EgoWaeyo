@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
+import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalFormVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalTempVO;
@@ -46,4 +47,11 @@ public class ApprovalServiceImpl implements ApprovalService {
 	public List<ApprovalCcVO> getReferenceList(String empId) {
 	    return approvalMapper.selectReferenceList(empId);
 	}
+
+	@Override
+	public ApprovalDetailVO getApprovalDetail(String docId) {
+		return null;
+	}
+	
+
 }
