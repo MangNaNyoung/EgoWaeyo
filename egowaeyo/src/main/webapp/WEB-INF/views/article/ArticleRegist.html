@@ -3,7 +3,97 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout/layout}">
 <main layout:fragment="content">
+<style>
+/* 사이드바 스타일 */
+body {
+	background: #fff;
+}
 
+.custom-title {
+	font-size: 20px;
+	font-weight: 700;
+	margin-bottom: 0;
+	letter-spacing: -1px;
+}
+
+.custom-header {
+	background: #fafafa;
+	border-bottom: 2px solid #e5e5e5;
+	padding: 25px 10px 20px 10px;
+	margin-bottom: 0;
+}
+
+.avatar {
+	width: 36px;
+	height: 36px;
+	background: #e5e5e5;
+	border-radius: 50%;
+	margin-right: 16px;
+	margin-top: 5px;
+	flex-shrink: 0;
+}
+
+/* content 스타일 */
+</style>
+
+<!-- 전체 문서를 감싸는 div 시작-->
+	<div class="d-flex">
+		<!-- slide를 감싸는 div 시작-->
+		<div id="slid" style="height: 1000px" class="col-2 border-end">
+			<!-- slid 내용 시작 -->
+			<div id="board-panel" class="p-4 ps-0 mt-5">
+				<h5>게시판</h5>
+
+				<ul class="no_dot mt-4 fw-bold parentsProjects">
+					<!--프로젝트 목록이 동적으로 추가됩니다. -->
+				</ul>
+
+
+				<ul class="no_dot">
+					<li><span data-bs-toggle="modal"
+						data-bs-target="#addProjectModal" style="cursor: pointer;">+
+							게시판추가</span></li>
+				</ul>
+			</div>
+			<!-- slide 내용 끝 -->
+
+		</div>
+		<!-- slide 감싸는 div 끝 -->
+
+		<!-- 내용(원본) 감싸는 div -->
+		<div class="flex-grow-1 ">
+			<!-- 내용(원본) 시작  -->
+			<div class="custom-header">
+				<div class="container-fluid">
+					<div class="d-flex align-items-center justify-content-between">
+						<div class="custom-title"></div>
+
+						<!-- 폼 시작 -->
+						<form class="search-bar d-flex align-items-center gap-2 me-4"
+							style="width: 800px;">
+							<select class="form-select" style="width: 200px;">
+								<option>전체 게시판</option>
+							</select> <select class="form-select" style="width: 200px;">
+								<option>제목+내용</option>
+								<option>작성자</option>
+							</select> <input class="form-control" type="text" style="width: 200px;"
+								placeholder="검색어를 입력하세요">
+							<button
+								class="btn btn-dark d-flex align-items-center justify-content-center"
+								type="submit" style="height: 38px;">
+								<span class="visually-hidden">검색</span>
+								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+									fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+									<path
+										d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
+								</svg>
+							</button>
+							<button class="btn btn-success"
+								style="width: 100px; margin-left: 100px;" type="button">글쓰기</button>
+						</form>
+					</div>
+				</div>
+			</div>
 	<!-- 상단 헤더 -->
 	<div class="container-fluid px-4">
 		<div class="bg-light border-bottom py-3">
@@ -53,7 +143,143 @@
 			</div>
 		</div>
 	</form>
+	</div>
+	<div th:replace="article/addProjectModal :: addProjectModal"></div>
+		<div th:replace="article/editProjectModal :: editProjectModal"></div>
+<script>
+function openModal() {
+	fetch('addProjectModal.html')
+		.then(response => response.text())
+		.then(html => {
+			const modalContainer = document.getElementById('modal-container');
+			modalContainer.innerHTML = html;
+			modalContainer.classList.remove('hidden');
+		})
+		.catch(error => console.error('Error loading modal:', error));
+}
 
+function closeModal() {
+	const modalContainer = document.getElementById('modal-container');
+	modalContainer.classList.add('hidden');
+	modalContainer.innerHTML = ''; // 모달 내용 초기화
+}
+
+
+// 프로젝트 수정 모달
+function openModal() {
+	fetch('editProjectModal.html')
+		.then(response => response.text())
+		.then(html => {
+			const modalContainer = document.getElementById('modal-container');
+			modalContainer.innerHTML = html;
+			modalContainer.classList.remove('hidden');
+		})
+		.catch(error => console.error('Error loading modal:', error));
+}
+
+function closeModal() {
+	const modalContainer = document.getElementById('modal-container');
+	modalContainer.classList.add('hidden');
+	modalContainer.innerHTML = ''; // 모달 내용 초기화
+}
+
+
+// 사이드바
+
+document.addEventListener("DOMContentLoaded", function () {
+	fetch('/egowaeyo/bbsMaster/groupedBbsData')
+		.then(response => response.json())
+		.then(data => {
+			console.log("Fetched Data:", data); // 디버깅 로그 추가
+
+			const parentProjectsList = document.querySelector("ul.parentsProjects");
+			if (parentProjectsList) {
+				parentProjectsList.innerHTML = ""; // 기존 내용 초기화
+
+				Object.entries(data).forEach(([codeNm, bbsList]) => {
+					const groupItem = document.createElement("li");
+					groupItem.textContent = codeNm;
+
+					// 새로운 ul 태그 생성
+					const subList = document.createElement("ul");
+
+					// ul 태그에 img 추가
+					const ulImg = document.createElement("img");
+					ulImg.setAttribute("data-bs-toggle", "modal");
+					ulImg.setAttribute("data-bs-target", "#editProjectModal");
+					ulImg.setAttribute("class", "img-icon");
+					ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+					ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+					groupItem.appendChild(ulImg);
+
+
+					bbsList.forEach(bbs => {
+						// li 태그 생성
+						const listItem = document.createElement("li");
+						// li 태그에 no_dot 클래스 추가
+						listItem.classList.add("no_dot");
+						listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
+						listItem.setAttribute("data-bbs-id", bbs.bbsId); // bbsNm을 data 속성으로 추가
+						listItem.setAttribute("data-code", bbs.code); // bbsNm을 data 속성으로 추가
+
+						// img 태그 생성
+						const img = document.createElement("img");
+						img.setAttribute("data-bs-toggle", "modal");
+						img.setAttribute("data-bs-target", "#editProjectModal");
+						img.setAttribute("class", "img-icon");
+						img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+						img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+
+						// bbsNm 텍스트 추가
+						const textNode = document.createTextNode(bbs.bbsNm);
+
+						// li에 텍스트와 img 추가
+						listItem.appendChild(textNode);
+						listItem.appendChild(img);
+
+						listItem.style.fontWeight = "normal"; // li 태그에 normal 스타일 적용
+						subList.appendChild(listItem);
+					});
+
+					groupItem.appendChild(subList);
+					parentProjectsList.appendChild(groupItem);
+				});
+			}
+		})
+		.catch(error => console.error('Error fetching grouped BBS data:', error));
+});
+
+// 게시판명 클릭 -> 헤더명 변경
+document.addEventListener("DOMContentLoaded", function () {
+	const parentProjectsList = document.querySelector("ul.parentsProjects");
+	const customTitle = document.querySelector(".custom-title");
+	const postListContainer = document.querySelector(".container-fluid.px-4");
+
+	// 게시판 이름(li)을 클릭했을 때
+	parentProjectsList.addEventListener("click", function (e) {
+		const clicked = e.target;
+
+		// 게시판 이름(li)의 텍스트 노드를 클릭했을 때만 처리
+		if (clicked.tagName === "LI" && clicked.textContent.trim() !== "") {
+			const bbsNm = clicked.childNodes[0].nodeValue.trim(); // 게시판 이름
+			const bbsId = clicked.getAttribute("data-bbs-id"); // 게시판 ID (li에 data 속성으로 넣어야 함)
+
+			if (!bbsId) {
+		        console.warn("bbsId가 없습니다.");
+		        return;
+		      }
+
+			// 제목 변경
+			if (customTitle) {
+				customTitle.textContent = bbsNm;
+			}
+		}
+		
+	});
+});
+
+</script>
+</div>
 
 </main>
 </html>
