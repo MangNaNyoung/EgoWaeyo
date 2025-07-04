@@ -7,6 +7,29 @@
 
 <section layout:fragment="content">
 		
+<script th:inline="javascript">
+let data ={} ;
+let url = /*[[@{/attendance}]]*/'';
+
+getData(data)
+	function getData(data){
+		$.ajax({
+			type : 'post',           // 타입 (get, post, put 등등)
+			url : url+'/attendList.do',           // 요청할 서버url
+			headers : {              // Http header
+				"Content-Type" : "application/json",
+			},
+			data : JSON.stringify(data),
+			success : function(result) { // 결과 성공 콜백함수
+					console.log(result);
+			},
+			error : function(request, status, error) { // 결과 에러 콜백함수
+					console.log(error)
+			}
+	})
+	}
+
+</script>
 </section>
 
 

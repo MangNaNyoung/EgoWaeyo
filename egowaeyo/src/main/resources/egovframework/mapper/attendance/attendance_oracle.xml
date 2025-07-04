@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="egovframework.mapper.attendance.AttendanceMapper">
+<mapper namespace="egovframework.com.egowaeyo.attendance.mapper.AttendanceMapper">
 	<select id="getAttend" resultType="AttendVO" parameterType="AttendVO">
 		SELECT
-				CHECKDATE,
 				TO_CHAR(TO_DATE(CHECKDATE, 'YYYYMMDD'), 'YYYY-MM-DD') AS CHECKDATE,
 				EMPLYR_ID,
-				CHECKIN,
 				TO_CHAR(TO_DATE(CHECKIN, 'HH24MI'), 'HH24:MI') AS CHECKIN,
-				CHECKOUT,
 				TO_CHAR(TO_DATE(CHECKOUT, 'HH24MI'), 'HH24:MI') AS CHECKOUT,
 				INSTATE,
 				OUTSTATE,
@@ -16,14 +13,13 @@
 				CHECK_TIME
 		FROM ATTENDANCE
 		<where>
-			<if test="emplyr_id != null and emplyr_id != ''" >
-			 AND emplyr_id = #{emplyr_id}
+			<if test="emplyrId != null and emplyrId != ''" >
+			 AND emplyr_id = #{emplyrId}
 			</if>
-			<if test="start_date != null and start_date != '' and end_date != null and end_date =''" >
-				AND BETWEEN ${start_date} AND ${end_date}
+			<if test="startDate != null and startDate != '' and endDate != null and endDate !=''" >
+				AND checkdate BETWEEN #{startDate} AND #{endDate}
 			</if>
 		</where>
-		WHERE #{emplyr_id}
 		ORDER BY CHECKDATE
 	</select>
 
