@@ -27,6 +27,7 @@ body {
 	padding: 25px 0 25px 0;
 	display: flex;
 	align-items: flex-start;
+	cursor: pointer;
 }
 
 .avatar {
@@ -286,6 +287,7 @@ body {
 				const parentProjectsList = document.querySelector("ul.parentsProjects");
 				const customTitle = document.querySelector(".custom-title");
 				const postListContainer = document.querySelector(".container-fluid.px-4");
+				
 
 				// 게시판 이름(li)을 클릭했을 때
 				parentProjectsList.addEventListener("click", function (e) {
@@ -307,6 +309,7 @@ body {
 						}
 
 						
+						
 						// 게시글 불러오기
 						fetch(`/egowaeyo/article/selectBbsAll?bbsId=${encodeURIComponent(bbsId)}`)
 						  .then(res => {
@@ -320,8 +323,12 @@ body {
 						    // posts가 배열인 경우
 						    if (Array.isArray(posts) && posts.length > 0) {
 						      posts.forEach(post => {
+						    	
 						        const postItem = document.createElement("div");
 						        postItem.className = "post-list-item";
+						        postItem.setAttribute("data-bbs-id", post.bbsId);
+						        postItem.setAttribute("data-ntt-id", post.nttId);
+						        
 						        postItem.innerHTML = `
 						          <div class="avatar"></div>
 						          <div>
@@ -337,6 +344,13 @@ body {
 						            </div>
 						          </div>
 						        `;
+						        
+						        // 클릭 이벤트 추가
+       							postItem.addEventListener("click", function () {
+          							const bbsId = this.getAttribute("data-bbs-id");
+          							const nttId = this.getAttribute("data-ntt-id");
+          							window.location.href = `/egowaeyo/article/articleDetail.do?bbsId=${bbsId}&nttId=${nttId}`;
+        						});
 						        postListContainer.appendChild(postItem);
 						      });
 						    } else {

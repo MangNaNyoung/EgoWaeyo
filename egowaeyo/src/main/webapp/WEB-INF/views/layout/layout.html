@@ -33,6 +33,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap">
 <script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap">
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
 
 <style>
@@ -43,6 +47,12 @@ body, html {
 #slide-panels  li {
 	text-indent: 30 px;
 	list-style-type: none;
+}
+
+a {
+	text-align: center;
+	text-decoration: none; 
+	color: inherit; 
 }
 
 .mainHeader header {
@@ -102,6 +112,9 @@ body, html {
 	width: 280px;
 	height: 45px;
 }
+#managing-panel h5{
+	color : #fff;
+}
 </style>
 <script
 	th:src="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.min.js}"></script>
@@ -158,16 +171,16 @@ body, html {
 					$('#main').css('margin-left','100px')
 					currentTarget = '';
 					$(this).toggleClass('active')
-						console.log(target)
+						
 					if(target == 'home-panel'){
 						location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+".do"
 					}else if(target == 'calendar-panel' || target == 'article-panel'){
-						console.log(target)
+						
 					location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"/"+target.substring(0,target.indexOf("-"))+"List.do"
 					}
 					
 					
-				} else if(target !='board-panel'&& target!='calendar-panel') {
+				} else if(target !='article-panel'&& target!='calendar-panel') {
 					$('#main').css('margin-left','330px')
 					$('#slide-panels').fadeIn('fast');
 					$('#slide-panels > div').hide();
@@ -180,14 +193,14 @@ body, html {
 			      e.stopPropagation();
 			      $('#bell-menu').slideToggle(150);
 			      $('#my-menu').slideUp(150);
-			      console.log( $('#my-menu'));
+			      
 			    });
 			    $('#my-toggle').on('click', function (e) {
 			      e.stopPropagation();
 			      $('#my-menu').slideToggle(150);
 			     // $('#my-menu').css('display','block');
 			      $('#bell-menu').slideUp(150);
-			      console.log( $('#bell-menu'));
+			      
 			    });
 			    // 바깥 클릭 시 닫기
 			    $(document).on('click', function () {
@@ -227,7 +240,7 @@ var timeInterval = 1000; // 1초 간격 호출
 var firstLocalTime = 0;
 var elapsedLocalTime = 0;
 var stateExpiredTime = false;
-var logoutUrl = "uat/uia/actionLogout.do";
+var logoutUrl = "/egowaeyo/uat/uia/actionLogout.do";
 var timer;
 var outPanList = $('.nope').map(function(){return $(this).data("target");}).get()
 function init() {
@@ -238,10 +251,10 @@ function init() {
 		if(true){ 
 	 $('.nav-link.p-3.main-menu').each(function(index, item){
 		 let target = $(this).data('target')
-		 console.log(target)
+		 
 		 if(target != null && target == activedBtn){
 			 $(this).toggleClass('active')
-			 
+		 
 		      // managing-panel 색상 설정 추가
               if(target == 'managing-panel'){
                    $('#slide-panels').css({"background" : "#000", "color" : "#FFF"})
@@ -250,6 +263,7 @@ function init() {
                }
 			 
 			  if (outPanList.indexOf(target) == -1) {
+
 				  $('#main').css('margin-left','330px')
 					$('#slide-panels').fadeIn('fast');
 					$('#slide-panels > div').hide();
@@ -261,13 +275,14 @@ function init() {
 	 $.ajax("/egowaeyo/getSessionTime").done(
 			 function(result){
 				 if(result.loginVO != null){
-				     console.log(result.egovLatestServerTime)
+				   
+					
 					 latestTime = result.egovLatestServerTime ; //getCookie("egovLatestServerTime")
 					 expireTime = result.egovExpireSessionTime	 ; //getCookie("egovExpireSessionTime");
 					objLeftTime = document.getElementById("leftTimeInfo");
-					console.log(objLeftTime)
+				
 					if (objLeftTime == null) {
-						console.log("'leftTimeInfo' ID is not exist!");
+					/* 	console.log("'leftTimeInfo' ID is not exist!"); */
 						return;
 					}
 					objClickInfo = document.getElementById("clickInfo");
@@ -342,7 +357,7 @@ function reqTimeAjax() {
 
 function logout() {
 	$("#sessionInfo").hide();
-
+	sessionStorage.removeItem('key')
 	$(location).attr('href',logoutUrl);
 }
 

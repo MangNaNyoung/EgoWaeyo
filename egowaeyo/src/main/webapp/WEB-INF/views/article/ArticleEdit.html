@@ -74,31 +74,28 @@ body {
 	<!-- content -->
 
 	<form class="bg-white p-5 rounded" enctype="multipart/form-data"
-		method="post" action="/article/articleRegister">
+		method="post" action="/article/articleUpdate">
 		<div class="mb-3 row">
 			<div class="mb-3 row">
 				<label for="boardSelect" class="col-sm-1 col-form-label text-start">게시판</label>
 				<div class="col-sm-2">
 					<select id="boardSelect" class="form-select">
-						<option selected>선택</option>
-						<option value="1">게시판 1</option>
-						<option value="2">게시판 2</option>
+						<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
 					</select>
 				</div>
 			</div>
 
 			<div class="mb-3 row">
-				<label for="titleInput" class="col-sm-1 col-form-label text-start">제목</label>
+				<label for="titleInput" id="title" class="col-sm-1 col-form-label text-start">제목</label>
 				<div class="col-sm-12">
-					<input type="text" id="titleInput" class="form-control"
-						placeholder="제목을 입력하세요">
+					<input type="text" id="title-Input" class="form-control">
 				</div>
 			</div>
 
 			<div class="mb-3 row">
-				<label for="fileUpload" class="col-sm-1 col-form-label text-start">첨부파일</label>
+				<label for="Uploadfile" class="col-sm-1 col-form-label text-start" name="files" multiple>첨부파일</label>
 				<div class="col-sm-11">
-					<input type="file" id="fileUpload" class="form-control"
+					<input type="file" id="fileInput" class="form-control"
 						name="files" multiple>
 				</div>
 			</div>
@@ -109,8 +106,8 @@ body {
 			</div>
 
 			<div class="text-center">
-				<button type="submit" class="btn btn-dark me-2">등록</button>
-				<button type="button" class="btn btn-secondary">취소</button>
+				<button type="submit" class="btn btn-dark me-2" id="submitButton">등록</button>
+				<button type="button" class="btn btn-secondary" id="cancelButton">취소</button>
 			</div>
 		</div>
 	</form>
@@ -215,6 +212,7 @@ document.addEventListener("DOMContentLoaded", function () {
 					groupItem.appendChild(subList);
 					parentProjectsList.appendChild(groupItem);
 				});
+				
 			}
 		})
 		.catch(error => console.error('Error fetching grouped BBS data:', error));
@@ -249,6 +247,141 @@ document.addEventListener("DOMContentLoaded", function () {
 	});
 });
 
+
+//게시글 상세보기
+document.addEventListener("DOMContentLoaded", function () {
+    // URL에서 bbsId와 nttId 파라미터 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const bbsId = urlParams.get("bbsId");
+    const nttId = urlParams.get("nttId");
+
+    if (!bbsId || !nttId) {
+      console.error("bbsId 또는 nttId가 URL에 없습니다.");
+      return;
+    }
+
+    // 서버 API 호출
+    fetch(`/egowaeyo/article/selectArticleDetail?bbsId=${bbsId}&nttId=${nttId}`)
+      .then(response => {
+        if (!response.ok) {
+        	throw new Error(`서버 응답 오류: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then(data => {
+    	  if (data && Object.keys(data).length > 0) {
+    		  const currentBbsId = data.bbsId; // 받아온 bbsId를 currentBbsId로 설정
+    		  
+    		  // 두 번째 API 호출
+              const boardSelect = document.getElementById("boardSelect");
+              fetch('/egowaeyo/bbsMaster/groupedBbsData')
+                  .then(response => response.json())
+                  .then(groupedData => {
+                      if (!groupedData || typeof groupedData !== 'object') {
+                          console.error("API 응답이 올바르지 않습니다:", groupedData);
+                          return;
+                      }
+
+                      // 기존 옵션 초기화
+                      boardSelect.innerHTML = "";
+
+                      // 데이터 처리 및 옵션 추가
+                      Object.entries(groupedData).forEach(([codeNm, bbsList]) => {
+                          bbsList.forEach(bbs => {
+                              const option = document.createElement("option");
+                              option.value = bbs.bbsId;
+                              option.textContent = bbs.bbsNm;
+
+                              // currentBbsId와 일치하면 선택
+                              if (bbs.bbsId === currentBbsId) {
+                                  option.selected = true;
+                              }
+
+                              boardSelect.appendChild(option);
+                          });
+                      });
+                  })
+                  
+    	      document.querySelector("#boardSelect").textContent = data.bbsNm;
+    	      document.querySelector("#title-Input").value = data.nttSj;
+    	      document.querySelector("#contentTextarea").textContent = data.nttCn.replace(/^<p>|<\/p>$/g, "");
+    	    } else {
+    	      console.error("데이터가 비어 있습니다.");
+    	    }
+    	  })
+    	  
+    	  .catch(error => console.error("Error fetching article detail:", error));
+  });
+  
+  // 업데이트 처리
+document.addEventListener("DOMContentLoaded", function () {
+    const boardSelect = document.getElementById("boardSelect");
+    const titleInput = document.getElementById("title-Input");
+    const contentTextarea = document.getElementById("contentTextarea");
+    const fileInput = document.getElementById("fileInput");
+    const submitButton = document.getElementById("submitButton");
+    const cancelButton = document.getElementById("cancelButton");
+    
+ 	// 취소 버튼 항상 활성화
+    cancelButton.disabled = false;
+
+    // 등록 버튼 초기 상태 비활성화
+    submitButton.disabled = true;
+
+    let isModified = false;
+
+    // 수정 여부 감지
+    const checkModification = () => {
+        isModified = true;
+        submitButton.disabled = false; // 등록 버튼 활성화
+    };
+
+    boardSelect.addEventListener("change", checkModification);
+    titleInput.addEventListener("input", checkModification);
+    contentTextarea.addEventListener("input", checkModification);
+    fileInput.addEventListener("change", checkModification);
+
+    // 등록 버튼 클릭 시 업데이트 처리
+    submitButton.addEventListener("click", function () {
+        if (!isModified) {
+            alert("수정된 내용이 없습니다.");
+            return;
+        }
+
+        const bbsId = boardSelect.value;
+        const nttId = new URLSearchParams(window.location.search).get("nttId");
+        const nttSj = titleInput.value;
+        const nttCn = contentTextarea.value;
+        const file = fileInput.files[0];
+
+        const formData = new FormData();
+        formData.append("bbsId", bbsId);
+        formData.append("nttId", nttId);
+        formData.append("nttSj", nttSj);
+        formData.append("nttCn", nttCn);
+        formData.append("file", atchFileId);
+        if (fileInput.files.length > 0) {
+            formData.append("files", fileInput.files[0]);
+        }
+
+        fetch("/egowaeyo/article/articleUpdate", {
+            method: "POST",
+            body: formData,
+        })
+            .then(response => {
+            	 if (response.ok) {
+                     alert("게시글이 성공적으로 수정되었습니다.");
+                     window.location.href = `/egowaeyo/article/articleDetail.do?bbsId=${bbsId}&nttId=${nttId}`;
+                 } else {
+                     alert("게시글 수정에 실패했습니다.");
+                 }
+            })
+            .catch(error => {
+                console.error("게시글 수정 중 오류 발생:", error);
+                alert("게시글 수정 중 오류가 발생했습니다.");
+            });
+    });
+});
 </script>
 </div>
 
