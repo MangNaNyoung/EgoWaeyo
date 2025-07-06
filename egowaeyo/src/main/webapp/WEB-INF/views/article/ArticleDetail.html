@@ -33,118 +33,6 @@ body {
 	flex-shrink: 0;
 }
 
-/* content 스타일 */
-.btn-dark {
-	background: #333;
-	border: none;
-	min-width: 56px;
-	font-size: 14px;
-	padding: 2px 16px;
-}
-
-.btn-dark:active, .btn-dark:focus {
-	background: #222 !important;
-}
-
-.avatar {
-	width: 36px;
-	height: 36px;
-	background: #e5e5e5;
-	border-radius: 50%;
-	margin-right: 12px;
-	flex-shrink: 0;
-	display: inline-block;
-}
-
-.comment-avatar {
-	width: 32px;
-	height: 32px;
-	background: #e5e5e5;
-	border-radius: 50%;
-	margin-right: 12px;
-	flex-shrink: 0;
-	display: inline-block;
-}
-
-.file-box {
-	background: #fafafa;
-	border: 1px solid #e5e5e5;
-	border-radius: 4px;
-	padding: 8px 12px;
-	font-size: 15px;
-	margin-bottom: 18px;
-}
-
-.comment-box {
-	background: #fafafa;
-	border: 1px solid #e5e5e5;
-	border-radius: 4px;
-	padding: 8px 12px;
-	font-size: 15px;
-	margin-bottom: 18px;
-}
-
-.comment-input {
-	background: #fafafa;
-	border: 1px solid #e5e5e5;
-	border-radius: 4px;
-	font-size: 15px;
-	min-height: 48px;
-	resize: none;
-}
-
-.comment-label {
-	font-size: 15px;
-	color: #444;
-	font-weight: 500;
-	margin-bottom: 8px;
-	display: flex;
-	align-items: center;
-	gap: 6px;
-}
-
-.comment-label svg {
-	margin-right: 2px;
-}
-
-.meta-info {
-	color: #888;
-	font-size: 14px;
-	margin-right: 16px;
-}
-
-.meta-info .view {
-	margin-left: 8px;
-}
-
-.notice-title {
-	font-size: 2rem;
-	font-weight: 500;
-	margin: 32px 0 16px 0;
-}
-
-.notice-header {
-	margin-bottom: 8px;
-}
-
-.notice-content {
-	font-size: 15px;
-	margin-bottom: 24px;
-	margin-top: 8px;
-	white-space: pre-line;
-}
-
-.notice-date {
-	font-weight: 700;
-	margin-top: 16px;
-	margin-bottom: 8px;
-}
-
-.top-btns {
-	margin-bottom: 16px;
-	text-align: right;
-}
-
 @media ( max-width : 900px) {
 	.container {
 		padding-left: 8px;
@@ -195,137 +83,124 @@ body {
 					<div class="d-flex align-items-center justify-content-between">
 						<div class="custom-title"></div>
 
-						<!-- 폼 시작 -->
-						<form class="search-bar d-flex align-items-center gap-2 me-4"
-							style="width: 800px;">
-							<select class="form-select" style="width: 200px;">
-								<option>전체 게시판</option>
-							</select> <select class="form-select" style="width: 200px;">
-								<option>제목+내용</option>
-								<option>작성자</option>
-							</select> <input class="form-control" type="text" style="width: 200px;"
-								placeholder="검색어를 입력하세요">
-							<button
-								class="btn btn-dark d-flex align-items-center justify-content-center"
-								type="submit" style="height: 38px;">
-								<span class="visually-hidden">검색</span>
-								<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-									fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-									<path
-										d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85zm-5.442 1.398a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11z" />
-								</svg>
-							</button>
-							<button class="btn btn-success"
-								style="width: 100px; margin-left: 100px;" type="button">글쓰기</button>
-						</form>
+
 					</div>
 				</div>
 			</div>
-
+			<!-- 상단 헤더 -->
 			<!-- content -->
 			<div class="container pt-4">
-				<div class="mb-2" style="font-size: 18px; font-weight: 500;">공지사항</div>
-				<div class="top-btns">
-					<button class="btn btn-dark btn-sm me-1">수정</button>
-					<button class="btn btn-dark btn-sm me-1">삭제</button>
+				<!-- 상단 버튼 그룹 -->
+				<div class="d-flex justify-content-end mb-3">
+					<button class="btn btn-dark btn-sm me-2">수정</button>
+					<button class="btn btn-dark btn-sm me-2">삭제</button>
 					<button class="btn btn-dark btn-sm">목록</button>
 				</div>
-				<div class="notice-title" id="article-title">2025년 과정평가형
-					국가기술자격 종목별 교육·훈련과정 추가지정 공고</div>
-				<div class="notice-header d-flex align-items-center mb-2">
-					<span class="avatar"></span>
-					<div>
-						<div id="article-author" style="font-size: 15px; color: #444;">이민영
-							대리님</div>
-						<div class="d-flex align-items-center"
-							style="font-size: 14px; color: #888;">
-							<span id="article-date">2025-06-12</span> <span id="article-time"
-								class="ms-3">16:54</span> <span class="ms-3">조회 10</span>
+
+				<!-- 제목 및 작성자 정보 -->
+				<div class="mb-3 ms-3">
+					<h2 class="fw-bold mb-3" id="article-title"></h2>
+					<div class="d-flex align-items-center">
+						<div class="avatar me-3"></div>
+						<div>
+							<p class="mb-1" id="article-author"
+								style="font-size: 15px; color: #444;"></p>
+							<div class="d-flex align-items-center"
+								style="font-size: 14px; color: #888;">
+								<span id="article-date"></span> <span
+									id="article-time" class="ms-2"></span> <span class="ms-3"
+									id="article-view"></span>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="file-box mb-3">
-					첨부파일 총 1개(23KB) <a href="#" class="ms-2"
-						style="color: #888; font-size: 14px;">전체다운로드</a>
-					<div class="mt-2">
-						<input type="text" class="form-control form-control-sm" value=""
-							readonly
-							style="background: #fafafa; border: none; border-radius: 0; border-bottom: 1px solid #e5e5e5;">
+
+				<!-- 첨부파일 정보 -->
+				<div class="mb-4">
+					<div class="file-box p-3 border rounded ms-3 me-3">
+						<p class="mb-2">
+							 <a href="#" class="ms-2 text-muted"
+								style="font-size: 14px;">전체다운로드</a>
+						</p>
+						<div class="form-control form-control-sm"
+							style="background-color: #f8f9fa; border: 1px solid #ced4da; padding: 0.375rem 0.75rem;">
+							</div>
 					</div>
 				</div>
-				<div class="notice-content" id="article-content">
-					국가기술자격법 제10조 및 같은 법 시행령 제14조의2에 따라 2025년도 과정평가형 자격 종목별 교육 · 훈련과정
-					추가지정 결과를 다음과 같이 공고합니다. <span class="notice-date">2025년 6월
-						13일</span> 과학기술정보통신부장관, 산업통상자원부장관, 보건복지부장관, 환경부장관, 고용노동부장관, 국토교통부장관,
-					식품의약품안전처장, 산림청장
+
+				<!-- 공지 내용 -->
+				<div class="mb-4 ms-3">
+					<p class="notice-content" id="article-content">
+						 <span class="notice-date fw-bold">
+							</span> 
+					</p>
 				</div>
-				<div class="comment-label mb-2">
-					<svg width="18" height="18" fill="none" stroke="#444"
-						stroke-width="2" viewBox="0 0 24 24">
-						<rect x="3" y="7" width="18" height="13" rx="2" />
-						<path d="M7 7V5a5 5 0 0 1 10 0v2" /></svg>
-					댓글
-				</div>
-				<div class="d-flex align-items-start mb-3">
-					<span class="comment-avatar"></span> <input type="text"
-						class="form-control ms-2 comment-input" placeholder="댓글 입력">
-					<button class="btn btn-dark ms-2" style="min-width: 56px;">등록</button>
+	
+	<hr class="mt-5 mb-4">
+				<!-- 댓글 입력 -->
+				<div class="mb-4">
+					<label class="comment-label d-flex align-items-center mb-2 ms-3">
+						💬 댓글
+					</label>
+					<div class="d-flex align-items-start ms-3 me-3 mt-4">
+						<div class="avatar me-3"></div>
+						<textarea class="form-control comment-input me-3" rows="3"></textarea>
+						<button class="btn btn-dark" style="width:60px; height:40px;">등록</button></div>
+					</div>
 				</div>
 			</div>
 		</div>
-		<!-- 전체 문서를 감싸는 태그 끝-->
-
-		<!-- 모달은 바깥으로 빼서 넣어주세요 -->
 		<div th:replace="article/addProjectModal :: addProjectModal"></div>
 		<div th:replace="article/editProjectModal :: editProjectModal"></div>
 
 		<script>
-			function openModal() {
-				fetch('addProjectModal.html')
-					.then(response => response.text())
-					.then(html => {
-						const modalContainer = document.getElementById('modal-container');
-						modalContainer.innerHTML = html;
-						modalContainer.classList.remove('hidden');
-					})
-					.catch(error => console.error('Error loading modal:', error));
-			}
+		function openModal() {
+			fetch('addProjectModal.html')
+				.then(response => response.text())
+				.then(html => {
+					const modalContainer = document.getElementById('modal-container');
+					modalContainer.innerHTML = html;
+					modalContainer.classList.remove('hidden');
+				})
+				.catch(error => console.error('Error loading modal:', error));
+		}
 
-			function closeModal() {
-				const modalContainer = document.getElementById('modal-container');
-				modalContainer.classList.add('hidden');
-				modalContainer.innerHTML = ''; // 모달 내용 초기화
-			}
-
-
-			// 프로젝트 수정 모달
-			function openModal() {
-				fetch('editProjectModal.html')
-					.then(response => response.text())
-					.then(html => {
-						const modalContainer = document.getElementById('modal-container');
-						modalContainer.innerHTML = html;
-						modalContainer.classList.remove('hidden');
-					})
-					.catch(error => console.error('Error loading modal:', error));
-			}
-
-			function closeModal() {
-				const modalContainer = document.getElementById('modal-container');
-				modalContainer.classList.add('hidden');
-				modalContainer.innerHTML = ''; // 모달 내용 초기화
-			}
+		function closeModal() {
+			const modalContainer = document.getElementById('modal-container');
+			modalContainer.classList.add('hidden');
+			modalContainer.innerHTML = ''; // 모달 내용 초기화
+		}
 
 
-			// 사이드바
+		// 프로젝트 수정 모달
+		function openModal() {
+			fetch('editProjectModal.html')
+				.then(response => response.text())
+				.then(html => {
+					const modalContainer = document.getElementById('modal-container');
+					modalContainer.innerHTML = html;
+					modalContainer.classList.remove('hidden');
+				})
+				.catch(error => console.error('Error loading modal:', error));
+		}
 
-			document.addEventListener("DOMContentLoaded", function () {
-				fetch('/egowaeyo/bbsMaster/groupedBbsData')
-					.then(response => response.json())
-					.then(data => {
-						console.log("Fetched Data:", data); // 디버깅 로그 추가
+		function closeModal() {
+			const modalContainer = document.getElementById('modal-container');
+			modalContainer.classList.add('hidden');
+			modalContainer.innerHTML = ''; // 모달 내용 초기화
+		}
 
-						const parentProjectsList = document.querySelector("ul.parentsProjects");
+
+		// 사이드바
+
+		document.addEventListener("DOMContentLoaded", function () {
+			fetch('/egowaeyo/bbsMaster/groupedBbsData')
+				.then(response => response.json())
+				.then(data => {
+					console.log("Fetched Data:", data); // 디버깅 로그 추가
+
+					const parentProjectsList = document.querySelector("ul.parentsProjects");
+					if (parentProjectsList) {
 						parentProjectsList.innerHTML = ""; // 기존 내용 초기화
 
 						Object.entries(data).forEach(([codeNm, bbsList]) => {
@@ -344,13 +219,15 @@ body {
 							ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
 							groupItem.appendChild(ulImg);
 
-							bbsList.forEach(bbsNm => {
+
+							bbsList.forEach(bbs => {
 								// li 태그 생성
 								const listItem = document.createElement("li");
 								// li 태그에 no_dot 클래스 추가
 								listItem.classList.add("no_dot");
 								listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
-
+								listItem.setAttribute("data-bbs-id", bbs.bbsId); // bbsNm을 data 속성으로 추가
+								listItem.setAttribute("data-code", bbs.code); // bbsNm을 data 속성으로 추가
 
 								// img 태그 생성
 								const img = document.createElement("img");
@@ -361,7 +238,7 @@ body {
 								img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
 
 								// bbsNm 텍스트 추가
-								const textNode = document.createTextNode(bbsNm);
+								const textNode = document.createTextNode(bbs.bbsNm);
 
 								// li에 텍스트와 img 추가
 								listItem.appendChild(textNode);
@@ -374,23 +251,44 @@ body {
 							groupItem.appendChild(subList);
 							parentProjectsList.appendChild(groupItem);
 						});
-					})
-					.catch(error => console.error('Error fetching grouped BBS data:', error));
-			});
+					}
+				})
+				.catch(error => console.error('Error fetching grouped BBS data:', error));
+		});
 
-			// 게시판명 클릭 -> 헤더명 변경
-			document.addEventListener("DOMContentLoaded", function () {
-				const parentProjectsList = document.querySelector("ul.parentsProjects");
-				const customTitle = document.querySelector(".custom-title");
-				const postListContainer = document.querySelector(".container-fluid.px-4");
+		// 게시판명 클릭 -> 헤더명 변경
+		document.addEventListener("DOMContentLoaded", function () {
+			const parentProjectsList = document.querySelector("ul.parentsProjects");
+			const customTitle = document.querySelector(".custom-title");
+			const postListContainer = document.querySelector(".container-fluid.px-4");
 
-				// 기본값 설정
-				/*
-				if (customTitle) {
-				    customTitle.textContent = "공지사항"; 
+			// 게시판 이름(li)을 클릭했을 때
+			parentProjectsList.addEventListener("click", function (e) {
+				const clicked = e.target;
+
+				// 게시판 이름(li)의 텍스트 노드를 클릭했을 때만 처리
+				if (clicked.tagName === "LI" && clicked.textContent.trim() !== "") {
+					const bbsNm = clicked.childNodes[0].nodeValue.trim(); // 게시판 이름
+					const bbsId = clicked.getAttribute("data-bbs-id"); // 게시판 ID (li에 data 속성으로 넣어야 함)
+					console.log("bbsId:", bbsId); // 디버깅 로그 추가
+
+					if (!bbsId) {
+				        console.warn("bbsId가 없습니다.");
+				        return;
+				      }
+
+					// 제목 변경
+					if (customTitle) {
+						customTitle.textContent = bbsNm;
+						// 게시글 리스트 페이지로 이동
+						const targetUrl = `/egowaeyo/article/articleList.do?bbsId=${bbsId}`;
+					      console.log("Target URL:", targetUrl); // URL 디버깅 로그 추가
+					      window.location.href = targetUrl;
+					}
 				}
-				*/
+				
 			});
+		});
 			
 			document.addEventListener("DOMContentLoaded", function () {
 			    // URL에서 rowNo 파라미터 가져오기
@@ -427,7 +325,57 @@ body {
 			    document.querySelector("#article-content").textContent = article.nttCn;
 			    document.querySelector("#article-author").textContent = article.frstRegisterNm;
 			    document.querySelector("#article-date").textContent = article.frstRegisterPnttm;
+			    document.querySelector(".custom-title").textContent = article.bbsNm;
 			}
+			
+			// 게시글 상세보기
+			 document.addEventListener("DOMContentLoaded", function () {
+				    // URL에서 bbsId와 nttId 파라미터 가져오기
+				    const urlParams = new URLSearchParams(window.location.search);
+				    const bbsId = urlParams.get("bbsId");
+				    const nttId = urlParams.get("nttId");
+
+				    if (!bbsId || !nttId) {
+				      console.error("bbsId 또는 nttId가 URL에 없습니다.");
+				      return;
+				    }
+
+				    // 서버 API 호출
+				    fetch(`/egowaeyo/article/selectArticleDetail?bbsId=${bbsId}&nttId=${nttId}`)
+				      .then(response => {
+				        if (!response.ok) {
+				          throw new Error("서버 응답에 문제가 있습니다.");
+				        }
+if (data && Object.keys(data).length > 0) {
+      document.querySelector("#boardSelect").textContent = data.bbsNm;
+      document.querySelector("#titleInput").textContent = data.nttSj;
+      document.querySelector("#contentTextarea").textContent = data.nttCn.replace(/^<p>|<\/p>$/g, "");
+    } else {
+      console.error("데이터가 비어 있습니다.");
+    }
+  })
+  .catch(error => console.error("Error fetching article detail:", error));				        return response.json();
+				      })
+				      .then(data => {
+				        if (data) {
+				          // 데이터를 HTML 요소에 렌더링
+				          document.querySelector("#article-title").textContent = data.nttSj;
+				          document.querySelector("#article-author").textContent = data.ntcrNm;
+				          document.querySelector("#article-date").textContent = data.frstRegisterPnttm.split(" ")[0];
+				          document.querySelector("#article-time").textContent = data.frstRegisterPnttm.split(" ")[1];
+				          document.querySelector("#article-view").textContent = `조회 ${data.inqireCo}`;
+				          document.querySelector(".custom-title").textContent = data.bbsNm;
+				       
+				          // nttCn에서 양쪽 <p> 태그 제거
+			                const cleanedContent = data.nttCn.replace(/^<p>|<\/p>$/g, "");
+			                document.querySelector("#article-content").textContent = cleanedContent;
+				        } else {
+				          console.error("데이터가 비어 있습니다.");
+				        }
+				      })
+				      .catch(error => console.error("Error fetching article detail:", error));
+				  });
+			
 		</script>
 		<div>
 </main>
