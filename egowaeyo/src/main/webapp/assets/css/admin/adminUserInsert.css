@@ -29,7 +29,7 @@ body {
 
 .main-header-title {
 	display: block;
-	font-size: 30px;
+	font-size: 28px;
 	font-weight: bold;
 }
 
@@ -89,8 +89,12 @@ body {
 }
 
 .user-info-detail input {
-	
+	width: 200px;
 	margin-left: 20px;
+}
+
+.user-info-detail input[type="radio"] {
+	width: 50px;
 }
 
 .user-info-detail select {

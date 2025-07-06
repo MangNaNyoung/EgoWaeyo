@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/layout}">
+<section layout:fragment="content">
+  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+  <script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
+  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+  <div class="main-container d-flex m-4 flex-row">
+    <div class="second-section flex-fill flex-row m-3 ms-5">
+      <div class="fw-bold fs-3 mb-3">
+        메일 쓰기
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-2">
+          <button class="border border-dark px-3 py-1 rounded-2 bg-white border-1">
+            <div class="d-flex flex-row gap-3 align-items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-send"
+                viewBox="0 0 16 16">
+                <path
+                  d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+              </svg>
+              <div>
+                보내기
+              </div>
+            </div>
+          </button>
+          <button class="border border-dark px-3 py-1 rounded-2 bg-white border-1">임시저장</button>
+          <button class="border border-dark px-3 py-1 rounded-2 bg-white border-1">내게 쓰기</button>
+        </div>
+        <div class="d-flex align-items-center text-black-50">
+          임시보관함 저장 09:00:02
+        </div>
+      </div>
+      <div class="mail-info-section d-flex align-items-center gap-3 mt-3">
+        <div class="pe-3">
+          보내는 사람
+        </div>
+        <div class="fw-bold pe-5">
+          권동익
+        </div>
+      </div>
+      <div class="mail-info-section d-flex align-items-center gap-3 mt-3">
+        <div class="pe-3">
+          받는 사람
+        </div>
+        <div class="attached-person flex-fill">
+          <input type="text" class="border-top-0 border-start-0 border-end-0">
+        </div>
+      </div>
+      <div class="mail-info-section d-flex align-items-center gap-3 mt-3">
+        <div class="pe-5">
+          참조
+        </div>
+        <div class="attached-person flex-fill">
+          <input type="text" class="border-top-0 border-start-0 border-end-0">
+        </div>
+      </div>
+      <div class="mail-info-section d-flex align-items-center gap-3 mt-3">
+        <div class="pe-3">
+          숨은 참조
+        </div>
+        <div class="attached-person flex-fill">
+          <input type="text" class="border-top-0 border-start-0 border-end-0">
+        </div>
+      </div>
+      <div class="mail-info-section d-flex align-items-center gap-3 mt-3">
+        <div class="pe-5">
+          제목
+        </div>
+        <div class="attached-person flex-fill">
+          <input type="text" class="border-top-0 border-start-0 border-end-0">
+        </div>
+      </div>
+      <div class="mail-info-section d-flex align-items-center gap-3 mt-3">
+        <div class="pe-3">
+          파일 첨부
+        </div>
+        <div class="file-upload-section d-flex align-items-center gap-2">
+          <input type="file" accept=".png" name="file" id="file">
+          <label for="file" class="file-upload-btn border border-dark border-1 px-3 py-1 rounded-2" role="button">
+            내 PC
+          </label>
+          <button id="btnCan1"
+            class="file-upload-btn border border-dark border-1 px-3 py-1 rounded-2 text-white bg-dark">초기화</button>
+        </div>
+      </div>
+      <div class="image-preview">
+        <!--<img id="previewImage" src="#" alt="이미지 미리보기" style="display: none;">-->
+      </div>
+      <div class="image-drop-container d-flex align-items-center gap-3 mt-3">
+        <div id="drop-area" class="flex-fill">
+          <p id="image-title-p">이미지를 드래그 앤 드롭 하거나 클릭하여 업로드하세요.</p>
+          <input type="file" id="file-input" accept="image/*" style="display: none;">
+          <img id="image-preview" src="" alt="업로드된 이미지">
+        </div>
+      </div>
+      <div class="mail-info-section d-flex align-items-center gap-3 mt-3">
+        <div id="editor" class="flex-fill"></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+<script>
+  const dropArea = document.getElementById("drop-area");
+  const fileInput = document.getElementById("file-input");
+  const imagePreview = document.getElementById("image-preview");
+
+  const imageTitle = document.getElementById("image-title-p");
+
+  const editor = new toastui.Editor({
+    el: document.querySelector('#editor'),
+    height: '500px',
+    initialEditType: 'markdown',
+    previewStyle: 'vertical'
+  });
+
+  // 드래그 앤 드롭 이벤트 처리
+  dropArea.addEventListener("dragover", (e) => {
+    e.preventDefault();
+    dropArea.style.backgroundColor = "#eee";
+  });
+
+  dropArea.addEventListener("dragleave", () => {
+    dropArea.style.backgroundColor = "#fff";
+  });
+
+  dropArea.addEventListener("drop", (e) => {
+    e.preventDefault();
+    dropArea.style.backgroundColor = "#fff";
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image")) {
+      displayImage(file);
+    }
+  });
+
+  // 파일 입력 필드 변경 이벤트 처리
+  fileInput.addEventListener("change", () => {
+    const file = fileInput.files[0];
+    if (file && file.type.startsWith("image")) {
+      displayImage(file);
+    }
+  });
+
+  // 클릭 이벤트 처리
+  dropArea.addEventListener("click", () => {
+    fileInput.click();
+  });
+
+  // 이미지 표시 함수
+  function displayImage(file) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      imagePreview.src = reader.result;
+      imagePreview.style.display = "block";
+      imageTitle.style.display = "hidden";
+    };
+    reader.readAsDataURL(file);
+  }
+
+
+</script>
+
+</html>

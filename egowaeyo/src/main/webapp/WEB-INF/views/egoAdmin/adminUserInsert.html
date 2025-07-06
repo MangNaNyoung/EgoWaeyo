@@ -8,10 +8,12 @@
   <div class="main-container">
     <div class="main-first-section">
       <div class="main-small-title">사용자 관리</div>
-      <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0" type="submit">등록</button>
-      <!-- 부트스트랩 사용 -->
     </div>
     <div class="main-header-title">사용자 등록</div>
+    <div class="d-flex justify-content-end">
+      <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0"
+        type="submit">등록</button><!-- 부트스트랩 사용 -->
+    </div>
     <form id="userForm" role="form" action="AdminUserIns" method="post" enctype="multipart/form-data">
       <div class="admin-user-sections">
         <div class="left-admin-user-info">
@@ -79,19 +81,9 @@
               <span>이메일</span> <input type="email" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>성별</span>
-	            <div class="form-check">
-	              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-	              <label class="form-check-label" for="flexRadioDefault1">
-	                남
-	              </label>
-	            </div>
-	            <div class="form-check">
-	              <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-	              <label class="form-check-label" for="flexRadioDefault2">
-	                여
-	              </label>
-	            </div>
+              <span class="user-gender me-5">성별</span>
+	           	<span>남</span><input type="radio" name="gender">
+	           	<span>여</span><input type="radio" name="gender">
             </div>
           </div>
         </div>
@@ -293,14 +285,14 @@
     }
 
     /*     selectPosition.addEventListener("click", () => {
-    	   	$.ajax("deptpos")
-    	       .then((datas) => {
-    	         datas.forEach(e => {
-    	           $('#selectposition').append(
-    	             `<option value="${e.positionId}">${e.positionName}</option>`
-    	             )
-    	         })
-    	       })
+            $.ajax("deptpos")
+             .then((datas) => {
+               datas.forEach(e => {
+                 $('#selectposition').append(
+                   `<option value="${e.positionId}">${e.positionName}</option>`
+                   )
+               })
+             })
         }) */
 
     searchInput.addEventListener("input", searchDepartments);

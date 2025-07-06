@@ -2,8 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout/layout}">
 <section layout:fragment="content">
-
-<body>
+ <link rel="stylesheet" th:href="@{/assets/css/admin/adminUserManagement.css}">
   <div class="main-container d-flex m-4 flex-column">
     <div class="main-first-section">
       <div class="main-small-title d-bolck pb-4">
@@ -15,7 +14,7 @@
         </div>
         <div>
           <div class="input-group">
-            <div class="search-section input-group-text">
+            <div class="search-section input-group-text bg-white">
               <select class="form-select" aria-label="Default select example">
                 <option selected>전체</option>
                 <option value="1">이름</option>
@@ -25,11 +24,15 @@
                 <option value="5">내선번호</option>
               </select>
             <!-- 검색창 -->
-            <input type="text" class="py-1 form-control form-control-lg" placeholder="검색" id="all-search-input"> <!-- id 값 중복 불가 'search-input' -> 'all-search-input' 으로 변경 -->
+	         <input type="text" class="py-1" placeholder="검색" id="all-search-input"> <!-- id 값 중복 불가 'search-input' -> 'all-search-input' 으로 변경 -->
+	         <button class="border cursor-pointer bg-white border-0 ms-2" id="modal-search">
+	           <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search"
+	             viewBox="0 0 16 16">
+	             <path
+	               d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+	           </svg>
+	         </button>
             </div>
-            <button class="border cursor-pointer" id="modal-search">
-              <img src="/images/search.png" alt="검색">
-            </button>
           </div>
         </div><!-- 사원통합관리 ==== 검색 input 창 -->
       </div>
@@ -49,10 +52,10 @@
     </div>
     <div class="main-second-section d-flex justify-content-between flex-row pb-4">
       <div class="button-section">
-        <button class="border border-dark px-3 py-1 rounded-2" id="deptInsert" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
-        <button class="border border-dark px-3 py-1 rounded-2" id="dedptUpdate">사원삭제</button>
-        <button class="border border-dark px-3 py-1 rounded-2" id="deptDel">비밀번호 초기화</button>
-        <button class="border border-dark px-3 py-1 rounded-2" id="deptDel">계정중지</button>
+        <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="deptInsert" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
+        <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="dedptUpdate">사원삭제</button>
+        <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="deptDel">비밀번호 초기화</button>
+        <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="deptDel">계정중지</button>
       </div>
       <div>
       </div>
@@ -60,7 +63,7 @@
     <div class="main-tf-section d-flex flex-row">
       <div class="main-fourth-section flex-fill">
         <div class="dept-people-section">
-          <table class="table">
+          <table class="table text-dark">
             <thead>
               <tr>
                 <th class=""><input type="checkbox"></th>
@@ -92,6 +95,5 @@
       </div>
     </div>
   </div>
-  
-</body>
+ </section>
 </html>

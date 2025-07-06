@@ -27,7 +27,7 @@ public class AdminUserController {
         System.out.println("Position list size: " + (posilist != null ? posilist.size() : "null"));
         model.addAttribute("posi", posilist);
        
-        return "pinggu/adminUserInsert.html";
+        return "egoAdmin/adminUserInsert.html";
 	   
 	}
 	
@@ -52,21 +52,21 @@ public class AdminUserController {
 	@RequestMapping("/adDeptMge.do")
 	public String adminDeptMge() {
        
-        return "pinggu/adminDeptManagement.html";
+        return "egoAdmin/adminDeptManagement.html";
 	   
 	}
 	
 	@RequestMapping("/adUserMge.do")
 	public String adminUserMge() {
        
-        return "pinggu/adminUserManagement.html";
+        return "egoAdmin/adminUserManagement.html";
 	   
 	}
 	
 	@RequestMapping("/adMenuAuth.do")
 	public String adminMenuAuthority() {
        
-        return "pinggu/adminMenuAuthority.html";
+        return "egoAdmin/adminMenuAuthority.html";
 	   
 	}
 	

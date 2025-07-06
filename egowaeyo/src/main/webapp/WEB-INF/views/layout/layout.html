@@ -1,3 +1,16 @@
+<!-- ============================================
+작성자 : 임성욱
+최초작성 : 2025-
+,
+설명 : layout.html
+,
+-----------------------------------------------[ 변경 이력 ]
+2025-07-06 (권동익): 각 link js 한줄변경
+					읽지 않은 메일 CSS 추가
+					init() 함수 메일 탭 새로고침 색상 변경 추가
+,
+,
+============================================ -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
@@ -5,30 +18,21 @@
 <meta charset="UTF-8">
 <title>EGOWAEYO</title>
 <link rel="preconnect" href="https://fonts.gstatic.com">
-<link
-	href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap"
-	rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" th:href="@{/assets/css/bootstrap.css}">
 <link rel="stylesheet" th:href="@{/assets/css/pages/email.css}">
 <link rel="stylesheet" th:href="@{/assets/vendors/iconly/bold.css}">
-<link rel="stylesheet"
-	th:href="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.css}">
-<link rel="stylesheet"
-	th:href="@{/assets/vendors/bootstrap-icons/bootstrap-icons.css}">
+<link rel="stylesheet" th:href="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.css}">
+<link rel="stylesheet" th:href="@{/assets/vendors/bootstrap-icons/bootstrap-icons.css}">
 <link rel="stylesheet" th:href="@{/assets/css/app.css}">
-<link rel="shortcut icon"
-	th:href="@{/images/egovframework/com/ego/egowaeyofavicon.png}"
-	type="image/x-icon">
-<script
-	src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-<link rel="stylesheet"
-	href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link rel="stylesheet" th:href="@{/assets/css/mail/mail-NoneRead.css}"> <!-- 메일 > 읽지 않은 메일 CSS -->
+<link rel="shortcut icon" th:href="@{/images/egovframework/com/ego/minifavicon.png}" type="image/x-icon">
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/editor/latest/toastui-editor.min.css" />
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap">
+<script src="https://uicdn.toast.com/editor/latest/toastui-editor-all.min.js"></script>
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-<link rel="stylesheet"
-	href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
-<link href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
 
 <style>
@@ -237,6 +241,14 @@ function init() {
 		 console.log(target)
 		 if(target != null && target == activedBtn){
 			 $(this).toggleClass('active')
+			 
+		      // managing-panel 색상 설정 추가
+              if(target == 'managing-panel'){
+                   $('#slide-panels').css({"background" : "#000", "color" : "#FFF"})
+               } else {
+                   $('#slide-panels').css({"background" : "#F8F9FA", "color" : "#000"})
+               }
+			 
 			  if (outPanList.indexOf(target) == -1) {
 				  $('#main').css('margin-left','330px')
 					$('#slide-panels').fadeIn('fast');

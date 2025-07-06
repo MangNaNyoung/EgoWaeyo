@@ -9,15 +9,3 @@ body {
 .main-container{
 	color: #000 !important;
 }
-
-/* list-style-type: none; */
-
-.dept-selected{
-  background-color: #8ec5ff !important;
-}
-
-
-.dept-hover:hover{
-  background-color: #d1d5dc;
-  cursor: pointer;
-}
