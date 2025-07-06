@@ -1,0 +1,138 @@
+body {
+	font-family: "42dot Sans", sans-serif;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	background-color : #FFF !important;
+}
+
+/* TUI Grid 전체 배경 흰색으로 설정 */
+.tui-grid-body-area {
+  background-color: white !important;
+}
+
+.tui-grid-cell {
+  background-color: white !important;
+  color: #333 !important;
+  border: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+}
+
+.tui-grid-row {
+  background-color: white !important;
+  border: none !important;
+}
+
+.main-container{
+	color: #000 !important;
+}
+
+.mail-hover:hover{
+  background-color: #d1d5dc !important;
+  cursor: pointer !important;
+}
+
+/* TUI Grid 헤더 완전히 숨기기 */
+.tui-grid-header-area {
+  display: none !important;
+}
+
+.tui-grid-header {
+  display: none !important;
+}
+
+.tui-grid-body-area {
+  height: auto !important;
+}
+
+.mail-hover:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  font-size: 16px;
+}
+
+.star-btn:hover {
+  transform: scale(1.1);
+}
+
+.mail-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.unread-mail {
+  font-weight: bold;
+}
+
+.read-mail {
+  font-weight: normal;
+  opacity: 0.8;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mail-hover:hover{
+  background-color: #d1d5dc !important;
+  cursor: pointer !important;
+}
+
+/* TUI Grid 헤더 완전히 숨기기 */
+.tui-grid-header-area {
+  display: none !important;
+}
+
+.tui-grid-header {
+  display: none !important;
+}
+
+.tui-grid-body-area {
+  height: auto !important;
+}
+
+.mail-hover:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
+}
+
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 2px;
+  font-size: 16px;
+}
+
+.star-btn:hover {
+  transform: scale(1.1);
+}
+
+.mail-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+}
+
+.unread-mail {
+  font-weight: bold;
+}
+
+.read-mail {
+  font-weight: normal;
+  opacity: 0.8;
+}
+
+.text-right {
+  text-align: right;
+}
+

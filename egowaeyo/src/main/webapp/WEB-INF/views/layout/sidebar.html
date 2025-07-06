@@ -1,117 +1,177 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div id="sidebar" class="d-flex" th:fragment="asideFragment">
-	<!-- 왼쪽 고정 사이드바 -->
-	<div class="sidebar-wrapper"
-		style="width: 5rem; position: fixed; top: 40px; left: 0; height: 100vh; background: #fff; z-index: 1000;">
-		<div class="sidebar-header">
-			<div class="d-flex justify-content-between"></div>
-		</div>
-		<div class="sidebar-menu">
-			<ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
-				<li class="nav-item "><a href="#"
-					class="nav-link main-menu p-3 nope" data-target="home-panel"> <i
-						class="bi bi-house fs-4"></i> <span class="d-block small">홈</span>
-				</a></li>
-				<li class="nav-item "><a href="#"
-					class="nav-link main-menu p-3 nope" data-target="calendar-panel"> <i
-						class="bi bi-calendar-week fs-4"></i> <span class="d-block small">일정</span>
-				</a></li>
-				<li class="nav-item"><a href="#" class="nav-link main-menu p-3"
-					data-target="approval-panel"> <i
-						class="bi bi-journal-check fs-4"></i> <span class="d-block small">결재</span>
-				</a></li>
-				<li class="nav-item "><a href="#" class='nav-link main-menu p-3' data-target="journal-panel"> <i
-						class="bi bi-grid-1x2-fill"></i> <span class="d-block">일지</span>
-				</a></li>
-				<li class="nav-item "><a href="#"
-					class='nav-link main-menu p-3 nope' data-target="article-panel"> <i
-						class="bi bi-hexagon-fill"></i> <span class="d-block">게시판</span>
-				</a></li>
-				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="booking-panel">
-						<i class="bi bi-file-earmark-medical-fill"></i> <span
-						class="d-block">예약</span>
-				</a></li>
-				<li class="nav-item "><a href="#" class='nav-link main-menu p-3' data-target="meeting-panel"> <i
-						class="bi bi-pen-fill"></i> <span class="d-block">회의</span>
-				</a></li>
-				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="attendance-panel">
-						<i class="bi bi-calendar-check"></i><span class="d-block">근태</span>
-				</a></li>
-				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="mailing-panel">
-						<i class="bi bi-envelope"></i> <span class="d-block">메일</span>
-				</a></li>
-				<li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="managing-panel">
-						<i class="bi bi-gear-wide-connected"></i> <span class="d-block">관리</span>
-				</a></li>
-			</ul>
-		</div>
-	</div>
-	<!-- 오른쪽 슬라이드 패널 -->
-	<div id="slide-panels">
-		사이드 메뉴 생성시 원본 참고
+  <!-- 왼쪽 고정 사이드바 -->
+  <div class="sidebar-wrapper"
+    style="width: 5rem; position: fixed; top: 40px; left: 0; height: 100vh; background: #fff; z-index: 1000;">
+    <div class="sidebar-header">
+      <div class="d-flex justify-content-between"></div>
+    </div>
+    <div class="sidebar-menu">
+      <ul class="nav nav-pills nav-flush flex-column mb-auto text-center">
+        <li class="nav-item "><a href="#" class="nav-link main-menu p-3 nope" data-target="home-panel"> <i
+              class="bi bi-house fs-4"></i> <span class="d-block small">홈</span>
+          </a></li>
+        <li class="nav-item "><a href="#" class="nav-link main-menu p-3 nope" data-target="calendar-panel"> <i
+              class="bi bi-calendar-week fs-4"></i> <span class="d-block small">일정</span>
+          </a></li>
+        <li class="nav-item"><a href="#" class="nav-link main-menu p-3" data-target="approval-panel"> <i
+              class="bi bi-journal-check fs-4"></i><span class="d-block small">결재</span>
+          </a></li>
+        <li class="nav-item "><a href="#" class='nav-link main-menu p-3' data-target="journal-panel"> <i
+              class="bi bi-grid-1x2-fill"></i><span class="d-block">일지</span>
+          </a></li>
+        <li class="nav-item "><a href="#" class='nav-link main-menu p-3 nope' data-target="article-panel"> <i
+              class="bi bi-hexagon-fill"></i><span class="d-block">게시판</span>
+          </a></li>
+        <li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="booking-panel">
+            <i class="bi bi-file-earmark-medical-fill"></i><span class="d-block">예약</span>
+          </a></li>
+        <li class="nav-item "><a href="#" class='nav-link main-menu p-3' data-target="meeting-panel"> <i
+              class="bi bi-pen-fill"></i><span class="d-block">회의</span>
+          </a></li>
+        <li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="attendance-panel">
+            <i class="bi bi-calendar-check"></i><span class="d-block">근태</span>
+          </a></li>
+        <li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="mailing-panel">
+            <i class="bi bi-envelope"></i><span class="d-block">메일</span>
+          </a></li>
+        <li class="nav-item  "><a href="#" class='nav-link main-menu p-3' data-target="managing-panel">
+            <i class="bi bi-gear-wide-connected"></i><span class="d-block">관리</span>
+          </a></li>
+      </ul>
+    </div>
+  </div>
+  <!-- 오른쪽 슬라이드 패널 -->
+  <div id="slide-panels">
+    사이드 메뉴 생성시 원본 참고
 
-		<div id="calendar-panel" class="p-4 mt-5" style="display: none;">
-			<h5>내 캘린더</h5>
-			<ul>
-				<li>일정 01</li>
-				<li>프로젝트 회의</li>
-				<li>현장 방문</li>
-			</ul>
-			<h5 class="mt-4">공유 캘린더</h5>
-			<ul>
-				<li>부서 일정</li>
-				<li>팀원 일정</li>
-			</ul>
-		</div>
-		<div id="approval-panel" class="p-4 mt-5" style="display: none;">
-			<h5>결재함</h5>
-			<p>결재 요청 목록이 여기에 표시됩니다.</p>
-		</div>
-		<div id="journal-panel" class="p-4 mt-5" style="display: none;">
-			<h5>일지</h5>
-			<p>일지</p>
-		</div>
-		<div id="booking-panel" class="p-4 mt-5" style="display: none;">
-			<h5>예약</h5>
-			<p>예약 요청 목록이 여기에 표시됩니다.</p>
-		</div>
-		<div id="meeting-panel" class="p-4 mt-5" style="display: none;">
-			<h5>회의</h5>
-			<p>회의</p>
-		</div>
-		<div id="attendance-panel" class="p-4 mt-5" style="display: none;">
-			<h5>근태</h5>
-			<p><a th:href="@{/attendance/attendance.do}">내 출퇴근 내역</a></p>
-			<p>근태문서</p>
-			<ul>
-				<li><a>내 신청 문서</a></li>
-				<li><a>근태 정정 신청</a></li>
-			</ul>
-			
-		</div>
-		<div id="mailing-panel" class="p-4 mt-5" style="display: none;">
-			<h5>메일</h5>
-			<p>메일 목록</p>
-		</div>
-		<div id="managing-panel" class="p-4 mt-5" style="display: none;">
-			<h5>관리</h5>
-			<ul>
-				<li>사용자 관리</li>
-				<li style="text-indent: 30px;"><a th:href="@{/adUserIns.do}">사용자 등록</a></li>
-			</ul>
-			<ul>
-				<li>조직 관리</li>
-				<li style="text-indent: 30px;"><a th:href="@{/adDeptMge.do}">조직 현황</a></li>
-				<li style="text-indent: 30px;"><a th:href="@{/adUserMge.do}">사원통합관리</a></li>
-			</ul>
-			<ul>
-				<li>권한 관리</li>
-				<li style="text-indent: 30px;"><a th:href="@{/adMenuAuth.do}">메뉴 운영 권한 관리</a></li>
-			</ul>
-		</div>
-	</div>
-	<!-- jQuery -->
+    <div id="calendar-panel" class="p-4 mt-5" style="display: none;">
+      <h5>내 캘린더</h5>
+      <ul>
+        <li>일정 01</li>
+        <li>프로젝트 회의</li>
+        <li>현장 방문</li>
+      </ul>
+      <h5 class="mt-4">공유 캘린더</h5>
+      <ul>
+        <li>부서 일정</li>
+        <li>팀원 일정</li>
+      </ul>
+    </div>
+    <div id="approval-panel" class="p-4 mt-5" style="display: none;">
+      <h5>결재함</h5>
+      <p>결재 요청 목록이 여기에 표시됩니다.</p>
+    </div>
+    <div id="journal-panel" class="p-4 mt-5" style="display: none;">
+      <h5>일지</h5>
+      <p>일지</p>
+    </div>
+    <div id="booking-panel" class="p-4 mt-5" style="display: none;">
+      <h5>예약</h5>
+      <p>예약 요청 목록이 여기에 표시됩니다.</p>
+    </div>
+    <div id="meeting-panel" class="p-4 mt-5" style="display: none;">
+      <h5>회의</h5>
+      <p>회의</p>
+    </div>
+    <div id="attendance-panel" class="p-4 mt-5" style="display: none;">
+      <h5>근태</h5>
+      <p><a th:href="@{/attendance/attendance.do}">내 출퇴근 내역</a></p>
+      <p>근태문서</p>
+      <ul>
+        <li><a>내 신청 문서</a></li>
+        <li><a>근태 정정 신청</a></li>
+      </ul>
+
+    </div>
+    <div id="mailing-panel" class="p-2 mt-3" style="display: none;">
+      <div class="main-first-section d-flex flex-column" style="width: 100%; height: auto;">
+      <div class="first-mail-button d-flex gap-3 p-3 justify-content-center">
+        <button class="border border-dark px-3 py-2 rounded-2 bg-dark text-white border-1"><a th:href="@{/writingMail.do}">메일쓰기</a></button>
+        <button class="border border-dark px-3 py-2 rounded-2 bg-white text-dark border-1">내게쓰기</button>
+      </div>
+      <ol class="list-group list-group-item mb-5 border-0">
+      <a th:href="@{/nreadMail.do}" class="text-dark">
+        <li class="list-group-item d-flex justify-content-between align-items-start mb-3 border-0 mail-hover rounded-3" role="button">
+          <div class="ms-0 me-auto fw-bold">
+            읽지 않은 메일
+          </div>
+          <span class="badge bg-primary rounded-pill">2</span>
+        </li>
+        </a>
+        <li class="list-group-item d-flex justify-content-between align-items-start mb-0 border-0 mail-hover rounded-3" role="button">
+          <div class="ms-0 me-auto fw-bold">
+            중요
+          </div>
+          <span class="badge bg-primary rounded-pill">1</span>
+        </li>
+      </ol>
+      <ol class="list-group list-group-item mb-5 border-0">
+        <li class="list-group-item d-flex justify-content-between align-items-start mb-3 border-0 mail-hover rounded-3" role="button">
+          <div class="ms-0 me-auto fw-bold">
+            전체 메일
+          </div>
+          <span class="badge bg-primary rounded-pill"></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start mb-3 border-0 mail-hover rounded-3" role="button">
+          <div class="ms-0 me-auto fw-bold">
+            받은 메일함
+          </div>
+          <span class="badge bg-primary rounded-pill">2</span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start mb-3 border-0 mail-hover rounded-3" role="button">
+          <div class="ms-0 me-auto fw-bold">
+            내게 쓴 메일함
+          </div>
+          <span class="badge bg-primary rounded-pill"></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start mb-3 border-0 mail-hover rounded-3" role="button">
+          <div class="ms-0 me-auto fw-bold">
+            보낸 메일함
+          </div>
+          <span class="badge bg-primary rounded-pill"></span>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-start mb-0 border-0 mail-hover rounded-3" role="button">
+          <div class="ms-0 me-auto fw-bold">
+            임시 보관함
+          </div>
+          <span class="badge bg-primary rounded-pill"></span>
+        </li>
+      </ol>
+      <ol class="list-group list-group-item mb-5 border-0">
+        <li class="list-group-item d-flex justify-content-between align-items-center border-0 mail-hover rounded-3" role="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5m3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0z"/>
+            <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4zM2.5 3h11V2h-11z"/>
+          </svg>  
+          <div class="ms-3 me-auto fw-bold">
+            휴지통
+          </div>
+          <span class="badge bg-primary rounded-pill"></span>
+        </li>
+      </ol>
+    </div>
+    </div>
+    <div id="managing-panel" class="p-4 mt-5" style="display: none;">
+      <h5 style="color: #FFF;">관리</h5>
+      <ul>
+        <li>사용자 관리</li>
+        <li style="text-indent: 30px;"><a th:href="@{/adUserIns.do}" class="text-white">사용자 등록</a></li>
+      </ul>
+      <ul>
+        <li>조직 관리</li>
+        <li style="text-indent: 30px;"><a th:href="@{/adDeptMge.do}" class="text-white">조직 현황</a></li>
+        <li style="text-indent: 30px;"><a th:href="@{/adUserMge.do}" class="text-white">사원통합관리</a></li>
+      </ul>
+      <ul>
+        <li>권한 관리</li>
+        <li style="text-indent: 30px;"><a th:href="@{/adMenuAuth.do}" class="text-white">메뉴권한관리</a></li>
+      </ul>
+    </div>
+  </div>
+  <!-- jQuery -->
 
 </div>
+
 </html>

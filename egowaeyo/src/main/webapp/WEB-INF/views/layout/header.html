@@ -1,10 +1,22 @@
+<!-- ============================================
+작성자 : 임성욱
+최초작성 : 2025-
+,
+설명 : header.html
+,
+-----------------------------------------------[ 변경 이력 ]
+2025-07-05 (권동익): 기존 title text에서 로고 이미지로 변경
+2025-07-06 (권동익): 로고 이미지 경로 타임리프 절대경로 변경
+,
+,
+============================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
-
 <div id="header" th:fragment="headerFragment">
 	<header class='mb-3'>
 		<nav class="navbar navbar-expand navbar-light ">
 			<div class="container-fluid">
-				<div class="fw-bold fs-4 ">EGOWAEYO</div>
+				<div class="header-logo-title"><img th:src="@{/assets/images/logo/egoWAEYO.png}" class="cursor-pointer"
+                        style="width: 200px;" alt="LOGO 사진"></div>
 				<div class="d-flex flex-column align-items-start ms-3">
 					<div class="d-flex flex-row">
 					<span id="sessionInfo" >  남은시간 - 
