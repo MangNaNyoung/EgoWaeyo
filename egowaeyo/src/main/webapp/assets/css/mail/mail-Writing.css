@@ -1,0 +1,48 @@
+.mail-hover:hover {
+  background-color: #d1d5dc !important;
+  cursor: pointer !important;
+}
+
+.attached-person input {
+  width: 100% !important;
+  border: none !important;
+  outline: none !important;
+  border-bottom: 2px solid #999 !important;
+}
+
+.attached-person input:focus {
+  border-color: #000 !important;
+}
+
+.file-upload-section input[type="file"] {
+  width: 0;
+  height: 0;
+  padding: 0;
+  overflow: "hidden";
+  border: 0;
+}
+
+#drop-area {
+  border: 2px dashed #ccc;
+  height: 300px;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  margin: 10px auto;
+  transition: background-color 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#drop-area:hover {
+  background-color: #eee;
+}
+
+#image-preview {
+  margin: 10px auto;
+  max-width: 100%;
+  max-height: 200px;
+  display: none;
+}

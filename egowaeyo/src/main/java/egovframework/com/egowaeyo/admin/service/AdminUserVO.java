@@ -1,5 +1,7 @@
 package egovframework.com.egowaeyo.admin.service;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,5 +34,9 @@ public class AdminUserVO {
 	private String positionId; // 직급코드
 	private String phoneNumber; // 연락처
 	private String email; // 이메일
+	
+	// 파일 업로드용 (실제 파일)
+	private MultipartFile empPhotoFile;
+	private MultipartFile signPhotoFile;
 
 }

@@ -16,19 +16,23 @@
 	<!-- insert Admin ->> 사용자 정보 -->
 	<insert id="AdminUserIns">
 		INSERT INTO comtnemplyrinfo
-		            (emplyrId, 
-		             password,
-		             userNm,
-		             empPhoto,
-		             signPhoto,
-		             brthdy,
-		             houseAdres,
-		             phoneNumber,
-		             email,
-		             departments_id,
-		             position_id)
+		            (ESTNL_ID,
+		             EMPLYR_ID, 
+		             PASSWORD,
+		             USER_NM,
+		             EMP_PHOTO,
+		             SIGN_PHOTO,
+		             BRTHDY,
+		             HOUSE_ADRES,
+		             PHONE_NUMBER,
+		             EMAIL,
+		             SEXDSTN_CODE,
+		             DEPARTMENTS_ID,
+		             POSITION_ID,
+		             EMPLYR_STTUS_CODE)
 		       
 		       VALUES(
+		       		 #{UniqId},
 		       		 #{emplyrId},
 		       		 #{password},
 		       		 #{userNm},
@@ -38,8 +42,10 @@
 		       		 #{houseAdres},
 		       		 #{phoneNumber},
 		       		 #{email},
-		       		 #{department_id},
-		       		 #{position_id},		 
+		       		 #{sexdstnCode},
+		       		 #{departmentsId},
+		       		 #{positionId},
+		       		 'P'		 
 		       )
 	</insert>
 </mapper>

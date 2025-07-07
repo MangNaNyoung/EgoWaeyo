@@ -2,9 +2,6 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
   layout:decorate="~{layout/layout}">
 <section layout:fragment="content">
-  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-  <script src="https://uicdn.toast.com/tui.code-snippet/latest/tui-code-snippet.js"></script>
-  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
   <div class="main-container d-flex m-4 flex-row">
     <div class="second-section flex-fill flex-row m-3 ms-5">
       <div class="fw-bold fs-3 mb-3">
@@ -101,6 +98,7 @@
 
   </div>
 </section>
+<th:block layout:fragment="customJs">
 <script>
   const dropArea = document.getElementById("drop-area");
   const fileInput = document.getElementById("file-input");
@@ -108,57 +106,96 @@
 
   const imageTitle = document.getElementById("image-title-p");
 
-  const editor = new toastui.Editor({
-    el: document.querySelector('#editor'),
-    height: '500px',
-    initialEditType: 'markdown',
-    previewStyle: 'vertical'
-  });
-
-  // 드래그 앤 드롭 이벤트 처리
-  dropArea.addEventListener("dragover", (e) => {
-    e.preventDefault();
-    dropArea.style.backgroundColor = "#eee";
-  });
-
-  dropArea.addEventListener("dragleave", () => {
-    dropArea.style.backgroundColor = "#fff";
-  });
-
-  dropArea.addEventListener("drop", (e) => {
-    e.preventDefault();
-    dropArea.style.backgroundColor = "#fff";
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith("image")) {
-      displayImage(file);
-    }
-  });
-
-  // 파일 입력 필드 변경 이벤트 처리
-  fileInput.addEventListener("change", () => {
-    const file = fileInput.files[0];
-    if (file && file.type.startsWith("image")) {
-      displayImage(file);
-    }
-  });
-
-  // 클릭 이벤트 처리
-  dropArea.addEventListener("click", () => {
-    fileInput.click();
-  });
-
-  // 이미지 표시 함수
-  function displayImage(file) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      imagePreview.src = reader.result;
-      imagePreview.style.display = "block";
-      imageTitle.style.display = "hidden";
-    };
-    reader.readAsDataURL(file);
+  
+  let editorInitialized = false;
+  
+  function initEditor(){
+	  
+	  if (editorInitialized) return;
+	  
+	  if (typeof tui === 'undefined' || !toastui.Editor){
+		  setTimeout(initEditor, 500);
+		  return;
+	  }
+	  
+	  const editorElement = document.querySelector('#editor');
+	  if (!editorElement) {
+		  setTimeout(initEditor, 100);
+		  return;
+	  }
+	  
+	   window.editor = new toastui.Editor({
+	    el: editorElement,
+	    height: '500px',
+	    initialEditType: 'markdown',
+	    previewStyle: 'vertical'
+	  });
+	
+	  // 드래그 앤 드롭 이벤트 처리
+	  dropArea.addEventListener("dragover", (e) => {
+	    e.preventDefault();
+	    dropArea.style.backgroundColor = "#eee";
+	  });
+	
+	  dropArea.addEventListener("dragleave", () => {
+	    dropArea.style.backgroundColor = "#fff";
+	  });
+	
+	  dropArea.addEventListener("drop", (e) => {
+	    e.preventDefault();
+	    dropArea.style.backgroundColor = "#fff";
+	    const file = e.dataTransfer.files[0];
+	    if (file && file.type.startsWith("image")) {
+	      displayImage(file);
+	    }
+	  });
+	
+	  // 파일 입력 필드 변경 이벤트 처리
+	  fileInput.addEventListener("change", () => {
+	    const file = fileInput.files[0];
+	    if (file && file.type.startsWith("image")) {
+	      displayImage(file);
+	    }
+	  });
+	
+	  // 클릭 이벤트 처리
+	  dropArea.addEventListener("click", () => {
+	    fileInput.click();
+	  });
+	
+	  // 이미지 표시 함수
+	  function displayImage(file) {
+	    const reader = new FileReader();
+	    reader.onload = () => {
+	      imagePreview.src = reader.result;
+	      imagePreview.style.display = "block";
+	      imageTitle.style.display = "hidden";
+	    };
+	    reader.readAsDataURL(file);
+	  }
+	  
+	  editorInitialized = true;
   }
+  
+  //초기화 시도
+  setTimeout(initEditor, 100);
+  setTimeout(initEditor, 500);
+  setTimeout(initEditor, 1000);
 
+  // 윈도우 로드 후에도 시도
+  window.addEventListener('load', function () {
+    setTimeout(initEditor, 100);
+  });
 
+  // DOMContentLoaded 이벤트
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      setTimeout(initEditor, 100);
+    });
+  } else {
+    setTimeout(initEditor, 50);
+  }
 </script>
+</th:block>
 
 </html>
