@@ -18,4 +18,5 @@ public class AttendVO {
 	private String date;				 // 요일 
 	private String strIn;				// 출근 시간 상태
 	private String strOut;				// 퇴근 시간 상태
+	//private boolean pick;			// 정정 선택
 }
