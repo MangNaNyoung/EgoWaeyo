@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?><!-- 
+	수정일                 수정자                          수정내용
+  =========     =======    =================================================
+  2011.9.7   	정진오     	 	resultMap id="commentDetail"   : FRST_REGISTER_ID -> FRST_REGISTER_NM 
+  							"selectComment"  : FRST_REGISTER_NM
+  							두 요소간 불일치로 인한 에러 발생 수정	
+  2011.10.18       서준식               insertComment	 : select key 태그 삭제										
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ArticleComment">
+	
+	<resultMap id="commList" type="egovframework.com.egowaeyo.comment.VO.CommentVO">
+		<result property="commentNo" column="ANSWER_NO"/>
+		<result property="nttId" column="NTT_ID"/>
+		<result property="bbsId" column="BBS_ID"/>
+		<result property="wrterId" column="WRTER_ID"/>
+		<result property="wrterNm" column="WRTER_NM"/>
+		<result property="commentPassword" column="PASSWORD"/>
+		<result property="commentCn" column="ANSWER"/>
+		<result property="useAt" column="USE_AT"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_ID"/>
+	</resultMap>
+	
+	<resultMap id="commDetail" type="egovframework.com.egowaeyo.comment.VO.CommentVO">
+		<result property="commentNo" column="ANSWER_NO"/>
+		<result property="nttId" column="NTT_ID"/>
+		<result property="bbsId" column="BBS_ID"/>
+		<result property="wrterId" column="WRTER_ID"/>
+		<result property="wrterNm" column="WRTER_NM"/>
+		<result property="commentPassword" column="PASSWORD"/>
+		<result property="commentCn" column="ANSWER"/>
+		<result property="useAt" column="USE_AT"/>
+		<result property="frstRegisterPnttm" column="FRST_REGIST_PNTTM"/>
+		<result property="frstRegisterNm" column="FRST_REGISTER_NM"/>
+	</resultMap>
+
+	<!-- 댓글 목록 조회 -->
+	<select id="selectArticleCommList" parameterType="egovframework.com.egowaeyo.comment.VO.CommentVO" resultMap="commList">
+		
+		SELECT * FROM ( SELECT rownum rn, TB.* FROM (
+			SELECT
+				a.ANSWER_NO, a.NTT_ID, a.BBS_ID, 
+				a.WRTER_ID, a.WRTER_NM, a.PASSWORD, a.ANSWER, a.USE_AT,
+				TO_CHAR(a.FRST_REGIST_PNTTM, 'YYYY-MM-DD HH24:MI:SS')
+				as FRST_REGIST_PNTTM,
+				b.USER_NM as FRST_REGISTER_ID
+			FROM
+				COMTNCOMMENT a
+			LEFT OUTER JOIN COMVNUSERMASTER b
+				ON a.FRST_REGISTER_ID = b.ESNTL_ID
+			WHERE
+				a.BBS_ID = #{bbsId} AND a.NTT_ID = #{nttId}
+			AND
+				a.USE_AT = 'Y'
+			ORDER BY a.FRST_REGIST_PNTTM ASC
+			) TB ) WHERE rn BETWEEN #{subFirstIndex} + 1 AND #{subFirstIndex} + #{subRecordCountPerPage}
+						
+	</select>	
+	
+	<!-- 댓글 목록 개수 조회 -->
+	<select id="selectArticleCommListCnt" parameterType="egovframework.com.egowaeyo.comment.VO.CommentVO" resultType="java.lang.Integer">
+			SELECT
+				COUNT(ANSWER_NO)
+			FROM
+				COMTNCOMMENT 
+			WHERE
+				BBS_ID = #{bbsId} AND NTT_ID = #{nttId}
+			AND
+				USE_AT = 'Y'		
+	</select>
+	
+	<!-- 댓글 등록 -->
+	<insert id="insertArticleComm" parameterType="egovframework.com.egowaeyo.comment.VO.CommentVO">
+			INSERT INTO COMTNCOMMENT
+			(ANSWER_NO, NTT_ID, BBS_ID, WRTER_ID, WRTER_NM, PASSWORD, 
+			 ANSWER, USE_AT, 
+			 FRST_REGISTER_ID, FRST_REGIST_PNTTM
+			 )
+			VALUES
+			( #{commentNo}, #{nttId}, #{bbsId}, #{wrterId}, #{wrterNm}, #{commentPassword}, 
+			  #{commentCn}, 'Y',
+			  #{frstRegisterId}, SYSDATE
+			 )
+	</insert>
+	
+	<!-- 댓글 삭제 -->
+	<update id="deleteArticleComm" parameterType="egovframework.com.egowaeyo.comment.VO.CommentVO">
+			UPDATE COMTNCOMMENT
+			SET USE_AT = 'N'
+			WHERE ANSWER_NO = #{commentNo}		
+	</update>
+	
+	<!-- 댓글 상세 조회 -->
+	<select id="selectArticleCommDetail" parameterType="egovframework.com.egowaeyo.comment.VO.CommentVO" resultMap="commDetail">
+			SELECT
+				a.ANSWER_NO, a.NTT_ID, a.BBS_ID, 
+				a.WRTER_ID, a.WRTER_NM, a.PASSWORD, a.ANSWER, a.USE_AT,
+				TO_CHAR(a.FRST_REGIST_PNTTM, 'YYYY-MM-DD HH24:MI:SS') 
+				as FRST_REGIST_PNTTM,
+				b.USER_NM as FRST_REGISTER_NM
+			FROM
+				COMTNCOMMENT a
+			LEFT OUTER JOIN COMVNUSERMASTER b
+				ON a.FRST_REGISTER_ID = b.ESNTL_ID
+			WHERE
+				a.ANSWER_NO = #{commentNo}
+	</select> 
+
+	<!-- 댓글 수정 -->
+ 	<update id="updateArticleComm" parameterType="egovframework.com.egowaeyo.comment.VO.CommentVO">
+ 		
+			UPDATE COMTNCOMMENT SET 
+				ANSWER = #{commentCn},
+				LAST_UPDUSR_ID = #{lastUpdusrId},
+				LAST_UPDT_PNTTM = SYSDATE
+			WHERE ANSWER_NO = #{commentNo} 
+ 		
+ 	</update>
+ 	
+</mapper>

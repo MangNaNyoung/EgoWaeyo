@@ -61,4 +61,10 @@ public class ArticleServiceImpl implements ArticleService {
 		}
 	}
 
+	@Override
+	public int deleteArticle(BoardVO boardVO) {
+	    log.info("Deleting article with BBS_ID: {}, NTT_ID: {}", boardVO.getBbsId(), boardVO.getNttId());
+	    return articleMapper.deleteArticle(boardVO);
+	}
+
 }

@@ -5,12 +5,15 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +26,6 @@ import egovframework.com.cmm.LoginVO;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.egowaeyo.article.VO.BoardVO;
 import egovframework.com.egowaeyo.article.service.ArticleService;
-import egovframework.com.egowaeyo.bbsMaster.service.BbsMasterService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
@@ -34,14 +36,13 @@ import lombok.extern.log4j.Log4j2;
 public class ArticleController {
 
 	private final ArticleService articleservice;
-	private final BbsMasterService bbsMasterService;
 
 	// 게시글 목록화면으로 이동
 	@GetMapping("/articleList.do")
 	public String listPage(Model model, BoardVO vo) {
 		// selectBbsAll 호출
 		List<BoardVO> list = articleservice.selectBbsAll(vo);
-
+		// 조회 결과 처리
 		if (list == null || list.isEmpty()) {
 			log.error("No data found for bbsId: {}", vo.getBbsId());
 			model.addAttribute("list", List.of()); // 빈 리스트 전달
@@ -205,6 +206,22 @@ public class ArticleController {
 			throw new RuntimeException("게시글 업데이트에 실패했습니다.");
 		}
 		return vo;
+	}
+	
+	// 게시글 삭제 API
+	@DeleteMapping("/deleteArticle.do")
+	@ResponseBody
+	public ResponseEntity<?> deleteArticle(@RequestParam String bbsId, @RequestParam long nttId) {
+	    BoardVO boardVO = new BoardVO();
+	    boardVO.setBbsId(bbsId);
+	    boardVO.setNttId(nttId);
+
+	    int result = articleservice.deleteArticle(boardVO);
+	    if (result > 0) {
+	        return ResponseEntity.ok(Map.of("success", true));
+	    } else {
+	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "게시글 삭제에 실패했습니다."));
+	    }
 	}
 
 }

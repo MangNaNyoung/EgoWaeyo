@@ -139,7 +139,7 @@
 
 	<script>
 	document.addEventListener("DOMContentLoaded", function () {
-		 const type1Radio = document.getElementById("type1");
+		 	const type1Radio = document.getElementById("type1");
 		    const type2Radio = document.getElementById("type2");
 		    const modalWrap = document.querySelector(".modal-wrap");
 		    modalWrap.style.display = "none"; // 초기에는 사용자별 설정 숨김
@@ -573,36 +573,21 @@
 
     	     // 모든 사용자에 대해 권한 코드 설정
     	        allUsers.forEach(user => {
+    	        	 if (!user.emplyrId) return;
+    	        	 
+    	        	 let authorCode;
     	            // emplyrId가 null이거나 undefined인 경우는 제외
-    	            if (!user.emplyrId) {
-    	                console.error("emplyrId가 누락된 사용자 데이터:", user);
-    	                return; // 누락된 데이터는 추가하지 않음
-    	            }
-    	            
-    	            let authorCode;
     	            if(rightsMap.write.includes(user.emplyrId) && rightsMap.manage.includes(user.emplyrId)) {
     	                authorCode = "A-003"; // 읽기+쓰기+관리
-    	                selectedRights.push({
-	    	                emplyrId: user.emplyrId,   // 사원 ID
-	    	                authorCode: authorCode // 권한 코드
-	    	            });
- 					} else if (rightsMap.read.includes(user.emplyrId) && rightsMap.write.includes(user.emplyrId)) {
-    	                authorCode = "A-002"; // 읽기+쓰기
-    	                selectedRights.push({
-	    	                emplyrId: user.emplyrId,   // 사원 ID
-	    	                authorCode: authorCode // 권한 코드
-	    	            });
-    	            } else if (rightsMap.read.includes(user.emplyrId)){
-    	            	authorCode = "A-001";
-    	            	 selectedRights.push({
-    	    	                emplyrId: user.emplyrId,   // 사원 ID
-    	    	                authorCode: authorCode // 권한 코드
-    	    	            });
-    	            }
+    	            } else if (rightsMap.read.includes(user.emplyrId) && rightsMap.write.includes(user.emplyrId)) {
+                        authorCode = "A-002";
+                    } else if (rightsMap.read.includes(user.emplyrId)) {
+                        authorCode = "A-001";
+                    }
     	            if (authorCode) {
     	                selectedRights.push({
     	                    emplyrId: user.emplyrId,
-    	                    authorCode: authorCode
+    	                    authorCode
     	                });
     	            }
     	        });
@@ -621,6 +606,11 @@
     	                });
     	            }
     	        });
+    	     // '게시판 추가' 선택 시 권한 검증 건너뛰기
+                if (boardType !== "type1" && selectedRights.length === 0) {
+                    alert("권한을 선택하세요.");
+                    return;
+                }
     	        
     	        /* rightsMap.manage.forEach(emplyrId => {
     	            const existingUser = selectedRights.find(user => user.emplyrId === emplyrId);
@@ -631,16 +621,7 @@
     	            }
     	        }); */
 
-    	        // 입력 검증
-    	        if (!boardName) {
-    	            alert("게시판명을 입력하세요.");
-    	            return;
-    	        }
-    	        
-    	        if (selectedRights.length === 0) {
-    	            alert("권한을 선택하세요.");
-    	            return;
-    	        }
+    	   
 
     	        const requestData = {
     	            boardName: boardName,

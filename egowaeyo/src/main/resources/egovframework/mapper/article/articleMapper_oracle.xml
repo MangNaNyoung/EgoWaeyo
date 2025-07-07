@@ -6,7 +6,12 @@
 <mapper
 	namespace="egovframework.com.egowaeyo.article.mapper.ArticleMapper">
 
-
+    <!-- 게시글 삭제 -->
+    <delete id="deleteArticle" parameterType="egovframework.com.egowaeyo.article.VO.BoardVO">
+    	DELETE FROM COMTNBBS
+        WHERE NTT_ID = #{nttId}
+        AND BBS_ID = #{bbsId}
+    </delete>
 
 	<!-- 게시글 수정 -->
 	<update id="updateArticle" parameterType="egovframework.com.egowaeyo.article.VO.BoardVO">

@@ -53,7 +53,7 @@ public class BoardMaster implements Serializable {
    private String emplyrId = "";
 
    /** 권한코드 */
-   private String authorCode = "";
+   private String autrCode = "";
 
    /** 게시판 아이디 */
    private String bbsId = "";
@@ -208,7 +208,7 @@ public class BoardMaster implements Serializable {
     * @return the authorCode
     */
    public String getAuthorCode() {
-      return authorCode;
+      return autrCode;
    }
 
    /**
@@ -217,7 +217,7 @@ public class BoardMaster implements Serializable {
     * @param authorCode the authorCode to set
     */
    public void setAuthorCode(String authorCode) {
-      this.authorCode = authorCode;
+      this.autrCode = authorCode;
    }
 
    /**
