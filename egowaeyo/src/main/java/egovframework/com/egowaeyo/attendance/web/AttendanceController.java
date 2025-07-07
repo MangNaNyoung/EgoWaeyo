@@ -33,8 +33,8 @@ public class AttendanceController {
 	@PostMapping("/attendList.do")
 	@ResponseBody
 	public List<AttendVO>getAttend(@RequestBody AttendVO vo, Principal principal){
-		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-		System.out.println(user.getId()+user.getName());
+//		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+//		System.out.println(user.getId()+user.getName());
 		
 		if(vo.getStartDate() == null) {
 			LocalDate currentDate = LocalDate.now(); 
@@ -49,7 +49,10 @@ public class AttendanceController {
 		result.forEach(item->{
 			item.getCheckdate();
 		    item.setDate(item.getCheckdate()+" ("+LocalDate.of(Integer.parseInt(item.getCheckdate().substring(0,4)) ,Integer.parseInt(item.getCheckdate().substring(4,6)),Integer.parseInt(item.getCheckdate().substring(6,8))).getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN)+")");
-		    
+		    item.setStrIn(vo.getCheckin()+vo.getInstate());
+		    item.setStrOut(vo.getCheckout()+vo.getOutstate());
+		   // item.setPick(false);
+		    System.out.println(item.getCheckin());
 		});
 		
 		System.out.println(result);
