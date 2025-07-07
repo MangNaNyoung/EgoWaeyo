@@ -159,11 +159,6 @@ a {
 				e.preventDefault();
 				const target = $(this).data('target');
 				sessionStorage.setItem('key',target)
-				$('#slide-panels').css({"background" : "#F8F9FA", "color" : "#000"})
-				if(target == 'managing-panel'){
-				$('#slide-panels').css({"background" : "#000", "color" : "#FFF"})
-					
-				}
 				
 				
 				if (target == 'home-panel' || target == currentTarget || target == 'calendar-panel' || target =='article-panel') {					
@@ -181,11 +176,12 @@ a {
 					
 					
 				} else if(target !='article-panel'&& target!='calendar-panel') {
-					$('#main').css('margin-left','330px')
-					$('#slide-panels').fadeIn('fast');
-					$('#slide-panels > div').hide();
-					$('#' + target).show();
+					//$('#slide-panels').fadeIn('fast');
+					//$('#main').css('margin-left','330px')
+					//$('#slide-panels > div').hide();
+					//$('#' + target).show();
 					currentTarget = target;
+					location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"Basic.do"
 				}
 				// 드롭다운 토글 처리
 			});
@@ -262,13 +258,13 @@ function init() {
                    $('#slide-panels').css({"background" : "#F8F9FA", "color" : "#000"})
                }
 			 
-			  if (outPanList.indexOf(target) == -1) {
+			   if (outPanList.indexOf(target) == -1) {
 
 				  $('#main').css('margin-left','330px')
 					$('#slide-panels').fadeIn('fast');
 					$('#slide-panels > div').hide();
 					$('#' + target).show();
-					  }
+					  } 
 		 }		 
 	 })
 	 }	 

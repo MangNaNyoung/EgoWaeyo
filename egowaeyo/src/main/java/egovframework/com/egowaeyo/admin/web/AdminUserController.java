@@ -20,7 +20,7 @@ public class AdminUserController {
 	
 	@Autowired AdminUserService adminuserservice;
 	
-	@GetMapping("/adUserIns.do")
+	@GetMapping("/managingBasic.do")
 	public String adminUserIns(Model model) {
 	   
         List<PosVO> posilist = adminuserservice.getPos(null);

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class UserMailController {
 
-	@RequestMapping("/nreadMail.do")
+	@RequestMapping("/mailingBasic.do")
 	public String noneReadMail() {
        
         return "egoMail/mail-NoneRead.html";

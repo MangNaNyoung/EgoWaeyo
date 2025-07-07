@@ -19,7 +19,7 @@ public class AttendanceMapperTest {
 	@Test
 	public void 불러오기() {
 		AttendVO vo = new AttendVO();
-		vo.setEmplyr_id("TEST1");
+		vo.setEmplyrId("TEST1");
 		log.info("log-----------------------------"+mapper.getAttend(vo));
 	}
 		
