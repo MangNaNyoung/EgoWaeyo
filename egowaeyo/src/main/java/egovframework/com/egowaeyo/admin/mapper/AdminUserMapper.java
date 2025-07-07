@@ -11,5 +11,5 @@ public interface AdminUserMapper {
 	public List<DeptVO> getDept(DeptVO dept);
 	public List<PosVO> getPos(PosVO pos);
 	public int AdminUserIns(AdminUserVO adu);
-
+	int insertUserMaster(AdminUserVO adu);
 }

@@ -16,8 +16,7 @@
 	<!-- insert Admin ->> 사용자 정보 -->
 	<insert id="AdminUserIns">
 		INSERT INTO comtnemplyrinfo
-		            (ESTNL_ID,
-		             EMPLYR_ID, 
+		            (EMPLYR_ID, 
 		             PASSWORD,
 		             USER_NM,
 		             EMP_PHOTO,
@@ -32,7 +31,6 @@
 		             EMPLYR_STTUS_CODE)
 		       
 		       VALUES(
-		       		 #{UniqId},
 		       		 #{emplyrId},
 		       		 #{password},
 		       		 #{userNm},
@@ -48,4 +46,28 @@
 		       		 'P'		 
 		       )
 	</insert>
+	<insert id="insertUserMaster">
+    <!-- COMVNUSERMASTER 테이블에 로그인용 사용자 정보 저장 -->
+    INSERT INTO COMVNUSERMASTER
+    (USER_ID,
+    USER_SE,
+    PASSWORD,
+    USER_NM,
+    USER_ZIP,
+    USER_ADRES,
+    USER_EMAIL,
+    ORGNZT_ID,
+    ESNTL_ID)
+    VALUES(
+    #{emplyrId},           <!-- USER_ID는 그대로 사용 -->
+    'USR',                 <!-- 사용자 구분코드 -->
+    #{password},           <!-- 암호화된 비밀번호 -->
+    #{userNm},             <!-- 사용자명 -->
+    #{zip},                <!-- 우편번호 (AdminUserVO에 zip 필드 추가 필요) -->
+    #{houseAdres},         <!-- 주소 -->
+    #{email},              <!-- 이메일 -->
+    #{departmentsId},      <!-- 조직ID (부서ID) -->
+    CONCAT('USR', #{emplyrId})  <!-- ESNTL_ID는 USR + 사용자ID 형태 -->
+    )
+</insert>
 </mapper>

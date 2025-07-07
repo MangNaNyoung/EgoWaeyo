@@ -11,7 +11,7 @@
     </div>
     <div class="main-header-title">사용자 등록</div>
     
-    <form id="userForm" role="form" action="adUserIns.do" method="post" enctype="multipart/form-data">
+    <form id="userForm" role="form" action="managingBasic.do" method="post" enctype="multipart/form-data">
     <div class="d-flex justify-content-end">
       <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0" type="submit">등록</button><!-- 부트스트랩 사용 -->
     </div>
@@ -239,6 +239,7 @@
       const prevSelected = departmentList.querySelector(".bg-blue-300");
       if (prevSelected) {
         selectedDepartment.value = prevSelected.innerHTML;
+        selectedDepartment.name = "departmentsId";
         selectedDepartment.setAttribute("data-dept", prevSelected.getAttribute("data-dept"));
         closeModal();
       } else {
