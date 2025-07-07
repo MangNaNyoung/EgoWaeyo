@@ -27,6 +27,7 @@ public class AdminUserController {
 	@Autowired AdminUserService adminuserservice;
 	
 	private static final String FILE_STORE_PATH = EgovProperties.getProperty("Globals.fileStorePath");
+	@GetMapping("/managingBasic.do")
 	public String adminUserIns(Model model) {
 	   
         List<PosVO> posilist = adminuserservice.getPos(null);
@@ -38,7 +39,7 @@ public class AdminUserController {
 	}
 	
 	// 사용자 관리 > 사용자 등록 (POST)
-		@PostMapping("/adUserIns.do")
+		@PostMapping("/managingBasic.do")
 		public String adminUserIns(
 				@RequestParam("empPhotoFile") MultipartFile empPhoto,
 				@RequestParam("signPhotoFile") MultipartFile signPhoto,
