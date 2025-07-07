@@ -10,30 +10,30 @@
       <div class="main-small-title">사용자 관리</div>
     </div>
     <div class="main-header-title">사용자 등록</div>
+    
+    <form id="userForm" role="form" action="adUserIns.do" method="post" enctype="multipart/form-data">
     <div class="d-flex justify-content-end">
-      <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0"
-        type="submit">등록</button><!-- 부트스트랩 사용 -->
+      <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0" type="submit">등록</button><!-- 부트스트랩 사용 -->
     </div>
-    <form id="userForm" role="form" action="AdminUserIns" method="post" enctype="multipart/form-data">
       <div class="admin-user-sections">
         <div class="left-admin-user-info">
           <div class="user-info-title">기본 정보</div>
           <div class="user-info-personal">
             <div class="user-info-detail">
-              <span>아이디</span> <input type="text" name="" class="!border !border-gray-400 !rounded-sm">
+              <span>아이디</span> <input type="text" name="emplyrId" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>비밀번호</span> <input type="password" class="!border !border-gray-400 !rounded-sm">
+              <span>비밀번호</span> <input type="password" name="password" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>이름</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
+              <span>이름</span> <input type="text" name="userNm" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail-img">
               <span>사진</span>
               <div class="input-container">
                 <div class="file-upload-box">
                   <div class="file-upload-section">
-                    <input type="file" accept=".png" name="pfile" id="pfile">
+                    <input type="file" accept=".png" name="empPhotoFile" id="pfile">
                     <label for="pfile">
                       <!--프로필 파일-->
                       <!-- <img src="/images/account_circle.png" class="cursor-pointer pImage" id="ppreviewImage" style="width: 130px; height: 100px;" alt="사용자 사진"> -->
@@ -54,7 +54,7 @@
               <div class="input-container">
                 <div class="file-upload-box">
                   <div class="file-upload-section">
-                    <input type="file" accept=".png" name="sfile" id="sfile">
+                    <input type="file" accept=".png" name="signPhotoFile" id="sfile">
                     <label for="sfile">
                       <!--결재 파일--> <img src="assets/images/icon/Input_Inner.png" class="cursor-pointer sImage"
                         id="spreviewImage" style="width: 130px; height: 110px;" alt="사용자 결재 사진">
@@ -69,21 +69,21 @@
               </div>
             </div>
             <div class="user-info-detail">
-              <span>생년월일</span> <input type="date" class="!border !border-gray-400 !rounded-sm">
+              <span>생년월일</span> <input type="date" name="brthdy" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>주소</span> <input type="text" class="!border !border-gray-400 !rounded-sm">
+              <span>주소</span> <input type="text" name="houseAdres" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>연락처</span> <input type="tel" class="!border !border-gray-400 !rounded-sm">
+              <span>연락처</span> <input type="tel" name="phoneNumber" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>이메일</span> <input type="email" class="!border !border-gray-400 !rounded-sm">
+              <span>이메일</span> <input type="email" name="email" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span class="user-gender me-5">성별</span>
-	           	<span>남</span><input type="radio" name="gender">
-	           	<span>여</span><input type="radio" name="gender">
+              <span class="user-sexdstnCode me-5">성별</span>
+	           	<span>남</span><input type="radio" value="M" name="sexdstnCode">
+	           	<span>여</span><input type="radio" value="F" name="sexdstnCode">
             </div>
           </div>
         </div>
@@ -94,12 +94,12 @@
               <div class="user-info-detail">
                 <span>소속</span>
                 <button id="btnIns" type="button" class="!border !rounded-sm !cursor-pointer">+</button>
-                <input type="text" class="!border !border-gray-400 !rounded-sm !text-gray-500" placeholder="소속을 선택해주세요."
+                <input type="text" name="departmentsId" class="!border !border-gray-400 !rounded-sm !text-gray-500" placeholder="소속을 선택해주세요."
                   id="selectedDepartment" readonly>
               </div>
               <div class="user-info-detail">
                 <span>직급</span>
-                <select name="rank" class="!border !border-gray-400 !rounded-sm" id="selectposition">
+                <select name="positionId" class="!border !border-gray-400 !rounded-sm" id="selectposition">
                   <option value="" selected>직급을 선택해주세요.</option>
                   <option th:each="position : ${posi}" th:value="${position?.positionId}"
                     th:text="${position?.positionName}"></option>
@@ -107,7 +107,7 @@
               </div>
               <div class="user-info-detail">
                 <span>사번</span>
-                <input type="text" class="!border !border-gray-400 !rounded-sm">
+                <input type="text" name="emplNo" class="!border !border-gray-400 !rounded-sm">
               </div>
             </div>
           </div>
