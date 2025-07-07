@@ -1,48 +1,64 @@
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 
 <section layout:fragment="content">
-  <div class="page-container" style="padding: 2rem;">
-    <h3 style="margin-bottom: 1rem;">[개인] 임시보관함</h3>
+	<div class="page-container" style="padding: 2rem;">
+		<h3 style="margin-bottom: 1rem;">[개인] 임시보관함</h3>
 
-    <!-- 버튼 영역 -->
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-      <!-- 좌측 버튼들 -->
-      <div style="display: flex; gap: 0.5rem;">
-        <button type="button">기안</button>
-        <button type="button">복사</button>
-        <button type="button">삭제</button>
-        <button type="button">인쇄/다운로드</button>
-      </div>
-      <!-- 우측 검색/필터 -->
-      <div style="display: flex; gap: 0.5rem;">
-        <select name="formFilter">
-          <option value="all">전체</option>
-          <option value="form1">품의서</option>
-          <option value="form2">휴가원</option>
-        </select>
-        <input type="text" id="searchKeyword" placeholder="검색어 입력" style="width: 160px;">
-        <button onclick="handleSearch()">검색</button>
-        <button onclick="handleReset()">초기화</button>
-        <button style="background-color: #eee; color: #333;" onclick="openAdvancedSearch()">상세검색</button>
-      </div>
-    </div>
+		<!-- 버튼 영역 -->
+		<div
+			style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+			<!-- 좌측 버튼 -->
+			<div style="display: flex; gap: 0.5rem;">
+				<button type="button" onclick="handleDraft()">기안</button>
+				<button type="button" onclick="handleCopy()">복사</button>
+				<button type="button" onclick="handleDelete()">삭제</button>
+				<button type="button" id="printBtn">인쇄/다운로드</button>
+			</div>
+			<!-- 우측 검색/필터 -->
+			<div style="display: flex; gap: 0.5rem;">
+				<select name="formFilter">
+					<option value="all">전체</option>
+					<option value="form1">품의서</option>
+					<option value="form2">휴가원</option>
+				</select> <input type="text" id="searchKeyword" placeholder="검색어 입력"
+					style="width: 160px;">
+				<button onclick="handleSearch()">검색</button>
+				<button onclick="handleReset()">초기화</button>
+				<button style="background-color: #eee; color: #333;"
+					onclick="openAdvancedSearch()">상세검색</button>
+			</div>
+		</div>
 
-    <!-- Toast UI Grid -->
-    <div id="grid" style="height: 400px;"></div>
-  </div>
-  <script>
+		<div id="advancedSearchForm"
+			style="display: none; margin-bottom: 1rem; border: 1px solid #ccc; padding: 1rem; background: #f9f9f9;">
+			<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+				<input type="text" id="searchTitle" placeholder="문서제목"> <input
+					type="text" id="searchDocId" placeholder="문서번호"> <input
+					type="text" id="searchForm" placeholder="결재양식"> <input
+					type="text" id="searchEmpName" placeholder="기안자"> <input
+					type="date" id="searchFromDt"> <input type="date"
+					id="searchToDt">
+				<button onclick="applyAdvancedSearch()">조건 검색</button>
+			</div>
+		</div>
+		<!-- Toast UI Grid -->
+		<div id="grid" style="height: 400px;"></div>
+	</div>
+
+	<script>
     const grid = new tui.Grid({
       el: document.getElementById('grid'),
       columns: [
+    	{ header: '문서번호', name: 'doc_id', hidden: true },
         { header: '제목', name: 'temp_title', width: 250 },
         { header: '작성자', name: 'EMPLYR_ID', width: 120 },
         { header: '저장일시', name: 'temp_dt', width: 160 },
         { header: '양식명', name: 'apprform_name', width: 120 },
         { header: '내용', name: 'temp_content', width: 200 }
       ],
-      //rowHeaders: ['rowNum'],
+      rowHeaders: ['checkbox'],
       bodyHeight: 300,
       pageOptions: {
         useClient: true,
@@ -57,20 +73,112 @@
       .then(list => grid.resetData(list));
 
     function handleSearch() {
-      const keyword = document.getElementById('searchKeyword').value.trim();
-      alert('검색어: ' + keyword);
-      // 실제 검색 기능은 ajax 파라미터로 구현
-    }
+    	const keyword = document.getElementById('searchKeyword').value.trim();
+
+    	  fetch('/approval/temp/list?keyword=' + encodeURIComponent(keyword))
+    	    .then(res => res.json())
+    	    .then(data => grid.resetData(data));
+    	}
 
     function handleReset() {
-      document.getElementById('searchKeyword').value = '';
-      document.getElementById('fromDt').value = '';
-      document.getElementById('toDt').value = '';
-    }
+    	document.getElementById('searchKeyword').value = '';
+    	  const from = document.getElementById('fromDt');
+    	  const to = document.getElementById('toDt');
+    	  if (from) from.value = '';
+    	  if (to) to.value = '';
+
+    	  fetch('/approval/temp/list')
+    	    .then(res => res.json())
+    	    .then(data => grid.resetData(data));
+    	}
 
     function openAdvancedSearch() {
-      alert('상세검색 열기');
-    }
+    	  const form = document.getElementById('advancedSearchForm');
+    	  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    	}
+    
+    function applyAdvancedSearch() {
+    	  const params = new URLSearchParams({
+    	    title: document.getElementById('searchTitle').value,
+    	    docId: document.getElementById('searchDocId').value,
+    	    form: document.getElementById('searchForm').value,
+    	    empName: document.getElementById('searchEmpName').value,
+    	    fromDt: document.getElementById('searchFromDt').value,
+    	    toDt: document.getElementById('searchToDt').value
+    	  });
+
+    	  fetch('/approval/temp/list?' + params.toString())
+    	    .then(res => res.json())
+    	    .then(data => grid.resetData(data));
+    	}
+    
+    document.getElementById('printBtn').addEventListener('click', function () {
+    	  const selectedRows = grid.getCheckedRows();
+    	  if (selectedRows.length === 0) {
+    	    alert('인쇄할 문서를 선택해주세요.');
+    	    return;
+    	  }
+    	  if (selectedRows.length > 1) {
+    	    alert('한 번에 하나의 문서만 인쇄할 수 있습니다.');
+    	    return;
+    	  }
+
+    	  const docId = selectedRows[0].doc_id;
+    	  const url = '/approval/print/' + docId;
+    	  window.open(url, '_blank', 'width=900,height=1200,scrollbars=yes');
+    	});
+    
+    function handleDraft() {
+    	  const selected = grid.getCheckedRows();
+    	  if (selected.length !== 1) {
+    	    alert("기안할 문서를 하나만 선택해주세요.");
+    	    return;
+    	  }
+    	  const tempId = selected[0].doc_id;
+    	  window.location.href = '/approval/write?source=' + tempId;
+    	}
+    
+    function handleCopy() {
+    	  const selected = grid.getCheckedRows();
+    	  if (selected.length === 0) {
+    	    alert("복사할 문서를 선택해주세요.");
+    	    return;
+    	  }
+    	  const ids = selected.map(row => row.doc_id);
+
+    	  fetch('/approval/temp/copy', {
+    	    method: 'POST',
+    	    headers: { 'Content-Type': 'application/json' },
+    	    body: JSON.stringify(ids)
+    	  })
+    	  .then(res => res.json())
+    	  .then(result => {
+    	    alert("복사 완료");
+    	    location.reload();
+    	  });
+    	}
+    
+    function handleDelete() {
+    	  const selected = grid.getCheckedRows();
+    	  if (selected.length === 0) {
+    	    alert("삭제할 문서를 선택해주세요.");
+    	    return;
+    	  }
+    	  if (!confirm("정말 삭제하시겠습니까?")) return;
+
+    	  const ids = selected.map(row => row.doc_id);
+
+    	  fetch('/approval/temp/delete', {
+    	    method: 'POST',
+    	    headers: { 'Content-Type': 'application/json' },
+    	    body: JSON.stringify(ids)
+    	  })
+    	  .then(res => res.json())
+    	  .then(result => {
+    	    alert("삭제 완료");
+    	    grid.removeRows(selected.map(row => row.rowKey));
+    	  });
+    	}
   </script>
 </section>
 </html>

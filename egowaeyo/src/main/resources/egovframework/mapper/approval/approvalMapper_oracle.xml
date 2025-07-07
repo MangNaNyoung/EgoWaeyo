@@ -66,8 +66,31 @@
 		ad.created_dt,
 		ad.final_dt
 		FROM approval_cc ac
-		JOIN approval_doc ad ON ac.doc_id = ad.doc_id
+		JOIN approval_doc ad ON
+		ac.doc_id = ad.doc_id
 		WHERE ac.EMPLYR_ID = #{empId}
-		ORDER BY ad.created_dt DESC
+		ORDER BY
+		ad.created_dt DESC
+	</select>
+
+	<select id="selectApprovalDetail"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO">
+		SELECT
+		d.doc_id,
+		d.doc_title,
+		d.doc_status,
+		d.created_dt,
+		f.approform_name,
+		u.user_nm AS emp_name,
+		dp.departments_name AS dept_name,
+		d.open_yn,
+		d.sec_level,
+		d.retention,
+		d.approval_content
+		FROM approval_doc d
+		JOIN approval_form f ON d.approform_id = f.approform_id
+		JOIN comtnemplyrinfo u ON d.emplyr_id = u.emplyr_id
+		LEFT JOIN departments dp ON u.departments_id = dp.departments_id
+		WHERE d.doc_id = #{docId}
 	</select>
 </mapper>
