@@ -11,17 +11,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApprovalDetailVO {
- private String docId;
- private String approformName;
- private String docTitle;
- private String userNm;
- private String deptName;
- private String retention;
- private String openYn;
- private String secLevel;
- private String approvalContent;
- private Date regDate;
- private String status;
+    private String docId;
+    private String docTitle;
+    private String approformName;
+    private String empName;
+    private String deptName;
+    private String docStatus;
+    private String openYn;
+    private String secLevel;
+    private String retention;
+    private String approvalContent;
+    private Date createdDt;
 
  // 결재선, 첨부파일 등
  private List<ApprovalLineVO> approvalLines;

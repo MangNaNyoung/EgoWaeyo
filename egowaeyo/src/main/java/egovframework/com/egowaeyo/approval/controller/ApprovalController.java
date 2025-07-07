@@ -105,7 +105,7 @@ public class ApprovalController {
 	public String printApproval(@PathVariable String docId, Model model) {
 	    ApprovalDetailVO detail = approvalService.getApprovalDetail(docId);
 	    model.addAttribute("detail", detail);
-	    return "approval/print.html"; 
+	    return "approval/print.html";
 	}
 
 }

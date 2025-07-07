@@ -50,7 +50,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 
 	@Override
 	public ApprovalDetailVO getApprovalDetail(String docId) {
-		return null;
+		 return approvalMapper.selectApprovalDetail(docId);
 	}
 	
 
