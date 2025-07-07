@@ -136,29 +136,31 @@ public class BbsMasterController {
 			String bbsId = generateBbsId();
 			logger.info("생성된 bbsId: {}", bbsId);
 
-			// 게시판 정보 저장
-			BoardMasterVO boardMaster = new BoardMasterVO();
-			boardMaster.setBbsId(bbsId);
-			boardMaster.setBbsNm(boardName);
-			boardMaster.setBbsTyCode(bbsTyCode);
-			boardMaster.setUseAt(useAt);
-			boardMaster.setFrstRegisterId(currentUserId);
-			bbsMasterService.insertBBSMaster(boardMaster);
-			logger.info("게시판 정보 저장 완료: {}", boardMaster);
+			
 
 			// 공통코드 테이블에 추가
 			if ("type1".equals(boardType)) { // '게시판 추가' 선택 시
 				insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
 				logger.info("공통코드 테이블에 추가 완료 - bbsTyCode: {}, boardName: {}", bbsTyCode, boardName);
-			}
+			} else {
+				// 게시판 정보 저장
+				BoardMasterVO boardMaster = new BoardMasterVO();
+				boardMaster.setBbsId(bbsId);
+				boardMaster.setBbsNm(boardName);
+				boardMaster.setBbsTyCode(bbsTyCode);
+				boardMaster.setUseAt(useAt);
+				boardMaster.setFrstRegisterId(currentUserId);
+				bbsMasterService.insertBBSMaster(boardMaster);
+				logger.info("게시판 정보 저장 완료: {}", boardMaster);
+				
+				 if (selectedRights == null || selectedRights.isEmpty()) {
+				        throw new IllegalArgumentException("권한 정보가 누락되었습니다.");
+				    }
+				    selectedRights.forEach(right -> right.put("bbsId", bbsId));
+				    bbsMasterService.saveBoardAuth(selectedRights, bbsId);
+				    logger.info("권한 정보 저장 완료.");
+				}
 
-			// 권한 정보 검증 및 저장
-			if (selectedRights == null || selectedRights.isEmpty()) {
-				throw new IllegalArgumentException("권한 정보가 누락되었습니다.");
-			}
-			selectedRights.forEach(right -> right.put("bbsId", bbsId));
-			bbsMasterService.saveBoardAuth(selectedRights, bbsId);
-			logger.info("권한 정보 저장 완료.");
 
 			response.put("success", true);
 		} catch (Exception e) {

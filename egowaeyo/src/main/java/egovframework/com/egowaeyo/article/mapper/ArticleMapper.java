@@ -16,5 +16,7 @@ public interface ArticleMapper {
 	public int articleInsert(BoardVO vo);
 
 	Long selectMaxNttId(); // 게시글 최대 NTT_ID 조회
+	
+	int deleteArticle(BoardVO boardVO); // 게시글 삭제
 
 }

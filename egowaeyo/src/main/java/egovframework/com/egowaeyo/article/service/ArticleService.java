@@ -16,5 +16,7 @@ public interface ArticleService {
 	public int articleInsert(BoardVO vo);
 
 	Long selectMaxNttId(); // 게시글 최대 NTT_ID 조회
+	
+	int deleteArticle(BoardVO boardVO);
 
 }
