@@ -27,9 +27,6 @@ public class AdminUserController {
 	@Autowired AdminUserService adminuserservice;
 	
 	private static final String FILE_STORE_PATH = EgovProperties.getProperty("Globals.fileStorePath");
-	
-	// 사용자 관리 > 사용자 등록
-	@GetMapping("/adUserIns.do")
 	public String adminUserIns(Model model) {
 	   
         List<PosVO> posilist = adminuserservice.getPos(null);

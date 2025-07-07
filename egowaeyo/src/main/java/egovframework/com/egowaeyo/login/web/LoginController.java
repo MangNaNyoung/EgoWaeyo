@@ -44,7 +44,7 @@ public class LoginController {
 				Cookie c = cookies[i] ;
 				// 저장된 쿠키 이름을 가져온다
 				String cName = c.getName();
-		
+				
 				loginVO.setName(cName);
 				// 쿠키값을 가져온다
 				String cValue = c.getValue() ;
