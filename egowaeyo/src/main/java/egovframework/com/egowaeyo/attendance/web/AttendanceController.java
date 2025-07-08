@@ -50,9 +50,6 @@ public class AttendanceController {
 		result.forEach(item->{
 			item.getCheckdate();
 		    item.setDate(item.getCheckdate()+" ("+LocalDate.of(Integer.parseInt(item.getCheckdate().substring(0,4)) ,Integer.parseInt(item.getCheckdate().substring(4,6)),Integer.parseInt(item.getCheckdate().substring(6,8))).getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN)+")");
-		   
-		    
-		   
 		});
 		
 		System.out.println(result);

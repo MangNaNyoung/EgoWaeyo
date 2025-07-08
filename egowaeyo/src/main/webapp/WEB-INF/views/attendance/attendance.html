@@ -165,9 +165,8 @@ getData(data);
   
 	});  
  
- 
 let url = /*[[@{/attendance}]]*/'';
-
+let list;
 	function getData(data){
 		$.ajax({
 				type : 'post',           // 타입 (get, post, put 등등)
@@ -178,6 +177,7 @@ let url = /*[[@{/attendance}]]*/'';
 				data : JSON.stringify(data),
 					success : function(result) { // 결과 성공 콜백함수
 						console.log(result);
+					list = result
 					grid.resetData(result);
 					grid.refreshLayout();     // ← 헤더 높이·스크롤 높이 재계산
 				},
@@ -195,6 +195,20 @@ let url = /*[[@{/attendance}]]*/'';
 		$('#endpicker-input').val();
 		getData(data)
 	});
+	
+		grid.on('checkAll', () => grid.uncheckAll()); // 상단 전체체크 무력화
+		grid.on('check', ({ rowKey }) => {
+			for(let i=0;i<grid.getRowCount();i++){
+				if(i!= rowKey){
+				grid.uncheck(i)
+				}
+			}
+				
+		});
+		$('.btn.btn-success.btn-sm').click(function(){
+		let dataForSend	=list[grid.getCheckedRowKeys()[0]]
+		console.log(dataForSend)
+		})
 
 </script>
 </section>
