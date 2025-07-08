@@ -6,6 +6,7 @@
 <!-- th:block부분이 defalut.html 에서 지정한 layout:fragment="customContents" 영역에 들어간다.  -->
 
 <section layout:fragment="content">
+<link rel="stylesheet" th:href="@{/assets/css/toastUi/toastUi.css}"> 
 <style>
   .search-box {
       display: flex;
@@ -17,13 +18,31 @@
     .search-box input {
       width: 150px;
     }
+   
+  #grid { height: 450px; }
+  .table-responsive { overflow: inherit; }
+.tui-datepicker,
+  .tui-calendar { position:relative; z-index:3000  !important; }
 </style>
 <div class="container mt-4">
   <h5 class="title">내 출퇴근 내역</h5>
 
   <div class="search-box">
     <button class="btn btn-success btn-sm">정정신청</button>
-    <input type="text" class="form-control form-control-sm" placeholder="검색">
+    
+ 	<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+        <input id="startpicker-input" type="date" aria-label="Date">
+        <span class="tui-ico-date"></span>
+        <div id="startpicker-container" style="margin-left: -1px;"></div>
+    </div>
+    <span>to</span>
+    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+        <input id="endpicker-input" type="date" aria-label="Date">
+        <span class="tui-ico-date"></span>
+        <div id="endpicker-container" style="margin-left: -1px;"></div>
+    </div>
+    
+   
     <button class="btn btn-dark btn-sm">
       <i class="bi bi-search"></i>
     </button>
@@ -36,14 +55,30 @@
   </div>
 </div>
 
-	
+
 <script th:inline="javascript">
 var Grid = tui.Grid;
+var today = new Date();
+
+
 let data ={} ;
 let gridData;
 getData(data);
   const grid = new Grid({
 	  el: document.getElementById('grid'),
+	  scrollX: false,
+      scrollY: false,
+	  rowHeaders: [
+		    {
+		      type: 'checkbox',
+		      header: `
+		        <label for="all-checkbox" class="checkbox">
+		          <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+		          <span class="custom-input"></span>
+		        </label>
+		      `
+		    }
+		  ],
 	  columns: [
           // [Column-1] 출근일
           {
@@ -51,6 +86,7 @@ getData(data);
               name: 'date',                 // [필수] 컬럼 매핑 이름 값
               sortable: true,                 // [선택] 컬럼의 정렬 여부
               resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
+              align: 'center',
               // [선택] 필터 옵션
               filter: {
                   type: 'text',
@@ -58,12 +94,13 @@ getData(data);
                   showClearBtn: true
               }       
           },
-          // [Column-2] 출근 상태
+          // [Column-2] 출근 
           {
-              header: '출근',             // [필수] 컬럼 이름
-              name: 'strIn',                 // [필수] 컬럼 매핑 이름 값
+              header: '출근시각',             // [필수] 컬럼 이름
+              name: 'checkin',                 // [필수] 컬럼 매핑 이름 값
               sortable: true,                 // [선택] 컬럼의 정렬 여부
               resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
+              align: 'center',
               // [선택] 필터 옵션
               filter: {
                   type: 'text',
@@ -71,12 +108,27 @@ getData(data);
                   showClearBtn: true
               },
           },
-          // [Column-3] 퇴근 상태
+          // [Column-3] 출근 상태
           {
-              header: '퇴근',            // [필수] 컬럼 이름
-              name: 'strOut',               // [필수] 컬럼 매핑 이름 값
+              header: '출근 상태',            // [필수] 컬럼 이름
+              name: 'instate',               // [필수] 컬럼 매핑 이름 값
               sortable: true,                 // [선택] 컬럼의 정렬 여부
               resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
+              align: 'center',
+              // [선택] 필터 옵션
+              filter: {
+                  type: 'text',
+                  showApplyBtn: true,
+                  showClearBtn: true
+              },
+          },
+          // [Column-4] 퇴근 
+          {
+              header: '퇴근시각',            // [필수] 컬럼 이름
+              name: 'checkout',               // [필수] 컬럼 매핑 이름 값
+              sortable: true,                 // [선택] 컬럼의 정렬 여부
+              resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
+              align: 'center',
               // [선택] 필터 옵션
               filter: {
                   type: 'text',
@@ -85,44 +137,64 @@ getData(data);
               },
           },
 
-
-          // [Column-4] checkbox
+          // [Column-5] 퇴근 상태
           {
+              header: '퇴근상태',            // [필수] 컬럼 이름
+              name: 'outstate',               // [필수] 컬럼 매핑 이름 값
+              sortable: true,                 // [선택] 컬럼의 정렬 여부
+              resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
+              align: 'center',
+              // [선택] 필터 옵션
+              filter: {
+                  type: 'text',
+                  showApplyBtn: true,
+                  showClearBtn: true
+              },
+          },
+          
+          // [Column-6] checkbox
+          /* {
               header: '정정',            // [필수] 컬럼 이름
               name: 'pick',               // [필수] 컬럼 매핑 이름 값
               editor: {
                   type: 'checkbox',
                   useDefault: false
                 },
-              
-          },
-          
-         
-      ]
+          }, */
+      ],
+  
 	});  
  
  
 let url = /*[[@{/attendance}]]*/'';
 
-
-
 	function getData(data){
 		$.ajax({
-			type : 'post',           // 타입 (get, post, put 등등)
-			url :'/egowaeyo/attendList.do',           // 요청할 서버url
-			headers : {              // Http header
-				"Content-Type" : "application/json",
-			},
-			data : JSON.stringify(data),
-			success : function(result) { // 결과 성공 콜백함수
-					console.log(result);
-				grid.resetData(result);
-			},
-			error : function(request, status, error) { // 결과 에러 콜백함수
-					console.log(error)
-			}
+				type : 'post',           // 타입 (get, post, put 등등)
+				url :'/egowaeyo/attendList.do',           // 요청할 서버url
+				headers : {              // Http header
+					"Content-Type" : "application/json",
+				},
+				data : JSON.stringify(data),
+					success : function(result) { // 결과 성공 콜백함수
+						console.log(result);
+					grid.resetData(result);
+					grid.refreshLayout();     // ← 헤더 높이·스크롤 높이 재계산
+				},
+					error : function(request, status, error) { // 결과 에러 콜백함수
+						console.log(error)
+				}
 	})
 	}
+	$('.btn.btn-dark.btn-sm').click(function(){
+		console.log("출력")
+		data.startDate =
+		$('#startpicker-input').val();
+		
+		data.endDate=		
+		$('#endpicker-input').val();
+		getData(data)
+	});
 
 </script>
 </section>

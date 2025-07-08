@@ -25,7 +25,6 @@
 <link rel="stylesheet" th:href="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.css}">
 <link rel="stylesheet" th:href="@{/assets/vendors/bootstrap-icons/bootstrap-icons.css}">
 <link rel="stylesheet" th:href="@{/assets/css/app.css}">
-<link rel="stylesheet" th:href="@{/assets/css/mail/mail-NoneRead.css}"> <!-- 메일 > 읽지 않은 메일 CSS -->
 <link rel="stylesheet" th:href="@{/assets/css/mail/mail-Writing.css}"> <!-- 메일 > 메일쓰기 CSS -->
 <link rel="shortcut icon" th:href="@{/images/egovframework/com/ego/minifavicon.png}" type="image/x-icon">
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
@@ -37,6 +36,7 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
+
 
 <style>
 body, html {
@@ -174,12 +174,13 @@ a {
 					}
 					
 					
-				} else if(target !='article-panel'&& target!='calendar-panel') {
+				} else if(target !='article-panel'&& target!='calendar-panel'&&target!='approval-panel') {
 					//$('#slide-panels').fadeIn('fast');
 					//$('#main').css('margin-left','330px')
 					//$('#slide-panels > div').hide();
 					//$('#' + target).show();
 					currentTarget = target;
+					
 					location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"Basic.do"
 				}
 				// 드롭다운 토글 처리
