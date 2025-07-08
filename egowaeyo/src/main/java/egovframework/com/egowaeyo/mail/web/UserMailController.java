@@ -20,4 +20,11 @@ public class UserMailController {
 	   
 	}
 	
+	@RequestMapping("/meMail.do")
+	public String meMail() {
+       
+        return "egoMail/mail-Me.html";
+	   
+	}
+	
 }
