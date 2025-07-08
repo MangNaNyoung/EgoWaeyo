@@ -44,15 +44,15 @@ public class AttendanceController {
 			vo.setEndDate(lastDate);
 		}
 		vo.setEmplyrId(principal.getName());
-		
+		vo.setStartDate(vo.getStartDate().replace("-", ""));
+		vo.setEndDate(vo.getEndDate().replace("-", ""));
 		List<AttendVO> result = AttendService.getAttend(vo);
 		result.forEach(item->{
 			item.getCheckdate();
 		    item.setDate(item.getCheckdate()+" ("+LocalDate.of(Integer.parseInt(item.getCheckdate().substring(0,4)) ,Integer.parseInt(item.getCheckdate().substring(4,6)),Integer.parseInt(item.getCheckdate().substring(6,8))).getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN)+")");
-		    item.setStrIn(vo.getCheckin()+vo.getInstate());
-		    item.setStrOut(vo.getCheckout()+vo.getOutstate());
-		   // item.setPick(false);
-		    System.out.println(item.getCheckin());
+		   
+		    
+		   
 		});
 		
 		System.out.println(result);
