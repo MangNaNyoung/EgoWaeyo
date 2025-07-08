@@ -244,6 +244,9 @@ function init() {
 	 //console.log(activedBtn)
 			 //console.log(outPanList)
 	 //if(activedBtn != null){
+		 
+		
+		
 		if(true){ 
 	 $('.nav-link.p-3.main-menu').each(function(index, item){
 		 let target = $(this).data('target')
@@ -288,6 +291,7 @@ function init() {
 					console.log("latestServerTime = "+latestTime);
 					console.log("expireSessionTime = "+expireTime);
 					
+				
 					elapsedTime = 0;
 					firstLocalTime = (new Date()).getTime();
 					showRemaining();
@@ -295,6 +299,7 @@ function init() {
 					timer = setInterval(showRemaining, timeInterval); // 1초 간격 호출
 				 }
 			 });
+	
 	
 }
 
