@@ -40,16 +40,18 @@ public class ArticleController {
 	// 게시글 목록화면으로 이동
 	@GetMapping("/articleList.do")
 	public String listPage(Model model, BoardVO vo) {
-		// selectBbsAll 호출
-		List<BoardVO> list = articleservice.selectBbsAll(vo);
-		// 조회 결과 처리
-		if (list == null || list.isEmpty()) {
-			log.error("No data found for bbsId: {}", vo.getBbsId());
-			model.addAttribute("list", List.of()); // 빈 리스트 전달
-		} else {
-			model.addAttribute("list", list); // 조회된 리스트 전달
-		}
-
+//		// selectBbsAll 호출
+//		List<BoardVO> list = articleservice.selectBbsAll(vo);
+//		// 조회 결과 처리
+//		if (list == null || list.isEmpty()) {
+//			log.error("No data found for bbsId: {}", vo.getBbsId());
+//			model.addAttribute("list", List.of()); // 빈 리스트 전달
+//		} else {
+//			model.addAttribute("list", list); // 조회된 리스트 전달
+//		}
+		String bbsId = "BBSMSTR_000000000021kioSbKFeeb";
+		vo.setBbsId(bbsId);
+		model.addAttribute("barContect", bbsId);
 		return "article/ArticleList.html";
 	}
 
@@ -207,21 +209,21 @@ public class ArticleController {
 		}
 		return vo;
 	}
-	
+
 	// 게시글 삭제 API
 	@DeleteMapping("/deleteArticle.do")
 	@ResponseBody
 	public ResponseEntity<?> deleteArticle(@RequestParam String bbsId, @RequestParam long nttId) {
-	    BoardVO boardVO = new BoardVO();
-	    boardVO.setBbsId(bbsId);
-	    boardVO.setNttId(nttId);
+		BoardVO boardVO = new BoardVO();
+		boardVO.setBbsId(bbsId);
+		boardVO.setNttId(nttId);
 
-	    int result = articleservice.deleteArticle(boardVO);
-	    if (result > 0) {
-	        return ResponseEntity.ok(Map.of("success", true));
-	    } else {
-	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "게시글 삭제에 실패했습니다."));
-	    }
+		int result = articleservice.deleteArticle(boardVO);
+		if (result > 0) {
+			return ResponseEntity.ok(Map.of("success", true));
+		} else {
+			return ResponseEntity.status(500).body(Map.of("success", false, "message", "게시글 삭제에 실패했습니다."));
+		}
 	}
 
 }

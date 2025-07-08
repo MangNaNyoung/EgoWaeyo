@@ -9,7 +9,7 @@
 		style="max-width: 970px; height: 850px; margin-top: 115px;">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="addProjectModalLabel">게시판 추가</h5>
+				<h5 class="modal-title" id="addProjectModalLabel"></h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"
 					aria-label="Close"></button>
 			</div>
@@ -143,7 +143,9 @@
 		    const type2Radio = document.getElementById("type2");
 		    const modalWrap = document.querySelector(".modal-wrap");
 		    modalWrap.style.display = "none"; // 초기에는 사용자별 설정 숨김
+
 		    
+		  
 		    // 게시판 유형 선택 시 이벤트 처리
 		    type1Radio.addEventListener("click", function () {
 		        modalWrap.style.display = "none"; // 사용자별 설정 숨기기
@@ -166,7 +168,7 @@
 	    // 전역에서 접근 가능하도록 함수 등록
 	    window.toggleParentBoard = toggleParentBoard;
    
-	//상위게시판 데이터 가져오기
+	// 상위게시판 데이터 가져오기
 		fetch('/egowaeyo/bbsMaster/combbs')
 		.then(response => {
 			if (!response.ok) {
@@ -224,7 +226,7 @@
         treeList.addEventListener("click", function (event) {
         	if (event.target.tagName === "LI") {
             	const selectedOrgnztNm = event.target.textContent.trim();
-
+				
                 // 선택 상태 토글
                 if (selectedDepts.has(selectedOrgnztNm)) {
                 	selectedDepts.delete(selectedOrgnztNm);
