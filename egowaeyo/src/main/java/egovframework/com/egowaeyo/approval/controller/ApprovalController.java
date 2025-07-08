@@ -107,5 +107,11 @@ public class ApprovalController {
 	    model.addAttribute("detail", detail);
 	    return "approval/print.html";
 	}
+	
+	@GetMapping("/form/{formId}")
+	@ResponseBody
+	public String getFormHtml(@PathVariable String formId) {
+	    return approvalService.getFormHtml(formId);
+	}
 
 }

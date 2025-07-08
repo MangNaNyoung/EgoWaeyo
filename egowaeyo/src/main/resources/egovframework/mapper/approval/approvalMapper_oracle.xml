@@ -8,7 +8,7 @@
 
 	<select id="selectFormList"
 		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalFormVO">
-		SELECT apprform_id, apprform_name FROM approval_form
+		SELECT apprform_id, aporm_name FROM approval_form
 	</select>
 
 	<insert id="insertApprovalDoc"
@@ -93,4 +93,8 @@
 		LEFT JOIN departments dp ON u.departments_id = dp.departments_id
 		WHERE d.doc_id = #{docId}
 	</select>
+	
+	<select id="selectApprFormHtml" parameterType="string" resultType="string">
+  SELECT apprform_html FROM approval_form WHERE apprform_id = #{formId}
+</select>
 </mapper>

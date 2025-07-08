@@ -52,6 +52,11 @@ public class ApprovalServiceImpl implements ApprovalService {
 	public ApprovalDetailVO getApprovalDetail(String docId) {
 		 return approvalMapper.selectApprovalDetail(docId);
 	}
+
+	@Override
+	public String getFormHtml(String formId) {
+		return approvalMapper.selectApprFormHtml(formId);
+	}
 	
 
 }

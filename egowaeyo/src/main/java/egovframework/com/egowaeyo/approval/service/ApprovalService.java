@@ -22,5 +22,7 @@ public interface ApprovalService {
 	List<ApprovalCcVO> getReferenceList(String empId);
 
 	ApprovalDetailVO getApprovalDetail(String docId);
+	
+	public String getFormHtml(String formId);
 
 }
