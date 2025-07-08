@@ -4,77 +4,35 @@
 	layout:decorate="~{layout/layout}">
 
 <section layout:fragment="content">
+
 	<div style="display: flex; gap: 2rem; align-items: flex-start;">
 
 		<form th:action="@{/approval/write}" method="post" id="approvalForm"
 			style="flex: 1;">
 			<h4>결재문서</h4>
-			<!-- 버튼구역 만들었습니-다.  -->
 			<div
 				style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
-				<button type="button" onclick="openModal('templateModal')">양식선택</button>
-				<button type="reset" onclick="resetAll()">초기화</button>
-				<button type="button" onclick="attachedFile()">결재문서첨부</button>
-				<button type="button" onclick="temporarySave()">임시저장</button>
-				<button type="submit" onclick="setEditorContent()">결재</button>
-			</div>
-			<!-- 드롭다운 영역 정리하였습니다. div에 스타일을 줘서 중앙정렬하였습니다람쥐.  -->
-			<div
-				style="display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; margin-bottom: 1rem;">
-				<label for="docType">결재종류:</label> <select id="docType"
-					name="docType">
-					<option>업무보고</option>
-					<option>지출결의서</option>
-				</select> <label for="docCategory">양식:</label> <select id="docCategory"
-					name="docCategory">
-					<option>휴가원</option>
-					<option>휴가취소원</option>
-					<option>경계작전명령서</option>
-					<option>세금계산서</option>
-					<option>품의서</option>
-				</select> <label for="docDepartment">기안부서:</label> <select id="docDepartment"
-					name="docDepartment">
-					<option>인사과</option>
-					<option>안보과</option>
-					<option>정훈과</option>
-					<option>총무과</option>
-				</select> <label for="docPeriod">보존연한:</label> <select id="docPeriod"
-					name="docPeriod">
-					<option>1년</option>
-					<option>3년</option>
-					<option>5년</option>
-					<option>10년</option>
-					<option>영구</option>
-				</select> <label for="docStatus">공개여부:</label> <select id="docStatus"
-					name="docStatus">
-					<option>공개</option>
-					<option>비공개</option>
-				</select> <label for="docSecurity">보안등급:</label> <select id="docSecurity"
-					name="docSecurity">
-					<option>1급</option>
-					<option>2급</option>
-					<option>3급</option>
-					<option>대외비</option>
-					<option>공개</option>
-				</select>
-			</div>
-			<!-- web editor 구역입니다. -->
-			<div style="margin-bottom: 1rem;">
-				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> <input
-					type="text" name="docTitle" required style="width: 100%;" /><br />
+				<button type="button" id="openTemplateModalBtn">양식선택</button>
+				<button type="reset" id="resetBtn">초기화</button>
+				<button type="button" id="attachFileBtn">결재문서첨부</button>
+				<button type="button" id="tempSaveBtn">임시저장</button>
+				<button type="submit" id="submitBtn">결재</button>
 			</div>
 
+			<div style="margin-bottom: 1rem;">
+				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> 
+				<input type="text" name="docTitle" required style="width: 100%;" /><br />
+			</div>
 			<div id="editor"></div>
 			<textarea name="docContent" id="docContent" style="display: none;"></textarea>
 		</form>
-		<!-- 화면 구성단에 있는 결재선을 구현하였습니다. -->
+
 		<aside
-			style="width: 300px; border-left: 1px solid #ccc; padding-left: 1rem;">
+			style="width: 300px; border-left: 1px solid #ccc; padding-left: 1rem; margin-top: 120px;">
 			<div
 				style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
 				<h4 style="margin: 0;">결재선</h4>
-				<button type="button" onclick="openModal('approvalLineModal')">결재선
-					지정</button>
+				<button type="button" id="openApprovalLineModalBtn">결재선 지정</button>
 			</div>
 			<div class="approval-box">
 				<strong>기안자</strong>
@@ -90,153 +48,137 @@
 			</div>
 		</aside>
 	</div>
-	
-	<!-- 결재선 지정 모달 -->
-<div id="approvalLineModal" class="modal" style="display: none; position: fixed; top: 10%; left: 10%; width: 80%; height: 80%; background: white; border: 1px solid #ccc; z-index: 1000; padding: 1rem; overflow: auto;">
-  <h4>결재선 지정</h4>
 
-  <div style="display: flex; gap: 1rem;">
-    <!-- 1. 조직도 영역 -->
-    <div style="flex: 1;">
-      <div style="border: 1px solid #ccc; height: 200px;">[1] 조직도</div>
-      <div style="margin-top: 1rem;">
-        <select>
-          <option>전체</option>
-          <option>부서</option>
-        </select>
-        <input type="text" placeholder="검색어 입력" />
-        <button>검색</button>
-      </div>
-      <table border="1" width="100%" style="margin-top: 0.5rem;">
-        <thead>
-          <tr><th></th><th>이름</th><th>호칭</th><th>부서</th></tr>
-        </thead>
-        <tbody>
-          <!-- 예시 -->
-          <tr><td><input type="checkbox" /></td><td>홍길동</td><td>대리</td><td>개발팀</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- 2. 결재/수신/참조 영역 -->
-    <div style="flex: 1;">
-      <div>
-        <select>
-          <option>기안</option>
-          <option>결재</option>
-          <option>참조</option>
-        </select>
-        <input type="text" placeholder="이름 검색" />
-        <button>추가</button>
-      </div>
-
-      <div style="margin-top: 1rem; border: 1px solid #ccc; padding: 0.5rem; height: 100px;">수신: 표시할 내용이 없습니다.</div>
-      <div style="margin-top: 1rem; border: 1px solid #ccc; padding: 0.5rem; height: 100px;">참조: 표시할 내용이 없습니다.</div>
-    </div>
-  </div>
-
-  <div style="text-align: right; margin-top: 1rem;">
-    <button onclick="applyApprovalLine()">결재선 적용</button>
-    <button onclick="closeModal('approvalLineModal')">닫기</button>
-  </div>
-</div>
-
-
-	<div id="templateModal" class="modal"
-		style="display: none; position: fixed; top: 10%; left: 10%; width: 60%; height: 60%; background: white; border: 1px solid #ccc; z-index: 1000; padding: 1rem; overflow: auto;">
-		<h4>결재양식</h4>
-
-		<div style="display: flex; gap: 1rem;">
-			<!-- 1. 카테고리 -->
-			<div style="flex: 1; border: 1px solid #ccc;">
-				<ul>
-					<li>기안</li>
-					<li>품의</li>
-					<li>지출결의</li>
-					<li>출장계</li>
-					<!-- ... -->
-				</ul>
-			</div>
-
-			<!-- 2. 양식 리스트 -->
-			<div style="flex: 2; border: 1px solid #ccc;">
-				<ul>
-					<li>품의서</li>
-					<li>계약요청서</li>
-					<li>채용품의서</li>
-					<li>인사발령품의서</li>
-				</ul>
+	<!-- 결재선 모달 -->
+	<div id="approvalLineModal" class="modal">
+		<div class="modal-overlay" onclick="closeModal(document.getElementById('approvalLineModal'))"></div>
+		<div class="modal-content">
+			<h4>결재선 지정</h4> 
+			<div style="text-align: right; margin-top: 1rem;">
+				<button id="applyApprovalLineBtn">결재선 적용</button>
+				<button class="closeModalBtn">닫기</button>
 			</div>
 		</div>
+	</div>
 
-		<div style="text-align: right; margin-top: 1rem;">
-			<button onclick="closeModal('templateModal')">닫기</button>
+	<!-- 양식선택 모달 -->
+	<div id="templateModal" class="modal">
+		<div class="modal-overlay" onclick="closeModal(document.getElementById('templateModal'))"></div>
+		<div class="modal-content">
+			<h4>결재양식</h4>
+			<div style="display: flex; gap: 1rem;">
+				<div style="flex: 2; border: 1px solid #ccc;">
+					<ul>
+						<li class="template-item" data-id="FORM001" data-name="외근신청서">외근신청서</li>
+						<li class="template-item" data-id="FORM002" data-name="휴가원">휴가원</li>
+						<li class="template-item" data-id="FORM003" data-name="품의서">품의서</li>
+					</ul>
+				</div>
+			</div>
+			<div style="text-align: right; margin-top: 1rem;">
+				<button class="closeModalBtn">닫기</button>
+			</div>
 		</div>
 	</div>
 </section>
+
 <th:block layout:fragment="customJs">
 	<script>
-		//toast editor를 부르기위한 함수입니다. 로드 확인을 위해 if문을 걸어 제약도 걸엇읍니다.
-		document.addEventListener("DOMContentLoaded", function() {
-			if (typeof toastui === 'undefined') {
-				console.error('ToastUI Editor가 로딩되지 않았습니다.');
-				return;
-			}
-			let editor;
-			editor = new toastui.Editor({
-				el : document.querySelector('#editor'),
-				height : '500px',
-				initialEditType : 'wysiwyg',
-				previewStyle : 'vertical',
-				initialValue : '',
-			});
-
-			window.setEditorContent = function() {
-				document.querySelector("#docContent").value = editor.getHTML();
-			};
+	let editor;
+	document.addEventListener("DOMContentLoaded", function () {
+		if (typeof toastui === 'undefined') return;
+		editor = new toastui.Editor({
+			el: document.querySelector('#editor'),
+			height: '500px',
+			initialEditType: 'wysiwyg',
+			previewStyle: 'vertical',
+			initialValue: ''
 		});
 
-		// 양식 선택
+		document.getElementById("openTemplateModalBtn").addEventListener("click", () => showModal("templateModal"));
+		document.getElementById("openApprovalLineModalBtn").addEventListener("click", () => showModal("approvalLineModal"));
 
-		function openTemplateModal() {
-			document.getElementById(id).style.display = "block";
-		}
-		function closeModal(id) {
-			document.getElementById(id).style.display = "none";
+		document.querySelectorAll(".closeModalBtn").forEach(btn => {
+			btn.addEventListener("click", e => closeModal(e.target.closest(".modal"))); 
+		});
 
-		}
+		document.getElementById("resetBtn").addEventListener("click", resetAll);
+		document.getElementById("attachFileBtn").addEventListener("click", attachedFile);
+		document.getElementById("tempSaveBtn").addEventListener("click", temporarySave);
 
-		// 초기화
-		function resetAll() {
-			document.getElementById("approvalForm").reset();
-			if (window.editor) {
-				window.editor.setHTML("");
-			}
-		}
+		// submit 전에 editor html
+		document.getElementById("submitBtn").addEventListener("click", () => {
+			document.querySelector("#docContent").value = editor.getHTML();
+		});
 
-		// 결재문서 첨부
-		function attachedFile() {
-			alert("첨부 파일 다이얼로그");
-		}
+		document.querySelectorAll(".template-item").forEach(item => {
+			  item.addEventListener("click", () => {
+			    const formId = item.dataset.id;
+			    fetch(`/egowaeyo/approval/form/${formId}`)
+			      .then(res => {
+			        if (!res.ok) throw new Error('양식이 없습니다');
+			        return res.text();
+			      })
+			      .then(html => {
+		                try { 
+		                    html = JSON.parse(html);
+		                } catch(e) { 
+		                    html = html.replace(/^"+|"+$/g, "").replace(/\\n/g, "");
+		                }
+		                editor.setHTML(html);
+		                closeModal(document.getElementById("templateModal"));
+		            })
+		            .catch(e => alert("양식 불러오기 실패"));
+			  });
+			});
+	});
 
-		// 임시저장
-		function temporarySave() {
-			const content = editor.getHTML();
-			const title = document.querySelector("input[name='docTitle']").value;
-
-			if (!title || !content) {
-				alert("제목과 내용을 입력해 주세요.");
-				return;
-			}
-
-			// 여기에 fetch/ajax로 임시 저장 처리 로직 작성 가능
-			alert("임시 저장 완료");
-		}
-
-		// 결재선 지정
-		function applyApprovalLine() {
-			alert("결재선이 적용되었습니다!");
-			closeModal('approvalLineModal');
-		}
+	function showModal(id) {
+		const modal = document.getElementById(id);
+		if (modal) modal.style.display = "block";
+	}
+	function closeModal(modal) {
+		if (modal) modal.style.display = "none";
+	}
+	function resetAll() {
+		document.getElementById("approvalForm").reset();
+		if (editor) editor.setHTML("");
+	}
+	function attachedFile() {
+		alert("첨부 파일 다이얼로그");
+	}
+	function temporarySave() {
+		const content = editor.getHTML();
+		const title = document.querySelector("input[name='docTitle']").value;
+		if (!title || !content) return alert("제목과 내용을 입력해 주세요.");
+		alert("임시 저장 완료");
+	}
 	</script>
+
+	<style>
+	.modal {
+	  position: fixed;
+	  top: 120px; 
+	  left: 50%;
+	  transform: translate(-50%, 0);
+	  min-width: 400px;
+	  min-height: 300px;
+	  background: #fff;
+	  border-radius: 8px;
+	  box-shadow: 0 4px 24px #0002;
+	  z-index: 1000;
+	  padding: 2rem;
+	  display: none;
+	  width: 700px;
+	  height: 400px;
+	}
+	.modal-content {
+	  position: relative;
+	  box-shadow: none;
+	}
+	aside {
+	  margin-top: 120px; 
+	}
+	</style>
+</th:block>
 </html>

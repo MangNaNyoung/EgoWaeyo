@@ -22,4 +22,6 @@ public interface ApprovalMapper {
 	List<ApprovalCcVO> selectReferenceList(String empId);
 	
 	ApprovalDetailVO selectApprovalDetail(String docId);
+	
+	String selectApprFormHtml(String formId);
 }
