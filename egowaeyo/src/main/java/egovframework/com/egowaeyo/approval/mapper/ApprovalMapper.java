@@ -2,6 +2,8 @@ package egovframework.com.egowaeyo.approval.mapper;
 
 import java.util.List;
 
+import egovframework.com.cop.smt.lsm.service.EmplyrVO;
+import egovframework.com.egowaeyo.admin.service.DeptVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
@@ -24,4 +26,10 @@ public interface ApprovalMapper {
 	ApprovalDetailVO selectApprovalDetail(String docId);
 	
 	String selectApprFormHtml(String formId);
+	
+	List<DeptVO> selectDeptList();
+	
+	List<EmplyrVO> selectEmpListByDept(String deptId);
+	
+	List<EmplyrVO> selectAllUsers();
 }

@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import egovframework.com.cop.smt.lsm.service.EmplyrVO;
+import egovframework.com.egowaeyo.admin.service.DeptVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
@@ -56,6 +58,21 @@ public class ApprovalServiceImpl implements ApprovalService {
 	@Override
 	public String getFormHtml(String formId) {
 		return approvalMapper.selectApprFormHtml(formId);
+	}
+
+	@Override
+	public List<DeptVO> getDeptList() {
+		return approvalMapper.selectDeptList();
+	}
+
+	@Override
+	public List<EmplyrVO> getEmpListByDept(String deptId) {	
+		return approvalMapper.selectEmpListByDept(deptId);
+	}
+
+	@Override
+	public List<EmplyrVO> getAllUsers() {
+		return approvalMapper.selectAllUsers();
 	}
 	
 

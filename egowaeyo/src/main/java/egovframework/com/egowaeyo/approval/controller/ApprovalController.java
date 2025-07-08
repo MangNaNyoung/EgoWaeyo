@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import egovframework.com.cop.smt.lsm.service.EmplyrVO;
+import egovframework.com.egowaeyo.admin.service.DeptVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
@@ -113,5 +115,23 @@ public class ApprovalController {
 	public String getFormHtml(@PathVariable String formId) {
 	    return approvalService.getFormHtml(formId);
 	}
+	
+	// 부서 리스트 반환
+    @GetMapping("/dept")
+    public List<DeptVO> getDeptList() {
+        return approvalService.getDeptList();
+    }
+    
+	// 부서별 사용자 목록 조회 (JSON 반환)
+    @GetMapping("/dept/{deptId}")
+    public List<EmplyrVO> getEmpListByDept(@PathVariable String deptId) {
+        return approvalService.getEmpListByDept(deptId);
+    }
+    
+    @GetMapping("/approval/users")
+    @ResponseBody
+    public List<EmplyrVO> getAllUsers() {
+        return approvalService.getAllUsers();
+    }
 
 }
