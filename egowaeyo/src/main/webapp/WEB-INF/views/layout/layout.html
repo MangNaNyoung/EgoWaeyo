@@ -36,7 +36,8 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
-
+<link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+<script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 
 <style>
 body, html {
@@ -279,6 +280,10 @@ function init() {
 				 if(result.loginVO != null){
 				   
 					console.log(result.loginVO)
+					console.log(result.vo)
+					$(".empl").text(result.vo.name+" ("+result.vo.id+")")
+					$(".level").text(result.vo.orgnztNm)
+					$(".email").attr('data-email',result.vo.email)
 					 latestTime = result.egovLatestServerTime ; //getCookie("egovLatestServerTime")
 					 expireTime = result.egovExpireSessionTime	 ; //getCookie("egovExpireSessionTime");
 					 objLeftTime = document.getElementById("leftTimeInfo");
