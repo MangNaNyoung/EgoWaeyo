@@ -132,12 +132,12 @@ li.li_name {
 							style="width: 800px;">
 							<select class="form-select" id="formSelect"style="width: 200px;">
 							</select> 
-							<select class="form-select" style="width: 200px;">
+							<select class="form-select" id="howSelect" style="width: 200px;">
 								<option>제목+내용</option>
 								<option>작성자</option>
-							</select> <input class="form-control" type="text" style="width: 200px;"
+							</select> <input class="form-control" id="filterInput" type="text" style="width: 200px;"
 								placeholder="검색어를 입력하세요">
-							<button
+							<button id="filterButton"
 								class="btn btn-dark d-flex align-items-center justify-content-center"
 								type="submit" style="height: 38px;">
 								<span class="visually-hidden">검색</span>
@@ -369,7 +369,7 @@ li.li_name {
 						              <span class="post-count">${post.inqireCo}</span>
 						            </div>
 						            <div class="post-meta">
-						              <span class="post-writer">${post.frstRegisterNm}</span>
+						              <span class="post-writer">${post.ntcrNm}</span>
 						              <span class="post-dt">${post.frstRegisterPnttm.split(' ')[0]}</span>
 						              <span class="post-tm">${post.frstRegisterPnttm.split(' ')[1]}</span>
 						            </div>
@@ -411,7 +411,59 @@ li.li_name {
 			           });
 			       })
 			       .catch(error => console.error("Error fetching BBS filter:", error));
+				
+				// 게시글 검색 필터 이벤트
+				  const filterButton = document.getElementById("filterButton");
+
+				    filterButton.addEventListener("click", function (e) {
+				        e.preventDefault();
+
+				        const bbsId = document.getElementById("formSelect").value;
+				        const searchType = document.getElementById("howSelect").value;
+				        const searchKeyword = document.getElementById("filterInput").value;
+
+				        if (!bbsId || !searchType || !searchKeyword) {
+				            alert("모든 필드를 입력해주세요.");
+				            return;
+				        }
+
+				        fetch(`/egowaeyo/article/filterArticles?bbsId=${bbsId}&searchType=${searchType}&searchKeyword=${searchKeyword}`)
+				            .then(response => response.json())
+				            .then(data => {
+				                const postListContainer = document.querySelector(".container-fluid.px-4");
+				                postListContainer.innerHTML = ""; // 기존 리스트 초기화
+
+				                data.forEach(post => {
+				                    const postItem = document.createElement("div");
+				                    postItem.className = "post-list-item";
+				                    
+				                    // 날짜 처리
+				                    const dateTime = post.FRST_REGIST_PNTTM;
+				                    const formattedDate = dateTime ? dateTime.split(' ')[0] : '날짜 없음';
+				                    const formattedTime = dateTime ? dateTime.split(' ')[1] : '시간 없음';
+
+				                    postItem.innerHTML = `
+				                        <div class="avatar"></div>
+				                        <div>
+				                            <div class="post-title">${post.NTT_SJ}<span style="font-size:14px; color:#4a90e2; margin-left:5px;">👁 ${post.RDCNT}</span></div>
+				                            <div class="post-meta">
+				                                <span>${post.NTCR_NM}</span>
+				                                <span>${formattedDate}</span>
+				                                <span>${formattedTime}</span>
+				                            </div>
+				                        </div>
+				                    `;
+				                    postListContainer.appendChild(postItem);
+				                });
+				            })
+				            .catch(error => {
+				                console.error("Error fetching filtered articles:", error);
+				                alert("검색 중 오류가 발생했습니다.");
+				            });
+				    });
+				    
 				});
+			
 			
 			
 			// 글쓰기버튼 클릭
@@ -451,7 +503,7 @@ li.li_name {
 				              <span class="post-count">${post.inqireCo}</span>
 				            </div>
 				            <div class="post-meta">
-				              <span class="post-writer">${post.frstRegisterNm}</span>
+				              <span class="post-writer">${post.ntcrNm}</span>
 				              <span class="post-dt">${post.frstRegisterPnttm.split(' ')[0]}</span>
 				              <span class="post-tm">${post.frstRegisterPnttm.split(' ')[1]}</span>
 				            </div>

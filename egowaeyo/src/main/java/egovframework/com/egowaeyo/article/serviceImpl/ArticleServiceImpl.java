@@ -1,5 +1,7 @@
 package egovframework.com.egowaeyo.article.serviceImpl;
 
+import java.sql.Clob;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +50,6 @@ public class ArticleServiceImpl implements ArticleService {
 			log.warn("게시글 업데이트 실패: BBS_ID={}, NTT_ID={}", vo.getBbsId(), vo.getNttId());
 			throw new RuntimeException("게시글 업데이트에 실패했습니다.");
 		}
-
 		return result; // 성공적으로 업데이트된 경우 반환
 	}
 
@@ -71,5 +72,36 @@ public class ArticleServiceImpl implements ArticleService {
 	@Override
 	public List<Map<String, String>> getBbsFilter() {
 		return articleMapper.selectBbsFilter();
+	}
+	
+	@Override
+	public List<Map<String, Object>> filterArticles(Map<String, Object> params) {
+	    List<Map<String, Object>> articles = articleMapper.selectFilterList(params);
+
+	    for (Map<String, Object> article : articles) {
+	        Object nttCn = article.get("NTT_CN");
+	        if (nttCn instanceof Clob) {
+	            try {
+	                Clob clob = (Clob) nttCn;
+	                article.put("NTT_CN", clob.getSubString(1, (int) clob.length()));
+	            } catch (SQLException e) {
+	                log.error("Error converting CLOB:", e);
+	                article.put("NTT_CN", null);
+	            }
+	        }
+	    }
+	    log.debug("Filter parameters: {}", params);
+	    return articles;
+	}
+	
+	// 게시글 조회수 증가
+	@Override
+	public int updateArticleRdcnt(BoardVO boardVO) {
+	    try {
+	        return articleMapper.updateArticleRdcnt(boardVO);
+	    } catch (Exception e) {
+	        log.error("조회수 증가 중 오류 발생: {}", e.getMessage());
+	        throw new RuntimeException("조회수 증가에 실패했습니다.", e);
+	    }
 	}
 }
