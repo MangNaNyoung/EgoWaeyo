@@ -21,5 +21,9 @@ public interface ArticleMapper {
 	Long selectMaxNttId(); // 게시글 최대 NTT_ID 조회
 
 	int deleteArticle(BoardVO boardVO); // 게시글 삭제
+	
+	List<Map<String, Object>> selectFilterList(Map<String, Object> params);
+	
+	int updateArticleRdcnt(BoardVO boardVO); // 조회수 업데이트
 
 }

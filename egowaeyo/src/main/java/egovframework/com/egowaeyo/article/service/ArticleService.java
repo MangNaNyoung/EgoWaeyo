@@ -21,5 +21,9 @@ public interface ArticleService {
 	int deleteArticle(BoardVO boardVO);
 
 	List<Map<String, String>> getBbsFilter();
+	
+	List<Map<String, Object>> filterArticles(Map<String, Object> params);
+	
+	int updateArticleRdcnt(BoardVO boardVO); //조회수
 
 }
