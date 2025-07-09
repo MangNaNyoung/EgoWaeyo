@@ -1,5 +1,6 @@
 package egovframework.com.egowaeyo.login.web;
 
+
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +9,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,7 +28,7 @@ public class LoginController {
 	 * 로그인 페이지 이동
 	 */
 	@RequestMapping("/goToLogin")
-	public String goToLogin(@ModelAttribute("loginVO")LoginVO loginVO) {
+	public String goToLogin(@ModelAttribute("loginVO")LoginVO loginVO,Model model) {
 		return "login/login.html";
 	}
 	
@@ -34,10 +36,9 @@ public class LoginController {
 	
 	@RequestMapping("/getSessionTime")
 	@ResponseBody
-	public Map<String,Object> getSeessionData(HttpServletRequest request,LoginVO loginVO,Principal principal){
+	public Map<String,Object> getSeessionData(HttpServletRequest request,LoginVO loginVO, Principal principal){
 		Map<String,Object> map = new HashMap<String, Object>();
 		LoginVO vo = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
-		System.out.println(vo);
 		String egovLatestServerTime = "";
 		String egovExpireSessionTime = "";
 		// 쿠키값 가져오기
@@ -47,7 +48,6 @@ public class LoginController {
 				Cookie c = cookies[i] ;
 				// 저장된 쿠키 이름을 가져온다
 				String cName = c.getName();
-				
 				loginVO.setName(cName);
 				// 쿠키값을 가져온다
 				String cValue = c.getValue() ;
@@ -61,6 +61,8 @@ public class LoginController {
 			}
 		}
 		map.put("loginVO", principal.getName());
+		map.put("vo",vo);
+		System.out.println(vo.getId());
 		map.put("egovLatestServerTime",egovLatestServerTime);
 		map.put("egovExpireSessionTime",egovExpireSessionTime);
 		return map;
