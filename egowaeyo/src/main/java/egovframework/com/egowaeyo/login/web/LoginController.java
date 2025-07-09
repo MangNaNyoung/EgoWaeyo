@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -35,6 +36,8 @@ public class LoginController {
 	@ResponseBody
 	public Map<String,Object> getSeessionData(HttpServletRequest request,LoginVO loginVO,Principal principal){
 		Map<String,Object> map = new HashMap<String, Object>();
+		LoginVO vo = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		System.out.println(vo);
 		String egovLatestServerTime = "";
 		String egovExpireSessionTime = "";
 		// 쿠키값 가져오기
