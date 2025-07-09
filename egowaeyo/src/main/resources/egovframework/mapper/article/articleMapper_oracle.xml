@@ -238,7 +238,7 @@
 		<result property="secretAt" column="SECRET_AT" />
 		<result property="commentCo" column="COMMENT_CO" />
 	</resultMap>
-
+	
 	<!-- 게시판별 게시글 리스트 조회 -->
 	<select id="selectBbsAll"
 		resultType="egovframework.com.egowaeyo.article.VO.BoardVO"
@@ -288,6 +288,21 @@
 		) TB )
 	</select>
 
+	<!-- 하위게시판 목록 조회(검색필터)  -->
+	<select id="selectBbsFilter" resultType="java.util.Map">
+		SELECT BBS_ID, BBS_NM
+		FROM COMTNBBSMASTER
+		WHERE USE_AT = 'Y'
+	</select>
+	
+	<!-- 게시글 조회수 증가 -->
+	<update id="updateArticleRdcnt"
+			parameterType="egovframework.com.egowaeyo.article.VO.BoardVO">
+	UPDATE COMTNBBS 
+	SET RDCNT = RDCNT + 1
+	WHERE NTT_ID = #{nttId}
+	</update>
+	 
 	<!-- 게시판 게시글 리스트 카운트 -->
 	<select id="selectArticleListCnt"
 		parameterType="egovframework.com.egowaeyo.article.VO.BoardVO"
@@ -348,7 +363,8 @@
 		)
 	</insert>
 	
-	<!-- nttId 최대값(게시글 작성시 필요) -->
+
+
 	<select id="selectMaxNttId" resultType="java.lang.Long">
  		
 			SELECT NVL(NTT_ID,0)+1 AS NTT_ID FROM COMTNBBS WHERE NTT_ID=(SELECT MAX(NTT_ID) AS NTT_ID  FROM COMTNBBS) FOR UPDATE WAIT 3  

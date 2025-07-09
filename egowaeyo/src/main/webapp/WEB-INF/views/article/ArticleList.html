@@ -130,9 +130,9 @@ li.li_name {
 						<!-- 폼 시작 -->
 						<form class="search-bar d-flex align-items-center gap-2 me-4"
 							style="width: 800px;">
+							<select class="form-select" id="formSelect"style="width: 200px;">
+							</select> 
 							<select class="form-select" style="width: 200px;">
-								<option>전체 게시판</option>
-							</select> <select class="form-select" style="width: 200px;">
 								<option>제목+내용</option>
 								<option>작성자</option>
 							</select> <input class="form-control" type="text" style="width: 200px;"
@@ -161,12 +161,12 @@ li.li_name {
 					<div class="avatar"></div>
 					<div>
 						<div>
-							<span class="post-title">요구사항 정의서</span> <span class="reply">💬</span>
-							<span class="post-count">5</span>
+							<span class="post-title"></span> <span class="reply">💬</span>
+							<span class="post-count"></span>
 						</div>
 						<div class="post-meta">
-							<span class="post-writer">이민영 대리님</span> <span class="post-dt">2025-06-12</span>
-							<span class="post-tm">16:54</span>
+							<span class="post-writer"></span> <span class="post-dt"></span>
+							<span class="post-tm"></span>
 						</div>
 					</div>
 				</div>
@@ -230,7 +230,6 @@ li.li_name {
 
 
 			// 사이드바
-
 			document.addEventListener("DOMContentLoaded", function () {
 				fetch('/egowaeyo/bbsMaster/groupedBbsData')
 					.then(response => response.json())
@@ -245,12 +244,12 @@ li.li_name {
 								const groupItem = document.createElement("li");
 								groupItem.classList.add("li_name");
 								
-								if(codeNm == "공지사항" && barClicked !=null){
+								if(codeNm == "📌 공지사항" && barClicked !=null){
 									document.querySelector('.custom-title').textContent = codeNm;
 								}
 								
 								// '공지사항'일 경우 codeNm 숨기기
-						          if (codeNm !== "공지사항") {
+						          if (codeNm !== "📌 공지사항") {
 						            groupItem.textContent = codeNm;
 						            
 						            const ulImg = document.createElement("img");
@@ -289,7 +288,7 @@ li.li_name {
 									const textNode = document.createTextNode(bbs.bbsNm);
 									
 									// 공지사항의 bbsNm에 스타일 적용
-						            if (codeNm === "공지사항") {
+						            if (codeNm === "📌 공지사항") {
 						              listItem.style.cssText = "font-weight: bold !important; cursor: pointer; margin-left:-32px; margin-bottom: 10px;";
 						            }
 
@@ -396,7 +395,24 @@ li.li_name {
 						}
 						
 				});
-			});
+				
+				// 게시글 검색 필터 상위게시판
+				  fetch("/egowaeyo/article/bbsFilter")
+				  .then(response => response.json())
+			       .then(data => {
+			           console.log("Fetched Data:", data);
+			           const formSelect = document.getElementById("formSelect");
+			           formSelect.innerHTML = '<option value="">게시판을 선택하세요</option>';
+			           data.forEach(item => {
+			               const option = document.createElement("option");
+			               option.value = item.BBS_ID;
+			               option.textContent = item.BBS_NM;
+			               formSelect.appendChild(option);
+			           });
+			       })
+			       .catch(error => console.error("Error fetching BBS filter:", error));
+				});
+			
 			
 			// 글쓰기버튼 클릭
 			document.addEventListener("DOMContentLoaded", function () {
