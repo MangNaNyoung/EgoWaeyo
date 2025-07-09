@@ -136,8 +136,6 @@ public class BbsMasterController {
 			String bbsId = generateBbsId();
 			logger.info("생성된 bbsId: {}", bbsId);
 
-			
-
 			// 공통코드 테이블에 추가
 			if ("type1".equals(boardType)) { // '게시판 추가' 선택 시
 				insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
@@ -152,15 +150,14 @@ public class BbsMasterController {
 				boardMaster.setFrstRegisterId(currentUserId);
 				bbsMasterService.insertBBSMaster(boardMaster);
 				logger.info("게시판 정보 저장 완료: {}", boardMaster);
-				
-				 if (selectedRights == null || selectedRights.isEmpty()) {
-				        throw new IllegalArgumentException("권한 정보가 누락되었습니다.");
-				    }
-				    selectedRights.forEach(right -> right.put("bbsId", bbsId));
-				    bbsMasterService.saveBoardAuth(selectedRights, bbsId);
-				    logger.info("권한 정보 저장 완료.");
-				}
 
+				if (selectedRights == null || selectedRights.isEmpty()) {
+					throw new IllegalArgumentException("권한 정보가 누락되었습니다.");
+				}
+				selectedRights.forEach(right -> right.put("bbsId", bbsId));
+				bbsMasterService.saveBoardAuth(selectedRights, bbsId);
+				logger.info("권한 정보 저장 완료.");
+			}
 
 			response.put("success", true);
 		} catch (Exception e) {

@@ -1,6 +1,7 @@
 package egovframework.com.egowaeyo.article.serviceImpl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -63,8 +64,12 @@ public class ArticleServiceImpl implements ArticleService {
 
 	@Override
 	public int deleteArticle(BoardVO boardVO) {
-	    log.info("Deleting article with BBS_ID: {}, NTT_ID: {}", boardVO.getBbsId(), boardVO.getNttId());
-	    return articleMapper.deleteArticle(boardVO);
+		log.info("Deleting article with BBS_ID: {}, NTT_ID: {}", boardVO.getBbsId(), boardVO.getNttId());
+		return articleMapper.deleteArticle(boardVO);
 	}
 
+	@Override
+	public List<Map<String, String>> getBbsFilter() {
+		return articleMapper.selectBbsFilter();
+	}
 }

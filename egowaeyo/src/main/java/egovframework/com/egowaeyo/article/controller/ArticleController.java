@@ -73,6 +73,15 @@ public class ArticleController {
 		return "/article/ArticleRegist.html";
 	}
 
+	// 게시글 조회 필터
+	@GetMapping("/bbsFilter")
+	@ResponseBody
+	public List<Map<String, String>> getBbsFilter() {
+		List<Map<String, String>> bbsFilterList = articleservice.getBbsFilter();
+		log.debug("BBS Filter List: {}", bbsFilterList);
+		return bbsFilterList;
+	}
+
 	// 게시글 등록
 	@PostMapping("/articleRegister.do") // .do->인코딩필터(한글)
 	@ResponseBody
