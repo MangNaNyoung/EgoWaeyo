@@ -205,6 +205,9 @@ a {
 			
 		});
 	</script>
+	
+	
+	
 	<script th:inline="javascript">
 	// 화면 호출시 로그인 한 사용자의 정보와 최근 서버시간, 세션만료 시간을 가져 온다.
 function getCookie(cname) {
@@ -275,15 +278,12 @@ function init() {
 			 function(result){
 				 if(result.loginVO != null){
 				   
-					
+					console.log(result.loginVO)
 					 latestTime = result.egovLatestServerTime ; //getCookie("egovLatestServerTime")
 					 expireTime = result.egovExpireSessionTime	 ; //getCookie("egovExpireSessionTime");
-					objLeftTime = document.getElementById("leftTimeInfo");
+					 objLeftTime = document.getElementById("leftTimeInfo");
 				
-					if (objLeftTime == null) {
-					/* 	console.log("'leftTimeInfo' ID is not exist!"); */
-						return;
-					}
+					
 					objClickInfo = document.getElementById("clickInfo");
 					//console.log(objLeftTime.textContent);
 				
@@ -298,6 +298,11 @@ function init() {
 					
 					timer = setInterval(showRemaining, timeInterval); // 1초 간격 호출
 				 }
+				 console.log(objLeftTime)
+				 if (objLeftTime == undefined) {
+					 $(location).attr('href',logoutUrl);
+							return;
+						}
 			 });
 	
 	
