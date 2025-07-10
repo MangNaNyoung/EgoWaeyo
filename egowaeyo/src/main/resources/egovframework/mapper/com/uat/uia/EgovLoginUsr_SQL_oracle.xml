@@ -21,6 +21,8 @@
 		<result property="userSe" column="userSe"/>
 		<result property="orgnztId" column="orgnztId"/>
 		<result property="uniqId" column="uniqId"/>		
+		<result property="orgnztNm" column="orgnztNm"/>		
+		<result property="empPhoto" column="emp_photo"/>		
 	</resultMap>
 	
 	<!-- 아이디 찾기를 위한 resultMap -->
@@ -47,6 +49,8 @@
 			     , 'GNR' AS userSe
 			     , '-' AS orgnztId
 			     , ESNTL_ID AS uniqId
+			     , OFCPS_NM
+			     , EMP_PHOTO
 			  FROM COMTNGNRLMBER
 			 WHERE ESNTL_ID = #{uniqId}
 			   AND mber_sttus = 'P'
@@ -71,15 +75,17 @@
 		<!-- 업무사용자 -->
 		<if test="userSe != null and userSe == 'USR'">
 			
-			SELECT emplyr_id AS id
+				SELECT emplyr_id AS id
 			     , user_nm AS name
 			     , password AS password
 			     , ihidnum AS ihidNum
 			     , email_adres AS email
 			     , 'USR' AS userSe
-			     , orgnzt_id AS orgnztId
+			     , c.orgnzt_id AS orgnztId
 			     , esntl_id AS uniqId
-			  FROM COMTNEMPLYRINFO
+                 ,(select orgnzt_nm from COMTNORGNZTINFO where orgnzt_id = c.orgnzt_id) AS orgnztNm                 
+			     , EMP_PHOTO
+			  FROM COMTNEMPLYRINFO c
 			 WHERE ESNTL_ID = #{uniqId}
 			   AND emplyr_sttus_code = 'P'
 			
@@ -132,9 +138,11 @@
 			     , ihidnum AS ihidNum
 			     , email_adres AS email
 			     , 'USR' AS userSe
-			     , orgnzt_id AS orgnztId
+			     , c.orgnzt_id AS orgnztId
 			     , esntl_id AS uniqId
-			  FROM COMTNEMPLYRINFO
+                 ,(select orgnzt_nm from COMTNORGNZTINFO where orgnzt_id = c.orgnzt_id) AS orgnztNm                
+			     , EMP_PHOTO
+			  FROM COMTNEMPLYRINFO c
 			 WHERE emplyr_id = #{id}
 			   AND password = #{password}
 			   AND emplyr_sttus_code = 'P'

@@ -210,6 +210,9 @@ a {
 	
 	
 	<script th:inline="javascript">
+	/*<![CDATA[*/
+	var userInfo = [[${session.loginVO}]];
+	/*]]>*/
 	// 화면 호출시 로그인 한 사용자의 정보와 최근 서버시간, 세션만료 시간을 가져 온다.
 function getCookie(cname) {
 	  var name = cname + "=";
@@ -279,11 +282,11 @@ function init() {
 			 function(result){
 				 if(result.loginVO != null){
 				   
-					console.log(result.loginVO)
-					console.log(result.vo)
-					$(".empl").text(result.vo.name+" ("+result.vo.id+")")
-					$(".level").text(result.vo.orgnztNm)
-					$(".email").attr('data-email',result.vo.email)
+					console.log(userInfo)
+					console.log(userInfo)
+					$(".empl").text(userInfo.name+" ("+userInfo.id+")")
+					$(".level").text(userInfo.orgnztNm)
+					$(".email").attr('data-email',userInfo.email)
 					 latestTime = result.egovLatestServerTime ; //getCookie("egovLatestServerTime")
 					 expireTime = result.egovExpireSessionTime	 ; //getCookie("egovExpireSessionTime");
 					 objLeftTime = document.getElementById("leftTimeInfo");
