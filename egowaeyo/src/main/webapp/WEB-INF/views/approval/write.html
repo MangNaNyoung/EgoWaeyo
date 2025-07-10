@@ -18,10 +18,10 @@
 				<button type="button" id="tempSaveBtn">임시저장</button>
 				<button type="submit" id="submitBtn">결재</button>
 			</div>
-
+			<input type="hidden" name="apprformId" id="apprformId">
 			<div style="margin-bottom: 1rem;">
-				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> 
-				<input type="text" name="docTitle" required style="width: 100%;" /><br />
+				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> <input
+					type="text" name="docTitle" required style="width: 100%;" /><br />
 			</div>
 			<div id="editor"></div>
 			<textarea name="docContent" id="docContent" style="display: none;"></textarea>
@@ -50,11 +50,19 @@
 	</div>
 
 	<!-- 결재선 모달 -->
-	<div id="approvalLineModal" class="modal">
-		<div class="modal-overlay" onclick="closeModal(document.getElementById('approvalLineModal'))"></div>
+	<div id="approvalLineModal" class="modal" style="display: none;">
 		<div class="modal-content">
-			<h4>결재선 지정</h4> 
-			<div style="text-align: right; margin-top: 1rem;">
+			<h4>결재선 지정</h4>
+			<div>
+				<label>부서</label> <select id="deptSelect"></select>
+			</div>
+			<div>
+				<label>결재자</label> <select id="approverSelect"></select>
+			</div>
+			<div>
+				<label>참조자</label> <select id="ccSelect" multiple></select>
+			</div>
+			<div>
 				<button id="applyApprovalLineBtn">결재선 적용</button>
 				<button class="closeModalBtn">닫기</button>
 			</div>
@@ -63,7 +71,8 @@
 
 	<!-- 양식선택 모달 -->
 	<div id="templateModal" class="modal">
-		<div class="modal-overlay" onclick="closeModal(document.getElementById('templateModal'))"></div>
+		<div class="modal-overlay"
+			onclick="closeModal(document.getElementById('templateModal'))"></div>
 		<div class="modal-content">
 			<h4>결재양식</h4>
 			<div style="display: flex; gap: 1rem;">
@@ -85,100 +94,193 @@
 <th:block layout:fragment="customJs">
 	<script>
 	let editor;
+	let deptEventRegistered = false;
+
 	document.addEventListener("DOMContentLoaded", function () {
-		if (typeof toastui === 'undefined') return;
-		editor = new toastui.Editor({
-			el: document.querySelector('#editor'),
-			height: '500px',
-			initialEditType: 'wysiwyg',
-			previewStyle: 'vertical',
-			initialValue: ''
-		});
+	  if (typeof toastui === 'undefined') return;
+	  editor = new toastui.Editor({
+	    el: document.querySelector('#editor'),
+	    height: '500px',
+	    initialEditType: 'wysiwyg',
+	    previewStyle: 'vertical',
+	    initialValue: ''
+	  });
 
-		document.getElementById("openTemplateModalBtn").addEventListener("click", () => showModal("templateModal"));
-		document.getElementById("openApprovalLineModalBtn").addEventListener("click", () => showModal("approvalLineModal"));
+	  // 양식선택 모달 열기
+	  document.getElementById("openTemplateModalBtn").addEventListener("click", () => showModal("templateModal"));
+	  
+	  // 결재선 지정 모달 열기 + 부서리스트 fetch
+	  document.getElementById("openApprovalLineModalBtn").addEventListener("click", function() {
+	    showModal("approvalLineModal");
+	    fetch("/approval/dept")
+	      .then(res => res.json())
+	      .then(depts => {
+	        const deptSelect = document.getElementById("deptSelect");
+	        deptSelect.innerHTML = "";
+	        depts.forEach(d => {
+	          deptSelect.innerHTML += `<option value="${d.departmentsId}">${d.departmentsName}</option>`;
+	        });
+	        if (depts.length > 0) {
+	          deptSelect.value = depts[0].departmentsId;
+	          deptSelect.dispatchEvent(new Event('change'));
+	        }
+	      });
 
-		document.querySelectorAll(".closeModalBtn").forEach(btn => {
-			btn.addEventListener("click", e => closeModal(e.target.closest(".modal"))); 
-		});
+	    if (!deptEventRegistered) {
+	      document.getElementById("deptSelect").addEventListener("change", function() {
+	        const deptId = this.value;
+	        fetch(`/approval/dept/${deptId}`)
+	          .then(res => res.json())
+	          .then(users => {
+	            const approverSelect = document.getElementById("approverSelect");
+	            const ccSelect = document.getElementById("ccSelect");
+	            approverSelect.innerHTML = "";
+	            ccSelect.innerHTML = "";
+	            users.forEach(u => {
+	              approverSelect.innerHTML += `<option value="${u.emplyrId}">${u.userNm}</option>`;
+	              ccSelect.innerHTML += `<option value="${u.emplyrId}">${u.userNm}</option>`;
+	            });
+	          });
+	      });
+	      deptEventRegistered = true;
+	    }
+	  });
 
-		document.getElementById("resetBtn").addEventListener("click", resetAll);
-		document.getElementById("attachFileBtn").addEventListener("click", attachedFile);
-		document.getElementById("tempSaveBtn").addEventListener("click", temporarySave);
+	  document.querySelectorAll(".closeModalBtn").forEach(btn => {
+	    btn.addEventListener("click", e => closeModal(e.target.closest(".modal")));
+	  });
 
-		// submit 전에 editor html
-		document.getElementById("submitBtn").addEventListener("click", () => {
-			document.querySelector("#docContent").value = editor.getHTML();
-		});
+	  // 결재선 적용
+	  document.getElementById("applyApprovalLineBtn").addEventListener("click", function() {
+	    const approverSelect = document.getElementById("approverSelect");
+	    const ccSelect = document.getElementById("ccSelect");
+	    const approver = approverSelect.selectedOptions[0]?.textContent || "선택된 사용자 없음";
+	    const ccArr = Array.from(ccSelect.selectedOptions).map(o=>o.textContent);
+	    document.querySelectorAll(".approval-box")[1].querySelector("p").textContent = approver;
+	    document.querySelectorAll(".approval-box")[2].querySelector("p").textContent = ccArr.length ? ccArr.join(", ") : "선택된 사용자 없음";
+	    closeModal(document.getElementById("approvalLineModal"));
+	  });
 
-		document.querySelectorAll(".template-item").forEach(item => {
-			  item.addEventListener("click", () => {
-			    const formId = item.dataset.id;
-			    fetch(`/egowaeyo/approval/form/${formId}`)
-			      .then(res => {
-			        if (!res.ok) throw new Error('양식이 없습니다');
-			        return res.text();
-			      })
-			      .then(html => {
-		                try { 
-		                    html = JSON.parse(html);
-		                } catch(e) { 
-		                    html = html.replace(/^"+|"+$/g, "").replace(/\\n/g, "");
-		                }
-		                editor.setHTML(html);
-		                closeModal(document.getElementById("templateModal"));
-		            })
-		            .catch(e => alert("양식 불러오기 실패"));
-			  });
-			});
+	  // 템플릿(양식) 클릭
+	  document.querySelectorAll(".template-item").forEach(item => {
+	    item.addEventListener("click", () => {
+	      const formId = item.dataset.id;
+	      document.getElementById("apprformId").value = formId;
+	      fetch(`/egowaeyo/approval/form/${formId}`)
+	        .then(res => {
+	          if (!res.ok) throw new Error('양식이 없습니다');
+	          return res.text();
+	        })
+	        .then(html => {
+	          try { html = JSON.parse(html); } catch(e) { html = html.replace(/^"+|"+$/g, "").replace(/\\n/g, ""); }
+	          editor.setHTML(html);
+	          closeModal(document.getElementById("templateModal"));
+	        })
+	        .catch(e => alert("양식 불러오기 실패"));
+	    });
+	  });
+
+	  document.getElementById("resetBtn").addEventListener("click", resetAll);
+	  document.getElementById("attachFileBtn").addEventListener("click", attachedFile);
+	  document.getElementById("tempSaveBtn").addEventListener("click", temporarySave);
+
+	  // submit 전에 editor html 저장
+	  document.getElementById("submitBtn").addEventListener("click", () => {
+	    document.querySelector("#docContent").value = editor.getHTML();
+	  });
 	});
 
 	function showModal(id) {
-		const modal = document.getElementById(id);
-		if (modal) modal.style.display = "block";
+	  const modal = document.getElementById(id);
+	  if (modal) modal.style.display = "block";
 	}
 	function closeModal(modal) {
-		if (modal) modal.style.display = "none";
+	  if (modal) modal.style.display = "none";
 	}
 	function resetAll() {
-		document.getElementById("approvalForm").reset();
-		if (editor) editor.setHTML("");
+	  document.getElementById("approvalForm").reset();
+	  if (editor) editor.setHTML("");
 	}
 	function attachedFile() {
-		alert("첨부 파일 다이얼로그");
+	  alert("첨부 파일 다이얼로그");
 	}
 	function temporarySave() {
-		const content = editor.getHTML();
-		const title = document.querySelector("input[name='docTitle']").value;
-		if (!title || !content) return alert("제목과 내용을 입력해 주세요.");
-		alert("임시 저장 완료");
+	  const content = editor.getHTML();
+	  const title = document.querySelector("input[name='docTitle']").value;
+	  if (!title || !content) return alert("제목과 내용을 입력해 주세요.");
+	  alert("임시 저장 완료");
 	}
-	</script>
+</script>
+	<style>
+.modal {
+	position: fixed;
+	top: 120px;
+	left: 50%;
+	transform: translate(-50%, 0);
+	min-width: 400px;
+	min-height: 300px;
+	background: #fff;
+	border-radius: 8px;
+	box-shadow: 0 4px 24px #0002;
+	z-index: 1000;
+	padding: 2rem;
+	display: none;
+	width: 700px;
+	height: 400px;
+}
 
-	<style> 
-	.modal {
-	  position: fixed;
-	  top: 120px; 
-	  left: 50%;
-	  transform: translate(-50%, 0);
-	  min-width: 400px;
-	  min-height: 300px;
-	  background: #fff;
-	  border-radius: 8px;
-	  box-shadow: 0 4px 24px #0002;
-	  z-index: 1000;
-	  padding: 2rem;
-	  display: none;
-	  width: 700px;
-	  height: 400px;
-	}
-	.modal-content {
-	  position: relative;
-	  box-shadow: none;
-	}
-	aside {
-	  margin-top: 120px; 
-	}
-	</style>
+.modal-content {
+	border-radius: 10px;
+	border: 1px solid #eee;
+	background: #fafbfc;
+	padding: 2rem 2rem 1.5rem 2rem;
+	box-shadow: none;
+	width: 420px;
+	min-height: 270px;
+	margin: 0 auto;
+}
+
+.template-item {
+	padding: 0.8rem 0.5rem;
+	border-radius: 6px;
+	margin-bottom: 0.5rem;
+	transition: background 0.15s;
+	cursor: pointer;
+}
+
+.template-item:hover {
+	background: #f3f6fd;
+	color: #3d5afe;
+}
+
+#editor {
+	min-height: 500px;
+}
+
+#editor table {
+	border: 2px solid #e3e6ef;
+	background: #f8fbff;
+	width: 100%;
+	table-layout: fixed;
+}
+
+#editor th {
+	background: #e3e6ef;
+	color: #192a56;
+	font-weight: 700;
+}
+
+#editor td {
+	background: #fafbfc;
+	color: #222;
+	font-size: 1.06em;
+	min-width: 60px;
+}
+
+#deptSelect, #approverSelect, #ccSelect {
+	width: 70%;
+	margin-bottom: 1rem;
+}
+</style>
 </th:block>
 </html>

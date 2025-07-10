@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class AdminUserVO {
 	
-	private String userSe = "USR"; // 기본값 설정
 	private String emplyrId; // 업무사용자ID
 	private String userNm; // 사용자명
 	private String password; // 비밀번호
@@ -39,22 +38,5 @@ public class AdminUserVO {
 	// 파일 업로드용 (실제 파일)
 	private MultipartFile empPhotoFile;
 	private MultipartFile signPhotoFile;
-	
-	public String getUserSe() {
-        return userSe;
-    }
-    
-    public void setUserSe(String userSe) {
-        this.userSe = userSe;
-    }
-    
-    // ESNTL_ID getter/setter 명시적 추가
-    public String getEsntlId() {
-        return esntlId;
-    }
-    
-    public void setEsntlId(String esntlId) {
-        this.esntlId = esntlId;
-    }
 
 }

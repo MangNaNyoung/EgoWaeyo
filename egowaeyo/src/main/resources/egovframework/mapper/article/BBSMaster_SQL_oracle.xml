@@ -32,19 +32,21 @@
 	<!-- 사이드바 -->
 	<select id="selectGroupedBbsData" resultType="map">
 		SELECT
-        	A.CODE AS "code",
-			NVL(A.CODE_NM, 'UNKNOWN') AS "codeNm",
-			B.BBS_NM AS "bbsNm",
-			B.BBS_ID as "bbsId"
+		A.CODE AS
+		"code",
+		NVL(A.CODE_NM, 'UNKNOWN') AS "codeNm",
+		B.BBS_NM AS "bbsNm",
+		B.BBS_ID as "bbsId"
 		FROM
-			COMTCCMMNDETAILCODE A
+		COMTCCMMNDETAILCODE A
 		LEFT JOIN
-			COMTNBBSMASTER B
+		COMTNBBSMASTER B
 		ON
-			A.CODE = B.BBS_TY_CODE
+		A.CODE = B.BBS_TY_CODE
 		WHERE
-			A.CODE_ID = 'COM101'
-			AND B.BBS_NM IS NOT NULL
+		A.CODE_ID = 'COM101'
+		AND B.BBS_NM IS NOT
+		NULL
 	</select>
 
 	<!-- 상위 게시판 목록 조회(공통코드 조회) -->
@@ -59,7 +61,8 @@
 	<select id="selectDeptEmp" resultMap="deptEmpResultMap">
 		SELECT o.orgnzt_id,
 		o.orgnzt_nm, e.user_nm, e.emplyr_id, e.ofcps_nm
-		FROM COMTNORGNZTINFO o JOIN
+		FROM COMTNORGNZTINFO o
+		JOIN
 		COMTNEMPLYRINFO e ON
 		o.orgnzt_id=e.orgnzt_id
 	</select>
@@ -71,25 +74,48 @@
 		<result property="userNm" column="user_nm" />
 		<result property="ofcpsNm" column="ofcps_nm" />
 	</resultMap>
-	
+
 	<!-- 게시판 정보 조회 -->
 	<select id="selectBBSMasterDetail"
-        parameterType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO"
-        resultMap="boardMasterDetail">
-        SELECT B.BBS_ID, B.BBS_TY_CODE, B.BBS_NM, B.BBS_INTRCN,
-        B.REPLY_POSBL_AT, B.FILE_ATCH_POSBL_AT, B.TMPLAT_ID,
-        B.FRST_REGISTER_ID, B.FRST_REGIST_PNTTM,
-        C.CODE_NM AS BBS_TY_CODE_NM, D.TMPLAT_NM, D.AUTH_FLAG,
-        D.TMPLAT_COURS
-        FROM COMTNBBSMASTER B
-        INNER JOIN COMTCCMMNDETAILCODE C ON
-            B.BBS_TY_CODE = C.CODE
-            AND C.CODE_ID = 'COM101'
-        INNER JOIN COMTNTMPLATINFO D ON
-            B.TMPLAT_ID = D.TMPLAT_ID
-        WHERE B.BBS_ID = #{bbsId}
-        </select>
-        
+		parameterType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO"
+		resultMap="boardMasterDetail">
+		SELECT B.BBS_ID, B.BBS_TY_CODE, B.BBS_NM, B.BBS_INTRCN,
+		B.REPLY_POSBL_AT, B.FILE_ATCH_POSBL_AT, B.TMPLAT_ID,
+		B.FRST_REGISTER_ID, B.FRST_REGIST_PNTTM,
+		C.CODE_NM AS BBS_TY_CODE_NM,
+		D.TMPLAT_NM, D.AUTH_FLAG,
+		D.TMPLAT_COURS
+		FROM COMTNBBSMASTER B
+		INNER JOIN
+		COMTCCMMNDETAILCODE C ON
+		B.BBS_TY_CODE = C.CODE
+		AND C.CODE_ID = 'COM101'
+		INNER JOIN COMTNTMPLATINFO D ON
+		B.TMPLAT_ID = D.TMPLAT_ID
+		WHERE B.BBS_ID
+		= #{bbsId}
+	</select>
+	
+	<!-- 게시판 정보 수정 -->
+	<update id="updateBBSMaster"
+		parameterType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO">
+		UPDATE COMTNBBSMASTER
+		SET BBS_NM = #{bbsNm},
+			BBS_TY_CODE = #{bbsTyCode},
+			LAST_UPDT_PNTTM = SYSDATE,
+			LAST_UPDUSR_ID = #{lastUpdusrId}
+		WHERE BBS_ID = #{bbsId}
+	</update>
+
+
+	<!-- 게시판 정보(게시판 수정) -->
+	<select id="selectBBSMasterInfo">
+		SELECT D.CODE_NM, M.BBS_ID, M.BBS_NM, M.BBS_NM, M.USE_AT, A.EMPLYR_ID, A.AUTR_CODE
+		FROM COMTCCMMNDETAILCODE D JOIN COMTNBBSMASTER M ON D.CODE = M.BBS_TY_CODE
+    		JOIN COMTNBBSAUTHOR A ON M.BBS_ID = A.BBS_ID
+		WHERE M.BBS_ID = #{bbsId}
+	</select>
+
 	<!-- 게시판 추가 -->
 	<insert id="insertBBSMaster"
 		parameterType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO">
@@ -114,7 +140,8 @@
 		SELECT CODE
 		FROM COMTCCMMNDETAILCODE
 		WHERE CODE LIKE
-		'BBST%' AND CODE_NM = #{codeNm}
+		'BBST%'
+		AND CODE_NM = #{codeNm}
 	</select>
 
 

@@ -14,11 +14,9 @@
 	<insert id="insertApprovalDoc"
 		parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
 		INSERT INTO approval_doc (
-		doc_id, doc_title, EMPLYR_ID,
-		doc_status, created_dt, apprform_id
+		doc_id, doc_title, EMPLYR_ID, doc_status, created_dt, apprform_id
 		) VALUES (
-		#{docId}, #{docTitle},
-		#{emplId}, #{docStatus}, #{createdDt}, #{apprformId}
+		approval_doc_seq.NEXTVAL, #{docTitle}, #{emplId}, #{docStatus}, #{createdDt}, #{apprformId}
 		)
 	</insert>
 
@@ -82,19 +80,53 @@
 		d.created_dt,
 		f.approform_name,
 		u.user_nm AS emp_name,
-		dp.departments_name AS dept_name,
+		dp.departments_name AS
+		dept_name,
 		d.open_yn,
 		d.sec_level,
 		d.retention,
 		d.approval_content
-		FROM approval_doc d
+		FROM
+		approval_doc d
 		JOIN approval_form f ON d.approform_id = f.approform_id
 		JOIN comtnemplyrinfo u ON d.emplyr_id = u.emplyr_id
-		LEFT JOIN departments dp ON u.departments_id = dp.departments_id
-		WHERE d.doc_id = #{docId}
+		LEFT JOIN
+		departments dp ON u.departments_id = dp.departments_id
+		WHERE d.doc_id =
+		#{docId}
 	</select>
-	
-	<select id="selectApprFormHtml" parameterType="string" resultType="string">
-  SELECT apprform_html FROM approval_form WHERE apprform_id = #{formId}
-</select>
+
+	<select id="selectApprFormHtml" parameterType="string"
+		resultType="string">
+		SELECT apprform_html FROM approval_form WHERE apprform_id =
+		#{formId}
+	</select>
+
+	<select id="selectDeptList"
+		resultType="egovframework.com.egowaeyo.admin.service.DeptVO">
+		SELECT DEPARTMENTS_ID AS departmentsId,
+		DEPARTMENTS_NAME AS
+		departmentsName,
+		DEPARTMENTS_MASTER AS departmentsMaster
+		FROM
+		DEPARTMENTS
+	</select>
+
+	<select id="selectEmpListByDept" parameterType="string"
+		resultType="egovframework.com.cop.smt.lsm.service.EmplyrVO">
+		SELECT EMPLYR_ID AS emplyrId,
+		USER_NM AS userNm
+		FROM
+		COMTNEMPLYRINFO
+		WHERE DEPARTMENTS_ID = #{deptId}
+	</select>
+
+	<select id="selectAllUsers" parameterType="string"
+		resultType="egovframework.com.cop.smt.lsm.service.EmplyrVO">
+		SELECT EMPLYR_ID AS empId,
+		USER_NM AS userNm,
+		DEPARTMENTS_ID
+		AS deptId
+		FROM COMTNEMPLYRINFO
+	</select>
 </mapper>

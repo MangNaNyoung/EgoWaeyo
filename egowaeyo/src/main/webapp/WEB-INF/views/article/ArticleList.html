@@ -69,6 +69,9 @@ body {
 	color: #4a90e2;
 	margin-left: 2px;
 }
+li.li_name {
+  margin-bottom: 15px;
+}
 
 @media ( max-width : 900px) {
 	.container {
@@ -106,7 +109,7 @@ body {
 
 
 				<ul class="no_dot">
-					<li><span data-bs-toggle="modal"
+					<li><span class="addBoard" data-bs-toggle="modal"
 						data-bs-target="#addProjectModal" style="cursor: pointer;">+
 							게시판추가</span></li>
 				</ul>
@@ -127,14 +130,14 @@ body {
 						<!-- 폼 시작 -->
 						<form class="search-bar d-flex align-items-center gap-2 me-4"
 							style="width: 800px;">
-							<select class="form-select" style="width: 200px;">
-								<option>전체 게시판</option>
-							</select> <select class="form-select" style="width: 200px;">
+							<select class="form-select" id="formSelect"style="width: 200px;">
+							</select> 
+							<select class="form-select" id="howSelect" style="width: 200px;">
 								<option>제목+내용</option>
 								<option>작성자</option>
-							</select> <input class="form-control" type="text" style="width: 200px;"
+							</select> <input class="form-control" id="filterInput" type="text" style="width: 200px;"
 								placeholder="검색어를 입력하세요">
-							<button
+							<button id="filterButton"
 								class="btn btn-dark d-flex align-items-center justify-content-center"
 								type="submit" style="height: 38px;">
 								<span class="visually-hidden">검색</span>
@@ -158,12 +161,12 @@ body {
 					<div class="avatar"></div>
 					<div>
 						<div>
-							<span class="post-title">요구사항 정의서</span> <span class="reply">💬</span>
-							<span class="post-count">5</span>
+							<span class="post-title"></span> <span class="reply">💬</span>
+							<span class="post-count"></span>
 						</div>
 						<div class="post-meta">
-							<span class="post-writer">이민영 대리님</span> <span class="post-dt">2025-06-12</span>
-							<span class="post-tm">16:54</span>
+							<span class="post-writer"></span> <span class="post-dt"></span>
+							<span class="post-tm"></span>
 						</div>
 					</div>
 				</div>
@@ -179,7 +182,16 @@ body {
 		<div th:replace="article/addProjectModal :: addProjectModal"></div>
 		<div th:replace="article/editProjectModal :: editProjectModal"></div>
 		<!-- 스크립트도 복사해서 가져가면 됩니다 -->
-		<script>
+		<script th:inline=javaScript>
+		/*<![CDATA[*/
+		let barClicked = [[${barContect}]]
+		if (barClicked) {
+			 barLending(barClicked);
+		console.log("barClicked:", barClicked); // 디버깅용 로그					 
+		}
+		/*]]>*/
+		let manageClick;
+		
 			function openModal() {
 				fetch('addProjectModal.html')
 					.then(response => response.text())
@@ -199,7 +211,7 @@ body {
 
 
 			// 프로젝트 수정 모달
-			function openModal() {
+			/* function openModal() {
 				fetch('editProjectModal.html')
 					.then(response => response.text())
 					.then(html => {
@@ -214,11 +226,10 @@ body {
 				const modalContainer = document.getElementById('modal-container');
 				modalContainer.classList.add('hidden');
 				modalContainer.innerHTML = ''; // 모달 내용 초기화
-			}
+			} */
 
 
 			// 사이드바
-
 			document.addEventListener("DOMContentLoaded", function () {
 				fetch('/egowaeyo/bbsMaster/groupedBbsData')
 					.then(response => response.json())
@@ -231,19 +242,29 @@ body {
 
 							Object.entries(data).forEach(([codeNm, bbsList]) => {
 								const groupItem = document.createElement("li");
-								groupItem.textContent = codeNm;
+								groupItem.classList.add("li_name");
+								
+								if(codeNm == "📌 공지사항" && barClicked !=null){
+									document.querySelector('.custom-title').textContent = codeNm;
+								}
+								
+								// '공지사항'일 경우 codeNm 숨기기
+						          if (codeNm !== "📌 공지사항") {
+						            groupItem.textContent = codeNm;
+						            
+						            const ulImg = document.createElement("img");
+									ulImg.setAttribute("data-bs-toggle", "modal");
+									ulImg.setAttribute("data-bs-target", "#addProjectModal");
+									ulImg.setAttribute("class", "img-icon addUnderBoard");
+									ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+									ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+									groupItem.appendChild(ulImg);
+						          }
 
 								// 새로운 ul 태그 생성
 								const subList = document.createElement("ul");
 
-								// ul 태그에 img 추가
-								const ulImg = document.createElement("img");
-								ulImg.setAttribute("data-bs-toggle", "modal");
-								ulImg.setAttribute("data-bs-target", "#editProjectModal");
-								ulImg.setAttribute("class", "img-icon");
-								ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
-								ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
-								groupItem.appendChild(ulImg);
+							
 
 
 								bbsList.forEach(bbs => {
@@ -258,29 +279,39 @@ body {
 									// img 태그 생성
 									const img = document.createElement("img");
 									img.setAttribute("data-bs-toggle", "modal");
-									img.setAttribute("data-bs-target", "#editProjectModal");
+									img.setAttribute("data-bs-target", "#addProjectModal");
 									img.setAttribute("class", "img-icon");
 									img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
 									img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
 
 									// bbsNm 텍스트 추가
 									const textNode = document.createTextNode(bbs.bbsNm);
+									
+									// 공지사항의 bbsNm에 스타일 적용
+						            if (codeNm === "📌 공지사항") {
+						              listItem.style.cssText = "font-weight: bold !important; cursor: pointer; margin-left:-32px; margin-bottom: 10px;";
+						            }
 
 									// li에 텍스트와 img 추가
 									listItem.appendChild(textNode);
 									listItem.appendChild(img);
 
 									listItem.style.fontWeight = "normal"; // li 태그에 normal 스타일 적용
-									subList.appendChild(listItem);
+									subList.appendChild(listItem);									
 								});
 
 								groupItem.appendChild(subList);
 								parentProjectsList.appendChild(groupItem);
+								
+							
 							});
 						}
 					})
 					.catch(error => console.error('Error fetching grouped BBS data:', error));
-			});
+				
+			}
+			
+			);
 
 			// 게시판명 클릭 -> 헤더명 변경
 			document.addEventListener("DOMContentLoaded", function () {
@@ -338,7 +369,7 @@ body {
 						              <span class="post-count">${post.inqireCo}</span>
 						            </div>
 						            <div class="post-meta">
-						              <span class="post-writer">${post.frstRegisterNm}</span>
+						              <span class="post-writer">${post.ntcrNm}</span>
 						              <span class="post-dt">${post.frstRegisterPnttm.split(' ')[0]}</span>
 						              <span class="post-tm">${post.frstRegisterPnttm.split(' ')[1]}</span>
 						            </div>
@@ -364,7 +395,76 @@ body {
 						}
 						
 				});
-			});
+				
+				// 게시글 검색 필터 상위게시판
+				  fetch("/egowaeyo/article/bbsFilter")
+				  .then(response => response.json())
+			       .then(data => {
+			           console.log("Fetched Data:", data);
+			           const formSelect = document.getElementById("formSelect");
+			           formSelect.innerHTML = '<option value="">게시판을 선택하세요</option>';
+			           data.forEach(item => {
+			               const option = document.createElement("option");
+			               option.value = item.BBS_ID;
+			               option.textContent = item.BBS_NM;
+			               formSelect.appendChild(option);
+			           });
+			       })
+			       .catch(error => console.error("Error fetching BBS filter:", error));
+				
+				// 게시글 검색 필터 이벤트
+				  const filterButton = document.getElementById("filterButton");
+
+				    filterButton.addEventListener("click", function (e) {
+				        e.preventDefault();
+
+				        const bbsId = document.getElementById("formSelect").value;
+				        const searchType = document.getElementById("howSelect").value;
+				        const searchKeyword = document.getElementById("filterInput").value;
+
+				        if (!bbsId || !searchType || !searchKeyword) {
+				            alert("모든 필드를 입력해주세요.");
+				            return;
+				        }
+
+				        fetch(`/egowaeyo/article/filterArticles?bbsId=${bbsId}&searchType=${searchType}&searchKeyword=${searchKeyword}`)
+				            .then(response => response.json())
+				            .then(data => {
+				                const postListContainer = document.querySelector(".container-fluid.px-4");
+				                postListContainer.innerHTML = ""; // 기존 리스트 초기화
+
+				                data.forEach(post => {
+				                    const postItem = document.createElement("div");
+				                    postItem.className = "post-list-item";
+				                    
+				                    // 날짜 처리
+				                    const dateTime = post.FRST_REGIST_PNTTM;
+				                    const formattedDate = dateTime ? dateTime.split(' ')[0] : '날짜 없음';
+				                    const formattedTime = dateTime ? dateTime.split(' ')[1] : '시간 없음';
+
+				                    postItem.innerHTML = `
+				                        <div class="avatar"></div>
+				                        <div>
+				                            <div class="post-title">${post.NTT_SJ}<span style="font-size:14px; color:#4a90e2; margin-left:5px;">👁 ${post.RDCNT}</span></div>
+				                            <div class="post-meta">
+				                                <span>${post.NTCR_NM}</span>
+				                                <span>${formattedDate}</span>
+				                                <span>${formattedTime}</span>
+				                            </div>
+				                        </div>
+				                    `;
+				                    postListContainer.appendChild(postItem);
+				                });
+				            })
+				            .catch(error => {
+				                console.error("Error fetching filtered articles:", error);
+				                alert("검색 중 오류가 발생했습니다.");
+				            });
+				    });
+				    
+				});
+			
+			
 			
 			// 글쓰기버튼 클릭
 			document.addEventListener("DOMContentLoaded", function () {
@@ -374,7 +474,65 @@ body {
         			window.location.href = "articleRegister.do"; // 글쓰기 화면으로 이동
    	 			});
 			});
-			
+			function barLending(bbData){
+				fetch(`/egowaeyo/article/selectBbsAll?bbsId=`+bbData)
+				  .then(res => {
+				    if (!res.ok) throw new Error("게시글 요청 실패");
+				    return res.json();  // 서버에서 여러 게시글을 JSON 배열로 반환
+				  })
+				  .then(posts => {
+				    const postListContainer = document.querySelector(".container-fluid.px-4");
+				    postListContainer.innerHTML = ""; // 기존 게시글 초기화
+					
+				    console.log(posts)
+				    // posts가 배열인 경우
+				    if (Array.isArray(posts) && posts.length > 0) {
+				      posts.forEach(post => {
+				    	
+				        const postItem = document.createElement("div");
+				        postItem.className = "post-list-item";
+				        postItem.setAttribute("data-bbs-id", post.bbsId);
+				        postItem.setAttribute("data-ntt-id", post.nttId);
+				        
+				        postItem.innerHTML = `
+				          <div class="avatar"></div>
+				          <div>
+				            <div>
+				              <span class="post-title">${post.nttSj}</span> 
+				              <span class="post-icon">👁</span>
+				              <span class="post-count">${post.inqireCo}</span>
+				            </div>
+				            <div class="post-meta">
+				              <span class="post-writer">${post.ntcrNm}</span>
+				              <span class="post-dt">${post.frstRegisterPnttm.split(' ')[0]}</span>
+				              <span class="post-tm">${post.frstRegisterPnttm.split(' ')[1]}</span>
+				            </div>
+				          </div>
+				        `;
+				        
+				        // 클릭 이벤트 추가
+						postItem.addEventListener("click", function () {
+							const bbsId = this.getAttribute("data-bbs-id");
+							const nttId = this.getAttribute("data-ntt-id");
+							window.location.href = `/egowaeyo/article/articleDetail.do?bbsId=${bbsId}&nttId=${nttId}`;
+					});
+				        postListContainer.appendChild(postItem);
+				      });
+				    } else {
+				      postListContainer.innerHTML = "<p>게시글이 없습니다.</p>";
+				    }
+				  })
+				  .catch(err => {
+				    console.error("게시글 불러오기 실패:", err);
+				    postListContainer.innerHTML = "<p>게시글을 불러오지 못했습니다.</p>";
+				  });
+				}
+			$(".addBoard").click(function(){
+				manageClick = "addBoard"
+			})
+			$(".addUnderBoard").click(function(){
+				manageClick = "addUnderBoard"
+			})
 			
 		</script>
 	</div>

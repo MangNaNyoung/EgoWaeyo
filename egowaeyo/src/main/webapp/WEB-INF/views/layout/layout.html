@@ -25,7 +25,6 @@
 <link rel="stylesheet" th:href="@{/assets/vendors/perfect-scrollbar/perfect-scrollbar.css}">
 <link rel="stylesheet" th:href="@{/assets/vendors/bootstrap-icons/bootstrap-icons.css}">
 <link rel="stylesheet" th:href="@{/assets/css/app.css}">
-<link rel="stylesheet" th:href="@{/assets/css/mail/mail-NoneRead.css}"> <!-- 메일 > 읽지 않은 메일 CSS -->
 <link rel="stylesheet" th:href="@{/assets/css/mail/mail-Writing.css}"> <!-- 메일 > 메일쓰기 CSS -->
 <link rel="shortcut icon" th:href="@{/images/egovframework/com/ego/minifavicon.png}" type="image/x-icon">
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
@@ -37,6 +36,8 @@
 <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/smoothness/jquery-ui.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=42dot+Sans:wght@300..800&display=swap">
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
+<script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 
 <style>
 body, html {
@@ -174,12 +175,13 @@ a {
 					}
 					
 					
-				} else if(target !='article-panel'&& target!='calendar-panel') {
+				} else if(target !='article-panel'&& target!='calendar-panel'&&target!='approval-panel') {
 					//$('#slide-panels').fadeIn('fast');
 					//$('#main').css('margin-left','330px')
 					//$('#slide-panels > div').hide();
 					//$('#' + target).show();
 					currentTarget = target;
+					
 					location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"Basic.do"
 				}
 				// 드롭다운 토글 처리
@@ -204,6 +206,9 @@ a {
 			
 		});
 	</script>
+	
+	
+	
 	<script th:inline="javascript">
 	// 화면 호출시 로그인 한 사용자의 정보와 최근 서버시간, 세션만료 시간을 가져 온다.
 function getCookie(cname) {
@@ -243,6 +248,9 @@ function init() {
 	 //console.log(activedBtn)
 			 //console.log(outPanList)
 	 //if(activedBtn != null){
+		 
+		
+		
 		if(true){ 
 	 $('.nav-link.p-3.main-menu').each(function(index, item){
 		 let target = $(this).data('target')
@@ -271,15 +279,16 @@ function init() {
 			 function(result){
 				 if(result.loginVO != null){
 				   
-					
+					console.log(result.loginVO)
+					console.log(result.vo)
+					$(".empl").text(result.vo.name+" ("+result.vo.id+")")
+					$(".level").text(result.vo.orgnztNm)
+					$(".email").attr('data-email',result.vo.email)
 					 latestTime = result.egovLatestServerTime ; //getCookie("egovLatestServerTime")
 					 expireTime = result.egovExpireSessionTime	 ; //getCookie("egovExpireSessionTime");
-					objLeftTime = document.getElementById("leftTimeInfo");
+					 objLeftTime = document.getElementById("leftTimeInfo");
 				
-					if (objLeftTime == null) {
-					/* 	console.log("'leftTimeInfo' ID is not exist!"); */
-						return;
-					}
+					
 					objClickInfo = document.getElementById("clickInfo");
 					//console.log(objLeftTime.textContent);
 				
@@ -287,13 +296,20 @@ function init() {
 					console.log("latestServerTime = "+latestTime);
 					console.log("expireSessionTime = "+expireTime);
 					
+				
 					elapsedTime = 0;
 					firstLocalTime = (new Date()).getTime();
 					showRemaining();
 					
 					timer = setInterval(showRemaining, timeInterval); // 1초 간격 호출
 				 }
+				 console.log(objLeftTime)
+				 if (objLeftTime == undefined) {
+					 $(location).attr('href',logoutUrl);
+							return;
+						}
 			 });
+	
 	
 }
 

@@ -3,6 +3,10 @@ package egovframework.com.egowaeyo.article.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -40,16 +44,18 @@ public class ArticleController {
 	// 게시글 목록화면으로 이동
 	@GetMapping("/articleList.do")
 	public String listPage(Model model, BoardVO vo) {
-		// selectBbsAll 호출
-		List<BoardVO> list = articleservice.selectBbsAll(vo);
-		// 조회 결과 처리
-		if (list == null || list.isEmpty()) {
-			log.error("No data found for bbsId: {}", vo.getBbsId());
-			model.addAttribute("list", List.of()); // 빈 리스트 전달
-		} else {
-			model.addAttribute("list", list); // 조회된 리스트 전달
-		}
-
+//		// selectBbsAll 호출
+//		List<BoardVO> list = articleservice.selectBbsAll(vo);
+//		// 조회 결과 처리
+//		if (list == null || list.isEmpty()) {
+//			log.error("No data found for bbsId: {}", vo.getBbsId());
+//			model.addAttribute("list", List.of()); // 빈 리스트 전달
+//		} else {
+//			model.addAttribute("list", list); // 조회된 리스트 전달
+//		}
+		String bbsId = "BBSMSTR_000000000021kioSbKFeeb";
+		vo.setBbsId(bbsId);
+		model.addAttribute("barContect", bbsId);
 		return "article/ArticleList.html";
 	}
 
@@ -69,6 +75,38 @@ public class ArticleController {
 	@GetMapping("/articleRegister.do")
 	public String home(Locale locale, Model model) {
 		return "/article/ArticleRegist.html";
+	}
+
+	// 게시글 조회 필터
+	@GetMapping("/bbsFilter")
+	@ResponseBody
+	public List<Map<String, String>> getBbsFilter() {
+		List<Map<String, String>> bbsFilterList = articleservice.getBbsFilter();
+		log.debug("BBS Filter List: {}", bbsFilterList);
+		return bbsFilterList;
+	}
+	
+	// 필터를 통한 게시글 목록 조회
+	@GetMapping("/filterArticles")
+	@ResponseBody
+	public List<Map<String, Object>> filterArticles(
+	        @RequestParam("bbsId") String bbsId,
+	        @RequestParam("searchType") String searchType,
+	        @RequestParam("searchKeyword") String searchKeyword) {
+	    try {
+	        searchKeyword = URLDecoder.decode(searchKeyword, StandardCharsets.UTF_8.name());
+	        log.debug("Decoded searchKeyword: {}", searchKeyword);
+
+	        Map<String, Object> params = new HashMap<>();
+	        params.put("bbsId", bbsId);
+	        params.put("searchType", searchType);
+	        params.put("searchKeyword", searchKeyword);
+
+	        return articleservice.filterArticles(params);
+	    } catch (Exception e) {
+	        log.error("Error filtering articles:", e);
+	        return Collections.emptyList();
+	    }
 	}
 
 	// 게시글 등록
@@ -111,7 +149,7 @@ public class ArticleController {
 			return "게시글 등록 중 오류가 발생했습니다.";
 		}
 	}
-
+	
 	// 게시글 상세조회 화면으로 이동
 	@GetMapping("/articleDetail.do")
 	public String articleDetail(@RequestParam("bbsId") String bbsId, @RequestParam("nttId") String nttId, Model model) {
@@ -132,6 +170,10 @@ public class ArticleController {
 		BoardVO vo = new BoardVO();
 		vo.setBbsId(bbsId);
 		vo.setNttId(Long.parseLong(nttId));
+		
+		// 조회수 증가 처리
+	    articleservice.updateArticleRdcnt(vo);
+	    
 		return articleservice.selectArticleDetail(vo);
 	}
 
@@ -207,21 +249,21 @@ public class ArticleController {
 		}
 		return vo;
 	}
-	
+
 	// 게시글 삭제 API
 	@DeleteMapping("/deleteArticle.do")
 	@ResponseBody
 	public ResponseEntity<?> deleteArticle(@RequestParam String bbsId, @RequestParam long nttId) {
-	    BoardVO boardVO = new BoardVO();
-	    boardVO.setBbsId(bbsId);
-	    boardVO.setNttId(nttId);
+		BoardVO boardVO = new BoardVO();
+		boardVO.setBbsId(bbsId);
+		boardVO.setNttId(nttId);
 
-	    int result = articleservice.deleteArticle(boardVO);
-	    if (result > 0) {
-	        return ResponseEntity.ok(Map.of("success", true));
-	    } else {
-	        return ResponseEntity.status(500).body(Map.of("success", false, "message", "게시글 삭제에 실패했습니다."));
-	    }
+		int result = articleservice.deleteArticle(boardVO);
+		if (result > 0) {
+			return ResponseEntity.ok(Map.of("success", true));
+		} else {
+			return ResponseEntity.status(500).body(Map.of("success", false, "message", "게시글 삭제에 실패했습니다."));
+		}
 	}
 
 }

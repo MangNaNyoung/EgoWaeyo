@@ -10,7 +10,7 @@
         <Logger name="java.sql" level="DEBUG" additivity="false">
             <AppenderRef ref="console" />
         </Logger>
-        <Logger name="egovframework" level="DEBUG" additivity="false">
+        <Logger name="egovframework" level="info" additivity="false">
             <AppenderRef ref="console" />
         </Logger>
         <Logger name="org.egovframe" level="DEBUG" additivity="false">
