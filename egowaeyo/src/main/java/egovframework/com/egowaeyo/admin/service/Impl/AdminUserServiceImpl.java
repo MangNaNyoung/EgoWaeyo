@@ -11,6 +11,7 @@ import egovframework.com.egowaeyo.admin.mapper.AdminUserMapper;
 import egovframework.com.egowaeyo.admin.service.AdminUserService;
 import egovframework.com.egowaeyo.admin.service.AdminUserVO;
 import egovframework.com.egowaeyo.admin.service.DeptVO;
+import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.admin.service.PosVO;
 import egovframework.com.sec.drm.service.DeptAuthor;
 import egovframework.com.sec.drm.service.impl.DeptAuthorDAO;
@@ -55,8 +56,8 @@ public class AdminUserServiceImpl implements AdminUserService {
 				adu.getEmplyrId()  // ESNTL_ID를 암호화 키로 사용
 			);
 			adu.setPassword(encryptedPassword);
-			
-			// 4. 두 테이블에 각각 저장
+		
+			// 4. 사용자 등록 추가
 			int result = adminusermapper.AdminUserIns(adu);
 			
 			// 5. 권한 부여
@@ -71,5 +72,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 			e.printStackTrace();
 			throw new RuntimeException("사용자 등록 중 오류가 발생했습니다: " + e.getMessage());
 		}
+	}
+
+	@Override
+	public List<EgovDeptVO> getEgovDept(EgovDeptVO edpt) {
+		return adminusermapper.getEgovDept(edpt);
 	}
 }

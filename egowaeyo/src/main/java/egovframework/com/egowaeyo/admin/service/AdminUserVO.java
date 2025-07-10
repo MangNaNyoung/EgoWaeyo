@@ -33,7 +33,12 @@ public class AdminUserVO {
 	private String departmentsId; // 부서코드
 	private String positionId; // 직급코드
 	private String phoneNumber; // 연락처
-	private String email; // 이메일
+	private String emailAdres; // 이메일
+	private String groupId; // 그룹ID serviceImpl에서 강제로 주입합니다. 몇가지 공통 컬럼 강제로 주입
+	private String fxnum; // 팩스번호
+	private String ofcpsNm; // 직위명, 직급명
+	private String orgnztId;
+	private String orgnztNm;
 	
 	// 파일 업로드용 (실제 파일)
 	private MultipartFile empPhotoFile;

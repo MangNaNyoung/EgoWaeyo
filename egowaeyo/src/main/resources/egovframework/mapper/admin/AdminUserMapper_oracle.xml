@@ -13,6 +13,12 @@
 		FROM position
 	</select>
 	
+	<!-- egov orgnzt 정보 (부서) -->
+	<select id="getEgovDept" resultType="EgovDeptVO">
+    	SELECT orgnzt_id, orgnzt_nm, orgnzt_dc
+    	FROM comtnorgnztinfo
+	</select>
+	
 	<!-- insert Admin ->> 사용자 정보 -->
 	<insert id="AdminUserIns">
 		INSERT INTO comtnemplyrinfo
@@ -25,11 +31,16 @@
 		             BRTHDY,
 		             HOUSE_ADRES,
 		             PHONE_NUMBER,
-		             EMAIL,
+		             EMAIL_ADRES,
 		             SEXDSTN_CODE,
 		             DEPARTMENTS_ID,
 		             POSITION_ID,
-		             EMPLYR_STTUS_CODE)
+		             ORGNZT_ID,
+		             OFCPS_NM,
+		             EMPLYR_STTUS_CODE,
+		             FXNUM,
+		             GROUP_ID,
+		             PASSWORD_HINT)
 		       
 		       VALUES(
 		             #{esntlId},
@@ -41,11 +52,19 @@
 		       		 #{brthdy},
 		       		 #{houseAdres},
 		       		 #{phoneNumber},
-		       		 #{email},
+		       		 #{emailAdres},
 		       		 #{sexdstnCode},
 		       		 #{departmentsId},
 		       		 #{positionId},
-		       		 'P'		 
+		       		 #{orgnztId},
+		       		 (SELECT
+		       		  position_name
+		       		  FROM position
+		       		  WHERE position_id = #{positionId}),
+		       		 'P',
+		       		 '1566-2059',
+		       		 'GROUP_00000000000000',
+		       		 'P01'
 		       )
 	</insert>
 </mapper>
