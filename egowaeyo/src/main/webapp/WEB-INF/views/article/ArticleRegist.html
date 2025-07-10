@@ -73,8 +73,7 @@ body {
 			<!-- 상단 헤더 -->
 			<!-- content -->
 
-			<form class="bg-white p-5 rounded" enctype="multipart/form-data"
-				method="post" action="articleRegister">
+			<form action="/article/articleRegister.do" method="post" enctype="multipart/form-data" class="bg-white p-5 rounded" >
 				<div class="mb-3 row">
 					<div class="mb-3 row">
 						<label for="boardSelect"
@@ -102,8 +101,7 @@ body {
 					<div class="mb-3 row">
 						<label for="fileUpload" class="col-sm-1 col-form-label text-start">첨부파일</label>
 						<div class="col-sm-11">
-							<input type="file" id="fileInput" class="form-control"
-								name="files" multiple>
+							<input type="file" name="bbsFileName" id="fileInput" class="form-control" multiple />
 						</div>
 					</div>
 					<div class="mb-3">
@@ -113,7 +111,7 @@ body {
 					</div>
 
 					<div class="text-center">
-						<button id="submitButton" type="button" class="btn btn-dark me-2">등록</button>
+						<button id="submitButton" type="submit" class="btn btn-dark me-2">등록</button>
 						<button id="cancelButton" type="button" class="btn btn-secondary">취소</button>
 					</div>
 				</div>
@@ -308,11 +306,11 @@ document.addEventListener("DOMContentLoaded", function () {
 	    cancelButton.disabled = false;
 	    
 	    submitButton.addEventListener("click", function () {
-	       
+	    	event.preventDefault(); // 기본 form 제출 막기
+	    	
 	        const bbsId = boardSelect.value;
 	        const nttSj = titleInput.value;
 	        const nttCn = contentTextarea.value;
-	        const bbsFileName = fileInput.files[0];
 	        
 	        if (!bbsId || !nttSj || !nttCn) {
 	        	alert("필수 입력값이 누락되었습니다.");
@@ -323,10 +321,9 @@ document.addEventListener("DOMContentLoaded", function () {
 	        formData.append("bbsId", bbsId);
 	        formData.append("nttSj", nttSj);
 	        formData.append("nttCn", nttCn);
-	        formData.append("file", fileInput.files[0]);  // 파일 추가
 	        
 	        if (fileInput.files.length > 0) {
-	            formData.append("files", fileInput.files[0]);
+	            formData.append("bbsFileName", fileInput.files[0]);
 	        }
 
 	        fetch("articleRegister.do", {

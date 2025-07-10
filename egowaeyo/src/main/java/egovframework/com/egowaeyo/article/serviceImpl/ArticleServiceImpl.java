@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import egovframework.com.cop.bbs.service.Board;
 import egovframework.com.egowaeyo.article.VO.BoardVO;
 import egovframework.com.egowaeyo.article.mapper.ArticleMapper;
 import egovframework.com.egowaeyo.article.service.ArticleService;
@@ -38,19 +37,14 @@ public class ArticleServiceImpl implements ArticleService {
 	}
 
 	@Override
-	public int updateArticle(Board vo) {
-		log.debug("Updating article with BoardVO: {}", vo);
-
-		if (vo.getBbsId() == null || vo.getNttId() == 0) { // NTT_ID는 0과 비교
-			throw new IllegalArgumentException("BBS_ID와 NTT_ID는 필수입니다.");
-		}
-
-		int result = articleMapper.updateArticle(vo); // 반환 타입이 int로 수정됨
-		if (result == 0) {
-			log.warn("게시글 업데이트 실패: BBS_ID={}, NTT_ID={}", vo.getBbsId(), vo.getNttId());
-			throw new RuntimeException("게시글 업데이트에 실패했습니다.");
-		}
-		return result; // 성공적으로 업데이트된 경우 반환
+	public int updateArticle(BoardVO vo) {
+		try {
+	        // 데이터베이스 업데이트 로직 추가
+	        return articleMapper.updateArticle(vo);
+	    } catch (Exception e) {
+	        log.error("게시글 업데이트 중 오류 발생: {}", e.getMessage(), e);
+	        throw new RuntimeException("게시글 업데이트에 실패했습니다.", e);
+	    }
 	}
 
 	@Override

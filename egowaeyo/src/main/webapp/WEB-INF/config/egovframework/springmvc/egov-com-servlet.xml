@@ -31,24 +31,7 @@
 		</property>
 	</bean>
 
-	<bean
-		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-		<property name="webBindingInitializer">
-			<bean class="egovframework.com.cmm.web.EgovBindingInitializer" />
-		</property>
-		<property name="messageConverters">
-			<list>
-				<bean
-					class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
-			</list>
-		</property>
-		<property name="customArgumentResolvers">
-			<list>
-				<bean
-					class="egovframework.com.cmm.resolver.EgovSecurityArgumentResolver" />
-			</list>
-		</property>
-	</bean>
+	
 
 	<!-- setting Locale Locale Interceptor 설정하기 -->
 	<bean id="localeChangeInterceptor"
@@ -138,7 +121,13 @@
 	<bean id="validator"
       class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
 
-<mvc:annotation-driven validator="validator"/>
+<mvc:annotation-driven>
+  <mvc:message-converters register-defaults="true">
+    <bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+    <bean class="org.springframework.http.converter.ResourceHttpMessageConverter" />
+    <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+  </mvc:message-converters>
+</mvc:annotation-driven>
 
 	<!-- Facebook 설정 -->
 	<mvc:default-servlet-handler/>
