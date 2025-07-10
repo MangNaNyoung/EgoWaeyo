@@ -78,7 +78,7 @@
               <span>연락처</span> <input type="tel" name="phoneNumber" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>이메일</span> <input type="email" name="email" class="!border !border-gray-400 !rounded-sm">
+              <span>이메일</span> <input type="email" name="emailAdres" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
               <span class="user-sexdstnCode me-5">성별</span>
@@ -96,6 +96,8 @@
                 <button id="btnIns" type="button" class="!border !rounded-sm !cursor-pointer">+</button>
                 <input type="text" name="departmentsId" class="!border !border-gray-400 !rounded-sm !text-gray-500" placeholder="소속을 선택해주세요."
                   id="selectedDepartment" readonly>
+                  <input type="text" name="orgnztId" class="!border !border-gray-400 !rounded-sm !text-gray-500"
+                  id="selectedDepartmentId" style="display: none;" readonly>
               </div>
               <div class="user-info-detail">
                 <span>직급</span>
@@ -185,6 +187,7 @@
     const searchInput = document.getElementById("search-input"); // 검색 입력창
     const departmentList = document.getElementById("department-list"); // 소속 목록
     const selectedDepartment = document.getElementById("selectedDepartment"); // 선택된 소속 표시창
+    const selectedDepartmentId = document.getElementById("selectedDepartmentId"); // 선택된 소속 표시창
     const alertModal = document.querySelector(".alert-modal");
     const btnOK = document.querySelector(".btnOK");
     const btnCan1 = document.getElementById("btnCan1");
@@ -218,17 +221,37 @@
     btnCan.addEventListener("click", closeModal);
 
     btnIns.addEventListener("click", () => {
-      modal.classList.remove("hidden");
-      $.ajax("deptlist")
-        .then((datas) => {
-          datas.forEach(e => {
-            $('#department-list').append(
-              `<li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="${e.departmentsId}">${e.departmentsName}</li>`
-            )
-          })
-        })
-
-    })
+        modal.classList.remove("hidden");
+        
+        // 기존 목록 초기화
+        $('#department-list').empty();
+        
+        // AJAX 호출 (올바른 형태)
+        $.ajax({
+            url: "egovdeptlist",
+            type: "GET",
+            dataType: "json",
+            success: function(datas) {
+                console.log("받은 데이터:", datas); // 디버깅용
+                
+                if (datas && datas.length > 0) {
+                    datas.forEach(e => {
+                        $('#department-list').append(
+                            `<li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="${e.orgnztId}">${e.orgnztNm}</li>`
+                        );
+                    });
+                } else {
+                    $('#department-list').append('<li class="!p-2">조직 정보가 없습니다.</li>');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX 오류:", error);
+                console.error("상태 코드:", xhr.status);
+                console.error("응답 텍스트:", xhr.responseText);
+                $('#department-list').append('<li class="!p-2 !text-red-500">조직 목록을 불러올 수 없습니다.</li>');
+            }
+        });
+    });
 
     // 모달에서 부서를 클릭했을 때
     departmentList.addEventListener("click", (e) => {
@@ -250,7 +273,8 @@
       if (prevSelected) {
         selectedDepartment.value = prevSelected.innerHTML;
         selectedDepartment.name = "departmentsId";
-        selectedDepartment.setAttribute("data-dept", prevSelected.getAttribute("data-dept"));
+        console.log(prevSelected.getAttribute("data-dept"))
+        selectedDepartmentId.value =  prevSelected.getAttribute("data-dept");
         closeModal();
       } else {
         //alert("소속을 선택해주세요.");

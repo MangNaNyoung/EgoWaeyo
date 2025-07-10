@@ -17,6 +17,7 @@ import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.egowaeyo.admin.service.AdminUserService;
 import egovframework.com.egowaeyo.admin.service.AdminUserVO;
 import egovframework.com.egowaeyo.admin.service.DeptVO;
+import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.admin.service.PosVO;
 
 
@@ -67,9 +68,10 @@ public class AdminUserController {
 					signPhoto.transferTo(file);
 					adu.setSignPhoto(signPhoto.getOriginalFilename());
 				}
-				
+				System.out.println(adu.getOrgnztId());
 				// 사용자 등록
 				int result = adminuserservice.AdminUserIns(adu);
+				//int result = 0;
 				System.out.println("등록 결과: " + result);
 				
 				if (result > 0) {
@@ -95,6 +97,12 @@ public class AdminUserController {
 			return "egoAdmin/adminUserInsert.html";
 		}
 	
+	// egov 부서 목록 (모달)
+	@GetMapping("/egovdeptlist")
+	@ResponseBody
+	public List<EgovDeptVO> getEdeptList(){
+		return adminuserservice.getEgovDept(null);
+	}
 	
     // 부서 목록 조회용 (모달)
 	@GetMapping("/deptlist")
