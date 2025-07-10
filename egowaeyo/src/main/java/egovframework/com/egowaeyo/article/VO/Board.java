@@ -20,7 +20,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  */
 @SuppressWarnings("serial")
 public class Board implements Serializable {
-
+	private String bbsFileOriName = "";
+	/**
+	 * 게시물 첨부파일 이름
+	 */
+	private String bbsFileName = "";
 	/**
 	 * 게시물 첨부파일 아이디
 	 */
@@ -663,5 +667,21 @@ public class Board implements Serializable {
 	 */
 	public String toString() {
 		return ToStringBuilder.reflectionToString(this);
+	}
+
+	public String getBbsFileName() {
+		return bbsFileName;
+	}
+
+	public void setBbsFileName(String bbsFileName) {
+		this.bbsFileName = bbsFileName;
+	}
+
+	public String getBbsFileOriName() {
+		return bbsFileOriName;
+	}
+
+	public void setBbsFileOriName(String bbsFileOriName) {
+		this.bbsFileOriName = bbsFileOriName;
 	}
 }

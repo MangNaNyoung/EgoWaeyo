@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-import egovframework.com.cop.bbs.service.Board;
-
 
 @SuppressWarnings("serial")
 public class BoardVO extends Board implements Serializable {
