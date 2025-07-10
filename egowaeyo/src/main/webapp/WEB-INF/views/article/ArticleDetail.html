@@ -33,6 +33,11 @@ body {
 	flex-shrink: 0;
 }
 
+li.li_name {
+  margin-bottom: 15px;
+}
+
+
 @media ( max-width : 900px) {
 	.container {
 		padding-left: 8px;
@@ -94,7 +99,7 @@ body {
 				<div class="d-flex justify-content-end mb-3">
 					<button id="editButton" class="btn btn-dark btn-sm me-2">수정</button>
 					<button id="deleteButton" class="btn btn-dark btn-sm me-2">삭제</button>
-					<button class="btn btn-dark btn-sm">목록</button>
+					<button id="listButton" class="btn btn-dark btn-sm">목록</button>
 				</div>
 
 				<!-- 제목 및 작성자 정보 -->
@@ -107,9 +112,9 @@ body {
 								style="font-size: 15px; color: #444;"></p>
 							<div class="d-flex align-items-center"
 								style="font-size: 14px; color: #888;">
-								<span id="article-date"></span> <span
-									id="article-time" class="ms-2"></span> <span class="ms-3"
-									id="article-view"></span>
+								<span id="article-date"></span> 
+								<span id="article-time" class="ms-2"></span> 
+								<span class="ms-3" id="article-view"></span>
 							</div>
 						</div>
 					</div>
@@ -144,16 +149,31 @@ body {
 					</label>
 					<div class="d-flex align-items-start ms-3 me-3 mt-4">
 						<div class="avatar me-3"></div>
-						<textarea class="form-control comment-input me-3" rows="3"></textarea>
-						<button class="btn btn-dark" style="width:60px; height:40px;">등록</button></div>
+						<div>
+							<p class="mb-1" id="comment-author"	style="font-size: 15px; color: #444;">이민영</p>
+							<div class="d-flex align-items-center"	style="font-size: 14px; color: #888; margin-top: -5px;">
+								<span id="comment-date">2025-07-10</span> 
+								<span id="comment-time" class="ms-2">14:49</span> 
+							</div>
+						</div>
 					</div>
+						<div class="d-flex align-items-start ms-3 me-3 mt-2 mb-4">
+						<textarea class="form-control comment-input me-2" id="comment-content" rows="3"></textarea>
+						<button class="btn btn-dark" id="commentSubmitButton" style="width:60px; height:40px;">등록</button></div>
 				</div>
 			</div>
 		</div>
 		<div th:replace="article/addProjectModal :: addProjectModal"></div>
 		<div th:replace="article/editProjectModal :: editProjectModal"></div>
 
-		<script>
+		<script th:inline=javaScript>
+		let barClicked = [[${barContect}]]
+		if (barClicked) {
+			 barLending(barClicked);
+		console.log("barClicked:", barClicked); // 디버깅용 로그					 
+		}
+		let manageClick;
+		//모달 열기
 		function openModal() {
 			fetch('addProjectModal.html')
 				.then(response => response.text())
@@ -164,7 +184,7 @@ body {
 				})
 				.catch(error => console.error('Error loading modal:', error));
 		}
-
+	    // 모달 닫기 함수
 		function closeModal() {
 			const modalContainer = document.getElementById('modal-container');
 			modalContainer.classList.add('hidden');
@@ -192,106 +212,96 @@ body {
 
 
 		// 사이드바
-
 		document.addEventListener("DOMContentLoaded", function () {
-			fetch('/egowaeyo/bbsMaster/groupedBbsData')
-				.then(response => response.json())
-				.then(data => {
-					console.log("Fetched Data:", data); // 디버깅 로그 추가
+    fetch('/egowaeyo/bbsMaster/groupedBbsData')
+        .then(response => response.json())
+        .then(data => {
+            console.log("Fetched Data:", data); // 디버깅 로그 추가
 
-					const parentProjectsList = document.querySelector("ul.parentsProjects");
-					if (parentProjectsList) {
-						parentProjectsList.innerHTML = ""; // 기존 내용 초기화
+            const parentProjectsList = document.querySelector("ul.parentsProjects");
+            if (parentProjectsList) {
+                parentProjectsList.innerHTML = ""; // 기존 내용 초기화
 
-						Object.entries(data).forEach(([codeNm, bbsList]) => {
-							const groupItem = document.createElement("li");
-							groupItem.textContent = codeNm;
+                Object.entries(data).forEach(([codeNm, bbsList]) => {
+                    const groupItem = document.createElement("li");
+                    groupItem.classList.add("li_name");
 
-							// 새로운 ul 태그 생성
-							const subList = document.createElement("ul");
+                    // '공지사항'일 경우 codeNm 숨기기
+                    if (codeNm !== "📌 공지사항") {
+                        groupItem.textContent = codeNm;
 
-							// ul 태그에 img 추가
-							const ulImg = document.createElement("img");
-							ulImg.setAttribute("data-bs-toggle", "modal");
-							ulImg.setAttribute("data-bs-target", "#editProjectModal");
-							ulImg.setAttribute("class", "img-icon");
-							ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
-							ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
-							groupItem.appendChild(ulImg);
+                        const ulImg = document.createElement("img");
+                        ulImg.setAttribute("data-bs-toggle", "modal");
+                        ulImg.setAttribute("data-bs-target", "#addProjectModal");
+                        ulImg.setAttribute("class", "img-icon addUnderBoard");
+                        ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+                        ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+                        groupItem.appendChild(ulImg);
+                    }
 
+                    // 새로운 ul 태그 생성
+                    const subList = document.createElement("ul");
 
-							bbsList.forEach(bbs => {
-								// li 태그 생성
-								const listItem = document.createElement("li");
-								// li 태그에 no_dot 클래스 추가
-								listItem.classList.add("no_dot");
-								listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
-								listItem.setAttribute("data-bbs-id", bbs.bbsId); // bbsNm을 data 속성으로 추가
-								listItem.setAttribute("data-code", bbs.code); // bbsNm을 data 속성으로 추가
+                    bbsList.forEach(bbs => {
+                        const listItem = document.createElement("li");
+                        listItem.classList.add("no_dot");
+                        listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
+                        listItem.setAttribute("data-bbs-id", bbs.bbsId); // bbsNm을 data 속성으로 추가
+                        listItem.setAttribute("data-code", bbs.code); // bbsNm을 data 속성으로 추가
 
-								// img 태그 생성
-								const img = document.createElement("img");
-								img.setAttribute("data-bs-toggle", "modal");
-								img.setAttribute("data-bs-target", "#editProjectModal");
-								img.setAttribute("class", "img-icon");
-								img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
-								img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+                        const img = document.createElement("img");
+                        img.setAttribute("data-bs-toggle", "modal");
+                        img.setAttribute("data-bs-target", "#addProjectModal");
+                        img.setAttribute("class", "img-icon");
+                        img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+                        img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
 
-								// bbsNm 텍스트 추가
-								const textNode = document.createTextNode(bbs.bbsNm);
+                        const textNode = document.createTextNode(bbs.bbsNm);
 
-								// li에 텍스트와 img 추가
-								listItem.appendChild(textNode);
-								listItem.appendChild(img);
+                        // 공지사항의 bbsNm에 스타일 적용
+                        if (codeNm === "📌 공지사항") {
+                            listItem.style.cssText = "font-weight: bold !important; cursor: pointer; margin-left:-32px; margin-bottom: 10px;";
+                        }
 
-								listItem.style.fontWeight = "normal"; // li 태그에 normal 스타일 적용
-								subList.appendChild(listItem);
-							});
+                        listItem.appendChild(textNode);
+                        listItem.appendChild(img);
 
-							groupItem.appendChild(subList);
-							parentProjectsList.appendChild(groupItem);
-						});
-					}
-				})
-				.catch(error => console.error('Error fetching grouped BBS data:', error));
-		});
+                        listItem.style.fontWeight = "normal"; // li 태그에 normal 스타일 적용
+                        subList.appendChild(listItem);
+                    });
 
-		// 게시판명 클릭 -> 헤더명 변경
-		document.addEventListener("DOMContentLoaded", function () {
-			const parentProjectsList = document.querySelector("ul.parentsProjects");
-			const customTitle = document.querySelector(".custom-title");
-			const postListContainer = document.querySelector(".container-fluid.px-4");
+                    groupItem.appendChild(subList);
+                    parentProjectsList.appendChild(groupItem);
+                });
+            }
+        })
+        .catch(error => console.error('Error fetching grouped BBS data:', error));
+});
 
-			// 게시판 이름(li)을 클릭했을 때
-			parentProjectsList.addEventListener("click", function (e) {
-				const clicked = e.target;
+document.addEventListener("DOMContentLoaded", function () {
+    const parentProjectsList = document.querySelector("ul.parentsProjects");
 
-				// 게시판 이름(li)의 텍스트 노드를 클릭했을 때만 처리
-				if (clicked.tagName === "LI" && clicked.textContent.trim() !== "") {
-					const bbsNm = clicked.childNodes[0].nodeValue.trim(); // 게시판 이름
-					const bbsId = clicked.getAttribute("data-bbs-id"); // 게시판 ID (li에 data 속성으로 넣어야 함)
-					console.log("bbsId:", bbsId); // 디버깅 로그 추가
+    parentProjectsList.addEventListener("click", function (e) {
+        const clicked = e.target;
 
-					if (!bbsId) {
-				        console.warn("bbsId가 없습니다.");
-				        return;
-				      }
-
-					// 제목 변경
-					if (customTitle) {
-						customTitle.textContent = bbsNm;
-						// 게시글 리스트 페이지로 이동
-						const targetUrl = `/egowaeyo/article/articleList.do?bbsId=${bbsId}`;
-					      console.log("Target URL:", targetUrl); // URL 디버깅 로그 추가
-					      window.location.href = targetUrl;
-					}
-				}
-				
-			});
-		});
+        if (clicked.tagName === "LI" && clicked.textContent.trim() !== "") {
+            const bbsId = clicked.getAttribute("data-bbs-id"); // 게시판 ID
+			const bbsNm = clicked.textContent.trim(); // 게시판 이름
 			
-		
+            if (!bbsId) {
+                console.warn("bbsId가 없습니다.");
+                return;
+            }
 
+            // 선택한 게시판 ID를 localStorage에 저장
+            localStorage.setItem("selectedBbsId", bbsId);
+
+            // articleList 페이지로 이동
+            window.location.href = "/egowaeyo/article/articleList.do"+ `?bbsId=${encodeURIComponent(bbsId)}&bbsNm=${encodeURIComponent(bbsNm)}`;
+        }
+    });
+});
+			
 			// 게시글 데이터를 렌더링하는 함수
 			function renderArticleDetail(article) {
 			    document.querySelector("#article-title").textContent = article.nttSj;
@@ -341,11 +351,13 @@ body {
 				      .catch(error => console.error("Error fetching article detail:", error));
 				    });
 			
-			// 수정 버튼 클릭 이벤트
+			// 버튼 클릭 이벤트
 			 document.addEventListener("DOMContentLoaded", function () {
 				    const editButton = document.getElementById("editButton");
 				    const deleteButton = document.getElementById("deleteButton");
+				    const listButton = document.getElementById("listButton");
 
+					// 수정 버튼 클릭 이벤트
 				    editButton.addEventListener("click", function () {
 				        const urlParams = new URLSearchParams(window.location.search);
 				        const bbsId = urlParams.get("bbsId");
@@ -361,6 +373,7 @@ body {
 				        window.location.href = targetUrl;
 				    });
 				    
+				    // 삭제 버튼 클릭 이벤트
 				    deleteButton.addEventListener("click", function () {
 				        const urlParams = new URLSearchParams(window.location.search);
 				        const bbsId = urlParams.get("bbsId");
@@ -397,6 +410,23 @@ body {
 				            alert("오류가 발생했습니다. 다시 시도해주세요.");
 				        });
 					});
+				    // 목록 버튼 클릭 이벤트
+				    listButton.addEventListener("click", function () {
+				        // URL에서 bbsId 파라미터 가져오기
+				        const urlParams = new URLSearchParams(window.location.search);
+				        const bbsId = urlParams.get("bbsId");
+				        const bbsNm = $('.custom-title').text().trim(); // 게시판 이름 가져오기'
+
+				        if (!bbsId) {
+				            alert("상위 게시판 정보를 찾을 수 없습니다.");
+				            return;
+				        }
+
+				        // 상위 게시판 리스트 페이지로 이동
+				        const targetUrl = `/egowaeyo/article/articleList.do?bbsId=${bbsId}&bbsNm=${encodeURIComponent(bbsNm)}`;
+				        console.log("Navigating to URL:", targetUrl); // 디버깅 로그 추가
+				        window.location.href = targetUrl;
+				    });
 				});
 		</script>
 		<div>

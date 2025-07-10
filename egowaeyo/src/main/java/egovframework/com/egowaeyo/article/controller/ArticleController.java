@@ -27,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.egowaeyo.article.VO.BoardVO;
 import egovframework.com.egowaeyo.article.service.ArticleService;
@@ -40,22 +41,11 @@ import lombok.extern.log4j.Log4j2;
 public class ArticleController {
 
 	private final ArticleService articleservice;
+	private static final String FILE_STORE_PATH = EgovProperties.getProperty("Globals.fileStorePath");
 
 	// 게시글 목록화면으로 이동
 	@GetMapping("/articleList.do")
 	public String listPage(Model model, BoardVO vo) {
-//		// selectBbsAll 호출
-//		List<BoardVO> list = articleservice.selectBbsAll(vo);
-//		// 조회 결과 처리
-//		if (list == null || list.isEmpty()) {
-//			log.error("No data found for bbsId: {}", vo.getBbsId());
-//			model.addAttribute("list", List.of()); // 빈 리스트 전달
-//		} else {
-//			model.addAttribute("list", list); // 조회된 리스트 전달
-//		}
-		String bbsId = "BBSMSTR_000000000021kioSbKFeeb";
-		vo.setBbsId(bbsId);
-		model.addAttribute("barContect", bbsId);
 		return "article/ArticleList.html";
 	}
 
@@ -85,35 +75,35 @@ public class ArticleController {
 		log.debug("BBS Filter List: {}", bbsFilterList);
 		return bbsFilterList;
 	}
-	
+
 	// 필터를 통한 게시글 목록 조회
 	@GetMapping("/filterArticles")
 	@ResponseBody
-	public List<Map<String, Object>> filterArticles(
-	        @RequestParam("bbsId") String bbsId,
-	        @RequestParam("searchType") String searchType,
-	        @RequestParam("searchKeyword") String searchKeyword) {
-	    try {
-	        searchKeyword = URLDecoder.decode(searchKeyword, StandardCharsets.UTF_8.name());
-	        log.debug("Decoded searchKeyword: {}", searchKeyword);
+	public List<Map<String, Object>> filterArticles(@RequestParam("bbsId") String bbsId,
+			@RequestParam("searchType") String searchType, @RequestParam("searchKeyword") String searchKeyword) {
+		try {
+			searchKeyword = URLDecoder.decode(searchKeyword, StandardCharsets.UTF_8.name());
+			log.debug("Decoded searchKeyword: {}", searchKeyword);
 
-	        Map<String, Object> params = new HashMap<>();
-	        params.put("bbsId", bbsId);
-	        params.put("searchType", searchType);
-	        params.put("searchKeyword", searchKeyword);
+			Map<String, Object> params = new HashMap<>();
+			params.put("bbsId", bbsId);
+			params.put("searchType", searchType);
+			params.put("searchKeyword", searchKeyword);
+			System.out.println("params: " + params);
 
-	        return articleservice.filterArticles(params);
-	    } catch (Exception e) {
-	        log.error("Error filtering articles:", e);
-	        return Collections.emptyList();
-	    }
+			return articleservice.filterArticles(params);
+		} catch (Exception e) {
+			log.error("Error filtering articles:", e);
+			return Collections.emptyList();
+		}
 	}
 
 	// 게시글 등록
 	@PostMapping("/articleRegister.do") // .do->인코딩필터(한글)
 	@ResponseBody
 	public String insertArticle(HttpServletRequest request, @RequestParam("bbsId") String bbsId,
-			@RequestParam("nttSj") String nttSj, @RequestParam("nttCn") String nttCn) {
+			@RequestParam("bbsFileName") MultipartFile bbsFileName, @RequestParam("nttSj") String nttSj,
+			@RequestParam("nttCn") String nttCn) {
 		try {
 			// 새로운 nttId 생성
 			Long nttId = articleservice.selectMaxNttId();
@@ -122,6 +112,7 @@ public class ArticleController {
 			LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 			String ntcrId = user.getId();
 			String ntcrNm = user.getName();
+			File file = new File(FILE_STORE_PATH + "/article" + bbsFileName.getOriginalFilename());
 
 			if (ntcrId == null || ntcrNm == null) {
 				throw new IllegalArgumentException("로그인 정보가 없습니다.");
@@ -149,7 +140,7 @@ public class ArticleController {
 			return "게시글 등록 중 오류가 발생했습니다.";
 		}
 	}
-	
+
 	// 게시글 상세조회 화면으로 이동
 	@GetMapping("/articleDetail.do")
 	public String articleDetail(@RequestParam("bbsId") String bbsId, @RequestParam("nttId") String nttId, Model model) {
@@ -170,10 +161,10 @@ public class ArticleController {
 		BoardVO vo = new BoardVO();
 		vo.setBbsId(bbsId);
 		vo.setNttId(Long.parseLong(nttId));
-		
+
 		// 조회수 증가 처리
-	    articleservice.updateArticleRdcnt(vo);
-	    
+		articleservice.updateArticleRdcnt(vo);
+
 		return articleservice.selectArticleDetail(vo);
 	}
 
