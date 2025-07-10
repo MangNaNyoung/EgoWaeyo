@@ -38,7 +38,7 @@ public class LoginController {
 	@ResponseBody
 	public Map<String,Object> getSeessionData(HttpServletRequest request,LoginVO loginVO, Principal principal){
 		Map<String,Object> map = new HashMap<String, Object>();
-		LoginVO vo = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		//LoginVO vo = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		String egovLatestServerTime = "";
 		String egovExpireSessionTime = "";
 		// 쿠키값 가져오기
@@ -61,8 +61,7 @@ public class LoginController {
 			}
 		}
 		map.put("loginVO", principal.getName());
-		map.put("vo",vo);
-		System.out.println(vo.getId());
+		//map.put("vo",vo);
 		map.put("egovLatestServerTime",egovLatestServerTime);
 		map.put("egovExpireSessionTime",egovExpireSessionTime);
 		return map;
