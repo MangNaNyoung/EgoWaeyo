@@ -302,10 +302,10 @@
 		FRST_REGIST_PNTTM
 		FROM COMTNBBS
 		WHERE BBS_ID = #{bbsId} 
-		<if test="searchType == '제목+내용'">
+		<if test="'a'.toString().equals(searchType)">
 			AND (NTT_SJ LIKE '%' || #{searchKeyword} || '%' OR DBMS_LOB.INSTR(NTT_CN, #{searchKeyword}) > 0)
        	</if>
-       	<if test="searchType == '작성자'">
+       	<if test="'b'.toString().equals(searchType)">
            	AND NTCR_NM LIKE '%' || #{searchKeyword} || '%'
         </if>
 	</select>
@@ -363,7 +363,7 @@
 		PARNTSCTT_NO, NTT_NO, ANSWER_LC, ATCH_FILE_ID,
 		FRST_REGISTER_ID,
 		FRST_REGIST_PNTTM, USE_AT,
-		SJ_BOLD_AT, NOTICE_AT, SECRET_AT, BLOG_ID
+		SJ_BOLD_AT, NOTICE_AT, SECRET_AT, BLOG_ID, BBS_FILE_NAME
 		)
 		VALUES
 		( #{nttId}, #{bbsId}, #{nttSj}, #{nttCn}, #{nttId},
@@ -374,7 +374,7 @@
 		#{parnts}, 1, #{replyLc}, #{atchFileId},
 		#{frstRegisterId},
 		SYSDATE, 'Y',
-		#{sjBoldAt}, #{noticeAt}, #{secretAt}, #{blogId}
+		#{sjBoldAt}, #{noticeAt}, #{secretAt}, #{blogId}, #{bbsFileName}
 		)
 	</insert>
 	

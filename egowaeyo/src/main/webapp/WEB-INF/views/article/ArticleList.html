@@ -133,8 +133,8 @@ li.li_name {
 							<select class="form-select" id="formSelect"style="width: 200px;">
 							</select> 
 							<select class="form-select" id="howSelect" style="width: 200px;">
-								<option>제목+내용</option>
-								<option>작성자</option>
+								<option value="a">제목+내용</option>
+								<option value="b">작성자</option>
 							</select> <input class="form-control" id="filterInput" type="text" style="width: 200px;"
 								placeholder="검색어를 입력하세요">
 							<button id="filterButton"
@@ -161,7 +161,7 @@ li.li_name {
 					<div class="avatar"></div>
 					<div>
 						<div>
-							<span class="post-title"></span> <span class="reply">💬</span>
+							<span class="post-title"></span> <span class="reply"></span>
 							<span class="post-count"></span>
 						</div>
 						<div class="post-meta">
@@ -183,13 +183,11 @@ li.li_name {
 		<div th:replace="article/editProjectModal :: editProjectModal"></div>
 		<!-- 스크립트도 복사해서 가져가면 됩니다 -->
 		<script th:inline=javaScript>
-		/*<![CDATA[*/
 		let barClicked = [[${barContect}]]
 		if (barClicked) {
 			 barLending(barClicked);
 		console.log("barClicked:", barClicked); // 디버깅용 로그					 
 		}
-		/*]]>*/
 		let manageClick;
 		
 			function openModal() {
@@ -228,7 +226,18 @@ li.li_name {
 				modalContainer.innerHTML = ''; // 모달 내용 초기화
 			} */
 
-
+			$('document').ready(function () {
+				const urlParams = new URLSearchParams(window.location.search);
+				const paramBbsId = urlParams.get('bbsId'); 
+				const paramBbsNm = urlParams.get('bbsNm'); 
+				if (!paramBbsId) {
+					makList('BBSMSTR_000000000021kioSbKFeeb'); 
+					$(".custom-title").text("📌 공지사항"); // 기본 게시판 이름 설정)
+				} else {
+					makList(paramBbsId);
+					$(".custom-title").text(paramBbsNm);
+				}
+				});
 			// 사이드바
 			document.addEventListener("DOMContentLoaded", function () {
 				fetch('/egowaeyo/bbsMaster/groupedBbsData')
@@ -340,58 +349,8 @@ li.li_name {
 						}
 
 						
+						makList(bbsId)
 						
-						// 게시글 불러오기
-						fetch(`/egowaeyo/article/selectBbsAll?bbsId=${encodeURIComponent(bbsId)}`)
-						  .then(res => {
-						    if (!res.ok) throw new Error("게시글 요청 실패");
-						    return res.json();  // 서버에서 여러 게시글을 JSON 배열로 반환
-						  })
-						  .then(posts => {
-						    const postListContainer = document.querySelector(".container-fluid.px-4");
-						    postListContainer.innerHTML = ""; // 기존 게시글 초기화
-
-						    // posts가 배열인 경우
-						    if (Array.isArray(posts) && posts.length > 0) {
-						      posts.forEach(post => {
-						    	
-						        const postItem = document.createElement("div");
-						        postItem.className = "post-list-item";
-						        postItem.setAttribute("data-bbs-id", post.bbsId);
-						        postItem.setAttribute("data-ntt-id", post.nttId);
-						        
-						        postItem.innerHTML = `
-						          <div class="avatar"></div>
-						          <div>
-						            <div>
-						              <span class="post-title">${post.nttSj}</span> 
-						              <span class="post-icon">👁</span>
-						              <span class="post-count">${post.inqireCo}</span>
-						            </div>
-						            <div class="post-meta">
-						              <span class="post-writer">${post.ntcrNm}</span>
-						              <span class="post-dt">${post.frstRegisterPnttm.split(' ')[0]}</span>
-						              <span class="post-tm">${post.frstRegisterPnttm.split(' ')[1]}</span>
-						            </div>
-						          </div>
-						        `;
-						        
-						        // 클릭 이벤트 추가
-       							postItem.addEventListener("click", function () {
-          							const bbsId = this.getAttribute("data-bbs-id");
-          							const nttId = this.getAttribute("data-ntt-id");
-          							window.location.href = `/egowaeyo/article/articleDetail.do?bbsId=${bbsId}&nttId=${nttId}`;
-        						});
-						        postListContainer.appendChild(postItem);
-						      });
-						    } else {
-						      postListContainer.innerHTML = "<p>게시글이 없습니다.</p>";
-						    }
-						  })
-						  .catch(err => {
-						    console.error("게시글 불러오기 실패:", err);
-						    postListContainer.innerHTML = "<p>게시글을 불러오지 못했습니다.</p>";
-						  });
 						}
 						
 				});
@@ -463,6 +422,62 @@ li.li_name {
 				    });
 				    
 				});
+		  // 게시글 목록 불러오기 함수
+		function makList(bbsId){
+			// 게시글 불러오기
+			fetch(`/egowaeyo/article/selectBbsAll?bbsId=${encodeURIComponent(bbsId)}`)
+			  .then(res => {
+			    if (!res.ok) throw new Error("게시글 요청 실패");
+			    return res.json();  // 서버에서 여러 게시글을 JSON 배열로 반환
+			  })
+			  .then(posts => {
+			    const postListContainer = document.querySelector(".container-fluid.px-4");
+			    postListContainer.innerHTML = ""; // 기존 게시글 초기화
+
+			    // posts가 배열인 경우
+			    if (Array.isArray(posts) && posts.length > 0) {
+			      posts.forEach(post => {
+			    	
+			        const postItem = document.createElement("div");
+			        postItem.className = "post-list-item";
+			        postItem.setAttribute("data-bbs-id", post.bbsId);
+			        postItem.setAttribute("data-ntt-id", post.nttId);
+			        
+			        postItem.innerHTML = `
+			          <div class="avatar"></div>
+			          <div>
+			            <div>
+			              <span class="post-title">${post.nttSj}</span> 
+			              <span class="post-icon">👁</span>
+			              <span class="post-count">${post.inqireCo}</span>
+			            </div>
+			            <div class="post-meta">
+			              <span class="post-writer">${post.ntcrNm}</span>
+			              <span class="post-dt">${post.frstRegisterPnttm.split(' ')[0]}</span>
+			              <span class="post-tm">${post.frstRegisterPnttm.split(' ')[1]}</span>
+			            </div>
+			          </div>
+			        `;
+			        
+			        // 클릭 이벤트 추가
+						postItem.addEventListener("click", function () {
+							const bbsId = this.getAttribute("data-bbs-id");
+							const nttId = this.getAttribute("data-ntt-id");
+							window.location.href = `/egowaeyo/article/articleDetail.do?bbsId=${bbsId}&nttId=${nttId}`;
+					});
+			        postListContainer.appendChild(postItem);
+			      });
+			    } else {
+			      postListContainer.innerHTML = "<p>게시글이 없습니다.</p>";
+			    }
+			  })
+			  .catch(err => {
+			    console.error("게시글 불러오기 실패:", err);
+			    postListContainer.innerHTML = "<p>게시글을 불러오지 못했습니다.</p>";
+			  });
+		}
+			
+			
 			
 			
 			
