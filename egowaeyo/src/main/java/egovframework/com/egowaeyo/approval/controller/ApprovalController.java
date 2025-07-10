@@ -1,5 +1,6 @@
 package egovframework.com.egowaeyo.approval.controller;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
@@ -38,16 +39,16 @@ public class ApprovalController {
 
 	@PostMapping("/write")
 	public String submitDoc(@RequestParam String docTitle, @RequestParam String apprformId,
-			@RequestParam String docContent, HttpSession session) {
+			@RequestParam String docContent, HttpSession session, Principal principal) {
 		ApprovalDocVO vo = new ApprovalDocVO();
 		vo.setDocTitle(docTitle);
 		vo.setApprformId(apprformId);
 		vo.setDocStatus("작성중");
-		vo.setEmplId((String) session.getAttribute("loginId"));
+		vo.setEmplId(principal.getName());
 		vo.setCreatedDt(new Date());
 		vo.setDocHtml(docContent);
 		approvalService.insertApprovalDoc(vo);
-		return "redirect:/approval/list";
+		return "redirect:/approval/receive.html";
 	}
 
 	// 개인 수신함 (receive.html)
