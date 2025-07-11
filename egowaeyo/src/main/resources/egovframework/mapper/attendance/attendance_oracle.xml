@@ -10,7 +10,8 @@
 				trans(INSTATE,'COM103') INSTATE,
 				trans(OUTSTATE,'COM103') OUTSTATE,
 				OVER_CHECK_TIME,
-				CHECK_TIME
+				CHECK_TIME,
+				MODSTATE				
 		FROM ATTENDANCE
 		<where>
 			<if test="emplyrId != null and emplyrId != ''" >

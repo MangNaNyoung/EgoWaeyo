@@ -6,212 +6,527 @@
 <!-- th:block부분이 defalut.html 에서 지정한 layout:fragment="customContents" 영역에 들어간다.  -->
 
 <section layout:fragment="content">
-<link rel="stylesheet" th:href="@{/assets/css/toastUi/toastUi.css}"> 
-<style>
-  .search-box {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      justify-content: flex-end;
-      margin-bottom: 10px;
-    }
-    .search-box input {
-      width: 150px;
-    }
-   
-  #grid { height: 450px; }
-  .table-responsive { overflow: inherit; }
-.tui-datepicker,
-  .tui-calendar { position:relative; z-index:3000  !important; }
+	<link rel="stylesheet" th:href="@{/assets/css/toastUi/toastUi.css}">
+	<style>
+.search-box {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	justify-content: flex-end;
+	margin-bottom: 10px;
+}
+
+.search-box input {
+	width: 150px;
+}
+
+#grid {
+	height: 450px;
+}
+
+.table-responsive {
+	overflow: inherit;
+}
+
+.tui-datepicker, .tui-calendar {
+	position: relative;
+	z-index: 3000 !important;
+}
+
+.valid {
+	color: #28a745;
+	font-weight: bold;
+}
+
+.invalid {
+	color: #dc3545;
+	font-weight: bold;
+}
+
+.time-input {
+	width: 100%;
+	height: 100%;
+	border: 2px solid #ddd;
+	text-align: center;
+	font-size: 14px;
+	font-family: 'Courier New', monospace;
+	outline: none;
+	padding: 4px;
+}
+
+.time-input.valid {
+	border-color: #4caf50;
+	background-color: #e8f5e8;
+}
+
+.time-input.invalid {
+	border-color: #f44336;
+	background-color: #ffebee;
+}
+
+.time-format {
+	background: #fff3cd;
+	padding: 10px;
+	border-radius: 4px;
+	margin-bottom: 15px;
+	border-left: 4px solid #ffc107;
+}
+
+/* 시간 형식 안내 */
+.time-format-info {
+	background: #e3f2fd;
+	padding: 8px 12px;
+	border-radius: 4px;
+	margin-bottom: 15px;
+	border-left: 4px solid #2196f3;
+	font-size: 13px;
+}
 </style>
-<div class="container mt-4">
-  <h5 class="title">내 출퇴근 내역</h5>
+	<div class="container mt-4">
+		<h5 class="title">내 출퇴근 내역</h5>
+		
+		<!-- 시간 형식 안내 -->
+		<div class="time-format-info">
+			💡 시간 입력 형식: <strong>HHMM</strong> (예: 0900, 1730) - 4자리 숫자로 입력해주세요.
+		</div>
 
-  <div class="search-box">
-    <button class="btn btn-success btn-sm">정정신청</button>
-    
- 	<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="startpicker-input" type="date" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="startpicker-container" style="margin-left: -1px;"></div>
-    </div>
-    <span>to</span>
-    <div class="tui-datepicker-input tui-datetime-input tui-has-focus">
-        <input id="endpicker-input" type="date" aria-label="Date">
-        <span class="tui-ico-date"></span>
-        <div id="endpicker-container" style="margin-left: -1px;"></div>
-    </div>
-    
-   
-    <button class="btn btn-dark btn-sm">
-      <i class="bi bi-search"></i>
-    </button>
-  </div>
+		<div class="search-box">
+			<button class="btn btn-success btn-sm">정정신청</button>
 
-  <div class="table-responsive">
-   
-        <div id="grid"></div>	
-      
-  </div>
-</div>
+			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+				<input id="startpicker-input" type="date" aria-label="Date">
+				<span class="tui-ico-date"></span>
+				<div id="startpicker-container" style="margin-left: -1px;"></div>
+			</div>
+			<span>to</span>
+			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+				<input id="endpicker-input" type="date" aria-label="Date"> <span
+					class="tui-ico-date"></span>
+				<div id="endpicker-container" style="margin-left: -1px;"></div>
+			</div>
 
 
-<script th:inline="javascript">
+			<button class="btn btn-dark btn-sm">
+				<i class="bi bi-search"></i>
+			</button>
+		</div>
+
+		<div class="table-responsive">
+			<div id="grid"></div>
+		</div>
+	</div>
+
+
+	<script th:inline="javascript">
 var Grid = tui.Grid;
 var today = new Date();
 
-
-let data ={} ;
+let data = {};
 let gridData;
-getData(data);
-  const grid = new Grid({
-	  el: document.getElementById('grid'),
-	  scrollX: false,
-      scrollY: false,
-	  rowHeaders: [
-		    {
-		      type: 'checkbox',
-		      header: `
-		        <label for="all-checkbox" class="checkbox">
-		          <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
-		          <span class="custom-input"></span>
-		        </label>
-		      `
-		    }
-		  ],
-	  columns: [
-          // [Column-1] 출근일
-          {
-              header: '날짜',            // [필수] 컬럼 이름
-              name: 'date',                 // [필수] 컬럼 매핑 이름 값
-              sortable: true,                 // [선택] 컬럼의 정렬 여부
-              resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
-              align: 'center',
-              // [선택] 필터 옵션
-              filter: {
-                  type: 'text',
-                  showApplyBtn: true,
-                  showClearBtn: true
-              }       
-          },
-          // [Column-2] 출근 
-          {
-              header: '출근시각',             // [필수] 컬럼 이름
-              name: 'checkin',                 // [필수] 컬럼 매핑 이름 값
-              sortable: true,                 // [선택] 컬럼의 정렬 여부
-              resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
-              align: 'center',
-              // [선택] 필터 옵션
-              filter: {
-                  type: 'text',
-                  showApplyBtn: true,
-                  showClearBtn: true
-              },
-          },
-          // [Column-3] 출근 상태
-          {
-              header: '출근 상태',            // [필수] 컬럼 이름
-              name: 'instate',               // [필수] 컬럼 매핑 이름 값
-              sortable: true,                 // [선택] 컬럼의 정렬 여부
-              resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
-              align: 'center',
-              // [선택] 필터 옵션
-              filter: {
-                  type: 'text',
-                  showApplyBtn: true,
-                  showClearBtn: true
-              },
-          },
-          // [Column-4] 퇴근 
-          {
-              header: '퇴근시각',            // [필수] 컬럼 이름
-              name: 'checkout',               // [필수] 컬럼 매핑 이름 값
-              sortable: true,                 // [선택] 컬럼의 정렬 여부
-              resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
-              align: 'center',
-              // [선택] 필터 옵션
-              filter: {
-                  type: 'text',
-                  showApplyBtn: true,
-                  showClearBtn: true
-              },
-          },
-
-          // [Column-5] 퇴근 상태
-          {
-              header: '퇴근상태',            // [필수] 컬럼 이름
-              name: 'outstate',               // [필수] 컬럼 매핑 이름 값
-              sortable: true,                 // [선택] 컬럼의 정렬 여부
-              resizable: true,                // [선택] 컬럼의 리사이즈 여부 옵션
-              align: 'center',
-              // [선택] 필터 옵션
-              filter: {
-                  type: 'text',
-                  showApplyBtn: true,
-                  showClearBtn: true
-              },
-          },
-          
-          // [Column-6] checkbox
-          /* {
-              header: '정정',            // [필수] 컬럼 이름
-              name: 'pick',               // [필수] 컬럼 매핑 이름 값
-              editor: {
-                  type: 'checkbox',
-                  useDefault: false
-                },
-          }, */
-      ],
-  
-	});  
- 
-let url = /*[[@{/attendance}]]*/'';
 let list;
-	function getData(data){
-		$.ajax({
-				type : 'post',           // 타입 (get, post, put 등등)
-				url :'/egowaeyo/attendList.do',           // 요청할 서버url
-				headers : {              // Http header
-					"Content-Type" : "application/json",
-				},
-				data : JSON.stringify(data),
-					success : function(result) { // 결과 성공 콜백함수
-						console.log(result);
-					list = result
-					grid.resetData(result);
-					grid.refreshLayout();     // ← 헤더 높이·스크롤 높이 재계산
-				},
-					error : function(request, status, error) { // 결과 에러 콜백함수
-						console.log(error)
-				}
-	})
-	}
-	$('.btn.btn-dark.btn-sm').click(function(){
-		console.log("출력")
-		data.startDate =
-		$('#startpicker-input').val();
-		
-		data.endDate=		
-		$('#endpicker-input').val();
-		getData(data)
-	});
+
+// 시간 형식 검증 함수 (HHMM)
+function validateTimeFormat(value) {
+	// 빈 값은 허용
+	if (!value || value === '') return true;
 	
-		grid.on('checkAll', () => grid.uncheckAll()); // 상단 전체체크 무력화
-		grid.on('check', ({ rowKey }) => {
-			for(let i=0;i<grid.getRowCount();i++){
-				if(i!= rowKey){
-				grid.uncheck(i)
+	// 4자리 숫자인지 확인
+	if (!/^\d{4}$/.test(value)) {
+		return false;
+	}
+	
+	const hours = parseInt(value.substring(0, 2));
+	const minutes = parseInt(value.substring(2, 4));
+	
+	// 시간: 00-23, 분: 00-59 범위 확인
+	return hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59;
+}
+
+// 시간 형식 포맷팅 함수
+function formatTime(value) {
+	if (!value) return '';
+	
+	// 숫자만 추출
+	const numbers = value.replace(/[^\d]/g, '');
+	
+	// 4자리로 제한
+	if (numbers.length > 4) {
+		return numbers.substring(0, 4);
+	}
+	
+	return numbers;
+}
+
+// 커스텀 시간 에디터
+class TimeEditor {
+	constructor(props) {
+		this.el = document.createElement('input');
+		this.el.type = 'text';
+		this.el.maxLength = 4;
+		this.el.className = 'time-input';
+		this.el.placeholder = 'HHMM';
+		
+		// 초기값 설정
+		this.el.value = String(props.value || '');
+		this.validateAndStyle();
+		
+		// 입력 이벤트 리스너
+		this.el.addEventListener('input', (e) => {
+			// 숫자만 허용
+			let value = formatTime(e.target.value);
+			e.target.value = value;
+			
+			this.validateAndStyle();
+		});
+
+		// 키보드 이벤트 처리
+		this.el.addEventListener('keydown', (e) => {
+			// 허용된 키들
+			const allowedKeys = [
+				'Backspace', 'Delete', 'Tab', 'Enter', 'Escape',
+				'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+				'Home', 'End'
+			];
+			
+			// 숫자 키 또는 허용된 키가 아니면 차단
+			if (!allowedKeys.includes(e.key) && !/^\d$/.test(e.key)) {
+				e.preventDefault();
+			}
+		});
+
+		// 포커스 시 전체 선택
+		this.el.addEventListener('focus', () => {
+			this.el.select();
+		});
+
+		// 블러 시 자동 완성
+		this.el.addEventListener('blur', () => {
+			this.autoComplete();
+		});
+		
+		// 엔터 키 시 자동 완성
+		this.el.addEventListener('keydown', (e) => {
+			if (e.key === 'Enter') {
+				this.autoComplete();
+			}
+		});
+	}
+
+	validateAndStyle() {
+		const value = this.el.value;
+		
+		if (value === '') {
+			// 빈 값일 때는 기본 스타일
+			this.el.classList.remove('valid', 'invalid');
+		} else if (value.length === 4 && validateTimeFormat(value)) {
+			// 유효한 시간 형식
+			this.el.classList.remove('invalid');
+			this.el.classList.add('valid');
+		} else if (value.length > 0) {
+			// 유효하지 않은 시간 형식
+			this.el.classList.remove('valid');
+			this.el.classList.add('invalid');
+		} else {
+			this.el.classList.remove('valid', 'invalid');
+		}
+	}
+
+	autoComplete() {
+		let value = this.el.value;
+		
+		// 빈 값이면 그대로 유지
+		if (!value || value === '') {
+			this.validateAndStyle();
+			return;
+		}
+		
+		// 1~3자리인 경우 앞에 0 추가
+		if (value.length === 1) {
+			value = '000' + value;
+		} else if (value.length === 2) {
+			value = '00' + value;
+		} else if (value.length === 3) {
+			value = '0' + value;
+		}
+		
+		// 유효성 검사 후 설정
+		if (value.length === 4) {
+			const hours = parseInt(value.substring(0, 2));
+			const minutes = parseInt(value.substring(2, 4));
+			
+			// 시간이 23을 초과하면 23으로 설정
+			if (hours > 23) {
+				value = '23' + value.substring(2, 4);
+			}
+			
+			// 분이 59를 초과하면 59로 설정
+			if (minutes > 59) {
+				value = value.substring(0, 2) + '59';
+			}
+			
+			this.el.value = value;
+			this.validateAndStyle();
+		}
+	}
+
+	getElement() {
+		return this.el;
+	}
+
+	getValue() {
+		return this.el.value;
+	}
+
+	mounted() {
+		this.el.focus();
+	}
+}
+
+const editableColumns = ['checkin', 'checkout'];
+const grid = new Grid({
+	el: document.getElementById('grid'),
+	scrollX: false,
+	scrollY: false,
+	rowHeaders: [
+		{
+			type: 'checkbox',
+			header: `
+				<label for="all-checkbox" class="checkbox">
+					<input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+					<span class="custom-input"></span>
+				</label>
+			`
+		}
+	],
+	columns: [
+		// [Column-1] 출근일
+		{
+			header: '날짜',
+			name: 'date',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-2] 출근 
+		{
+			header: '출근시각',
+			name: 'checkin',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			editor: TimeEditor,
+			validation: {
+				validatorFn: function(value) {
+					return validateTimeFormat(value);
+				}
+			},
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-3] 출근 상태
+		{
+			header: '출근 상태',
+			name: 'instate',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-4] 퇴근 
+		{
+			header: '퇴근시각',
+			name: 'checkout',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			editor: TimeEditor,
+			validation: {
+				validatorFn: function(value) {
+					return validateTimeFormat(value);
+				}
+			},
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-5] 퇴근 상태
+		{
+			header: '퇴근상태',
+			name: 'outstate',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-6] 정정신청 상태
+		{
+			header: '정정신청',
+			name: 'modstate',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		}
+	]
+});
+
+let url = /*[[@{/attendance}]]*/'';
+getData(data);
+
+function getData(data) {
+	$.ajax({
+		type: 'post',
+		url: '/egowaeyo/attendList.do',
+		headers: {
+			"Content-Type": "application/json",
+		},
+		data: JSON.stringify(data),
+		success: function(result) {
+			console.log(result);
+			list = result;
+			result.forEach(item => {
+				switch(item.modstate) {
+					case "m01":
+						item.modstate = `<button class="btn btn-sm btn-primary" disabled>진행중</button>`;
+						break;
+					case "m02":
+						item.modstate = `<button class="btn btn-sm btn-success" disabled>정정완료</button>`;
+						break;
+					default:
+						item.modstate = ``;
+				}
+			});
+			grid.resetData(result);
+			disableAllEditing();
+			grid.refreshLayout();
+		},
+		error: function(request, status, error) {
+			console.log(error);
+		}
+	});
+}
+
+$('.btn.btn-dark.btn-sm').click(function() {
+	console.log("출력");
+	data.startDate = $('#startpicker-input').val();
+	data.endDate = $('#endpicker-input').val();
+	getData(data);
+});
+
+grid.on('checkAll', () => grid.uncheckAll()); // 상단 전체체크 무력화
+grid.on('check', ({ rowKey }) => {
+	for(let i = 0; i < grid.getRowCount(); i++) {
+		if(i != rowKey) {
+			grid.uncheck(i);
+			grid.disableCell(i, editableColumns[0]);
+			grid.disableCell(i, editableColumns[1]);
+		} else {
+			grid.enableCell(i, editableColumns[0]);
+			grid.enableCell(i, editableColumns[1]);
+		}
+	}
+});
+
+$('.btn.btn-success.btn-sm').click(function() {
+	let dataForSend = list[grid.getCheckedRowKeys()[0]];
+	console.log(dataForSend);
+});
+
+function disableAllEditing() {
+	const rowCount = grid.getRowCount();
+	for (let i = 0; i < rowCount; i++) {
+		editableColumns.forEach(column => {
+			grid.disableCell(i, column);
+		});
+	}
+}
+
+// 데이터 변경 이벤트 - 시간 검증 포함
+grid.on('afterChange', function(ev) {
+	if (ev.changes && ev.changes.length > 0) {
+		ev.changes.forEach(change => {
+			const { rowKey, columnName, value } = change;
+			
+			// checkin, checkout 컬럼의 시간 검증
+			if ((columnName === 'checkin' || columnName === 'checkout') && value) {
+				if (validateTimeFormat(value)) {
+					console.log(`${columnName} 변경됨: ${value} (유효함)`);
+					// 유효한 시간이면 셀 스타일 정상화
+					grid.addCellClassName(rowKey, columnName, 'valid-time');
+					grid.removeCellClassName(rowKey, columnName, 'invalid-time');
+				} else {
+					console.log(`${columnName} 변경됨: ${value} (유효하지 않음)`);
+					// 유효하지 않은 시간이면 경고 표시
+					grid.addCellClassName(rowKey, columnName, 'invalid-time');
+					grid.removeCellClassName(rowKey, columnName, 'valid-time');
+					
+					// 사용자에게 알림
+					setTimeout(() => {
+						alert(`잘못된 시간 형식입니다.\n올바른 형식: HHMM (예: 0900, 1730)\n시간: 00-23, 분: 00-59`);
+					}, 100);
 				}
 			}
-				
 		});
-		$('.btn.btn-success.btn-sm').click(function(){
-		let dataForSend	=list[grid.getCheckedRowKeys()[0]]
-		console.log(dataForSend)
-		})
+	}
+});
+
+// 유효성 검사 실패 이벤트
+grid.on('failedValidation', function(ev) {
+	console.log('유효성 검사 실패:', ev);
+	if (ev.errors && ev.errors.length > 0) {
+		const error = ev.errors[0];
+		if (error.columnName === 'checkin' || error.columnName === 'checkout') {
+			alert(`시간 형식이 올바르지 않습니다.\n올바른 형식: HHMM (예: 0900, 1730)\n시간: 00-23, 분: 00-59`);
+		}
+	}
+});
+
+// 편집 시작 이벤트
+grid.on('editingStart', function(ev) {
+	const { columnName } = ev;
+	if (columnName === 'checkin' || columnName === 'checkout') {
+		console.log(`${columnName} 편집 시작 - 시간 형식: HHMM`);
+	}
+});
+
+// 편집 완료 이벤트
+grid.on('editingFinish', function(ev) {
+	const { columnName, value } = ev;
+	if ((columnName === 'checkin' || columnName === 'checkout') && value) {
+		if (!validateTimeFormat(value)) {
+			console.log(`${columnName} 편집 완료 - 유효하지 않은 시간: ${value}`);
+			return false; // 편집 취소
+		}
+		console.log(`${columnName} 편집 완료 - 유효한 시간: ${value}`);
+	}
+});
+
+
+window.validateTimeFormat = validateTimeFormat;
 
 </script>
 </section>
-
 
 </html>

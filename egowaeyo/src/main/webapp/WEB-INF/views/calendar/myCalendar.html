@@ -130,7 +130,6 @@ body {
 		const Calendar = tui.Calendar;
 		const container = document.getElementById('calOrigin');
 		const options = {
-			daynames : [ '일', '월', '화', '수', '목', '금', '토'],
 			useFormPopup : true,
 			useDetailPopup : true,
 			defaultView : 'month',
@@ -152,7 +151,6 @@ body {
 				name : '직장',
 				backgroundColor : '#00a9ff',
 			}, ],
-
 			theme : {
 				month : {
 					dayName : {
@@ -167,9 +165,6 @@ body {
 						width : 320,
 						height : 200,
 					},
-					weekend : {
-						backgroundColor : 'rgba(255, 64, 64, 0.4)',
-					},
 					gridCell : {
 						footerHeight : 31,
 					},
@@ -178,5 +173,10 @@ body {
 		};
 
 		const calendar = new Calendar(container, options);
+		calendar.setOptions({
+			  month: {
+			    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+			  },
+			});
 	</script>
 </main>
