@@ -9,14 +9,14 @@
 		style="max-width: 970px; height: 850px; margin-top: 115px;">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title" id="addProjectModalLabel"></h5>
+				<h5 class="modal-title" id="addProjectModalLabel">     </h5>
 				<button type="button" class="btn-close" data-bs-dismiss="modal"
 					aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
 				<form>
 					<!-- 게시판 유형 선택 -->
-					<div class="mb-5">
+					<div class="mb-5" id="boardTypeSelection">
 						<div class="form-check form-check-inline">
 							<input class="form-check-input ms-1" type="radio"
 								name="boardType" id="type1" checked
@@ -138,6 +138,39 @@
 	</div>
 
 	<script>
+	
+	let allUsers = []; // 모든 사원 데이터를 저장
+   	let selectedDepts = new Set(); // 선택된 부서 목록
+   	let selectedUsers = new Set(); // 선택된 사원 목록
+   	let currentDeptUsers = []; // 현재 선택된 부서의 사원 데이터를 저장
+   	
+ // 사원 선택 박스에서 선택된 사원들의 ID를 가져오기
+    function getSelectedEmployees() {
+        const employeeSelect = document.getElementById('employeeSelect');
+        if (!employeeSelect) {
+            console.error("employeeSelect 요소를 찾을 수 없습니다.");
+            return []; // 빈 배열 반환하여 오류 방지
+        }
+
+        // selectedOptions가 존재하는지 확인
+        const selectedItems = Array.from(employeeSelect.querySelectorAll('li.selected'));
+        if (selectedItems.length === 0) {
+            console.warn("선택된 항목이 없습니다.");
+            return []; // 빈 배열 반환
+        }
+
+        let selectedEmployees = [];
+        selectedItems.forEach(item => {
+            selectedEmployees.push({
+                emplyrId: item.dataset.id,  // 선택된 사원의 ID (data-id 속성 사용)
+                authorCode: 'A-003'        // 예시로 'A-003' 권한 코드 설정
+            });
+        });
+
+        return selectedEmployees;
+    }
+   	
+   	
 	document.addEventListener("DOMContentLoaded", function () {
 		 	const type1Radio = document.getElementById("type1");
 		    const type2Radio = document.getElementById("type2");
@@ -198,10 +231,6 @@
    	const deptHeader = document.querySelector(".dept-list-header");
    	const searchBox = document.querySelector(".search-box input");
    	
-   	let allUsers = []; // 모든 사원 데이터를 저장
-   	let selectedDepts = new Set(); // 선택된 부서 목록
-   	let selectedUsers = new Set(); // 선택된 사원 목록
-   	let currentDeptUsers = []; // 현재 선택된 부서의 사원 데이터를 저장
 
 	// 서버에서 데이터를 가져옴
 	fetch('/egowaeyo/bbsMaster/selectDeptEmp')
@@ -351,10 +380,6 @@
         });
 }
             	
-
-
-
-
    	// dept-header 업데이트 함수
    	function updateDeptHeader() {
 		deptHeader.innerHTML = ""; // 기존 헤더 초기화
@@ -511,172 +536,130 @@
         });
     });
    
- // 사원 선택 박스에서 선택된 사원들의 ID를 가져오기
-    function getSelectedEmployees() {
-        const employeeSelect = document.getElementById('employeeSelect');
-        if (!employeeSelect) {
-            console.error("employeeSelect 요소를 찾을 수 없습니다.");
-            return []; // 빈 배열 반환하여 오류 방지
-        }
-
-        // selectedOptions가 존재하는지 확인
-        const selectedItems = Array.from(employeeSelect.querySelectorAll('li.selected'));
-        if (selectedItems.length === 0) {
-            console.warn("선택된 항목이 없습니다.");
-            return []; // 빈 배열 반환
-        }
-
-        let selectedEmployees = [];
-        selectedItems.forEach(item => {
-            selectedEmployees.push({
-                emplyrId: item.dataset.id,  // 선택된 사원의 ID (data-id 속성 사용)
-                authorCode: 'A-003'        // 예시로 'A-003' 권한 코드 설정
-            });
-        });
-
-        return selectedEmployees;
-    }
+ 
 
     // 버튼 클릭 이벤트 처리
     document.getElementById('employeeSelect').addEventListener('click', function (event) {
-    if (event.target.tagName === 'LI') {
-        const li = event.target;
-        if (li.classList.contains('selected')) {
-            li.classList.remove('selected'); // 선택 해제
-            li.style.backgroundColor = '';   // 배경색 초기화
-        } else {
-            li.classList.add('selected');    // 선택 추가
-            li.style.backgroundColor = '#f0f8ff'; // 선택된 배경색
-        }
-    }
+	    if (event.target.tagName === 'LI') {
+	        const li = event.target;
+	        if (li.classList.contains('selected')) {
+	            li.classList.remove('selected'); // 선택 해제
+	            li.style.backgroundColor = '';   // 배경색 초기화
+	        } else {
+	            li.classList.add('selected');    // 선택 추가
+	            li.style.backgroundColor = '#f0f8ff'; // 선택된 배경색
+	        }
+	    }
+    });
 });
-
     
-//저장 버튼 이벤트 처리
- const saveButton = document.getElementById("saveButton");
-    if (saveButton) {
-    	 saveButton.addEventListener("click", function () {
-    		 const boardNameInput = document.getElementById("boardName");
-    	        const boardName = boardNameInput ? boardNameInput.value : "";
-    	        const boardType = document.querySelector('input[name="boardType"]:checked')?.id ;
-    	        const parentBoardElement = document.getElementById("parentBoard");
-    	        const parentBoard = boardType === "type1" ? null : parentBoardElement ? parentBoardElement.value : ""; // '게시판 추가' 선택 시 null로 설정
-    	        const useAt = document.querySelector('input[name="useAt"]:checked')?.value || "Y";
-    	        const rightBoxes = document.querySelectorAll(".right-panel .right-box");
+    function addClick() {
+		 const boardNameInput = document.getElementById("boardName");
+	        const boardName = boardNameInput ? boardNameInput.value : "";
+	        const boardType = document.querySelector('input[name="boardType"]:checked')?.id ;
+	        const parentBoardElement = document.getElementById("parentBoard");
+	        const parentBoard = boardType === "type1" ? null : parentBoardElement ? parentBoardElement.value : ""; // '게시판 추가' 선택 시 null로 설정
+	        const useAt = document.querySelector('input[name="useAt"]:checked')?.value || "Y";
+	        const rightBoxes = document.querySelectorAll(".right-panel .right-box");
 
-    	        const rightsMap = {
-    	        		read: Array.from(rightBoxes[0].children).map(div => div.dataset.id).filter(id => id),
-    	        	    write: Array.from(rightBoxes[1].children).map(div => div.dataset.id).filter(id => id),
-    	        	    manage: Array.from(rightBoxes[2].children).map(div => div.dataset.id).filter(id => id)
-    	        };
+	        const rightsMap = {
+	        		read: Array.from(rightBoxes[0].children).map(div => div.dataset.id).filter(id => id),
+	        	    write: Array.from(rightBoxes[1].children).map(div => div.dataset.id).filter(id => id),
+	        	    manage: Array.from(rightBoxes[2].children).map(div => div.dataset.id).filter(id => id)
+	        };
 
-    	        // 권한 코드에 따라 권한 부여
-    	        const selectedRights = [];
+	        // 권한 코드에 따라 권한 부여
+	        const selectedRights = [];
 
-    	     // 모든 사용자에 대해 권한 코드 설정
-    	        allUsers.forEach(user => {
-    	        	 if (!user.emplyrId) return;
-    	        	 
-    	        	 let authorCode;
-    	            // emplyrId가 null이거나 undefined인 경우는 제외
-    	            if(rightsMap.write.includes(user.emplyrId) && rightsMap.manage.includes(user.emplyrId)) {
-    	                authorCode = "A-003"; // 읽기+쓰기+관리
-    	            } else if (rightsMap.read.includes(user.emplyrId) && rightsMap.write.includes(user.emplyrId)) {
-                        authorCode = "A-002";
-                    } else if (rightsMap.read.includes(user.emplyrId)) {
-                        authorCode = "A-001";
-                    }
-    	            if (authorCode) {
-    	                selectedRights.push({
-    	                    emplyrId: user.emplyrId,
-    	                    authorCode
-    	                });
-    	            }
-    	        });
+	     // 모든 사용자에 대해 권한 코드 설정
+	        allUsers.forEach(user => {
+	        	 if (!user.emplyrId) return;
+	        	 
+	        	 let authorCode;
+	            // emplyrId가 null이거나 undefined인 경우는 제외
+	            if(rightsMap.write.includes(user.emplyrId) && rightsMap.manage.includes(user.emplyrId)) {
+	                authorCode = "A-003"; // 읽기+쓰기+관리
+	            } else if (rightsMap.read.includes(user.emplyrId) && rightsMap.write.includes(user.emplyrId)) {
+                   authorCode = "A-002";
+               } else if (rightsMap.read.includes(user.emplyrId)) {
+                   authorCode = "A-001";
+               }
+	            if (authorCode) {
+	                selectedRights.push({
+	                    emplyrId: user.emplyrId,
+	                    authorCode
+	                });
+	            }
+	        });
 
-    	     // 디버깅: selectedRights 데이터 확인
-    	        console.log("Selected Rights:", selectedRights);
-    	     
-    	     // getSelectedEmployees()에서 선택된 사용자들의 권한을 추가
-    	        const selectedEmployees = getSelectedEmployees(); // getSelectedEmployees 호출
-    	        selectedEmployees.forEach(employee => {
-    	            const existingUser = selectedRights.find(user => user.emplyrId === employee.emplyrId);
-    	            if (!existingUser) {
-    	                selectedRights.push({
-    	                    emplyrId: employee.emplyrId,
-    	                    authorCode: employee.authorCode
-    	                });
-    	            }
-    	        });
-    	     // '게시판 추가' 선택 시 권한 검증 건너뛰기
-                if (boardType !== "type1" && selectedRights.length === 0) {
-                    alert("권한을 선택하세요.");
-                    return;
-                }
-    	        
-    	        /* rightsMap.manage.forEach(emplyrId => {
-    	            const existingUser = selectedRights.find(user => user.emplyrId === emplyrId);
-    	            if (existingUser) {
-    	                existingUser.authorCode = "A-003"; // 관리 권한
-    	            } else {
-    	                selectedRights.push({ emplyrId, authorCode: "A-003" });
-    	            }
-    	        }); */
+	     // 디버깅: selectedRights 데이터 확인
+	        console.log("Selected Rights:", selectedRights);
+	     
+	     // getSelectedEmployees()에서 선택된 사용자들의 권한을 추가
+	        const selectedEmployees = getSelectedEmployees(); // getSelectedEmployees 호출
+	        selectedEmployees.forEach(employee => {
+	            const existingUser = selectedRights.find(user => user.emplyrId === employee.emplyrId);
+	            if (!existingUser) {
+	                selectedRights.push({
+	                    emplyrId: employee.emplyrId,
+	                    authorCode: employee.authorCode
+	                });
+	            }
+	        });
+	     // '게시판 추가' 선택 시 권한 검증 건너뛰기
+           if (boardType !== "type1" && selectedRights.length === 0) {
+               alert("권한을 선택하세요.");
+               return;
+           }
+	        const requestData = {
+	            boardName: boardName,
+	            boardType: boardType,
+	            parentBoard: parentBoard,
+	            useAt: useAt,
+	            selectedRights: selectedRights // 권한 정보 포함
+	        };
 
-    	   
+	        console.log("전송할 데이터:", requestData);
 
-    	        const requestData = {
-    	            boardName: boardName,
-    	            boardType: boardType,
-    	            parentBoard: parentBoard,
-    	            useAt: useAt,
-    	            selectedRights: selectedRights // 권한 정보 포함
-    	        };
-
-    	        console.log("전송할 데이터:", requestData);
-
-    	        fetch('/egowaeyo/bbsMaster/saveBoard', {
-    	            method: "POST",
-    	            headers: {
-    	                "Content-Type": "application/json"
-    	            },
-    	            body: JSON.stringify(requestData)
-    	        })
-    	        .then(response => {
-    	            if (!response.ok) {
-    	                throw new Error(`HTTP error! status: ${response.status}`);
-    	            }
-    	            return response.json();
-    	        })
-    	        .then(data => {
-    	            if (data.success) {
-    	                alert("게시판이 성공적으로 저장되었습니다.");
-    	            } else {
-    	                alert("저장 중 오류가 발생했습니다: " + data.error);
-    	            }
-    	        })
-    	        .catch(error => alert(`저장 중 오류가 발생했습니다: ${error.message}`));
-    	    });
-    	} else {
-    	    console.error("saveButton 요소를 찾을 수 없습니다.");
-    	}
+	        fetch('/egowaeyo/bbsMaster/saveBoard', {
+	            method: "POST",
+	            headers: {
+	                "Content-Type": "application/json"
+	            },
+	            body: JSON.stringify(requestData)
+	        })
+	        .then(response => {
+	            if (!response.ok) {
+	                throw new Error(`HTTP error! status: ${response.status}`);
+	            }
+	            return response.json();
+	        })
+	        .then(data => {
+	            if (data.success) {
+	                alert("게시판이 성공적으로 저장되었습니다.");
+	            } else {
+	                alert("저장 중 오류가 발생했습니다: " + data.error);
+	            }
+	        })
+	        .catch(error => alert(`저장 중 오류가 발생했습니다: ${error.message}`));
+	    }
     
+    function updateCodeClick() {
+		 
+	 }
+	 
+    
+	 function updateBbsClick() {
+		 
+	 }
  
-        });
+
    </script>
 
 	<style>
-body, html {
-	background: #faf9f7;
+body {
+	background: #fff;
 	font-family: 'Noto Sans KR', sans-serif;
-}
-
-.egowaeyo {
-	font-size: 20px;
-	font-weight: 700;
-	color: #222;
-	margin-bottom: 8px;
-	margin-bottom: 10px;
 }
 
 .arrow-icon {
@@ -730,9 +713,58 @@ body, html {
 	background: #fff;
 	border: 1.5px solid #e5e5e5;
 	border-radius: 12px;
-	padding: 10px 18px;
+	padding: 10px 18px 10px 18px;
 	height: 304px;
 	box-sizing: border-box;
+}
+
+.tree-list {
+	list-style: none;
+	padding-left: 0;
+	margin: 0;
+}
+
+.tree-list li {
+	font-size: 16px;
+	margin-bottom: 10px;
+	padding-left: 8px;
+	color: #444;
+	position: relative;
+}
+
+.tree-list li:not(:first-child)::before {
+	content: '— ';
+	color: #888;
+	margin-right: 2px;
+}
+
+.tree-list li:first-child {
+	font-weight: 700;
+	font-size: 17px;
+	margin-bottom: 18px;
+	color: #222;
+	letter-spacing: 1px;
+	padding-left: 0;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.tree-list li:first-child::before {
+	content: '';
+}
+
+.tree-list li:first-child .arrow {
+	font-size: 18px;
+	color: #222;
+	margin-left: 6px;
+	transform: translateY(1px);
+}
+
+.center-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
 .search-box {
@@ -763,8 +795,7 @@ body, html {
 	border: 1.5px solid #e5e5e5;
 	border-radius: 8px;
 	background: #faf9f7;
-	padding: 12px 0;
-	width: 300px;
+	padding: 12px 0 12px 0;
 }
 
 .dept-list-header {
@@ -804,12 +835,22 @@ body, html {
 	margin-left: 6px;
 }
 
+.dept-btns {
+	display: flex;
+	flex-direction: column; /* 세로 배치 */
+	gap: 60px; /* 버튼 간 간격을 16px로 증가 */
+	justify-content: flex-start;
+	align-items: center;
+	padding-top: 55px;
+}
+
 .dept-btns .btn {
 	background: #f6f5e9;
 	border: 1px solid #d6d3b3;
 	color: #444;
 	font-size: 13px;
 	border-radius: 4px;
+	/* padding: 2px 12px; */
 	min-width: 70px;
 	text-align: center;
 	transition: background 0.2s;
@@ -818,17 +859,16 @@ body, html {
 
 .dept-btns .btn:hover {
 	background: #ecead2;
-	color: #222;
 }
 
 .right-panel {
 	display: flex;
 	flex-direction: column;
-	gap: 20px;
+	gap: 24px;
 	min-width: 220px;
 	max-width: 260px;
 	align-items: flex-start;
-	margin-top: 32px;
+	margin-top: 32px; /* right-panel을 아래로 내리기 위해 margin-top 추가 */
 }
 
 .right-box {
@@ -836,10 +876,10 @@ body, html {
 	border-radius: 10px;
 	background: #faf9f7;
 	min-height: 70px;
-	max-height: 70px;
 	padding: 16px 18px;
 	font-size: 15px;
 	color: #222;
+	margin-bottom: 0;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
@@ -850,7 +890,7 @@ body, html {
 .arrow {
 	font-size: 22px;
 	color: #bdbdbd;
-	margin: 0 8px;
+	margin: 0 2px;
 	vertical-align: middle;
 	align-self: center;
 }
@@ -893,10 +933,161 @@ body, html {
 		padding: 8px 8px;
 	}
 }
-
+/* 체크박스와 텍스트 정렬 */
 input[type="checkbox"] {
 	vertical-align: middle;
 	accent-color: #222;
+}
+/* 전체 배경색 */
+html, body {
+	background: #faf9f7;
+}
+
+html, body {
+	background: #faf9f7;
+	font-family: 'Noto Sans KR', sans-serif;
+}
+
+.modal-close {
+	position: absolute;
+	top: 24px;
+	right: 32px;
+	font-size: 28px;
+	color: #888;
+	background: none;
+	border: none;
+	cursor: pointer;
+}
+
+.arrow {
+	font-size: 22px;
+	color: #bdbdbd;
+	margin: 0 8px;
+	vertical-align: middle;
+	align-self: center;
+}
+
+.right-box {
+	min-height: 70px;
+	background: #faf9f7;
+	border-radius: 10px;
+	border: 1.5px solid #e5e5e5;
+	padding: 16px 18px;
+	width: 220px;
+	box-sizing: border-box;
+}
+
+.tree-list {
+	list-style: none;
+	padding-left: 0;
+	margin: 0;
+}
+
+.tree-list li {
+	font-size: 1rem;
+	margin-bottom: 10px;
+	color: #444;
+}
+
+.tree-list li:not(:first-child)::before {
+	content: '— ';
+	color: #888;
+	margin-right: 2px;
+}
+
+.tree-list li:first-child {
+	font-weight: 700;
+	font-size: 1.08rem;
+	margin-bottom: 18px;
+	color: #222;
+	letter-spacing: 1px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.tree-list li:first-child::before {
+	content: '';
+}
+
+.tree-list li:first-child .arrow {
+	font-size: 18px;
+	color: #222;
+	margin-left: 6px;
+}
+
+.dept-list .dept {
+	color: #bbb;
+	font-size: 1rem;
+	margin-left: 6px;
+}
+
+.dept-btns .btn {
+	background: #f6f5e9;
+	border: 1px solid #d6d3b3;
+	color: #444;
+	font-size: 13px;
+	border-radius: 4px;
+	min-width: 70px;
+}
+
+.dept-btns .btn:last-child {
+	margin-bottom: 0;
+}
+
+.dept-btns .btn:hover {
+	background: #ecead2;
+	color: #222;
+}
+
+.dept-list-wrap {
+	border: 1.5px solid #e5e5e5;
+	border-radius: 8px;
+	background: #faf9f7;
+	padding: 12px 0;
+	width: 300px;
+}
+
+.dept-list-header {
+	display: flex;
+	align-items: center;
+	font-size: 16px;
+	font-weight: 500;
+	margin-bottom: 8px;
+	padding-left: 16px;
+	gap: 6px;
+}
+
+@media ( max-width : 900px) {
+	.main-area {
+		flex-direction: column !important;
+		gap: 16px !important;
+	}
+	.right-panel {
+		flex-direction: row !important;
+		gap: 12px !important;
+	}
+	.right-box {
+		min-width: 120px;
+		width: 100%;
+	}
+}
+
+@media ( max-width : 600px) {
+	.modal-wrap {
+		padding: 8px;
+	}
+	.main-area {
+		flex-direction: column !important;
+		gap: 8px !important;
+	}
+	.right-panel {
+		flex-direction: column !important;
+		gap: 8px !important;
+	}
+	.right-box {
+		padding: 8px 8px;
+	}
 }
 </style>
 </div>
