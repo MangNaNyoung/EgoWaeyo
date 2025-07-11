@@ -87,7 +87,7 @@
 		
 		<!-- 시간 형식 안내 -->
 		<div class="time-format-info">
-			💡 시간 입력 형식: <strong>HHMM</strong> (예: 0900, 1730) - 4자리 숫자로 입력해주세요.
+			시간 입력 형식: <strong>HHMM</strong> (예: 0900, 1730) - 4자리 숫자로 입력해주세요.
 		</div>
 
 		<div class="search-box">
@@ -124,6 +124,7 @@ var today = new Date();
 let data = {};
 let gridData;
 let list;
+let checkedKey=null;
 
 // 시간 형식 검증 함수 (HHMM)
 function validateTimeFormat(value) {
@@ -404,7 +405,7 @@ function getData(data) {
 		},
 		data: JSON.stringify(data),
 		success: function(result) {
-			console.log(result);
+			////console.log(result);
 			list = result;
 			result.forEach(item => {
 				switch(item.modstate) {
@@ -421,22 +422,29 @@ function getData(data) {
 			grid.resetData(result);
 			disableAllEditing();
 			grid.refreshLayout();
+			console.log("list",list)
 		},
 		error: function(request, status, error) {
-			console.log(error);
+			//console.log(error);
 		}
 	});
 }
 
 $('.btn.btn-dark.btn-sm').click(function() {
-	console.log("출력");
+	//console.log("출력");
 	data.startDate = $('#startpicker-input').val();
 	data.endDate = $('#endpicker-input').val();
 	getData(data);
 });
 
 grid.on('checkAll', () => grid.uncheckAll()); // 상단 전체체크 무력화
+//체크 박스 제한
 grid.on('check', ({ rowKey }) => {
+	if(checkedKey != null){
+	grid.setValue(checkedKey,'checkin',list[checkedKey]['checkin'])
+	grid.setValue(checkedKey,'checkout',list[checkedKey]['checkout'])
+	}
+	checkedKey = rowKey
 	for(let i = 0; i < grid.getRowCount(); i++) {
 		if(i != rowKey) {
 			grid.uncheck(i);
@@ -472,12 +480,12 @@ grid.on('afterChange', function(ev) {
 			// checkin, checkout 컬럼의 시간 검증
 			if ((columnName === 'checkin' || columnName === 'checkout') && value) {
 				if (validateTimeFormat(value)) {
-					console.log(`${columnName} 변경됨: ${value} (유효함)`);
+					//console.log(`${columnName} 변경됨: ${value} (유효함)`);
 					// 유효한 시간이면 셀 스타일 정상화
 					grid.addCellClassName(rowKey, columnName, 'valid-time');
 					grid.removeCellClassName(rowKey, columnName, 'invalid-time');
 				} else {
-					console.log(`${columnName} 변경됨: ${value} (유효하지 않음)`);
+					//console.log(`${columnName} 변경됨: ${value} (유효하지 않음)`);
 					// 유효하지 않은 시간이면 경고 표시
 					grid.addCellClassName(rowKey, columnName, 'invalid-time');
 					grid.removeCellClassName(rowKey, columnName, 'valid-time');
@@ -494,7 +502,7 @@ grid.on('afterChange', function(ev) {
 
 // 유효성 검사 실패 이벤트
 grid.on('failedValidation', function(ev) {
-	console.log('유효성 검사 실패:', ev);
+	//console.log('유효성 검사 실패:', ev);
 	if (ev.errors && ev.errors.length > 0) {
 		const error = ev.errors[0];
 		if (error.columnName === 'checkin' || error.columnName === 'checkout') {
@@ -507,19 +515,42 @@ grid.on('failedValidation', function(ev) {
 grid.on('editingStart', function(ev) {
 	const { columnName } = ev;
 	if (columnName === 'checkin' || columnName === 'checkout') {
-		console.log(`${columnName} 편집 시작 - 시간 형식: HHMM`);
+		//console.log(`${columnName} 편집 시작 - 시간 형식: HHMM`);
 	}
 });
 
 // 편집 완료 이벤트
 grid.on('editingFinish', function(ev) {
-	const { columnName, value } = ev;
+	const { rowKey, columnName, value } = ev;
+
 	if ((columnName === 'checkin' || columnName === 'checkout') && value) {
+		// 1. HHMM 형식 유효성 검사
 		if (!validateTimeFormat(value)) {
-			console.log(`${columnName} 편집 완료 - 유효하지 않은 시간: ${value}`);
+			// 유효성 검사 실패 이벤트에서 alert를 처리하므로 여기서는 false만 반환
+			//console.log(`${columnName} 편집 완료 - 유효하지 않은 시간: ${value}`);
 			return false; // 편집 취소
 		}
-		console.log(`${columnName} 편집 완료 - 유효한 시간: ${value}`);
+
+		const row = grid.getRow(rowKey);
+		const checkin = columnName === 'checkin' ? value : row.checkin;
+		const checkout = columnName === 'checkout' ? value : row.checkout;
+
+		// 2. 출근/퇴근 시간 순서 유효성 검사
+		// 두 값 모두 존재하고, 출근 시간이 퇴근 시간보다 늦거나 같을 경우
+		if (checkin && checkout && checkin >= checkout) {
+			// alert가 다른 alert와 겹치지 않도록 setTimeout 사용
+			setTimeout(() => {
+				if (columnName === 'checkin') {
+					alert('출근 시간은 퇴근 시간보다 빨라야 합니다.');
+				} else {
+					alert('퇴근 시간은 출근 시간보다 늦어야 합니다.');
+				}
+			}, 10); // 짧은 딜레이
+			
+			return false; // 편집 취소
+		}
+		
+		//console.log(`${columnName} 편집 완료 - 유효한 시간: ${value}`);
 	}
 });
 
