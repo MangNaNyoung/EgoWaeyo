@@ -3,7 +3,7 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout/layout}">
 <main layout:fragment="content">
-<style>
+	<style>
 /* 사이드바 스타일 */
 body {
 	background: #fff;
@@ -33,10 +33,14 @@ body {
 	flex-shrink: 0;
 }
 
+li.li_name {
+	margin-bottom: 15px;
+}
+
 /* content 스타일 */
 </style>
 
-<!-- 전체 문서를 감싸는 div 시작-->
+	<!-- 전체 문서를 감싸는 div 시작-->
 	<div class="d-flex">
 		<!-- slide를 감싸는 div 시작-->
 		<div id="slid" style="height: 1000px" class="col-2 border-end">
@@ -66,55 +70,68 @@ body {
 			<div class="custom-header">
 				<div class="container-fluid">
 					<div class="d-flex align-items-center justify-content-between">
-						<div class="custom-title">게시글 수정</div>
+						<div class="custom-title"></div>
+
+
 					</div>
 				</div>
 			</div>
-	<!-- 상단 헤더 -->
-	<!-- content -->
+			<!-- 상단 헤더 -->
+			<!-- content -->
 
-	<form class="bg-white p-5 rounded" enctype="multipart/form-data"
-		method="post" action="/article/articleUpdate">
-		<div class="mb-3 row">
-			<div class="mb-3 row">
-				<label for="boardSelect" class="col-sm-1 col-form-label text-start">게시판</label>
-				<div class="col-sm-2">
-					<select id="boardSelect" class="form-select">
-						<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
-					</select>
-				</div>
-			</div>
+			<form class="bg-white p-5 rounded" enctype="multipart/form-data"
+				method="post" action="/article/articleUpdate">
+				<div class="mb-3 row">
+					<div class="mb-3 row">
+						<label for="boardSelect"
+							class="col-sm-1 col-form-label text-start">게시판</label>
+						<div class="col-sm-2">
+							<select id="boardSelect" class="form-select">
+								<!-- 옵션이 JavaScript로 동적으로 추가됩니다 -->
+							</select>
+						</div>
+					</div>
 
-			<div class="mb-3 row">
-				<label for="titleInput" id="title" class="col-sm-1 col-form-label text-start">제목</label>
-				<div class="col-sm-12">
-					<input type="text" id="title-Input" class="form-control" name="nttSj">
-				</div>
-			</div>
+					<div class="mb-3 row">
+						<label for="titleInput" id="title"
+							class="col-sm-1 col-form-label text-start">제목</label>
+						<div class="col-sm-12">
+							<input type="text" id="title-Input" class="form-control"
+								name="nttSj">
+						</div>
+					</div>
 
-			<div class="mb-3 row">
-				<label for="Uploadfile" class="col-sm-1 col-form-label text-start" name="files" multiple>첨부파일</label>
-				<div class="col-sm-11">
-					<input type="file" id="fileInput" class="form-control"
-						name="files" multiple>
-				</div>
-			</div>
-			<div class="mb-3">
-				<label for="contentTextarea" class="form-label" name="nttCn">내용</label>
-				<textarea id="contentTextarea" class="form-control" rows="20"
-					placeholder="내용을 입력하세요"></textarea>
-			</div>
+					<div class="mb-3 row">
+						<label for="Uploadfile" class="col-sm-1 col-form-label text-start"
+							name="files" multiple>첨부파일</label>
+						<div class="col-sm-11">
+							<div id="fileName" class="form-control">
+								<input type="file" name="files" id="fileInput" multiple>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="contentTextarea" class="form-label" name="nttCn">내용</label>
+							<textarea id="contentTextarea" class="form-control" rows="20"
+								placeholder="내용을 입력하세요"></textarea>
+						</div>
 
-			<div class="text-center">
-				<button type="button" class="btn btn-dark me-2" id="submitButton">등록</button>
-				<button type="button" class="btn btn-secondary" id="cancelButton">취소</button>
-			</div>
+						<div class="text-center">
+							<button type="button" class="btn btn-dark me-2" id="submitButton">등록</button>
+							<button type="button" class="btn btn-secondary" id="cancelButton">취소</button>
+						</div>
+					</div>
+			</form>
 		</div>
-	</form>
-	</div>
-	<div th:replace="article/addProjectModal :: addProjectModal"></div>
+		<div th:replace="article/addProjectModal :: addProjectModal"></div>
 		<div th:replace="article/editProjectModal :: editProjectModal"></div>
-<script>
+		<script th:inline=javaScript>
+let barClicked = [[${barContect}]]
+if (barClicked) {
+	 barLending(barClicked);
+console.log("barClicked:", barClicked); // 디버깅용 로그					 
+}
+let manageClick;
+//모달 열기
 function openModal() {
 	fetch('addProjectModal.html')
 		.then(response => response.text())
@@ -125,7 +142,7 @@ function openModal() {
 		})
 		.catch(error => console.error('Error loading modal:', error));
 }
-
+//모달 닫기 함수
 function closeModal() {
 	const modalContainer = document.getElementById('modal-container');
 	modalContainer.classList.add('hidden');
@@ -152,99 +169,105 @@ function closeModal() {
 } */
 
 
-// 사이드바
+//사이드바
 document.addEventListener("DOMContentLoaded", function () {
-	fetch('/egowaeyo/bbsMaster/groupedBbsData')
-		.then(response => response.json())
-		.then(data => {
-			console.log("Fetched Data:", data); // 디버깅 로그 추가
+fetch('/egowaeyo/bbsMaster/groupedBbsData')
+.then(response => response.json())
+.then(data => {
+    console.log("Fetched Data:", data); // 디버깅 로그 추가
 
-			const parentProjectsList = document.querySelector("ul.parentsProjects");
-			if (parentProjectsList) {
-				parentProjectsList.innerHTML = ""; // 기존 내용 초기화
+    const parentProjectsList = document.querySelector("ul.parentsProjects");
+    if (parentProjectsList) {
+        parentProjectsList.innerHTML = ""; // 기존 내용 초기화
 
-				Object.entries(data).forEach(([codeNm, bbsList]) => {
-					const groupItem = document.createElement("li");
-					groupItem.textContent = codeNm;
+        Object.entries(data).forEach(([codeNm, bbsList]) => {
+            const groupItem = document.createElement("li");
+            groupItem.classList.add("li_name");
 
-					// 새로운 ul 태그 생성
-					const subList = document.createElement("ul");
+            // '공지사항'일 경우 codeNm 숨기기
+            if (codeNm !== "📌 공지사항") {
+                groupItem.textContent = codeNm;
 
-					// ul 태그에 img 추가
-					const ulImg = document.createElement("img");
-					ulImg.setAttribute("data-bs-toggle", "modal");
-					ulImg.setAttribute("data-bs-target", "#editProjectModal");
-					ulImg.setAttribute("class", "img-icon");
-					ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
-					ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
-					groupItem.appendChild(ulImg);
+                const ulImg = document.createElement("img");
+                ulImg.setAttribute("data-bs-toggle", "modal");
+                ulImg.setAttribute("data-bs-target", "#addProjectModal");
+                ulImg.setAttribute("class", "img-icon addUnderBoard");
+                ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+                ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+                groupItem.appendChild(ulImg);
+            }
 
+            // 새로운 ul 태그 생성
+            const subList = document.createElement("ul");
 
-					bbsList.forEach(bbs => {
-						// li 태그 생성
-						const listItem = document.createElement("li");
-						// li 태그에 no_dot 클래스 추가
-						listItem.classList.add("no_dot");
-						listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
-						listItem.setAttribute("data-bbs-id", bbs.bbsId); // bbsNm을 data 속성으로 추가
-						listItem.setAttribute("data-code", bbs.code); // bbsNm을 data 속성으로 추가
+            bbsList.forEach(bbs => {
+                const listItem = document.createElement("li");
+                listItem.classList.add("no_dot");
+                listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
+                listItem.setAttribute("data-bbs-id", bbs.bbsId); // bbsNm을 data 속성으로 추가
+                listItem.setAttribute("data-code", bbs.code); // bbsNm을 data 속성으로 추가
 
-						// img 태그 생성
-						const img = document.createElement("img");
-						img.setAttribute("data-bs-toggle", "modal");
-						img.setAttribute("data-bs-target", "#editProjectModal");
-						img.setAttribute("class", "img-icon");
-						img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
-						img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+                const img = document.createElement("img");
+                img.setAttribute("data-bs-toggle", "modal");
+                img.setAttribute("data-bs-target", "#addProjectModal");
+                img.setAttribute("class", "img-icon");
+                img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+                img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
 
-						// bbsNm 텍스트 추가
-						const textNode = document.createTextNode(bbs.bbsNm);
+                const textNode = document.createTextNode(bbs.bbsNm);
 
-						// li에 텍스트와 img 추가
-						listItem.appendChild(textNode);
-						listItem.appendChild(img);
+                // 공지사항의 bbsNm에 스타일 적용
+                if (codeNm === "📌 공지사항") {
+                    listItem.style.cssText = "font-weight: bold !important; cursor: pointer; margin-left:-32px; margin-bottom: 10px;";
+                }
 
-						listItem.style.fontWeight = "normal"; // li 태그에 normal 스타일 적용
-						subList.appendChild(listItem);
-					});
+                listItem.appendChild(textNode);
+                listItem.appendChild(img);
 
-					groupItem.appendChild(subList);
-					parentProjectsList.appendChild(groupItem);
-				});
-				
-			}
-		})
-		.catch(error => console.error('Error fetching grouped BBS data:', error));
+                listItem.style.fontWeight = "normal"; // li 태그에 normal 스타일 적용
+                subList.appendChild(listItem);
+            });
+
+            groupItem.appendChild(subList);
+            parentProjectsList.appendChild(groupItem);
+        });
+    }
+})
+.catch(error => console.error('Error fetching grouped BBS data:', error));
 });
 
-// 게시판명 클릭 -> 헤더명 변경
 document.addEventListener("DOMContentLoaded", function () {
-	const parentProjectsList = document.querySelector("ul.parentsProjects");
-	const customTitle = document.querySelector(".custom-title");
-	const postListContainer = document.querySelector(".container-fluid.px-4");
+const parentProjectsList = document.querySelector("ul.parentsProjects");
 
-	// 게시판 이름(li)을 클릭했을 때
-	parentProjectsList.addEventListener("click", function (e) {
-		const clicked = e.target;
+parentProjectsList.addEventListener("click", function (e) {
+const clicked = e.target;
 
-		// 게시판 이름(li)의 텍스트 노드를 클릭했을 때만 처리
-		if (clicked.tagName === "LI" && clicked.textContent.trim() !== "") {
-			const bbsNm = clicked.childNodes[0].nodeValue.trim(); // 게시판 이름
-			const bbsId = clicked.getAttribute("data-bbs-id"); // 게시판 ID (li에 data 속성으로 넣어야 함)
+if (clicked.tagName === "LI" && clicked.textContent.trim() !== "") {
+    const bbsId = clicked.getAttribute("data-bbs-id"); // 게시판 ID
+	const bbsNm = clicked.textContent.trim(); // 게시판 이름
+	
+    if (!bbsId) {
+        console.warn("bbsId가 없습니다.");
+        return;
+    }
 
-			if (!bbsId) {
-		        console.warn("bbsId가 없습니다.");
-		        return;
-		      }
+    // 선택한 게시판 ID를 localStorage에 저장
+    localStorage.setItem("selectedBbsId", bbsId);
 
-			// 제목 변경
-			if (customTitle) {
-				customTitle.textContent = bbsNm;
-			}
-		}
-		
-	});
+    // articleList 페이지로 이동
+    window.location.href = "/egowaeyo/article/articleList.do"+ `?bbsId=${encodeURIComponent(bbsId)}&bbsNm=${encodeURIComponent(bbsNm)}`;
+}
 });
+});
+
+//게시글 데이터를 렌더링하는 함수
+function renderArticleDetail(article) {
+    document.querySelector("#article-title").textContent = article.nttSj;
+    document.querySelector("#article-content").textContent = article.nttCn;
+    document.querySelector("#article-author").textContent = article.frstRegisterNm;
+    document.querySelector("#article-date").textContent = article.frstRegisterPnttm;
+    document.querySelector(".custom-title").textContent = article.bbsNm;
+}
 
 
 //게시글 상세보기
@@ -253,11 +276,53 @@ document.addEventListener("DOMContentLoaded", function () {
     const urlParams = new URLSearchParams(window.location.search);
     const bbsId = urlParams.get("bbsId");
     const nttId = urlParams.get("nttId");
+    const fileNameContainer = document.querySelector("#fileName");
 
     if (!bbsId || !nttId) {
       console.error("bbsId 또는 nttId가 URL에 없습니다.");
       return;
     }
+    
+ // 삭제 버튼 추가 함수
+    const addDeleteButton = (fileNameText) => {
+        const deleteButton = document.createElement("button");
+        deleteButton.type = "button"; // 버튼 타입 설정
+        deleteButton.className = "btn btn-danger btn-sm";
+        deleteButton.style.marginLeft = "10px";
+        deleteButton.style.cursor = "pointer";
+        deleteButton.style.padding = "1px 6px 4px 6px"
+        deleteButton.style.float = "right";
+        
+     // 이미지 생성 및 버튼에 추가
+        const deleteIcon = document.createElement("img");
+        deleteIcon.src = "/egowaeyo/assets/images/icon/delete.webp"; // 이미지 경로 설정
+        deleteIcon.style.width = "12px"; // 이미지 크기 설정
+        deleteIcon.style.height = "17px";
+        deleteIcon.style.filter = "invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(99%) contrast(102%)"; // 이미지 색상 설정
+        deleteIcon.style.weight = "1px"; // 이미지 굵기 설정
+        
+        deleteButton.appendChild(deleteIcon); // 버튼에 이미지 추가
+
+        deleteButton.addEventListener("click", function () {
+            fileNameContainer.innerHTML = ""; // 기존 파일명 제거
+            renderFileInput(); // ✅ 중복 방지 포함된 함수 호출
+            checkModification(); // 수정 상태 반영
+        });
+
+        fileNameContainer.appendChild(fileNameText);
+        fileNameContainer.appendChild(deleteButton);
+    };
+
+    // 파일 첨부 이벤트 처리 함수
+    const handleFileChange = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            fileNameContainer.innerHTML = ""; // 기존 내용 초기화
+            const fileNameText = document.createElement("span");
+            fileNameText.textContent = file.name; // 새 파일명 표시
+            addDeleteButton(fileNameText); // 삭제 버튼 추가
+        }
+    };
 
     // 서버 API 호출
     fetch(`/egowaeyo/article/selectArticleDetail?bbsId=${bbsId}&nttId=${nttId}`)
@@ -268,6 +333,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return response.json();
       })
       .then(data => {
+    	  
     	  if (data && Object.keys(data).length > 0) {
     		  const currentBbsId = data.bbsId; // 받아온 bbsId를 currentBbsId로 설정
     		  
@@ -304,24 +370,36 @@ document.addEventListener("DOMContentLoaded", function () {
     	      document.querySelector("#boardSelect").textContent = data.bbsNm;
     	      document.querySelector("#title-Input").value = data.nttSj;
     	      document.querySelector("#contentTextarea").textContent = data.nttCn.replace(/^<p>|<\/p>$/g, "");
-    	    } else {
-    	      console.error("데이터가 비어 있습니다.");
-    	    }
-    	  })
+    	  }
+    	  if (data && data.bbsFileName) {
+              // 파일명 표시
+              const fileNameText = document.createElement("span");
+              fileNameText.textContent = data.bbsFileName;
+              addDeleteButton(fileNameText); // 삭제 버튼 추가
+          } else {
+              // 파일 첨부 활성화
+              const fileInput = document.createElement("input");
+              fileInput.type = "file";
+              fileInput.id = "fileInput";
+              fileInput.name = "files";
+              fileInput.addEventListener("change", handleFileChange); // 새 파일 첨부 이벤트 추가
+              fileNameContainer.appendChild(fileInput);
+          }
+    })
     	  
     	  .catch(error => console.error("Error fetching article detail:", error));
   });
   
   // 업데이트 처리
-document.addEventListener("DOMContentLoaded", function () {
+
     const boardSelect = document.getElementById("boardSelect");
     const titleInput = document.getElementById("title-Input");
     const contentTextarea = document.getElementById("contentTextarea");
-    const fileInput = document.getElementById("fileInput");
+    const fileNameContainer = document.querySelector("#fileName");
     const submitButton = document.getElementById("submitButton");
     const cancelButton = document.getElementById("cancelButton");
-    
- 	// 취소 버튼 항상 활성화
+
+    // 취소 버튼 항상 활성화
     cancelButton.disabled = false;
 
     // 등록 버튼 초기 상태 비활성화
@@ -338,8 +416,36 @@ document.addEventListener("DOMContentLoaded", function () {
     boardSelect.addEventListener("change", checkModification);
     titleInput.addEventListener("input", checkModification);
     contentTextarea.addEventListener("input", checkModification);
-    fileInput.addEventListener("change", checkModification);
 
+    // 파일 변경 및 삭제 시 수정 상태 반영
+    fileNameContainer.addEventListener("change", function (event) {
+        const fileInput = fileNameContainer.querySelector("input[type='file']");
+        if (fileInput && fileInput.files.length > 0) {
+            checkModification();
+        }
+    });
+
+    fileNameContainer.addEventListener("click", function (event) {
+    	 if (event.target.closest("button")) {
+    	        checkModification();
+    	 }
+    });
+
+    // 취소 버튼 클릭 시 페이지 이동
+    cancelButton.addEventListener("click", function () {
+        // URL에서 게시판 ID와 게시글 ID를 가져옴
+        const urlParams = new URLSearchParams(window.location.search);
+        const bbsId = urlParams.get("bbsId");
+        const nttId = urlParams.get("nttId");
+
+        if (bbsId && nttId) {
+            // 상세페이지로 이동
+            window.location.href = `/egowaeyo/article/articleDetail.do?bbsId=${encodeURIComponent(bbsId)}&nttId=${encodeURIComponent(nttId)}`;
+        } else {
+            console.error("bbsId 또는 nttId가 누락되었습니다.");
+        }
+    });
+    
     // 등록 버튼 클릭 시 업데이트 처리
     submitButton.addEventListener("click", function () {
         if (!isModified) {
@@ -351,41 +457,47 @@ document.addEventListener("DOMContentLoaded", function () {
         const nttId = new URLSearchParams(window.location.search).get("nttId");
         const nttSj = titleInput.value;
         const nttCn = contentTextarea.value;
-        const file = fileInput.files[0];
-        
+        const fileInput = fileNameContainer.querySelector("input[type='file']");
+        const file = fileInput ? fileInput.files[0] : null;
+
         if (!bbsId || !nttId || !nttSj || !nttCn) {
-        	alert("필수 입력값이 누락되었습니다.");
-        	return;
-    	}
-        
+            alert("필수 입력값이 누락되었습니다.");
+            return;
+        }
+
         const formData = new FormData();
         formData.append("bbsId", bbsId);
         formData.append("nttId", nttId);
         formData.append("nttSj", nttSj);
         formData.append("nttCn", nttCn);
-        formData.append("file", fileInput.files[0]);  // 파일 추가
-        
-        if (fileInput.files.length > 0) {
-            formData.append("files", fileInput.files[0]);
+
+        if (file) {
+            formData.append("files", file);
+            formData.append("bbsFileName", file.name); // 파일 이름 추가
+        }
+    
+        if (!file && fileNameContainer.innerText.trim() === "") {
+            formData.append("bbsFileName", ""); 
         }
 
         fetch("articleUpdate.do", {
             method: "POST",
             body: formData,
         })
-            .then(response =>  response.json())
-             .then(data => {
-                 alert("게시글이 성공적으로 수정되었습니다.");
-                 window.location.href = `articleDetail.do?bbsId=${bbsId}&nttId=${nttId}`;
-             })
-             .catch(error => {
-                 console.error("게시글 수정 중 오류 발생:", error);
-                 alert("게시글 수정 중 오류가 발생했습니다.");
-             });
-    });
-});
+            .then(response => response.json())
+            .then(data => {
+                alert("게시글이 성공적으로 수정되었습니다.");
+                window.location.href = `articleDetail.do?bbsId=${bbsId}&nttId=${nttId}`;
+            })
+            .catch(error => {
+                console.error("게시글 수정 중 오류 발생:", error);
+                alert("게시글 수정 중 오류가 발생했습니다.");
+            });
+        });
+
+
 </script>
-</div>
+	</div>
 
 </main>
 </html>

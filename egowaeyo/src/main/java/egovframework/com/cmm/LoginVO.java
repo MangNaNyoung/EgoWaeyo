@@ -61,7 +61,18 @@ public class LoginVO implements Serializable{
 	private String onepassUserkey;
 	/** 디지털원패스 사용자세션값 */
 	private String onepassIntfToken;
-
+	
+	private String empPhoto;
+	
+	
+	public String getEmpPhoto() {
+		return empPhoto;
+	}
+	
+	public void setEmpPhoto(String empPhoto) {
+		this.empPhoto = empPhoto;
+	}
+	
 	/**
 	 * id attribute 를 리턴한다.
 	 * @return String

@@ -10,7 +10,7 @@ public interface ArticleService {
 
 	BoardVO selectArticleDetail(BoardVO boardVO);
 
-	int updateArticle(Board board);
+	int updateArticle(BoardVO vo);
 
 	List<BoardVO> selectBbsAll(BoardVO boardVO);
 

@@ -26,7 +26,9 @@
 				LAST_UPDT_PNTTM = SYSDATE,
 				SJ_BOLD_AT = #{sjBoldAt},
 				NOTICE_AT = #{noticeAt},
-				SECRET_AT = #{secretAt}
+				SECRET_AT = #{secretAt},
+				BBS_FILE_NAME = #{bbsFileName},
+				BBS_FILE_ORI_NAME = #{bbsFileOriName}
 			WHERE NTT_ID = #{nttId}
  	</update>
  	
@@ -113,6 +115,8 @@
 		<result property="noticeAt" column="NOTICE_AT" />
 		<result property="secretAt" column="SECRET_AT" />
 		<result property="commentCo" column="COMMENT_CO" />
+		<result property="bbsFileName" column="BBS_FILE_NAME" />
+		<result property="bbsFileOriName" column="BBS_FILE_ORI_NAME" />
 	</resultMap>
 	
 	<!-- 게시판 게시글 상세조회 -->
@@ -129,7 +133,7 @@
 		a.SJ_BOLD_AT, a.NOTICE_AT, a.SECRET_AT,
 		a.PARNTSCTT_NO, a.ANSWER_AT, a.ANSWER_LC, a.SORT_ORDR,
 		c.BBS_TY_CODE, c.REPLY_POSBL_AT,
-		c.FILE_ATCH_POSBL_AT, c.ATCH_POSBL_FILE_NUMBER, c.BBS_NM
+		c.FILE_ATCH_POSBL_AT, c.ATCH_POSBL_FILE_NUMBER, c.BBS_NM, a.BBS_FILE_NAME, a.BBS_FILE_ORI_NAME
 		FROM
 		COMTNBBS a
 		LEFT OUTER JOIN
@@ -167,6 +171,7 @@
 		<result property="commentCo" column="COMMENT_CO" />
 		<result property="replyPosblAt" column="REPLY_POSBL_AT" />
 		<result property="blogId" column="BLOG_ID" />
+		<result property="bbsFileName" column="BBS_FILE_NAME" />
 	</resultMap>
 	<!-- 게시판 게시글 상세조회 -->
 	<select id="selectArticleDetailDefault"
@@ -180,7 +185,7 @@
 		a.RDCNT, a.PARNTSCTT_NO, a.ANSWER_AT, a.ANSWER_LC, a.USE_AT, a.ATCH_FILE_ID,
 		a.BBS_ID, a.NTCE_BGNDE, a.NTCE_ENDDE, a.SJ_BOLD_AT, a.NOTICE_AT,
 		a.SECRET_AT, c.COMMENT_CO,
-		a.NTCR_ID, d.BLOG_ID, d.REPLY_POSBL_AT
+		a.NTCR_ID, d.BLOG_ID, d.REPLY_POSBL_AT, a.BBS_FILE_NAME
 		FROM
 		COMTNBBS a
 		LEFT OUTER JOIN
@@ -302,10 +307,10 @@
 		FRST_REGIST_PNTTM
 		FROM COMTNBBS
 		WHERE BBS_ID = #{bbsId} 
-		<if test="searchType == '제목+내용'">
+		<if test="'a'.toString().equals(searchType)">
 			AND (NTT_SJ LIKE '%' || #{searchKeyword} || '%' OR DBMS_LOB.INSTR(NTT_CN, #{searchKeyword}) > 0)
        	</if>
-       	<if test="searchType == '작성자'">
+       	<if test="'b'.toString().equals(searchType)">
            	AND NTCR_NM LIKE '%' || #{searchKeyword} || '%'
         </if>
 	</select>
@@ -363,7 +368,7 @@
 		PARNTSCTT_NO, NTT_NO, ANSWER_LC, ATCH_FILE_ID,
 		FRST_REGISTER_ID,
 		FRST_REGIST_PNTTM, USE_AT,
-		SJ_BOLD_AT, NOTICE_AT, SECRET_AT, BLOG_ID
+		SJ_BOLD_AT, NOTICE_AT, SECRET_AT, BLOG_ID, BBS_FILE_NAME, BBS_FILE_ORI_NAME
 		)
 		VALUES
 		( #{nttId}, #{bbsId}, #{nttSj}, #{nttCn}, #{nttId},
@@ -374,7 +379,7 @@
 		#{parnts}, 1, #{replyLc}, #{atchFileId},
 		#{frstRegisterId},
 		SYSDATE, 'Y',
-		#{sjBoldAt}, #{noticeAt}, #{secretAt}, #{blogId}
+		#{sjBoldAt}, #{noticeAt}, #{secretAt}, #{blogId}, #{bbsFileName}, #{bbsFileOriName}
 		)
 	</insert>
 	
