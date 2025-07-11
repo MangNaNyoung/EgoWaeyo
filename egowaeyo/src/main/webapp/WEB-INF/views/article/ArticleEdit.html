@@ -378,6 +378,7 @@ document.addEventListener("DOMContentLoaded", function () {
     	      document.querySelector("#contentTextarea").textContent = data.nttCn.replace(/^<p>|<\/p>$/g, "");
     	  }
     	  if (data && data.bbsFileName) {
+    		  const fileNameContainer = document.querySelector("#fileName");
               // 파일명 표시
               const fileNameText = document.createElement("span");
               fileNameText.textContent = data.bbsFileName;
@@ -394,7 +395,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 renderFileInput(); // 파일 첨부 버튼 표시
               });
 
-              fileNameContainer.querySelector("input[type='file']").hidden = true; // 기존 파일 입력 숨김
+             
               fileNameContainer.appendChild(fileNameText);
               fileNameContainer.appendChild(deleteButton);
               
