@@ -1,6 +1,7 @@
 package egovframework.com.egowaeyo.admin.service.Impl;
 
 import java.util.List;
+import java.util.Random;
 
 import javax.annotation.Resource;
 
@@ -10,12 +11,10 @@ import org.springframework.stereotype.Service;
 import egovframework.com.egowaeyo.admin.mapper.AdminUserMapper;
 import egovframework.com.egowaeyo.admin.service.AdminUserService;
 import egovframework.com.egowaeyo.admin.service.AdminUserVO;
-import egovframework.com.egowaeyo.admin.service.DeptVO;
 import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.admin.service.PosVO;
 import egovframework.com.sec.drm.service.DeptAuthor;
 import egovframework.com.sec.drm.service.impl.DeptAuthorDAO;
-import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.com.utl.sim.service.EgovFileScrty;
 import lombok.RequiredArgsConstructor;
 
@@ -32,10 +31,6 @@ public class AdminUserServiceImpl implements AdminUserService {
 	@Resource(name="deptAuthorDAO")
     private DeptAuthorDAO deptAuthorDAO;
 	
-	@Override
-	public List<DeptVO> getDept(DeptVO dept){
-		return adminusermapper.getDept(dept);
-	}
 
 	@Override
 	public List<PosVO> getPos(PosVO pos) {
@@ -46,6 +41,7 @@ public class AdminUserServiceImpl implements AdminUserService {
 	@Override
 	public int AdminUserIns(AdminUserVO adu) {
 		try {
+			
 			// 1. ESNTL_ID 설정 uniqId 가져옴
 			String uniqId = idgenService.getNextStringId();
 			adu.setEsntlId(uniqId);
@@ -78,4 +74,5 @@ public class AdminUserServiceImpl implements AdminUserService {
 	public List<EgovDeptVO> getEgovDept(EgovDeptVO edpt) {
 		return adminusermapper.getEgovDept(edpt);
 	}
+
 }

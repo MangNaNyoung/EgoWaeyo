@@ -29,11 +29,11 @@
 		             EMP_PHOTO,
 		             SIGN_PHOTO,
 		             BRTHDY,
+		             EMPL_NO,
 		             HOUSE_ADRES,
 		             PHONE_NUMBER,
 		             EMAIL_ADRES,
 		             SEXDSTN_CODE,
-		             DEPARTMENTS_ID,
 		             POSITION_ID,
 		             ORGNZT_ID,
 		             OFCPS_NM,
@@ -50,11 +50,11 @@
 		       		 #{empPhoto},
 		       		 #{signPhoto},
 		       		 #{brthdy},
+		       		 #{emplNo},
 		       		 #{houseAdres},
 		       		 #{phoneNumber},
 		       		 #{emailAdres},
 		       		 #{sexdstnCode},
-		       		 #{departmentsId},
 		       		 #{positionId},
 		       		 #{orgnztId},
 		       		 (SELECT
@@ -72,6 +72,5 @@
 	
 		INSERT INTO comtnorgnztinfo
 		
-	
 	</insert> -->
 </mapper>

@@ -30,7 +30,6 @@ public class AdminUserVO {
 	private String esntlId; // 고유ID
 	private String empPhoto; // 전사얼굴사진
 	private String signPhoto; // 전사결재사진
-	private String departmentsId; // 부서코드
 	private String positionId; // 직급코드
 	private String phoneNumber; // 연락처
 	private String emailAdres; // 이메일
