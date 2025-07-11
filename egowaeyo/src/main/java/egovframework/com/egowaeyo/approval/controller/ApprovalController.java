@@ -4,9 +4,12 @@ import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +20,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import egovframework.com.cop.smt.lsm.service.EmplyrVO;
-import egovframework.com.egowaeyo.admin.service.DeptVO;
+import egovframework.com.egowaeyo.admin.service.AdminUserVO;
+import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
@@ -32,12 +36,18 @@ public class ApprovalController {
 	private ApprovalService approvalService;
 
 	@GetMapping("/write")
-	public String writeForm(Model model) {
+	public String writeForm(Model model,  HttpServletRequest req) {
+		AdminUserVO loginUser = (AdminUserVO) req.getSession().getAttribute("loginUser");
+		if(loginUser == null) {
+		    loginUser = new AdminUserVO(); // 최소한 빈 객체라도
+		    loginUser.setUserNm("알수없음");
+		}
+		model.addAttribute("loginUser", loginUser);
 		model.addAttribute("formList", approvalService.getFormList());
 		return "approval/write.html";
 	}
-
-	@PostMapping("/write")
+	
+	@PostMapping("/write.do")
 	public String submitDoc(@RequestParam String docTitle, @RequestParam String apprformId,
 			@RequestParam String docContent, HttpSession session, Principal principal) {
 		ApprovalDocVO vo = new ApprovalDocVO();
@@ -48,9 +58,9 @@ public class ApprovalController {
 		vo.setCreatedDt(new Date());
 		vo.setDocHtml(docContent);
 		approvalService.insertApprovalDoc(vo);
-		return "redirect:/approval/receive.html";
+		return "redirect:/approval/receive";
 	}
-
+	
 	// 개인 수신함 (receive.html)
 	@GetMapping("/receive")
 	public String receivePage() {
@@ -119,12 +129,14 @@ public class ApprovalController {
 	
 	// 부서 리스트 반환
     @GetMapping("/dept")
-    public List<DeptVO> getDeptList() {
+    @ResponseBody
+    public List<EgovDeptVO> getDeptList() {
         return approvalService.getDeptList();
     }
     
 	// 부서별 사용자 목록 조회 (JSON 반환)
     @GetMapping("/dept/{deptId}")
+    @ResponseBody
     public List<EmplyrVO> getEmpListByDept(@PathVariable String deptId) {
         return approvalService.getEmpListByDept(deptId);
     }

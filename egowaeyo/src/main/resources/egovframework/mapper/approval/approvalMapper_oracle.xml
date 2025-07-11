@@ -103,29 +103,28 @@
 	</select>
 
 	<select id="selectDeptList"
-		resultType="egovframework.com.egowaeyo.admin.service.DeptVO">
-		SELECT DEPARTMENTS_ID AS departmentsId,
-		DEPARTMENTS_NAME AS
-		departmentsName,
-		DEPARTMENTS_MASTER AS departmentsMaster
+		resultType="egovframework.com.egowaeyo.admin.service.EgovDeptVO">
+		SELECT orgnzt_Id,
+		orgnzt_Nm,
+		orgnzt_Dc 
 		FROM
-		DEPARTMENTS
+		COMTNORGNZTINFO
 	</select>
 
 	<select id="selectEmpListByDept" parameterType="string"
-		resultType="egovframework.com.cop.smt.lsm.service.EmplyrVO">
-		SELECT EMPLYR_ID AS emplyrId,
-		USER_NM AS userNm
+		resultType="egovframework.com.egowaeyo.admin.service.AdminUserVO">
+		SELECT EMPLYR_ID,
+		USER_NM
 		FROM
 		COMTNEMPLYRINFO
-		WHERE DEPARTMENTS_ID = #{deptId}
+		WHERE ORGNZT_ID = #{deptId}
 	</select>
 
 	<select id="selectAllUsers" parameterType="string"
-		resultType="egovframework.com.cop.smt.lsm.service.EmplyrVO">
+		resultType="egovframework.com.egowaeyo.admin.service.AdminUserVO">
 		SELECT EMPLYR_ID AS empId,
-		USER_NM AS userNm,
-		DEPARTMENTS_ID
+		USER_NM,
+		ORGNZT_ID
 		AS deptId
 		FROM COMTNEMPLYRINFO
 	</select>
