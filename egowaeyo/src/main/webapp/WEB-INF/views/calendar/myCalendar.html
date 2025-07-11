@@ -70,7 +70,7 @@ body {
 	margin: 16px 0 12px 0;
 }
 
-#calendar {
+#calOrigin {
 	height: 800px;
 	width: 1300px;
 }
@@ -122,15 +122,15 @@ body {
        
         </nav>
       </header>
-			<div id="calendar"></div>
+			<div id="calOrigin"></div>
 		</div>
 		</div>
 	</div>
 	<script>
 		const Calendar = tui.Calendar;
-		const container = document.getElementById('calendar');
+		const container = document.getElementById('calOrigin');
 		const options = {
-			daynames : [ '일', '월', '화', '수', '목', '금', '토' ],
+			daynames : [ '일', '월', '화', '수', '목', '금', '토'],
 			useFormPopup : true,
 			useDetailPopup : true,
 			defaultView : 'month',
