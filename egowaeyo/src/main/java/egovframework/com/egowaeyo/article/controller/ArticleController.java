@@ -177,21 +177,19 @@ public class ArticleController {
 
 	@GetMapping("/downloadFile")
 	public ResponseEntity<byte[]> downloadFile(@RequestParam("bbsFileName") String bbsFileName,
-            @RequestParam("bbsFileOriName") String bbsFileOriName) {
-try {
-Path filePath = Paths.get(FILE_STORE_PATH + "/article/" + bbsFileName);
-byte[] fileBytes = Files.readAllBytes(filePath);
+			@RequestParam("bbsFileOriName") String bbsFileOriName) {
+		try {
+			Path filePath = Paths.get(FILE_STORE_PATH + "/article/" + bbsFileName);
+			byte[] fileBytes = Files.readAllBytes(filePath);
 
-String contentDisposition = "attachment; filename=\"" + URLEncoder.encode(bbsFileOriName, "UTF-8") + "\"";
+			String contentDisposition = "attachment; filename=\"" + URLEncoder.encode(bbsFileOriName, "UTF-8") + "\"";
 
-return ResponseEntity.ok()
-.header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
-.contentType(MediaType.APPLICATION_OCTET_STREAM)
-.body(fileBytes);
-} catch (IOException e) {
-return ResponseEntity.internalServerError().build();
-}
-}
+			return ResponseEntity.ok().header(HttpHeaders.CONTENT_DISPOSITION, contentDisposition)
+					.contentType(MediaType.APPLICATION_OCTET_STREAM).body(fileBytes);
+		} catch (IOException e) {
+			return ResponseEntity.internalServerError().build();
+		}
+	}
 
 	// 게시글 상세조회 API
 	@GetMapping("/selectArticleDetail")
@@ -230,80 +228,93 @@ return ResponseEntity.internalServerError().build();
 	@PostMapping("/articleUpdate.do")
 	@ResponseBody
 	public BoardVO articleUpdate(BoardVO vo, HttpServletRequest request,
-	        @RequestParam(value = "files", required = false) MultipartFile[] files, RedirectAttributes rttr) {
-	    log.debug("Received request for article update: {}", vo);
+			@RequestParam(value = "files", required = false) MultipartFile[] files, RedirectAttributes rttr) {
+		log.debug("Received request for article update: {}", vo);
 
-	    // 전달된 값 디버깅
-	    log.debug("Received BoardVO: {}", vo);
+		// 필수 값 검증
+		if (vo.getBbsId() == null || vo.getBbsId().isEmpty()) {
+			throw new IllegalArgumentException("게시판 ID가 누락되었습니다.");
+		}
+		if (vo.getNttId() == 0) {
+			throw new IllegalArgumentException("게시글 ID가 누락되었습니다.");
+		}
 
-	    if (vo.getBbsId() == null || vo.getBbsId().isEmpty()) {
-	        throw new IllegalArgumentException("게시판 ID가 누락되었습니다.");
-	    }
-	    if (vo.getNttId() == 0) {
-	        throw new IllegalArgumentException("게시글 ID가 누락되었습니다.");
-	    }
+		// 수정 전 게시글 조회
+		BoardVO original = articleservice.selectArticleDetail(vo);
+		if (original == null) {
+			throw new IllegalArgumentException("기존 게시글 정보를 찾을 수 없습니다.");
+		}
 
-	    // 수정 전 게시글 조회
-	    BoardVO original = articleservice.selectArticleDetail(vo);
-	    if (original == null) {
-	        throw new IllegalArgumentException("기존 게시글 정보를 찾을 수 없습니다.");
-	    }
+		boolean fileUploaded = files != null && files.length > 0 && !files[0].isEmpty();
+		boolean fileDeleted = vo.getBbsFileName() == null || vo.getBbsFileName().isEmpty();
 
-	    boolean fileUploaded = files != null && files.length > 0 && !files[0].isEmpty();
-	    boolean fileDeleted = vo.getBbsFileName() == null || vo.getBbsFileName().isEmpty();
-	    
-	 // 파일 삭제 요청이 있다면 기존 파일 삭제
-	    if (fileDeleted && original.getBbsFileName() != null) {
-	        String path = FILE_STORE_PATH + "/article/" + original.getBbsFileName();
-	        File existingFile = new File(path);
-	        if (existingFile.exists()) {
-	            if (existingFile.delete()) {
-	                log.info("기존 파일 삭제 완료: {}", path);
-	            }
-	        }
-	        // DB에서도 null 처리
-	        vo.setBbsFileName(null);
-	        vo.setBbsFileOriName(null);
-	    }
+		// 파일 삭제 처리
+		if (fileDeleted && original.getBbsFileName() != null) {
+			deleteExistingFile(original.getBbsFileName());
+			vo.setBbsFileName(null);
+			vo.setBbsFileOriName(null);
+		}
 
-	 // 새 파일이 업로드되었으면 처리
-	    if (fileUploaded) {
-	        MultipartFile file = files[0]; // 단일 파일 처리
-	        String oriName = file.getOriginalFilename();
-	        String storedName = UUID.randomUUID().toString() + "_" + oriName;
-	        String filePath = FILE_STORE_PATH + "/article/" + storedName;
+		// 파일 업로드 처리
+		if (fileUploaded) {
+			MultipartFile file = files[0];
+			uploadNewFile(file, vo, original);
+		}
 
-	        try {
-	            file.transferTo(new File(filePath));
-	            log.info("새 파일 저장 완료: {}", filePath);
+		// 파일이 없고 삭제 요청도 없으면 기존 정보 유지
+		if (!fileUploaded && !fileDeleted) {
+			vo.setBbsFileName(original.getBbsFileName());
+			vo.setBbsFileOriName(original.getBbsFileOriName());
+		}
 
-	            vo.setBbsFileName(storedName);
-	            vo.setBbsFileOriName(oriName);
+		// 게시글 업데이트
+		int result = articleservice.updateArticle(vo);
+		if (result == 0) {
+			throw new RuntimeException("게시글 업데이트 실패");
+		}
 
-	            // 기존 파일 삭제 (중복 업로드 방지)
-	            if (original.getBbsFileName() != null) {
-	                File oldFile = new File(FILE_STORE_PATH + "/article/" + original.getBbsFileName());
-	                if (oldFile.exists()) oldFile.delete();
-	            }
+		return vo;
+	}
 
-	        } catch (IOException e) {
-	            log.error("파일 저장 중 오류: {}", filePath, e);
-	            throw new RuntimeException("파일 저장 실패");
-	        }
-	    }
+	private void deleteExistingFile(String fileName) {
+		String path = FILE_STORE_PATH + "/article/" + fileName;
+		File existingFile = new File(path);
+		if (existingFile.exists()) {
+			if (existingFile.delete()) {
+				log.info("기존 파일 삭제 완료: {}", path);
+			} else {
+				log.warn("기존 파일 삭제 실패: {}", path);
+			}
+		}
+	}
 
-	    // 파일이 없고 삭제 요청도 없으면 기존 정보 유지
-	    if (!fileUploaded && !fileDeleted) {
-	        vo.setBbsFileName(original.getBbsFileName());
-	        vo.setBbsFileOriName(original.getBbsFileOriName());
-	    }
+	private void uploadNewFile(MultipartFile file, BoardVO vo, BoardVO original) {
+		String oriName = file.getOriginalFilename();
+		String storedName = UUID.randomUUID().toString() + "_" + oriName;
+		String filePath = FILE_STORE_PATH + File.separator + "article" + File.separator + storedName;
 
-	    int result = articleservice.updateArticle(vo);
-	    if (result == 0) {
-	        throw new RuntimeException("게시글 업데이트 실패");
-	    }
+		try {
+			// 디렉토리 생성
+			File directory = new File(FILE_STORE_PATH + File.separator + "article");
+			if (!directory.exists() && !directory.mkdirs()) {
+				throw new IOException("디렉토리 생성 실패: " + directory.getPath());
+			}
 
-	    return vo;
+			// 파일 저장
+			file.transferTo(new File(filePath));
+			log.info("새 파일 저장 완료: {}", filePath);
+
+			vo.setBbsFileName(storedName);
+			vo.setBbsFileOriName(oriName);
+
+			// 기존 파일 삭제
+			if (original.getBbsFileName() != null) {
+				deleteExistingFile(original.getBbsFileName());
+			}
+		} catch (IOException e) {
+			log.error("파일 저장 중 오류: {}", filePath, e);
+			throw new RuntimeException("파일 저장 실패", e);
+		}
 	}
 
 	// 게시글 삭제 API
