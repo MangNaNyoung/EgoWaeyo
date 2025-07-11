@@ -89,7 +89,7 @@
 
 							<div class="card h-75">
 								<div class="card-body py-4 px-5">
-									 <div id='calendar'></div>
+									 <div id='calendar' style="height:300px;"></div>
 								</div>
 							</div>
 
@@ -111,11 +111,33 @@
 	<script>
 
       document.addEventListener('DOMContentLoaded', function() {
-        const calendarEl = document.getElementById('calendar')
-        const calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth'
-        })
-        calendar.render()
+    	const Calendar = tui.Calendar;
+  		const container = document.getElementById('calendar');
+  		const options = {
+  				 isReadOnly: true,
+  			defaultView : 'month',
+  			timezone : {
+
+  				zones : [ {
+  					timezoneName : 'Asia/Seoul',
+  					displayLabel : 'Seoul',
+  				}, {
+  					timezoneName : 'Europe/London',
+  					displayLabel : 'London',
+  				}, ],
+  			},
+  			calendars : [ {
+  				id : 'cal1',
+  				name : '개인',
+  				backgroundColor : '#03bd9e',
+  			}, {
+  				id : 'cal2',
+  				name : '직장',
+  				backgroundColor : '#00a9ff',
+  			}, ],
+  		};
+
+  		const calendar = new Calendar(container, options);
       })
 
     </script>
