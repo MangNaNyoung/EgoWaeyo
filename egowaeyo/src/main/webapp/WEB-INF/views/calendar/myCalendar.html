@@ -130,12 +130,10 @@ body {
 		const Calendar = tui.Calendar;
 		const container = document.getElementById('calendar');
 		const options = {
+			daynames : [ '일', '월', '화', '수', '목', '금', '토' ],
 			useFormPopup : true,
 			useDetailPopup : true,
 			defaultView : 'month',
-			
-				daynames : [ '일', '월', '화', '수', '목', '금', '토' ],
-			
 			timezone : {
 				zones : [ {
 					timezoneName : 'Asia/Seoul',
