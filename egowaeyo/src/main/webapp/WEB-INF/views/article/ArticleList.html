@@ -109,7 +109,7 @@ li.li_name {
 
 
 				<ul class="no_dot">
-					<li><span class="addBoard" data-bs-toggle="modal"
+					<li><span class="addBoard" data-bs-toggle="modal" data-type="add"
 						data-bs-target="#addProjectModal" style="cursor: pointer;">+
 							게시판추가</span></li>
 				</ul>
@@ -180,7 +180,6 @@ li.li_name {
 
 		<!-- 모달은 바깥으로 빼서 넣어주세요 -->
 		<div th:replace="article/addProjectModal :: addProjectModal"></div>
-		<div th:replace="article/editProjectModal :: editProjectModal"></div>
 		<!-- 스크립트도 복사해서 가져가면 됩니다 -->
 		<script th:inline=javaScript>
 		let barClicked = [[${barContect}]]
@@ -190,41 +189,37 @@ li.li_name {
 		}
 		let manageClick;
 		
-			function openModal() {
-				fetch('addProjectModal.html')
-					.then(response => response.text())
-					.then(html => {
-						const modalContainer = document.getElementById('modal-container');
-						modalContainer.innerHTML = html;
-						modalContainer.classList.remove('hidden');
-					})
-					.catch(error => console.error('Error loading modal:', error));
-			}
-
-			function closeModal() {
-				const modalContainer = document.getElementById('modal-container');
-				modalContainer.classList.add('hidden');
-				modalContainer.innerHTML = ''; // 모달 내용 초기화
-			}
-
-
-			// 프로젝트 수정 모달
-			/* function openModal() {
-				fetch('editProjectModal.html')
-					.then(response => response.text())
-					.then(html => {
-						const modalContainer = document.getElementById('modal-container');
-						modalContainer.innerHTML = html;
-						modalContainer.classList.remove('hidden');
-					})
-					.catch(error => console.error('Error loading modal:', error));
-			}
-
-			function closeModal() {
-				const modalContainer = document.getElementById('modal-container');
-				modalContainer.classList.add('hidden');
-				modalContainer.innerHTML = ''; // 모달 내용 초기화
-			} */
+		var myModalEl = document.getElementById('addProjectModal')
+		myModalEl.addEventListener('show.bs.modal', function (event) {
+		  let rt = event.relatedTarget; // 디버깅용 로그
+		  let type = rt.getAttribute("data-type");
+		  
+		  //저장 버튼 이벤트 처리
+		  const saveButton = document.getElementById("saveButton");
+		  
+		  saveButton.removeEventListener("click", addClick); // 기존 이벤트 제거
+		  saveButton.removeEventListener("click", updateCodeClick); // 기존 이벤트 제거
+		  saveButton.removeEventListener("click", updateBbsClick); // 기존 이벤트 제거
+		  
+		  const boardType = document.getElementById("boardTypeSelection");
+		  
+	
+		  if(type == "add") {
+			 document.querySelector('#addProjectModalLabel').textContent = "게시판 추가";
+			 saveButton.addEventListener("click", addClick );
+			
+	      }
+		  else if (type == "code") {
+			  document.querySelector('#addProjectModalLabel').textContent = "그룹게시판 관리";
+			  saveButton.addEventListener("click", updateCodeClick );
+			  boardType.hidden = true;
+		  }
+		  else if (type == "bbs") {
+			  document.querySelector('#addProjectModalLabel').textContent = "게시판 관리";
+			  saveButton.addEventListener("click", updateBbsClick );
+			  boardType.hidden = true;
+		  }
+		});
 
 			$('document').ready(function () {
 				const urlParams = new URLSearchParams(window.location.search);
@@ -262,11 +257,14 @@ li.li_name {
 						            groupItem.textContent = codeNm;
 						            
 						            const ulImg = document.createElement("img");
+						          
 									ulImg.setAttribute("data-bs-toggle", "modal");
 									ulImg.setAttribute("data-bs-target", "#addProjectModal");
 									ulImg.setAttribute("class", "img-icon addUnderBoard");
 									ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
 									ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+									ulImg.setAttribute("data-bbs-id", codeNm); 
+									ulImg.setAttribute("data-type", "code"); 
 									groupItem.appendChild(ulImg);
 						          }
 
@@ -292,7 +290,8 @@ li.li_name {
 									img.setAttribute("class", "img-icon");
 									img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
 									img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
-
+									img.setAttribute("data-bbs-id", bbs.bbsId); 
+									img.setAttribute("data-type", "bbs"); 
 									// bbsNm 텍스트 추가
 									const textNode = document.createTextNode(bbs.bbsNm);
 									
