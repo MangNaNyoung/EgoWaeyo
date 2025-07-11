@@ -106,7 +106,7 @@ li.li_name {
 							name="files" multiple>첨부파일</label>
 						<div class="col-sm-11">
 							<div id="fileName" class="form-control">
-								<input type="file" name="files" id="fileInput" multiple>
+								
 							</div>
 						</div>
 						<div class="mb-3">
@@ -283,7 +283,18 @@ document.addEventListener("DOMContentLoaded", function () {
       return;
     }
     
- // 삭제 버튼 추가 함수
+ // 파일 첨부 활성화 함수
+     const renderFileInput = () => {
+        fileNameContainer.innerHTML = ""; // 기존 내용 초기화
+        const fileInput = document.createElement("input");
+        fileInput.type = "file";
+        fileInput.id = "fileInput";
+        fileInput.name = "files";
+        fileInput.addEventListener("change", handleFileChange); // 파일 변경 이벤트 추가
+        fileNameContainer.appendChild(fileInput);
+    }; 
+    
+ 	// 삭제 버튼 추가 함수
     const addDeleteButton = (fileNameText) => {
         const deleteButton = document.createElement("button");
         deleteButton.type = "button"; // 버튼 타입 설정
@@ -317,7 +328,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const handleFileChange = (event) => {
         const file = event.target.files[0];
         if (file) {
-            fileNameContainer.innerHTML = ""; // 기존 내용 초기화
+        	fileNameContainer.querySelector("input[type='file']").hidden= true; 
             const fileNameText = document.createElement("span");
             fileNameText.textContent = file.name; // 새 파일명 표시
             addDeleteButton(fileNameText); // 삭제 버튼 추가
@@ -326,12 +337,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // 서버 API 호출
     fetch(`/egowaeyo/article/selectArticleDetail?bbsId=${bbsId}&nttId=${nttId}`)
-      .then(response => {
-        if (!response.ok) {
-        	throw new Error(`서버 응답 오류: ${response.status}`);
-        }
-        return response.json();
-      })
+      .then(response =>  response.json())
       .then(data => {
     	  
     	  if (data && Object.keys(data).length > 0) {
@@ -365,9 +371,9 @@ document.addEventListener("DOMContentLoaded", function () {
                               boardSelect.appendChild(option);
                           });
                       });
-                  })
+                  });
                   
-    	      document.querySelector("#boardSelect").textContent = data.bbsNm;
+              boardSelect.value = currentBbsId; // 현재 게시판 ID 설정
     	      document.querySelector("#title-Input").value = data.nttSj;
     	      document.querySelector("#contentTextarea").textContent = data.nttCn.replace(/^<p>|<\/p>$/g, "");
     	  }
@@ -375,23 +381,33 @@ document.addEventListener("DOMContentLoaded", function () {
               // 파일명 표시
               const fileNameText = document.createElement("span");
               fileNameText.textContent = data.bbsFileName;
-              addDeleteButton(fileNameText); // 삭제 버튼 추가
-          } else {
-              // 파일 첨부 활성화
-              const fileInput = document.createElement("input");
-              fileInput.type = "file";
-              fileInput.id = "fileInput";
-              fileInput.name = "files";
-              fileInput.addEventListener("change", handleFileChange); // 새 파일 첨부 이벤트 추가
-              fileNameContainer.appendChild(fileInput);
-          }
-    })
-    	  
+              
+           // 삭제 버튼 추가
+              const deleteButton = document.createElement("button");
+              deleteButton.type = "button";
+              deleteButton.className = "btn btn-danger btn-sm";
+              deleteButton.style.marginLeft = "10px";
+              deleteButton.textContent = "삭제";
+
+              deleteButton.addEventListener("click", function () {
+                fileNameContainer.innerHTML = ""; // 기존 파일명 제거
+                renderFileInput(); // 파일 첨부 버튼 표시
+              });
+
+              fileNameContainer.querySelector("input[type='file']").hidden = true; // 기존 파일 입력 숨김
+              fileNameContainer.appendChild(fileNameText);
+              fileNameContainer.appendChild(deleteButton);
+              
+    	    } else {
+    	      // 파일 첨부 활성화
+    	      renderFileInput();
+    	    }
+    	  })
     	  .catch(error => console.error("Error fetching article detail:", error));
   });
   
-  // 업데이트 처리
-
+  	// 업데이트 처리
+	document.addEventListener("DOMContentLoaded", function () {
     const boardSelect = document.getElementById("boardSelect");
     const titleInput = document.getElementById("title-Input");
     const contentTextarea = document.getElementById("contentTextarea");
@@ -494,6 +510,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 alert("게시글 수정 중 오류가 발생했습니다.");
             });
         });
+    });
 
 
 </script>

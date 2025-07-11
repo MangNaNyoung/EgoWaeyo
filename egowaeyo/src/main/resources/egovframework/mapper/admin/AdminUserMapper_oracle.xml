@@ -67,4 +67,11 @@
 		       		 'P01'
 		       )
 	</insert>
+	
+	<!-- <insert id="DeptIns">
+	
+		INSERT INTO comtnorgnztinfo
+		
+	
+	</insert> -->
 </mapper>

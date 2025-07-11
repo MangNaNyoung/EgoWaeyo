@@ -3,117 +3,182 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout/layout}">
 <main layout:fragment="content">
-	 <style>
-    body {
-      background: #f7f7f7;
-    }
-    .sidebar-area {
-      background: #f7f7f7;
-      min-width: 280px;
-      max-width: 320px;
-      height: 100vh;
-      padding: 32px 16px;
-      border-right: 1px solid #ddd;
-    }
-    .calendar-area {
-      flex: 1 1 0;
-      background: #f7f7f7;
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .calendar-list-group {
-      font-size: 1rem;
-      margin-bottom: 16px;
-    }
-    .calendar-group-title {
-      font-weight: bold;
-      margin-bottom: 6px;
-      font-size: 1.05rem;
-    }
-    .calendar-group-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-weight: bold;
-      font-size: 1.07rem;
-      margin-bottom: 4px;
-    }
-    .calendar-list {
-      list-style: none;
-      padding-left: 0;
-      margin-bottom: 10px;
-    }
-    .calendar-list li {
-      margin-bottom: 2px;
-      display: flex;
-      align-items: center;
-      font-size: 0.97rem;
-      color: #888;
-    }
-    .calendar-list li input[type="checkbox"] {
-      margin-right: 8px;
-     
-    }
-    .calendar-divider {
-      border-bottom: 1px solid #ddd;
-      margin: 16px 0 12px 0;
-    }
-  </style>
-	<div class="d-flex">
-    <aside class="sidebar-area">
-      <div class="mb-4">
-        <div class="calendar-group-header mb-2">
-          <span style="font-size:1.11rem;">일정</span>
-          <button class="btn btn-sm btn-link text-dark px-1 py-0" style="text-decoration:none; font-size:1.2em;">+</button>
-        </div>
-      </div>
-      <div class="calendar-list-group mb-3">
-        <div class="calendar-group-title mb-2">내 캘린더</div>
-        <ul class="calendar-list">
-          <li>
-            <input type="checkbox" checked >
-            일정 01
-          </li>
-          <li>
-            <input type="checkbox" checked >
-            00 프로젝트 확인
-          </li>
-          <li>
-            <input type="checkbox" checked >
-            00 제약 현장 방문
-          </li>
-        </ul>
-      </div>
-      <div class="calendar-divider"></div>
-      <div class="calendar-list-group">
-        <div class="calendar-group-header mb-2">
-        <span>공유 캘린더</span>
-         <button class="btn btn-sm btn-link text-dark px-1 py-0" style="text-decoration:none; font-size:1.2em;">+</button>
-        </div>
-        <ul class="calendar-list">
-          <li>
-            <input type="checkbox" checked >
-            00 부서
-          </li>
-          <li>
-            <input type="checkbox" checked >
-            000님 일정
-          </li>
-          <li>
-            <input type="checkbox" checked >
-            0000 프로젝트 일정
-          </li>
-        </ul>
-      </div>
-    
-    <div class="calendar-area">
-     <div id="calendar" style="height: 600px;"></div>
-    </div>
-  </div>
-	<script>
-	const Calendar = tui.Calendar;
-</script>
-</main>
+	<style>
+body {
+	background: #f7f7f7;
+}
 
+.sidebar-area {
+	background: #f7f7f7;
+	min-width: 280px;
+	max-width: 320px;
+	height: 100vh;
+	padding: 32px 16px;
+	border-right: 1px solid #ddd;
+}
+
+.calendar-area {
+	background: #f7f7f7;
+	min-height: 100vh;
+	min-width: 800px;
+	display: flex;
+	align-items:center;
+	justify-content: center;
+	margin : 0 auto;
+}
+
+.calendar-list-group {
+	font-size: 1rem;
+	margin-bottom: 16px;
+}
+
+.calendar-group-title {
+	font-weight: bold;
+	margin-bottom: 6px;
+	font-size: 1.05rem;
+}
+
+.calendar-group-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	font-weight: bold;
+	font-size: 1.07rem;
+	margin-bottom: 4px;
+}
+
+.calendar-list {
+	list-style: none;
+	padding-left: 0;
+	margin-bottom: 10px;
+}
+
+.calendar-list li {
+	margin-bottom: 2px;
+	display: flex;
+	align-items: center;
+	font-size: 0.97rem;
+	color: #888;
+}
+
+.calendar-list li input[type="checkbox"] {
+	margin-right: 8px;
+}
+
+.calendar-divider {
+	border-bottom: 1px solid #ddd;
+	margin: 16px 0 12px 0;
+}
+
+#calendar {
+	height: 800px;
+	width: 1300px;
+}
+</style>
+	<div class="d-flex">
+		<aside class="sidebar-area">
+			<div class="mb-4">
+				<div class="calendar-group-header mb-2">
+					<span style="font-size: 1.11rem;">일정</span>
+					<button class="btn btn-sm btn-link text-dark px-1 py-0"
+						style="text-decoration: none; font-size: 1.2em;">+</button>
+				</div>
+			</div>
+			<div class="calendar-list-group mb-3">
+				<div class="calendar-group-title mb-2">내 캘린더</div>
+				<ul class="calendar-list">
+					<li><input type="checkbox" checked> 일정 01</li>
+					<li><input type="checkbox" checked> 00 프로젝트 확인</li>
+					<li><input type="checkbox" checked> 00 제약 현장 방문</li>
+				</ul>
+			</div>
+			<div class="calendar-divider"></div>
+			<div class="calendar-list-group">
+				<div class="calendar-group-header mb-2">
+					<span>공유 캘린더</span>
+					<button class="btn btn-sm btn-link text-dark px-1 py-0"
+						style="text-decoration: none; font-size: 1.2em;">+</button>
+				</div>
+				<ul class="calendar-list">
+					<li><input type="checkbox" checked> 00 부서</li>
+					<li><input type="checkbox" checked> 000님 일정</li>
+					<li><input type="checkbox" checked> 0000 프로젝트 일정</li>
+				</ul>
+			</div>
+		</aside>
+		<div class="calendar-area flex-column" >
+		<div>
+		 <header class="header">
+        <nav class="">
+          <button class="button is-rounded today">Today</button>
+          <button class="button is-rounded prev">
+            <i class="bi bi-arrow-left-circle"></i>
+          </button>
+           <i class="bi bi-arrow-right-circle button is-rounded next">
+          <button class="button is-rounded next">
+           
+          </button>
+           </i>
+       
+        </nav>
+      </header>
+			<div id="calendar"></div>
+		</div>
+		</div>
+	</div>
+	<script>
+		const Calendar = tui.Calendar;
+		const container = document.getElementById('calendar');
+		const options = {
+			useFormPopup : true,
+			useDetailPopup : true,
+			defaultView : 'month',
+			
+				daynames : [ '일', '월', '화', '수', '목', '금', '토' ],
+			
+			timezone : {
+				zones : [ {
+					timezoneName : 'Asia/Seoul',
+					displayLabel : 'Seoul',
+				}, {
+					timezoneName : 'Europe/London',
+					displayLabel : 'London',
+				}, ],
+			},
+			calendars : [ {
+				id : 'cal1',
+				name : '개인',
+				backgroundColor : '#03bd9e',
+			}, {
+				id : 'cal2',
+				name : '직장',
+				backgroundColor : '#00a9ff',
+			}, ],
+
+			theme : {
+				month : {
+					dayName : {
+						borderLeft : 'none',
+						backgroundColor : 'rgba(51, 51, 51, 0.4)',
+					},
+					usageStatistics : false, // 통계 수집 비활성화
+					moreView : {
+						border : '1px solid grey',
+						boxShadow : '0 2px 6px 0 grey',
+						backgroundColor : 'white',
+						width : 320,
+						height : 200,
+					},
+					weekend : {
+						backgroundColor : 'rgba(255, 64, 64, 0.4)',
+					},
+					gridCell : {
+						footerHeight : 31,
+					},
+				},
+			},
+		};
+
+		const calendar = new Calendar(container, options);
+	</script>
+</main>
