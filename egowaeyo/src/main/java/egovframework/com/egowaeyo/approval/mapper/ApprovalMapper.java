@@ -3,7 +3,7 @@ package egovframework.com.egowaeyo.approval.mapper;
 import java.util.List;
 
 import egovframework.com.cop.smt.lsm.service.EmplyrVO;
-import egovframework.com.egowaeyo.admin.service.DeptVO;
+import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
@@ -27,7 +27,7 @@ public interface ApprovalMapper {
 	
 	String selectApprFormHtml(String formId);
 	
-	List<DeptVO> selectDeptList();
+	List<EgovDeptVO> selectDeptList();
 	
 	List<EmplyrVO> selectEmpListByDept(String deptId);
 	

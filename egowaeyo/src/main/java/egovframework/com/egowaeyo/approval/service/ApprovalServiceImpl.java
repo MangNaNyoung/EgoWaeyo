@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import egovframework.com.cop.smt.lsm.service.EmplyrVO;
-import egovframework.com.egowaeyo.admin.service.DeptVO;
+import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
@@ -61,7 +61,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 	}
 
 	@Override
-	public List<DeptVO> getDeptList() {
+	public List<EgovDeptVO> getDeptList() {
 		return approvalMapper.selectDeptList();
 	}
 

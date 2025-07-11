@@ -7,7 +7,7 @@
 
 	<div style="display: flex; gap: 2rem; align-items: flex-start;">
 
-		<form th:action="@{/approval/write}" method="post" id="approvalForm"
+		<form th:action="@{/approval/write.do}" method="post" id="approvalForm"
 			style="flex: 1;">
 			<h4>결재문서</h4>
 			<div
@@ -18,7 +18,7 @@
 				<button type="button" id="tempSaveBtn">임시저장</button>
 				<button type="submit" id="submitBtn">결재</button>
 			</div>
-			<input type="hidden" name="apprformId" id="apprformId">
+			<input type="hidden" name="apprformId" id="apprformId">			
 			<div style="margin-bottom: 1rem;">
 				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> <input
 					type="text" name="docTitle" required style="width: 100%;" /><br />
@@ -36,6 +36,7 @@
 			</div>
 			<div class="approval-box">
 				<strong>기안자</strong>
+				<input type="hidden" id="loginUserNm" th:value="${loginUser.userNm ?: '알수없음'}">
 				<p>선택된 사용자 없음</p>
 			</div>
 			<div class="approval-box">
@@ -89,6 +90,8 @@
 			</div>
 		</div>
 	</div>
+	<span th:text="${loginUser}"></span>
+	
 </section>
 
 <th:block layout:fragment="customJs">
@@ -112,13 +115,13 @@
 	  // 결재선 지정 모달 열기 + 부서리스트 fetch
 	  document.getElementById("openApprovalLineModalBtn").addEventListener("click", function() {
 	    showModal("approvalLineModal");
-	    fetch("/approval/dept")
+	    fetch("dept")
 	      .then(res => res.json())
 	      .then(depts => {
 	        const deptSelect = document.getElementById("deptSelect");
 	        deptSelect.innerHTML = "";
 	        depts.forEach(d => {
-	          deptSelect.innerHTML += `<option value="${d.departmentsId}">${d.departmentsName}</option>`;
+	          deptSelect.innerHTML += `<option value="${d.orgnztId}">${d.orgnztNm}</option>`;
 	        });
 	        if (depts.length > 0) {
 	          deptSelect.value = depts[0].departmentsId;
@@ -129,14 +132,16 @@
 	    if (!deptEventRegistered) {
 	      document.getElementById("deptSelect").addEventListener("change", function() {
 	        const deptId = this.value;
-	        fetch(`/approval/dept/${deptId}`)
+	        fetch(`dept/${deptId}`)
 	          .then(res => res.json())
 	          .then(users => {
+	        	  console.log(users);
 	            const approverSelect = document.getElementById("approverSelect");
 	            const ccSelect = document.getElementById("ccSelect");
 	            approverSelect.innerHTML = "";
 	            ccSelect.innerHTML = "";
 	            users.forEach(u => {
+	            	console.log(u.emplyrId, u.userNm); 
 	              approverSelect.innerHTML += `<option value="${u.emplyrId}">${u.userNm}</option>`;
 	              ccSelect.innerHTML += `<option value="${u.emplyrId}">${u.userNm}</option>`;
 	            });
@@ -156,6 +161,8 @@
 	    const ccSelect = document.getElementById("ccSelect");
 	    const approver = approverSelect.selectedOptions[0]?.textContent || "선택된 사용자 없음";
 	    const ccArr = Array.from(ccSelect.selectedOptions).map(o=>o.textContent);
+	    const draftUserNm = document.getElementById("loginUserNm").value;
+	    document.querySelectorAll(".approval-box")[0].querySelector("p").textContent = draftUserNm;
 	    document.querySelectorAll(".approval-box")[1].querySelector("p").textContent = approver;
 	    document.querySelectorAll(".approval-box")[2].querySelector("p").textContent = ccArr.length ? ccArr.join(", ") : "선택된 사용자 없음";
 	    closeModal(document.getElementById("approvalLineModal"));
