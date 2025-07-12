@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="egovframework.com.egowaeyo.admin.mapper.AdminUserMapper">
-	<!-- select 부서정보 -->
-	<select id="getDept" resultType="DeptVO">
-		SELECT departments_id, departments_name
-		FROM departments
-	</select>
-	
+<mapper namespace="egovframework.com.egowaeyo.admin.mapper.AdminUserMapper">	
 	<!-- select 직급정보 -->
 	<select id="getPos" resultType="PosVO">
 		SELECT position_id, position_name
@@ -17,6 +11,25 @@
 	<select id="getEgovDept" resultType="EgovDeptVO">
     	SELECT orgnzt_id, orgnzt_nm, orgnzt_dc
     	FROM comtnorgnztinfo
+    	ORDER BY orgnzt_id ASC
+	</select>
+	
+	<!-- 다음 사번 조회 -->
+	<select id="getNextEmplNo" resultType="String">
+		SELECT 
+	    LPAD(TO_CHAR(NVL(TO_NUMBER(MAX(EMPL_NO)), 25000000) + 1), 8, '0') AS nextEmplNo
+		FROM comtnemplyrinfo
+		WHERE EMPL_NO LIKE '25%' 
+		AND LENGTH(EMPL_NO) = 8
+	</select>
+	
+	<!-- 다음 orgnID(부서코드번호) 조회 -->
+	<select id="getNextOrgnztId" resultType="String">
+		SELECT
+    	'ORGNZT_' || LPAD(TO_CHAR(NVL(MAX(TO_NUMBER(SUBSTR(ORGNZT_ID, 8))), 0) + 1), 13, '0') AS nextOrgnztId
+		FROM comtnorgnztinfo
+		WHERE ORGNZT_ID LIKE 'ORGNZT_%'
+		AND LENGTH(ORGNZT_ID) = 20
 	</select>
 	
 	<!-- insert Admin ->> 사용자 정보 -->
@@ -68,9 +81,36 @@
 		       )
 	</insert>
 	
-	<!-- <insert id="DeptIns">
+	<!-- 부서 추가 -->
+	<insert id="DeptIns" parameterType="EgovDeptVO">
 	
 		INSERT INTO comtnorgnztinfo
+					(
+					ORGNZT_ID,
+					ORGNZT_NM
+					)
+			   
+			   VALUES (
+			   		  #{orgnztId},
+			   		  #{orgnztNm}
+			   		  )
 		
-	</insert> -->
+	</insert>
+	
+	<!-- 부서 수정 -->
+	<update id="DeptUdt" parameterType="EgovDeptVO">
+		
+		UPDATE comtnorgnztinfo
+		SET ORGNZT_NM = #{orgnztNm}
+		WHERE ORGNZT_ID = #{orgnztId}
+		
+	</update>
+	
+	<!-- 부서 삭제 -->
+	<delete id="DeptDel" parameterType="EgovDeptVO">
+		
+		DELETE FROM comtnorgnztinfo
+		WHERE ORGNZT_ID = #{orgnztId}
+		
+	</delete>
 </mapper>

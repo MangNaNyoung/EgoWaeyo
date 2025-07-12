@@ -1,7 +1,6 @@
 package egovframework.com.egowaeyo.admin.service.Impl;
 
 import java.util.List;
-import java.util.Random;
 
 import javax.annotation.Resource;
 
@@ -46,21 +45,34 @@ public class AdminUserServiceImpl implements AdminUserService {
 			String uniqId = idgenService.getNextStringId();
 			adu.setEsntlId(uniqId);
 			
-			// 2. 패스워드 암호화 (ESNTL_ID를 키로 사용)
+			// 2. 사번 생성(EmplNo)
+			String nextEmplNo = adminusermapper.getNextEmplNo();
+			adu.setEmplNo(nextEmplNo);
+			System.out.println("생성된 사번 : " + nextEmplNo);
+			
+			// 3. 패스워드 암호화 (ESNTL_ID를 키로 사용)
 			String encryptedPassword = EgovFileScrty.encryptPassword(
 				adu.getPassword(), 
 				adu.getEmplyrId()  // ESNTL_ID를 암호화 키로 사용
 			);
 			adu.setPassword(encryptedPassword);
+			
+			// 4. 권한 기본값 설정
+//			if (adu.getAuthorCode() == null || adu.getAuthorCode().isEmpty()) {
+//				adu.setAuthorCode("ROLE_USER"); // 기본값 권한 사용자로
+//			}
+//			System.out.println("설정된 권한 : " + adu.getAuthorCode());
 		
-			// 4. 사용자 등록 추가
+			// 5. 사용자 등록 추가
 			int result = adminusermapper.AdminUserIns(adu);
 			
-			// 5. 권한 부여
+			// 6. 권한 부여
 			DeptAuthor deptAuthor = new DeptAuthor();
 			deptAuthor.setUniqId(uniqId);
-			deptAuthor.setAuthorCode("ROLE_USER");
+			deptAuthor.setAuthorCode(adu.getAuthorCode());
 			deptAuthorDAO.insertDeptAuthor(deptAuthor);
+			
+			System.out.println("권한 등록 완료 : " + adu.getAuthorCode());
 			
 			return result;
 			
@@ -73,6 +85,63 @@ public class AdminUserServiceImpl implements AdminUserService {
 	@Override
 	public List<EgovDeptVO> getEgovDept(EgovDeptVO edpt) {
 		return adminusermapper.getEgovDept(edpt);
+	}
+
+	@Override
+	public String getNextEmplNo() {
+		return adminusermapper.getNextEmplNo();
+	}
+
+	@Override
+	public String getNextOrgnztId() {
+		return adminusermapper.getNextOrgnztId();
+	}
+
+	@Override
+	public int DeptIns(String orgnztNm) {
+		
+		try {
+			String NextOrgnztId = adminusermapper.getNextOrgnztId();
+			System.out.println("생성된 다음 조직ID 번호 : " + NextOrgnztId);
+			
+			EgovDeptVO edpt = new EgovDeptVO();
+			edpt.setOrgnztId(NextOrgnztId);
+			edpt.setOrgnztNm(orgnztNm);
+			
+			return adminusermapper.DeptIns(edpt);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("부서 등록 중 오류 발생하였어요. : " + e.getMessage());
+			
+		}
+		
+	}
+
+	@Override
+	public int DeptUdt(String orgnztId, String orgnztNm) {
+		
+		try {
+			EgovDeptVO edpt = new EgovDeptVO();
+			edpt.setOrgnztId(orgnztId);
+			edpt.setOrgnztNm(orgnztNm);
+			
+			return adminusermapper.DeptUdt(edpt);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("부서 수정 중 오류 발생하였어요. : " + e.getMessage());
+		}
+		
+	}
+
+	@Override
+	public int DeptDel(String orgnztId) {
+		
+		try {
+			return adminusermapper.DeptDel(orgnztId);
+		} catch(Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException("부서 삭제 중 오류 발생하였어요. : " + e.getMessage());
+		}
 	}
 
 }
