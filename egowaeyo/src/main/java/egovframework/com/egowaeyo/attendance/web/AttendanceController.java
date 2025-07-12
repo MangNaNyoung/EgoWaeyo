@@ -4,8 +4,10 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -14,8 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import egovframework.com.cmm.LoginVO;
-import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.egowaeyo.attendance.service.AttendanceService;
 import lombok.extern.log4j.Log4j2;
 
@@ -55,4 +55,16 @@ public class AttendanceController {
 		System.out.println(result);
 		return result ;
 	}
+	
+	@PostMapping("/rgstEdit.do")
+	@ResponseBody
+	public Map<String,String>rgstEdit(@RequestBody List<AttendVO> vo,EditAttendVO voa){
+		Map<String,String>map = new HashMap<>();
+		System.out.println(vo);
+		
+		return  map;
+	}
+	
+	
+	
 }

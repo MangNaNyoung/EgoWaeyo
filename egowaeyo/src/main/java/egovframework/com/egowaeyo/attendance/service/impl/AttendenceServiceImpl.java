@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import egovframework.com.egowaeyo.attendance.mapper.AttendanceMapper;
 import egovframework.com.egowaeyo.attendance.service.AttendanceService;
 import egovframework.com.egowaeyo.attendance.web.AttendVO;
+import egovframework.com.egowaeyo.attendance.web.EditAttendVO;
 
 @Service
 public class AttendenceServiceImpl implements AttendanceService {
@@ -17,6 +18,14 @@ public class AttendenceServiceImpl implements AttendanceService {
 	@Override
 	public List<AttendVO> getAttend(AttendVO vo) {
 		return AttendMapper.getAttend(vo);
+	}
+
+	@Override
+	public EditAttendVO rgstEdit(EditAttendVO vo) {
+		
+		
+		
+		return null;
 	}
 
 }

@@ -124,6 +124,7 @@ var today = new Date();
 let data = {};
 let gridData;
 let list;
+//체크된 키
 let checkedKey=null;
 
 // 시간 형식 검증 함수 (HHMM)
@@ -457,11 +458,6 @@ grid.on('check', ({ rowKey }) => {
 	}
 });
 
-$('.btn.btn-success.btn-sm').click(function() {
-	let dataForSend = list[grid.getCheckedRowKeys()[0]];
-	console.log(dataForSend);
-});
-
 function disableAllEditing() {
 	const rowCount = grid.getRowCount();
 	for (let i = 0; i < rowCount; i++) {
@@ -541,11 +537,25 @@ grid.on('editingFinish', function(ev) {
 			// alert가 다른 alert와 겹치지 않도록 setTimeout 사용
 			setTimeout(() => {
 				if (columnName === 'checkin') {
-					alert('출근 시간은 퇴근 시간보다 빨라야 합니다.');
+					grid.setValue(checkedKey,columnName,list[checkedKey][columnName])
+					Swal.fire({
+						  icon: "error",
+						  title: "경고",
+						  text: "출근시간은 퇴근시간보다 빨라야 합니다!",
+						 
+						});
 				} else {
-					alert('퇴근 시간은 출근 시간보다 늦어야 합니다.');
+					grid.setValue(checkedKey,columnName,list[checkedKey][columnName])
+					Swal.fire({
+						  icon: "error",
+						  title: "경고",
+						  text: "퇴근시간은 출근시간보다 늦어야야 합니다!",
+						 
+						});
 				}
 			}, 10); // 짧은 딜레이
+			
+			grid.set
 			
 			return false; // 편집 취소
 		}
@@ -554,6 +564,37 @@ grid.on('editingFinish', function(ev) {
 	}
 });
 
+// 정정신청 이벤트
+$('.btn.btn-success.btn-sm').click(function() {
+	let dataForSend = grid.getRow(checkedKey);
+	console.log(list[checkedKey])
+	console.log(dataForSend);
+	
+	if(list[checkedKey]['checkin'] == dataForSend['checkin']&&list[checkedKey]['checkout'] == dataForSend['checkout']){
+		Swal.fire({
+			  icon: "error",
+			  title: "경고",
+			  text: "변경사항이 없습니다.",
+			});
+		return;
+	}
+	let data = [dataForSend,list[checkedKey]]
+	console.log(data)
+	$.ajax({
+		type: 'post',
+		url: '/egowaeyo/rgstEdit.do',
+		headers: {
+			"Content-Type": "application/json",
+		},
+		data: JSON.stringify(data),
+		success: function(result) {
+			console.log(result)
+		},
+		error: function(request, status, error) {
+			console.log(error);
+		}
+	});
+});
 
 window.validateTimeFormat = validateTimeFormat;
 
