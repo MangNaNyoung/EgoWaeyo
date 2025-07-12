@@ -8,8 +8,7 @@
 2025-07-06 (권동익): 각 link js 한줄변경
 					읽지 않은 메일 CSS 추가
 					init() 함수 메일 탭 새로고침 색상 변경 추가
-,
-,
+2025-07-12 (권동익): 298번째 헤더 로그인한 사용자 이미지 불러오는 코드 추가(현재 이미지 불러오는것 안됨)
 ============================================ -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
@@ -292,6 +291,27 @@ function init() {
 					$(".empl").text(userInfo.name+" ("+userInfo.id+")")
 					$(".level").text(userInfo.orgnztNm)
 					$(".email").attr('data-email',userInfo.email)
+					
+					
+					// 헤더 사진 불러오는 코드
+					// 프로필 사진 업데이트 추가
+	                if(userInfo.empPhoto && userInfo.empPhoto.trim() !== '') {
+	                    // 사용자가 업로드한 프로필 사진이 있는 경우
+	                	$(".user-img .avatar img").attr('src', "C:/egovframework/upload/" + userInfo.empPhoto);
+	                } else {
+	                    // 기본 프로필 사진 사용
+	                    $(".user-img .avatar img").attr('src', '/assets/images/faces/1.jpg');
+	                }
+	                
+	                // 이미지 스타일 적용 (원형, 크기 조정)
+	                $(".user-img .avatar img").css({
+	                    'width': '40px',
+	                    'height': '40px', 
+	                    'border-radius': '50%',
+	                    'object-fit': 'cover'
+	                });
+	             	// 헤더 사진 불러오는 코드
+	                
 					 latestTime = result.egovLatestServerTime ; //getCookie("egovLatestServerTime")
 					 expireTime = result.egovExpireSessionTime	 ; //getCookie("egovExpireSessionTime");
 					 objLeftTime = document.getElementById("leftTimeInfo");

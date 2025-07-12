@@ -39,14 +39,13 @@
       </div>
     <div class="main-second-section d-flex justify-content-between flex-row pb-4">
       <div class="button-section">
-        <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="deptInsert" data-bs-toggle="modal" data-bs-target="#exampleModal">부서추가</button>
-        <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="dedptUpdate">부서수정</button>
-        <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="deptDel">부서삭제</button>
+        <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="deptInsert" data-bs-toggle="modal" data-bs-target="#InsertModal">부서추가</button>
+        <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="dedptUpdate" data-bs-toggle="modal" data-bs-target="#UpdateModal">부서수정</button>
+        <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" data-bs-toggle="modal" data-bs-target="#DeleteModal" id="deptDel">부서삭제</button>
 
         <button class="ms-4 border border-dark px-3 py-1 rounded-2 bg-white" id="deptInsert" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
-        <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="dedptUpdate">사원삭제</button>
         <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="deptDel">비밀번호 초기화</button>
-        <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="deptDel">계정중지</button>
+        <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="dedptUpdate">사원삭제</button>
 
       </div>
       
@@ -105,10 +104,55 @@
       </div>
     </div>
   </div>
+  
+  <!-- 등록 성공 모달 -->
+  <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-success text-white">
+          <h5 class="modal-title" id="successModalLabel">
+            <i class="bi bi-check-circle me-2"></i>등록 완료
+          </h5>
+        </div>
+        <div class="modal-body text-center">
+          <div class="mb-3">
+            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+          </div>
+          <h6 class="mb-3" id="successMessage" th:text="${successMessage}">사용자가 성공적으로 등록되었습니다.</h6>
+          <p class="text-muted mb-0" id="userInfo" th:text="${userInfo}">사용자 정보</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-success px-4" id="confirmBtn">확인</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 등록 실패 모달 -->
+  <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="errorModalLabel">
+            <i class="bi bi-exclamation-triangle me-2"></i>등록 실패
+          </h5>
+        </div>
+        <div class="modal-body text-center">
+          <div class="mb-3">
+            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+          </div>
+          <p class="mb-0" id="errorMessage" th:text="${errorMessage}">등록 중 오류가 발생했습니다.</p>
+        </div>
+        <div class="modal-footer justify-content-center">
+          <button type="button" class="btn btn-danger px-4" data-bs-dismiss="modal">확인</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- 부서추가 모달 -->
   <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="InsertModal" tabindex="-1" aria-labelledby="InsertModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -116,15 +160,41 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form action="">
+          <form id="deptForm">
             <div class="mb-3">
-              <label for="Dept" class="form-dept">부서명을 입력해주세요. [예시 : OO팀]</label>
-              <input type="text" class="form-control">
+              <label for="deptName" class="form-label">부서명을 입력해주세요. [예시 : OO팀]</label>
+              <input type="text" class="form-control" name="orgnztNm" id="deptName" required>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">추가</button>
+          <button type="button" class="btn btn-primary" id="addDeptBtn">추가</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 부서수정 모달 -->
+  <!-- Modal -->
+  <div class="modal fade" id="UpdateModal" tabindex="-1" aria-labelledby="UpdateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">부서이름을 수정하시겠어요?</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="deptForm">
+            <div class="mb-3">
+              <label for="deptName" class="form-label">부서명을 수정해주세요. [예시 : OO팀]</label>
+              <input type="text" class="form-control" name="orgnztNm" id="deptUpdateName">
+              <input type="hidden" id="updateDeptId" name="orgnztId">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-success" id="UpdateDeptBtn">수정</button>
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
         </div>
       </div>
@@ -147,10 +217,15 @@
     const btnCan2 = document.getElementById("btnCan2");
     const selectPosition = document.getElementById("selectposition");
     
+    loadDepartmentList();
+    
+    /*<![CDATA[*/
+    /* var showSuccessModal = [[${showSuccessModal}]];
+    var showErrorModal = [[${showErrorModal}]]; */
+    /*]]>*/
+    
  	// 부서 데이터를 저장할 전역 변수
     let departmentData = [];
-
-    loadDepartmentList();
 
     function loadDepartmentList() {
       console.log("=== loadDepartmentList 함수 시작 ===");
@@ -188,6 +263,18 @@
           console.log("=== AJAX 요청 완료 ===");
         }
       });
+    }
+    
+    // 모달 부서추가 버튼을 눌렀을 때
+    const addDeptBtn = document.getElementById('addDeptBtn');
+    if(addDeptBtn) {
+    	addDeptBtn.addEventListener("click", addDepartment);
+    }
+    
+    // 모달 부서수정 버튼을 눌렀을 때
+    const uptDeptBtn = document.getElementById('UpdateDeptBtn');
+    if(uptDeptBtn) {
+    	uptDeptBtn.addEventListener("click", uptDepartment);
     }
 
     function displayDepartments(deptList) {
@@ -238,6 +325,70 @@
       console.log("필터링된 부서:", filteredDepts);
       displayDepartments(filteredDepts);
     }
+    
+    // 부서 추가 함수
+    function addDepartment() {
+      const deptNameInput = document.getElementById("deptName");
+      const deptName = deptNameInput.value.trim();
+      
+      if (!deptName) {
+        alert("부서명을 입력해주세요.");
+        deptNameInput.focus();
+        return;
+      }
+
+      console.log("부서 추가 요청:", deptName);
+
+      $.ajax({
+        url: "adDeptMge.do",
+        type: "POST",
+        data: {
+          orgnztNm: deptName
+        },
+        beforeSend: function() {
+          // 추가 버튼 비활성화
+          $("#addDeptBtn").prop("disabled", true).text("추가 중...");
+        },
+        success: function(response) {
+          console.log("부서 추가 성공:", response);
+          
+          // 성공 모달 표시
+          const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+          document.getElementById('successMessage').textContent = `"${deptName}" 부서가 성공적으로 등록되었습니다.`;
+          successModal.show();
+          
+       	  // 확인 버튼 이벤트 리스너 추가
+          const confirmBtn = document.getElementById('confirmBtn');
+          confirmBtn.onclick = function() {
+            successModal.hide();
+          };
+          
+          successModal.show();
+          
+          // 부서 추가 모달 닫기
+          const addModal = bootstrap.Modal.getInstance(document.getElementById('exampleModal'));
+          addModal.hide();
+          
+          // 입력 필드 초기화
+          deptNameInput.value = "";
+          
+          // 부서 목록 새로고침
+          loadDepartmentList();
+        },
+        error: function(xhr, status, error) {
+          console.error("부서 추가 실패:", error);
+          
+          // 오류 모달 표시
+          const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+          document.getElementById('errorMessage').textContent = "부서 등록 중 오류가 발생했습니다: " + error;
+          errorModal.show();
+        },
+        complete: function() {
+          // 추가 버튼 활성화
+          $("#addDeptBtn").prop("disabled", false).text("추가");
+        }
+      });
+    }
 
     // 검색 이벤트 리스너 추가
     document.addEventListener('DOMContentLoaded', function() {
@@ -257,7 +408,7 @@
       loadDepartmentList();
     });
     
- // 부서를 클릭했을 때 백그라운드 효과
+ 	// 부서를 클릭했을 때 백그라운드 효과
     departmentList.addEventListener("click", (e) => {
    	  console.log("클릭 이벤트 발생");
    	  console.log("클릭된 요소:", e.target);
@@ -281,6 +432,26 @@
         // currentSelectedDepartment = deptItems.getAttribute("data-dept");
       }
     })
+    
+    // 페이지 로드 시 모달 표시
+    /* document.addEventListener('DOMContentLoaded', function() {
+        // 성공 모달 표시
+        if ([[${showSuccessModal}]] === true) {
+            const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+            successModal.show();
+            
+            // 확인 버튼 클릭 시 모달 닫기
+            document.getElementById('confirmBtn').addEventListener('click', function() {
+                successModal.hide();
+            });
+        }
+        
+        // 실패 모달 표시
+        if ([[${showErrorModal}]] === true) {
+            const errorModal = new bootstrap.Modal(document.getElementById('errorModal'));
+            errorModal.show();
+        }
+    }); */
   </script>
 </section>
 
