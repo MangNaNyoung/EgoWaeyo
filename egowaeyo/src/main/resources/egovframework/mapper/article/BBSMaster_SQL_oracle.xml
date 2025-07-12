@@ -45,8 +45,8 @@
 		A.CODE = B.BBS_TY_CODE
 		WHERE
 		A.CODE_ID = 'COM101'
-		AND B.BBS_NM IS NOT
-		NULL
+		AND B.BBS_NM IS NOT NULL
+		AND B.USE_AT = 'Y'
 	</select>
 
 	<!-- 상위 게시판 목록 조회(공통코드 조회) -->
@@ -96,6 +96,30 @@
 		= #{bbsId}
 	</select>
 	
+	<!-- 게시판 정보 조회(권한) -->
+	<select id="selectBBSMasterAuthList"
+        parameterType="string"
+        resultType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO">
+	SELECT EMPLYR_ID, BBS_ID, AUTR_CODE
+    FROM COMTNBBSAUTHOR
+    WHERE BBS_ID = #{bbsId}
+	</select>
+	
+	<!-- 게시판 정보 수정(권한) -->
+	<update id="updateBBSMasterAuth"
+        parameterType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO">
+        UPDATE COMTNBBSAUTHOR
+		SET AUTR_CODE = #{autrCode}
+		WHERE EMPLYR_ID = #{emplyrId} and BBS_ID = #{bbsId}
+    </update>
+    
+    <!-- 게시판 정보 수정(권한) 삭제 -->
+	<delete id="deleteBBSMasterAuth"
+		parameterType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO">
+		DELETE FROM COMTNBBSAUTHOR
+		WHERE EMPLYR_ID = #{emplyrId} and BBS_ID = #{bbsId}
+	</delete>
+
 	<!-- 게시판 정보 수정 -->
 	<update id="updateBBSMaster"
 		parameterType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO">
@@ -103,16 +127,18 @@
 		SET BBS_NM = #{bbsNm},
 			BBS_TY_CODE = #{bbsTyCode},
 			LAST_UPDT_PNTTM = SYSDATE,
-			LAST_UPDUSR_ID = #{lastUpdusrId}
+			LAST_UPDUSR_ID = #{lastUpdusrId},
+			USE_AT = #{useAt}
 		WHERE BBS_ID = #{bbsId}
 	</update>
 
 
 	<!-- 게시판 정보(게시판 수정) -->
-	<select id="selectBBSMasterInfo">
-		SELECT D.CODE_NM, M.BBS_ID, M.BBS_NM, M.BBS_NM, M.USE_AT, A.EMPLYR_ID, A.AUTR_CODE
+	<select id="selectBBSMasterInfo"  parameterType="String" resultType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO">
+		SELECT D.CODE_NM, M.BBS_ID, M.BBS_TY_CODE, M.BBS_NM, M.USE_AT, I.EMPLYR_ID, I.OFCPS_NM, I.USER_NM, A.AUTR_CODE
 		FROM COMTCCMMNDETAILCODE D JOIN COMTNBBSMASTER M ON D.CODE = M.BBS_TY_CODE
     		JOIN COMTNBBSAUTHOR A ON M.BBS_ID = A.BBS_ID
+            JOIN COMTNEMPLYRINFO I ON A.EMPLYR_ID = I.EMPLYR_ID
 		WHERE M.BBS_ID = #{bbsId}
 	</select>
 

@@ -8,9 +8,13 @@ import org.apache.commons.lang.RandomStringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +28,16 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("/bbsMaster")
 @Controller
 public class BbsMasterController {
+	
 	@Autowired
 	final BbsMasterService bbsMasterService;
-
+	
+	 // 현재 사용자 이름 가져오기
+    private String getCurrentUserName() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return (authentication != null && authentication.isAuthenticated()) ? authentication.getName() : "anonymous";
+    }
+    
 	// 부서, 사원 목록 가져오기(모달)
 	@GetMapping("/selectDeptEmp")
 	@ResponseBody
@@ -94,6 +105,12 @@ public class BbsMasterController {
 	}
 
 	private static final Logger logger = LoggerFactory.getLogger(BbsMasterController.class);
+	
+	@GetMapping("/groupedBbsData")
+	@ResponseBody
+	public Map<String, List<Map<String, String>>> getGroupedBbsData() {
+	    return bbsMasterService.getGroupedBbsData();
+	}
 
 	// 게시판 추가
 	@PostMapping("/saveBoard")
@@ -260,11 +277,39 @@ public class BbsMasterController {
 
 		bbsMasterService.insertCommonDetailCode(commonCodeData);
 	}
-
-	// 사이드바
-	@GetMapping("/groupedBbsData")
+	
+	// 하위 게시판 정보 조회
+	@GetMapping("/info/{bbsId}")
 	@ResponseBody
-	public Map<String, List<Map<String, String>>> getGroupedBbsData() {
-		return bbsMasterService.getGroupedBbsData();
+	public List<BoardMasterVO> getBbsInfo(@PathVariable String bbsId) {
+	    return bbsMasterService.getBbsMasterInfo(bbsId);
+	}
+	
+	// 게시판 마스터 정보 업데이트
+	@PostMapping("/update")
+	@ResponseBody
+	public ResponseEntity<?> updateBbsMaster(@RequestBody Map<String, Object> request) {
+	    try {
+	        // 게시판 정보 VO 생성 및 값 설정
+	        BoardMasterVO vo = new BoardMasterVO();
+	        vo.setBbsId((String) request.get("bbsId"));
+	        vo.setBbsNm((String) request.get("bbsNm"));
+	        vo.setBbsTyCode((String) request.get("bbsTyCode"));
+	        vo.setUseAt((String) request.get("useAt"));
+	        vo.setLastUpdusrId(getCurrentUserId());
+
+	        // 게시판 기본 정보 수정
+	        bbsMasterService.updateBBSMaster(vo);
+
+	        // 권한 정보 처리
+	        List<Map<String, String>> authList = (List<Map<String, String>>) request.get("authList");
+	        bbsMasterService.updateBoardAuth(authList, vo.getBbsId());
+
+	        return ResponseEntity.ok(Map.of("success", true, "message", "게시판이 성공적으로 수정되었습니다."));
+	    } catch (Exception e) {
+	    	logger.error("게시판 수정 중 오류 발생: {}", e.getMessage(), e);
+	    	 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                 .body(Map.of("success", false, "message", "DB 업데이트 실패"));
+	    }
 	}
 }

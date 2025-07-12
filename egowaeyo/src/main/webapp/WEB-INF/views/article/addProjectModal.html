@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
 <!-- 게시판 추가 모달 -->
 <div th:fragment="addProjectModal" class="modal fade"
@@ -138,11 +139,12 @@
 	</div>
 
 	<script>
-	
 	let allUsers = []; // 모든 사원 데이터를 저장
    	let selectedDepts = new Set(); // 선택된 부서 목록
    	let selectedUsers = new Set(); // 선택된 사원 목록
    	let currentDeptUsers = []; // 현재 선택된 부서의 사원 데이터를 저장
+   
+   	
    	
  // 사원 선택 박스에서 선택된 사원들의 ID를 가져오기
     function getSelectedEmployees() {
@@ -438,12 +440,14 @@
 
    	        if (rightBox) {
    	            selectedUsers.forEach(user => {
-   	                if (!Array.from(rightBox.children).some(child => child.dataset.id === user.id)) {
-   	                    const newDiv = document.createElement("div");
-   	                    newDiv.textContent = user.text; // 사용자 ID를 표시
-   	                    newDiv.dataset.id = user.id; // emplyrId를 data-id로 설정
-   	                    rightBox.appendChild(newDiv);
-   	                }
+   	          // ❗ 중복 방지 - user.id와 data-id 비교
+   	                const isAlreadyExists = Array.from(rightBox.children).some(child => child.dataset.id === user.id);
+   	             if (!isAlreadyExists) {
+                     const newDiv = document.createElement("div");
+                     newDiv.textContent = user.text;
+                     newDiv.dataset.id = user.id;
+                     rightBox.appendChild(newDiv);
+                 }
    	            });
    	        } else {
    	            console.error("right-box를 찾을 수 없습니다.");
@@ -554,94 +558,83 @@
 });
     
     function addClick() {
-		 const boardNameInput = document.getElementById("boardName");
-	        const boardName = boardNameInput ? boardNameInput.value : "";
-	        const boardType = document.querySelector('input[name="boardType"]:checked')?.id ;
-	        const parentBoardElement = document.getElementById("parentBoard");
-	        const parentBoard = boardType === "type1" ? null : parentBoardElement ? parentBoardElement.value : ""; // '게시판 추가' 선택 시 null로 설정
-	        const useAt = document.querySelector('input[name="useAt"]:checked')?.value || "Y";
-	        const rightBoxes = document.querySelectorAll(".right-panel .right-box");
+    	const boardName = document.getElementById("boardName")?.value.trim() || "";
+        const boardType = document.querySelector('input[name="boardType"]:checked')?.id || "type1";
+        const parentBoard = boardType === "type1" ? null : document.getElementById("parentBoard")?.value || "";
+        const useAt = document.querySelector('input[name="useAt"]:checked')?.value || "Y";
 
-	        const rightsMap = {
-	        		read: Array.from(rightBoxes[0].children).map(div => div.dataset.id).filter(id => id),
-	        	    write: Array.from(rightBoxes[1].children).map(div => div.dataset.id).filter(id => id),
-	        	    manage: Array.from(rightBoxes[2].children).map(div => div.dataset.id).filter(id => id)
-	        };
+        const rightBoxes = document.querySelectorAll(".right-panel .right-box");
+        const rightsMap = {
+            read: Array.from(rightBoxes[0]?.children || []).map(div => div.dataset.id).filter(Boolean),
+            write: Array.from(rightBoxes[1]?.children || []).map(div => div.dataset.id).filter(Boolean),
+            manage: Array.from(rightBoxes[2]?.children || []).map(div => div.dataset.id).filter(Boolean)
+        };
 
-	        // 권한 코드에 따라 권한 부여
-	        const selectedRights = [];
+        const selectedRights = [];
 
-	     // 모든 사용자에 대해 권한 코드 설정
-	        allUsers.forEach(user => {
-	        	 if (!user.emplyrId) return;
-	        	 
-	        	 let authorCode;
-	            // emplyrId가 null이거나 undefined인 경우는 제외
-	            if(rightsMap.write.includes(user.emplyrId) && rightsMap.manage.includes(user.emplyrId)) {
-	                authorCode = "A-003"; // 읽기+쓰기+관리
-	            } else if (rightsMap.read.includes(user.emplyrId) && rightsMap.write.includes(user.emplyrId)) {
-                   authorCode = "A-002";
-               } else if (rightsMap.read.includes(user.emplyrId)) {
-                   authorCode = "A-001";
-               }
-	            if (authorCode) {
-	                selectedRights.push({
-	                    emplyrId: user.emplyrId,
-	                    authorCode
-	                });
-	            }
-	        });
+        // 권한 코드 지정
+        allUsers.forEach(user => {
+            if (!user.emplyrId) return;
 
-	     // 디버깅: selectedRights 데이터 확인
-	        console.log("Selected Rights:", selectedRights);
-	     
-	     // getSelectedEmployees()에서 선택된 사용자들의 권한을 추가
-	        const selectedEmployees = getSelectedEmployees(); // getSelectedEmployees 호출
-	        selectedEmployees.forEach(employee => {
-	            const existingUser = selectedRights.find(user => user.emplyrId === employee.emplyrId);
-	            if (!existingUser) {
-	                selectedRights.push({
-	                    emplyrId: employee.emplyrId,
-	                    authorCode: employee.authorCode
-	                });
-	            }
-	        });
-	     // '게시판 추가' 선택 시 권한 검증 건너뛰기
-           if (boardType !== "type1" && selectedRights.length === 0) {
-               alert("권한을 선택하세요.");
-               return;
-           }
-	        const requestData = {
-	            boardName: boardName,
-	            boardType: boardType,
-	            parentBoard: parentBoard,
-	            useAt: useAt,
-	            selectedRights: selectedRights // 권한 정보 포함
-	        };
+            const id = user.emplyrId;
+            let authorCode;
 
-	        console.log("전송할 데이터:", requestData);
+            if (rightsMap.write.includes(id) && rightsMap.manage.includes(id)) {
+                authorCode = "A-003";
+            } else if (rightsMap.read.includes(id) && rightsMap.write.includes(id)) {
+                authorCode = "A-002";
+            } else if (rightsMap.read.includes(id)) {
+                authorCode = "A-001";
+            }
 
-	        fetch('/egowaeyo/bbsMaster/saveBoard', {
-	            method: "POST",
-	            headers: {
-	                "Content-Type": "application/json"
-	            },
-	            body: JSON.stringify(requestData)
-	        })
-	        .then(response => {
-	            if (!response.ok) {
-	                throw new Error(`HTTP error! status: ${response.status}`);
-	            }
-	            return response.json();
-	        })
-	        .then(data => {
-	            if (data.success) {
-	                alert("게시판이 성공적으로 저장되었습니다.");
-	            } else {
-	                alert("저장 중 오류가 발생했습니다: " + data.error);
-	            }
-	        })
-	        .catch(error => alert(`저장 중 오류가 발생했습니다: ${error.message}`));
+            if (authorCode) {
+                selectedRights.push({ emplyrId: id, authorCode });
+            }
+        });
+
+        // 추가 선택된 사용자 (right-box 외)
+        getSelectedEmployees().forEach(emp => {
+            if (!selectedRights.find(u => u.emplyrId === emp.emplyrId)) {
+                selectedRights.push(emp);
+            }
+        });
+
+        if (boardType !== "type1" && selectedRights.length === 0) {
+            alert("권한을 선택하세요.");
+            return;
+        }
+
+        const requestData = {
+            boardName,
+            boardType,
+            parentBoard,
+            useAt,
+            selectedRights
+        };
+
+        console.log("전송할 데이터:", requestData);
+
+        fetch('/egowaeyo/bbsMaster/saveBoard', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(requestData)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert("게시판이 성공적으로 저장되었습니다.");
+                // 모달 닫기
+                $('#addProjectModal').modal('hide');
+             	// 목록 새로고침 또는 추가 처리
+                location.reload();
+            } else {
+                alert("저장 실패: " + (data.error || "알 수 없는 오류"));
+            }
+        })
+        .catch(err => alert("저장 중 오류 발생: " + err.message));
 	    }
     
     function updateCodeClick() {
@@ -651,9 +644,198 @@
     
 	 function updateBbsClick() {
 		 
-	 }
- 
+		 const bbsId = currentBbsId; // 전역 변수로 보관된 게시판 ID
+		  const boardName = document.getElementById("boardName").value;
+		  const parentBoard = document.getElementById("parentBoard").value;
+		  const useAt = document.querySelector('input[name="useAt"]:checked')?.value || "";
 
+		  // 권한 박스에서 사용자 정보 추출
+		  const readUsers = getUserListFromBox(0).map(id => ({ emplyrId: id, authorCode: "A-001" }));
+		  const writeUsers = getUserListFromBox(1).map(id => ({ emplyrId: id, authorCode: "A-002" }));
+		  const manageUsers = getUserListFromBox(2).map(id => ({ emplyrId: id, authorCode: "A-003" }));
+
+		  // emplyrId 기준으로 중복 제거 (나중 값으로 덮어씀)
+		  const mergedAuth = {};
+		  [...readUsers, ...writeUsers, ...manageUsers].forEach(user => {
+		    mergedAuth[user.emplyrId] = user.authorCode;
+		  });
+
+		  // { emplyrId, authorCode } 객체 배열로 변환
+		  const authList = Object.entries(mergedAuth).map(([emplyrId, authorCode]) => ({ emplyrId, authorCode }));
+
+		  // 최종 전송 객체
+		  const boardData = {
+		    bbsId,
+		    bbsNm: boardName,
+		    bbsTyCode: parentBoard,
+		    useAt,
+		    authList
+		  };
+		  
+		  axios.post("/egowaeyo/bbsMaster/update", boardData)
+		    .then(res => {
+		      if (res.data.success) {
+		        alert(res.data.message || "게시판 정보가 성공적으로 저장되었습니다!");
+		        location.reload();
+		      } else {
+		        alert("수정에 실패했습니다: " + (res.data.message || "알 수 없는 오류"));
+		      }
+		    })
+		    .catch(err => {
+		      console.error("업데이트 중 오류:", err);
+		      alert("저장 중 오류가 발생했습니다: " + err.message);
+		    });
+	 }
+	 
+ 
+	 function insertData(type, bbsId){
+		 if (type === "bbs") {
+			currentBbsId = bbsId;
+		  	console.log("bbsId:", bbsId); // bbsId 값 확인
+		  	fetch(`/egowaeyo/bbsMaster/info/${bbsId}`)
+	        .then(res => {
+	        	console.log("API Response Status:", res.status); // 응답 상태 확인
+	            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+	            return res.json();
+	        })
+	        .then(data => {
+	        	console.log("API Response Data:", data); // 응답 데이터 확인
+	            if (!data || data.length === 0) {
+	                alert("해당 게시판 정보를 불러오지 못했습니다.");
+	                return;
+	            }
+
+	            const info = data[0];
+	            
+	            const boardNameElement = document.getElementById("boardName");
+	            if (boardNameElement) boardNameElement.value = info.bbsNm || "";
+
+	            const useAtElement = document.querySelector(`input[name="useAt"][value="${info.useAt}"]`);
+	            if (useAtElement) useAtElement.checked = true;
+	            
+	            // 상위 게시판 설정
+                const parentBoardElement = document.getElementById("parentBoard");
+                if (parentBoardElement) {
+                    parentBoardElement.value = info.bbsTyCode  || "";
+
+                    // 상위 게시판 옵션 선택
+                    const options = parentBoardElement.options;
+                    for (let i = 0; i < options.length; i++) {
+                        console.log(`Checking option ${i}:`, options[i].value);
+                        if (options[i].value === info.bbsTyCode) {
+                        	options[i].selected = true;
+                            break;
+                        }
+                    }
+                    
+                }
+
+	            const readBox = document.querySelectorAll(".right-box")[0];
+	            const writeBox = document.querySelectorAll(".right-box")[1];
+	            const manageBox = document.querySelectorAll(".right-box")[2];
+
+	            if (readBox && writeBox && manageBox) {
+	                readBox.innerHTML = "";
+	                writeBox.innerHTML = "";
+	                manageBox.innerHTML = "";
+
+	                data.forEach(user => {
+	                    const div = document.createElement("div");
+	                    div.textContent = user.userNm +' (' + user.ofcpsNm + ')';
+	                    div.dataset.id = user.emplyrId;
+
+	                    if (user.authorCode === "A-001") {
+	                        readBox.appendChild(div);
+	                    } else if (user.authorCode === "A-002") {
+	                        writeBox.appendChild(div);
+	                        readBox.appendChild(div.cloneNode(true));
+	                    } else if (user.authorCode === "A-003") {
+	                        manageBox.appendChild(div);
+	                        writeBox.appendChild(div.cloneNode(true));
+	                        readBox.appendChild(div.cloneNode(true));
+	                    }
+	                });
+	            }
+	            
+	         // 초기값 저장 (전역변수 initialData 등)
+	  		  initialData = {
+	  		    parentBoard: info.bbsTyCode || "",
+	  		    boardName: info.bbsNm || "",
+	  		    useAt: info.useAt || "",
+	  		    readUsers: getUserListFromBox(0),
+	  		    writeUsers: getUserListFromBox(1),
+	  		    manageUsers: getUserListFromBox(2),
+	  		  };
+
+	  		  // 이벤트 연결
+	  		  document.getElementById("parentBoard").addEventListener("change", checkChanges);
+	  		  document.getElementById("boardName").addEventListener("input", checkChanges);
+	  		  document.querySelectorAll('input[name="useAt"]').forEach(el => el.addEventListener("change", checkChanges));
+  
+	         // 추가: type이 "bbs"일 경우 모달창에 특정 데이터 표시
+	            if (type === "bbs") {
+	                const modalElement = document.getElementById("addProjectModal");
+	            }
+	        })
+	         .catch(error => console.error("Error fetching BBS info:", error));
+	 }
+		
+	 }
+	 
+	// 2. 권한박스 사용자 추가/삭제 함수 내
+	 function addUserToPermissionBox(user, targetBoxIndex) {
+		 const box = document.querySelectorAll(".right-box")[targetBoxIndex];
+		  if (!box) return;
+
+		  // user는 { emplyrId, userNm, ofcpsNm } 형태로 온다고 가정
+		  // 중복 체크: 이미 같은 emplyrId가 있으면 추가하지 않음
+		  const exists = Array.from(box.children).some(div => div.dataset.id === user.emplyrId);
+		  if (exists) return; // 이미 있음
+
+		  const div = document.createElement("div");
+		  div.textContent = `${user.userNm} (${user.ofcpsNm})`;
+		  div.dataset.id = user.emplyrId;
+
+		  box.appendChild(div);
+
+		  checkChanges(); // 변경 체크 호출
+	 }
+
+	 function removeUserFromPermissionBox(emplyrId, targetBoxIndex) {
+		 const box = document.querySelectorAll(".right-box")[targetBoxIndex];
+		  if (!box) return;
+
+		  const div = Array.from(box.children).find(div => div.dataset.id === emplyrId);
+		  if (div) {
+		    box.removeChild(div);
+		    checkChanges(); // 변경 체크 호출
+		  }
+	 }
+
+	 // 3. checkChanges 함수는 변경 상태를 판단해서 저장버튼 상태 변경
+	 function checkChanges() {
+	   const saveBtn = document.getElementById("saveButton");
+	   
+	   // 현재 값 수집 (위 insertData 초기화 방법 참고)
+	   const currentData = {
+	     parentBoard: document.getElementById("parentBoard").value,
+	     boardName: document.getElementById("boardName").value,
+	     useAt: document.querySelector('input[name="useAt"]:checked')?.value || "",
+	     readUsers: getUserListFromBox(0),
+	     writeUsers: getUserListFromBox(1),
+	     manageUsers: getUserListFromBox(2),
+	   };
+
+	   // 변경 여부 판단 (심플하게 JSON.stringify 비교 가능)
+	   const changed = JSON.stringify(currentData) !== JSON.stringify(initialData);
+	   saveBtn.disabled = !changed;
+	 }
+
+	 // 권한박스에서 사용자 리스트 추출하는 함수 예시
+	 function getUserListFromBox(index) {
+	   return Array.from(document.querySelectorAll(".right-box")[index].children)
+	               .map(div => div.dataset.id);
+	 }
    </script>
 
 	<style>
