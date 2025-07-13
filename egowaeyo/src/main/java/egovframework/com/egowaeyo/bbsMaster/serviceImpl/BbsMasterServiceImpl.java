@@ -1,8 +1,10 @@
 package egovframework.com.egowaeyo.bbsMaster.serviceImpl;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -171,7 +173,7 @@ public void saveBoardAuth(List<Map<String, String>> selectedRights, String bbsId
 //권한 코드 유효성 체크 예시
 private boolean isValidPermission(String authorCode) {
  // 실제 권한 코드 검증 로직 (예: DB에서 검증)
- return authorCode.equals("A-001") || authorCode.equals("A-002");  // 예시
+ return authorCode.equals("A-001") || authorCode.equals("A-002") || "A-003".equals(authorCode);  // 예시
 }
 
 //권한 부여 처리 예시
@@ -290,6 +292,85 @@ private String determineAuthorCode(String authorName) {
 	        insertBBSMasterAuth(auth); 
 	        logger.info("삽입 중: emplyrId={}, bbsId={}, authorCode={}", emplyrId, bbsId, authorCode);
 	    }
+	}
+
+	@Override
+	public List<BoardMasterVO> getBbsMasterInfo(String bbsId) {
+		 return bbsMasterMapper.selectBBSMasterInfo(bbsId);
+	}
+	
+	@Override
+	public void updateBBSMaster(BoardMasterVO vo) throws Exception {
+		bbsMasterMapper.updateBBSMaster(vo);
+	}
+
+	@Override
+	public void updateBoardWithAuth(BoardMasterVO board, List<BoardMasterVO> authList) {
+		
+		
+	}
+
+	@Override
+	public void updateBoardAuth(List<Map<String, String>> selectedRights, String bbsId) {
+		 if (bbsId == null || bbsId.isEmpty()) {
+		        throw new IllegalArgumentException("bbsId가 유효하지 않습니다.");
+		    }
+
+		 try {
+		    // 1. 기존 권한 조회
+		    List<BoardMasterVO> existingAuths = bbsMasterMapper.selectBBSMasterAuthList(bbsId);
+
+		    // 2. 새로운 권한 리스트 → Map으로 전환 (emplyrId → authorCode)
+		    Map<String, String> newAuthMap = new HashMap<>();
+		    for (Map<String, String> right : selectedRights) {
+		        String emplyrId = right.get("emplyrId");
+		        String authorCode = right.get("authorCode");
+		        if (emplyrId != null && authorCode != null) {
+		            newAuthMap.put(emplyrId, authorCode);
+		        }
+		    }
+
+		    // 3. 기존 권한과 비교
+		    Set<String> processed = new HashSet<>();
+
+		    for (BoardMasterVO existing : existingAuths) {
+		        String emplyrId = existing.getEmplyrId();
+		        String oldAuthorCode = existing.getAuthorCode();
+		        String newAuthorCode = newAuthMap.get(emplyrId);
+
+		        BoardMasterVO vo = new BoardMasterVO();
+		        vo.setEmplyrId(emplyrId);
+		        vo.setBbsId(bbsId);
+
+		        if (newAuthorCode == null) {
+		            // 삭제
+		            bbsMasterMapper.deleteBBSMasterAuth(vo);
+		        } else if (!oldAuthorCode.equals(newAuthorCode)) {
+		            // 수정
+		            vo.setAuthorCode(newAuthorCode);
+		            bbsMasterMapper.updateBBSMasterAuth(vo);
+		        }
+		        processed.add(emplyrId);
+		    }
+
+		    // 4. 새로 추가된 권한
+		    for (Map<String, String> right : selectedRights) {
+		        String emplyrId = right.get("emplyrId");
+		        if (!processed.contains(emplyrId)) {
+		            BoardMasterVO vo = new BoardMasterVO();
+		            vo.setEmplyrId(emplyrId);
+		            vo.setBbsId(bbsId);
+		            vo.setAuthorCode(right.get("authorCode"));
+		            bbsMasterMapper.insertBBSMasterAuth(vo);
+		        }
+		    }
+		    logger.info("게시판 권한이 성공적으로 수정되었습니다.");
+		 }
+		    catch (Exception e) {
+		        logger.error("게시판 권한 수정 중 오류 발생: {}", e.getMessage(), e);
+		        throw new RuntimeException("게시판 권한 수정에 실패했습니다.");
+		    }
+		
 	}
 
 	/*
