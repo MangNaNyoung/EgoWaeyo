@@ -72,16 +72,14 @@ public class AttendanceController {
 	public String goToEdit(){
 		return "attendance/approveEdit.html";
 	}
-	@GetMapping("/getEditList.do")
-	public List<EditAttendVO> getEditList(@RequestParam(value="modstate", required=false) String str,
-										  @RequestParam(value="startDate", required=false) String str1,
-										  @RequestParam(value="endDate", required=false) String str2) {
+	@GetMapping("/getEditListForAttend.do")
+	public List<EditAttendVO> getEditList(@RequestParam Map<String, String> params) {
 		EditAttendVO vo = new EditAttendVO();
 		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
 		vo.setEmplyrId(user.getId());
-		vo.setEditer(str);
-		vo.setStartDate(str1);
-		vo.setEndDate(str2);
+		vo.setEditer(params.get("modstate"));
+		vo.setStartDate(params.get("startDate"));
+		vo.setEndDate(params.get("endDate"));
 		return AttendService.getEditList(vo);
 	}
 	

@@ -39,7 +39,7 @@
 }
 </style>
 	<div class="container mt-4">
-		<h5 class="title">내 출퇴근 내역</h5>
+		<h5 class="title">정정신청 내역</h5>
 
 
 
@@ -196,7 +196,7 @@ function getData() {
 	url ='?modstate='+modstate+ '&startDate='+  startDate + '&endDate='+endDate;
 	$.ajax({
 		type: 'get',
-		url: '/egowaeyo/getEditList.do'+url,
+		url: '/egowaeyo/getEditListForAttend.do'+url,
 		//headers: {
 		//	"Content-Type": "application/json",
 		//},
