@@ -23,6 +23,68 @@
 		</where>
 		ORDER BY CHECKDATE
 	</select>
+	 <select id="callAttendanceEditProcedure" parameterType="EditAttendVO" 
+            statementType="CALLABLE" resultType="EditAttendVO">
+        {CALL PROC_ATTENDANCE_APPROVAL_EDIT(
+            #{editIn, mode=IN, jdbcType=CHAR},
+            #{editOut, mode=IN, jdbcType=CHAR},
+            #{checkdate, mode=IN, jdbcType=CHAR},
+            #{emplyrId, mode=IN, jdbcType=VARCHAR},
+            #{checkin, mode=IN, jdbcType=CHAR},
+            #{checkout, mode=IN, jdbcType=CHAR},
+            #{result, mode=OUT, jdbcType=VARCHAR},
+            #{message, mode=OUT, jdbcType=VARCHAR}
+        )}
+    </select>
+    <select id="getEditList"  parameterType="EditAttendVO" resultType="EditAttendVO">
+    	
 
+    SELECT
+        EDIT_CD      AS editCd,
+        EDIT_IN      AS editIn,
+        EDIT_OUT     AS editOut,
+        EDIT_RS      AS editRs,
+        CREATE_DT    AS createDt,
+        EDIT_DT      AS editDt,
+        EDITER       AS editer,
+        SUPERVISOR   AS supervisor,
+        SUP_DT       AS supDt,
+        CHECKDATE    AS checkdate,
+        EMPLYR_ID    AS emplyrId,
+        CHECKIN      AS checkin,
+        CHECKOUT     AS checkout
+    FROM EDITAPPROVAL
+    <where>
+        <!-- 신청자, 근태일자 등 일반 필터 -->
+        <if test="emplyrId != null and emplyrId != ''">
+            EMPLYR_ID = #{emplyrId}
+        </if>
+        <if test="checkdate != null and checkdate != ''">
+            <if test="emplyrId != null and emplyrId != ''"> AND </if>
+            CHECKDATE = #{checkdate}
+        </if>
+
+        <!-- editer 존재 여부 필터 -->
+        <choose>
+            <!-- editerYn = 'Y'  : editer IS NOT NULL -->
+            <when test="editerYn == 'Y'">
+                <if test="(emplyrId != null and emplyrId != '') or (checkdate != null and checkdate != '')">
+                    AND
+                </if>
+                EDITER IS NOT NULL
+            </when>
+            <!-- editerYn = 'N'  : editer IS NULL (Oracle은 빈 문자열도 NULL로 처리) -->
+            <when test="editerYn == 'N'">
+                <if test="(emplyrId != null and emplyrId != '') or (checkdate != null and checkdate != '')">
+                    AND
+                </if>
+                EDITER IS NULL
+            </when>
+            <!-- editerYn 미지정이면 전체 조회 -->
+        </choose>
+    </where>
+    ORDER BY CREATE_DT DESC
+</select>
+ 
 	
 </mapper>

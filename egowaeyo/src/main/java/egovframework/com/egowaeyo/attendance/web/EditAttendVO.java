@@ -18,5 +18,7 @@ public class EditAttendVO {
 	    private String emplyrId;     // 정정신청자
 	    private String checkin;      // 기존 출근 시간
 	    private String checkout;     // 기존 퇴근 시간
+	    private String result;		// 프로시저 결과
+	    private String message;		// 프로시저 결과 메세지
 
 }

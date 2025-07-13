@@ -21,11 +21,23 @@ public class AttendenceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public EditAttendVO rgstEdit(EditAttendVO vo) {
+	public EditAttendVO rgstEdit(List<AttendVO> vo) {
+		EditAttendVO voa = new EditAttendVO();
+				voa.setCheckdate(vo.get(0).getCheckdate());
+				voa.setCheckin(vo.get(1).getCheckin());
+				voa.setCheckout(vo.get(1).getCheckout());
+				voa.setEmplyrId(vo.get(0).getEmplyrId());
+				voa.setEditIn(vo.get(0).getCheckin());
+				voa.setEditOut(vo.get(0).getCheckout());		
+		System.out.println(voa);
+		AttendMapper.callAttendanceEditProcedure(voa);
 		
-		
-		
-		return null;
+		return voa;
+	}
+
+	@Override
+	public List<EditAttendVO> getEditList() {
+		return AttendMapper.getEditList();
 	}
 
 }
