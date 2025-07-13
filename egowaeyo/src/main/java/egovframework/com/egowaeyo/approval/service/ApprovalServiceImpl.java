@@ -2,6 +2,8 @@ package egovframework.com.egowaeyo.approval.service;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +13,7 @@ import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalFormVO;
+import egovframework.com.egowaeyo.approval.VO.ApprovalLineVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalTempVO;
 import egovframework.com.egowaeyo.approval.mapper.ApprovalMapper;
 
@@ -25,10 +28,24 @@ public class ApprovalServiceImpl implements ApprovalService {
 		return approvalMapper.selectFormList();
 	}
 
-	@Override
-	public void insertApprovalDoc(ApprovalDocVO vo) {
-		approvalMapper.insertApprovalDoc(vo);
-	}
+	 @Override
+	    @Transactional
+	    public void insertFullApproval(ApprovalDocVO docVO, List<ApprovalLineVO> lineList, List<ApprovalCcVO> ccList) {
+	        // 1. 결재문서 등록
+	        approvalMapper.insertApprovalDoc(docVO); // doc_id는 selectKey로 생성했다고 가정
+
+	        // 2. 결재선 등록
+	        for (ApprovalLineVO lineVO : lineList) {
+	            lineVO.setDocId(docVO.getDocId()); // doc_id 세팅
+	            approvalMapper.insertApprovalLine(lineVO);
+	        }
+
+	        // 3. 참조자 등록
+	        for (ApprovalCcVO ccVO : ccList) {
+	            ccVO.setDocId(docVO.getDocId());
+	            approvalMapper.insertApprovalCc(ccVO);
+	        }
+	    }
 
 	@Override
 	public List<ApprovalDocVO> getReceiveList(String empId) {
@@ -73,6 +90,11 @@ public class ApprovalServiceImpl implements ApprovalService {
 	@Override
 	public List<EmplyrVO> getAllUsers() {
 		return approvalMapper.selectAllUsers();
+	}
+	
+	@Override
+	public void insertTemp(ApprovalTempVO vo) {
+	    approvalMapper.insertTemp(vo);
 	}
 	
 

@@ -14,6 +14,9 @@ public class ApprovalTempVO {
 	private String temId;
 	private String emplyrId;
 	private String tempTitle;
-	private NCLOB tempContent;
+	private String tempContent;
 	private Date tempDt;
+	
+	public String getTempContent() { return tempContent; }
+	public void setTempContent(String tempContent) { this.tempContent = tempContent; }
 }
