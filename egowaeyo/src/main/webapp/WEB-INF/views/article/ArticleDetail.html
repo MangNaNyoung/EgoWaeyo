@@ -166,7 +166,7 @@ li.li_name {
 				
 				<!-- 댓글목록 -->
 				<div class="mb-4">
-    <label class="comment-label d-flex align-items-center mb-2 ms-3">💬 댓글</label>
+    
     <div id="commentList" class="ms-3 me-3">
         <!-- 댓글이 동적으로 추가됩니다 -->
     </div>
@@ -460,8 +460,9 @@ document.addEventListener("DOMContentLoaded", function () {
 				        fetch(`/egowaeyo/comment/list?bbsId=${bbsId}&nttId=${nttId}`)
 				            .then(response => {
 				            	if (!response.ok) {
-				            	throw new Error("서버 응답에 문제가 있습니다.");
-				            }response.json()
+				            	    throw new Error("서버 응답에 문제가 있습니다.");
+				                }
+				            	return response.json()
 				            })
 				            .then(data => {
 				                const commentList = document.getElementById("commentList");
@@ -493,8 +494,9 @@ document.addEventListener("DOMContentLoaded", function () {
 				                }
 				                console.log(data);
 				            })
-				            .catch(error => console.error("Error fetching comments:", error));
-				        alert("댓글 데이터를 불러오는 중 문제가 발생했습니다.");
+				            .catch(error => {console.error("Error fetching comments:", error)
+				        	alert("댓글 데이터를 불러오는 중 문제가 발생했습니다.");
+				            	});
 				    }
 
 				    // 댓글 등록

@@ -60,145 +60,149 @@ public class BbsMasterServiceImpl implements BbsMasterService {
 	@Override
 	@Transactional
 	public void saveBoard(String boardName, String boardType, String parentBoard, String useAt,
-	        List<Map<String, String>> selectedRights, String currentUserId) {
-		 try {
-		// 권한 정보 검증
-		validateRights(selectedRights, boardType);
+			List<Map<String, String>> selectedRights, String currentUserId) {
+		try {
+			// 권한 정보 검증
+			validateRights(selectedRights, boardType);
 
-		// 게시판 ID 생성
-		String bbsId = generateBbsId();
+			// 게시판 ID 생성
+			String bbsId = generateBbsId();
 
-		// 게시판 유형 코드 결정
-		String bbsTyCode = determineBbsTyCode(boardType, parentBoard, boardName, useAt, currentUserId);
+			// 게시판 유형 코드 결정
+			String bbsTyCode = determineBbsTyCode(boardType, parentBoard, boardName, useAt, currentUserId);
 
-		// 게시판 정보 저장
-		BoardMasterVO boardMaster = new BoardMasterVO();
-		boardMaster.setBbsId(bbsId);
-		boardMaster.setBbsNm(boardName);
-		boardMaster.setBbsTyCode(bbsTyCode);
-    	boardMaster.setUseAt(useAt);
-    	boardMaster.setFrstRegisterId(currentUserId);
-    	insertBBSMaster(boardMaster);
+			// 게시판 정보 저장
+			BoardMasterVO boardMaster = new BoardMasterVO();
+			boardMaster.setBbsId(bbsId);
+			boardMaster.setBbsNm(boardName);
+			boardMaster.setBbsTyCode(bbsTyCode);
+			boardMaster.setUseAt(useAt);
+			boardMaster.setFrstRegisterId(currentUserId);
+			insertBBSMaster(boardMaster);
 
-    	// 공통코드 테이블에 추가
-        if ("type1".equals(boardType)) {
-            insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
-        }
+			// 공통코드 테이블에 추가
+			if ("type1".equals(boardType)) {
+				insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
+			}
 
-        // 권한 정보 검증 및 저장
-        if (!"type1".equals(boardType) && (selectedRights == null || selectedRights.isEmpty())) {
-            throw new IllegalArgumentException("권한 정보가 누락되었습니다.");
-        }
-        
-        if (selectedRights != null && !selectedRights.isEmpty()) {
-            selectedRights.forEach(right -> right.put("bbsId", boardMaster.getBbsId()));
-            saveBoardAuth(selectedRights, boardMaster.getBbsId());
-        }
-    } catch (Exception e) {
-        throw new RuntimeException("saveBoard 처리 중 오류 발생: " + e.getMessage(), e);
-    }
-}
+			// 권한 정보 검증 및 저장
+			if (!"type1".equals(boardType) && (selectedRights == null || selectedRights.isEmpty())) {
+				throw new IllegalArgumentException("권한 정보가 누락되었습니다.");
+			}
 
-    private void validateRights(List<Map<String, String>> selectedRights, String boardType) {
-        if (!"type1".equals(boardType) && (selectedRights == null || selectedRights.isEmpty())) {
-            throw new IllegalArgumentException("권한 정보가 누락되었습니다.");
-        }
-    }
-	private String generateBbsId() {
-	    return "BBSMSTR_" + String.format("%010d", (int) (Math.random() * 100)) + RandomStringUtils.randomAlphabetic(10);
+			if (selectedRights != null && !selectedRights.isEmpty()) {
+				selectedRights.forEach(right -> right.put("bbsId", boardMaster.getBbsId()));
+				saveBoardAuth(selectedRights, boardMaster.getBbsId());
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("saveBoard 처리 중 오류 발생: " + e.getMessage(), e);
+		}
 	}
-	
-private String determineBbsTyCode(String boardType, String parentBoard, String boardName, String useAt, String currentUserId) {
-    String bbsTyCode;
-    if ("게시판 추가".equals(boardType)) {
-        String maxCode = getMaxBbsTyCode();
-        int nextCode = Integer.parseInt(maxCode.substring(4)) + 1;
-        bbsTyCode = String.format("BBST%02d", nextCode);
 
-        insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
-    } else {
-        bbsTyCode = selectCodeByCodeNm(parentBoard);
-        if (bbsTyCode == null) {
-            throw new IllegalArgumentException("상위 게시판 이름 '" + parentBoard + "'에 해당하는 CODE를 찾을 수 없습니다.");
-        }
-    }
-    return bbsTyCode;
-}
+	private void validateRights(List<Map<String, String>> selectedRights, String boardType) {
+		if (!"type1".equals(boardType) && (selectedRights == null || selectedRights.isEmpty())) {
+			throw new IllegalArgumentException("권한 정보가 누락되었습니다.");
+		}
+	}
 
-@Override
-public void saveBoardAuth(List<Map<String, String>> selectedRights, String bbsId) {
-    if (selectedRights == null || selectedRights.isEmpty()) {
-        logger.warn("권한 정보가 없습니다.");
-        return;
-    }
+	private String generateBbsId() {
+		return "BBSMSTR_" + String.format("%012d", (int) (Math.random() * 100))
+				+ RandomStringUtils.randomAlphabetic(10);
+	}
 
-    if (bbsId == null || bbsId.isEmpty()) {
-        throw new IllegalArgumentException("유효하지 않은 bbsId입니다.");
-    }
+	private String determineBbsTyCode(String boardType, String parentBoard, String boardName, String useAt,
+			String currentUserId) {
+		String bbsTyCode;
+		if ("게시판 추가".equals(boardType)) {
+			String maxCode = getMaxBbsTyCode();
+			int nextCode = Integer.parseInt(maxCode.substring(4)) + 1;
+			bbsTyCode = String.format("BBST%02d", nextCode);
 
-    for (Map<String, String> right : selectedRights) {
-        String emplyrId = right.get("emplyrId"); // 키 이름 수정
-        String authorCode = right.get("authorCode");
+			insertCommonDetailCode(bbsTyCode, boardName, useAt, currentUserId);
+		} else {
+			bbsTyCode = selectCodeByCodeNm(parentBoard);
+			if (bbsTyCode == null) {
+				throw new IllegalArgumentException("상위 게시판 이름 '" + parentBoard + "'에 해당하는 CODE를 찾을 수 없습니다.");
+			}
+		}
+		return bbsTyCode;
+	}
 
-        // 권한 정보 누락 체크
-        if (emplyrId == null || emplyrId.isEmpty()) {
-            logger.warn("권한 정보 누락 - emplyrId: null or empty, authorCode: {}", authorCode);
-            continue; // 누락된 권한 정보는 건너뜀
-        }
+	@Override
+	public void saveBoardAuth(List<Map<String, String>> selectedRights, String bbsId) {
+		if (selectedRights == null || selectedRights.isEmpty()) {
+			logger.warn("권한 정보가 없습니다.");
+			return;
+		}
 
-        // 권한 유효성 검증
-        if (!isValidPermission(authorCode)) {
-            logger.error("유효하지 않은 권한: emplyrId={}, authorCode={}", emplyrId, authorCode);
-            throw new IllegalArgumentException("유효하지 않은 권한입니다: " + authorCode);
-        }
+		if (bbsId == null || bbsId.isEmpty()) {
+			throw new IllegalArgumentException("유효하지 않은 bbsId입니다.");
+		}
 
-        // bbsId를 추가하여 권한 정보 저장
-        right.put("bbsId", bbsId);
+		for (Map<String, String> right : selectedRights) {
+			String emplyrId = right.get("emplyrId"); // 키 이름 수정
+			String authorCode = right.get("authorCode");
 
-        BoardMasterVO auth = new BoardMasterVO();
-        auth.setEmplyrId(emplyrId);
-        auth.setBbsId(bbsId);
-        auth.setAuthorCode(authorCode);
+			// 권한 정보 누락 체크
+			if (emplyrId == null || emplyrId.isEmpty()) {
+				logger.warn("권한 정보 누락 - emplyrId: null or empty, authorCode: {}", authorCode);
+				continue; // 누락된 권한 정보는 건너뜀
+			}
 
-        // DB 저장
-        try {
-            insertBBSMasterAuth(auth);
-            logger.info("권한 저장 성공: emplyrId={}, bbsId={}, authorCode={}", emplyrId, bbsId, authorCode);
-        } catch (Exception e) {
-            logger.error("권한 저장 실패: emplyrId={}, bbsId={}, authorCode={}", emplyrId, bbsId, authorCode, e);
-            // 예외를 던지지 않고 로그만 기록하여 다른 작업이 계속 진행되도록 설정
-        }
-    }
-}
+			// 권한 유효성 검증
+			if (!isValidPermission(authorCode)) {
+				logger.error("유효하지 않은 권한: emplyrId={}, authorCode={}", emplyrId, authorCode);
+				throw new IllegalArgumentException("유효하지 않은 권한입니다: " + authorCode);
+			}
+
+			// bbsId를 추가하여 권한 정보 저장
+			right.put("bbsId", bbsId);
+
+			BoardMasterVO auth = new BoardMasterVO();
+			auth.setEmplyrId(emplyrId);
+			auth.setBbsId(bbsId);
+			auth.setAuthorCode(authorCode);
+
+			// DB 저장
+			try {
+				insertBBSMasterAuth(auth);
+				logger.info("권한 저장 성공: emplyrId={}, bbsId={}, authorCode={}", emplyrId, bbsId, authorCode);
+			} catch (Exception e) {
+				logger.error("권한 저장 실패: emplyrId={}, bbsId={}, authorCode={}", emplyrId, bbsId, authorCode, e);
+				// 예외를 던지지 않고 로그만 기록하여 다른 작업이 계속 진행되도록 설정
+			}
+		}
+	}
+
 //권한 코드 유효성 체크 예시
-private boolean isValidPermission(String authorCode) {
- // 실제 권한 코드 검증 로직 (예: DB에서 검증)
- return authorCode.equals("A-001") || authorCode.equals("A-002") || "A-003".equals(authorCode);  // 예시
-}
+	private boolean isValidPermission(String authorCode) {
+		// 실제 권한 코드 검증 로직 (예: DB에서 검증)
+		return authorCode.equals("A-001") || authorCode.equals("A-002") || "A-003".equals(authorCode); // 예시
+	}
 
 //권한 부여 처리 예시
-private void assignPermissions(String bbsId, String emplryId, String authorCode) {
- // 실제 권한 부여 로직 (DB에 권한 정보 저장)
- // 예: insert 권한 데이터
- // insertBoardAuth(bbsId, emplryId, authorCode);
-}
+	private void assignPermissions(String bbsId, String emplryId, String authorCode) {
+		// 실제 권한 부여 로직 (DB에 권한 정보 저장)
+		// 예: insert 권한 데이터
+		// insertBoardAuth(bbsId, emplryId, authorCode);
+	}
 
-private String determineAuthorCode(String authorName) {
-    if (authorName == null) {
-        throw new IllegalArgumentException("권한 이름이 null입니다.");
-    }
+	private String determineAuthorCode(String authorName) {
+		if (authorName == null) {
+			throw new IllegalArgumentException("권한 이름이 null입니다.");
+		}
 
-    switch (authorName.trim()) {
-        case "관리권한":
-            return "A-003";
-        case "쓰기권한":
-            return "A-002";
-        case "읽기권한":
-            return "A-001";
-        default:
-            throw new IllegalArgumentException("유효하지 않은 권한입니다: " + authorName);
-    }
-}
+		switch (authorName.trim()) {
+		case "관리권한":
+			return "A-003";
+		case "쓰기권한":
+			return "A-002";
+		case "읽기권한":
+			return "A-001";
+		default:
+			throw new IllegalArgumentException("유효하지 않은 권한입니다: " + authorName);
+		}
+	}
 
 	@Override
 	public int insertBBSMaster(BoardMasterVO boardMaster) {
@@ -269,36 +273,36 @@ private String determineAuthorCode(String authorName) {
 
 	@Override
 	public void insertBoardAuth(List<Map<String, String>> selectedRights, String bbsId) {
-	    if (selectedRights == null || selectedRights.isEmpty()) {
-	        throw new IllegalArgumentException("권한이 선택되지 않았습니다.");
-	    }
+		if (selectedRights == null || selectedRights.isEmpty()) {
+			throw new IllegalArgumentException("권한이 선택되지 않았습니다.");
+		}
 
-	    for (Map<String, String> right : selectedRights) {
-	        String emplyrId = right.get("emplyrId");
-	        String authorCode = determineAuthorCode(right.get("authorCode"));
+		for (Map<String, String> right : selectedRights) {
+			String emplyrId = right.get("emplyrId");
+			String authorCode = determineAuthorCode(right.get("authorCode"));
 
-	        if (emplyrId == null || authorCode == null || authorCode.isBlank()) {
-	            logger.warn("권한 정보 누락 - emplyrId: {}, authorCode: {}", emplyrId, authorCode);
-	            continue;
-	        }
+			if (emplyrId == null || authorCode == null || authorCode.isBlank()) {
+				logger.warn("권한 정보 누락 - emplyrId: {}, authorCode: {}", emplyrId, authorCode);
+				continue;
+			}
 
-	        // 권한 정보를 저장할 객체 생성
-	        BoardMasterVO auth = new BoardMasterVO();
-	        auth.setEmplyrId(emplyrId);
-	        auth.setBbsId(bbsId);
-	        auth.setAuthorCode(authorCode);
+			// 권한 정보를 저장할 객체 생성
+			BoardMasterVO auth = new BoardMasterVO();
+			auth.setEmplyrId(emplyrId);
+			auth.setBbsId(bbsId);
+			auth.setAuthorCode(authorCode);
 
-	        // DB에 권한 정보 삽입
-	        insertBBSMasterAuth(auth); 
-	        logger.info("삽입 중: emplyrId={}, bbsId={}, authorCode={}", emplyrId, bbsId, authorCode);
-	    }
+			// DB에 권한 정보 삽입
+			insertBBSMasterAuth(auth);
+			logger.info("삽입 중: emplyrId={}, bbsId={}, authorCode={}", emplyrId, bbsId, authorCode);
+		}
 	}
 
 	@Override
 	public List<BoardMasterVO> getBbsMasterInfo(String bbsId) {
-		 return bbsMasterMapper.selectBBSMasterInfo(bbsId);
+		return bbsMasterMapper.selectBBSMasterInfo(bbsId);
 	}
-	
+
 	@Override
 	public void updateBBSMaster(BoardMasterVO vo) throws Exception {
 		bbsMasterMapper.updateBBSMaster(vo);
@@ -306,71 +310,69 @@ private String determineAuthorCode(String authorName) {
 
 	@Override
 	public void updateBoardWithAuth(BoardMasterVO board, List<BoardMasterVO> authList) {
-		
-		
+
 	}
 
 	@Override
 	public void updateBoardAuth(List<Map<String, String>> selectedRights, String bbsId) {
-		 if (bbsId == null || bbsId.isEmpty()) {
-		        throw new IllegalArgumentException("bbsId가 유효하지 않습니다.");
-		    }
+		if (bbsId == null || bbsId.isEmpty()) {
+			throw new IllegalArgumentException("bbsId가 유효하지 않습니다.");
+		}
 
-		 try {
-		    // 1. 기존 권한 조회
-		    List<BoardMasterVO> existingAuths = bbsMasterMapper.selectBBSMasterAuthList(bbsId);
+		try {
+			// 1. 기존 권한 조회
+			List<BoardMasterVO> existingAuths = bbsMasterMapper.selectBBSMasterAuthList(bbsId);
 
-		    // 2. 새로운 권한 리스트 → Map으로 전환 (emplyrId → authorCode)
-		    Map<String, String> newAuthMap = new HashMap<>();
-		    for (Map<String, String> right : selectedRights) {
-		        String emplyrId = right.get("emplyrId");
-		        String authorCode = right.get("authorCode");
-		        if (emplyrId != null && authorCode != null) {
-		            newAuthMap.put(emplyrId, authorCode);
-		        }
-		    }
+			// 2. 새로운 권한 리스트 → Map으로 전환 (emplyrId → authorCode)
+			Map<String, String> newAuthMap = new HashMap<>();
+			for (Map<String, String> right : selectedRights) {
+				String emplyrId = right.get("emplyrId");
+				String authorCode = right.get("authorCode");
+				if (emplyrId != null && authorCode != null) {
+					newAuthMap.put(emplyrId, authorCode);
+				}
+			}
 
-		    // 3. 기존 권한과 비교
-		    Set<String> processed = new HashSet<>();
+			// 3. 기존 권한과 비교
+			Set<String> processed = new HashSet<>();
 
-		    for (BoardMasterVO existing : existingAuths) {
-		        String emplyrId = existing.getEmplyrId();
-		        String oldAuthorCode = existing.getAuthorCode();
-		        String newAuthorCode = newAuthMap.get(emplyrId);
+			for (BoardMasterVO existing : existingAuths) {
+				String emplyrId = existing.getEmplyrId();
+				String oldAuthorCode = existing.getAuthorCode();
+				String newAuthorCode = newAuthMap.get(emplyrId);
 
-		        BoardMasterVO vo = new BoardMasterVO();
-		        vo.setEmplyrId(emplyrId);
-		        vo.setBbsId(bbsId);
+				BoardMasterVO vo = new BoardMasterVO();
+				vo.setEmplyrId(emplyrId);
+				vo.setBbsId(bbsId);
 
-		        if (newAuthorCode == null) {
-		            // 삭제
-		            bbsMasterMapper.deleteBBSMasterAuth(vo);
-		        } else if (!oldAuthorCode.equals(newAuthorCode)) {
-		            // 수정
-		            vo.setAuthorCode(newAuthorCode);
-		            bbsMasterMapper.updateBBSMasterAuth(vo);
-		        }
-		        processed.add(emplyrId);
-		    }
+				if (newAuthorCode == null) {
+					// 삭제
+					bbsMasterMapper.deleteBBSMasterAuth(vo);
+				} else if (!oldAuthorCode.equals(newAuthorCode)) {
+					// 수정
+					vo.setAuthorCode(newAuthorCode);
+					bbsMasterMapper.updateBBSMasterAuth(vo);
+				}
+				processed.add(emplyrId);
+			}
 
-		    // 4. 새로 추가된 권한
-		    for (Map<String, String> right : selectedRights) {
-		        String emplyrId = right.get("emplyrId");
-		        if (!processed.contains(emplyrId)) {
-		            BoardMasterVO vo = new BoardMasterVO();
-		            vo.setEmplyrId(emplyrId);
-		            vo.setBbsId(bbsId);
-		            vo.setAuthorCode(right.get("authorCode"));
-		            bbsMasterMapper.insertBBSMasterAuth(vo);
-		        }
-		    }
-		    logger.info("게시판 권한이 성공적으로 수정되었습니다.");
-		 }
-		    catch (Exception e) {
-		        logger.error("게시판 권한 수정 중 오류 발생: {}", e.getMessage(), e);
-		        throw new RuntimeException("게시판 권한 수정에 실패했습니다.");
-		    }
-		
+			// 4. 새로 추가된 권한
+			for (Map<String, String> right : selectedRights) {
+				String emplyrId = right.get("emplyrId");
+				if (!processed.contains(emplyrId)) {
+					BoardMasterVO vo = new BoardMasterVO();
+					vo.setEmplyrId(emplyrId);
+					vo.setBbsId(bbsId);
+					vo.setAuthorCode(right.get("authorCode"));
+					bbsMasterMapper.insertBBSMasterAuth(vo);
+				}
+			}
+			logger.info("게시판 권한이 성공적으로 수정되었습니다.");
+		} catch (Exception e) {
+			logger.error("게시판 권한 수정 중 오류 발생: {}", e.getMessage(), e);
+			throw new RuntimeException("게시판 권한 수정에 실패했습니다.");
+		}
+
 	}
 
 	/*
