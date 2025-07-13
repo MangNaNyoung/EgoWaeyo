@@ -7,7 +7,7 @@
   <div class="main-container d-flex m-4 flex-column">
     <div class="main-first-section">
       <div class="main-small-title d-bolck pb-4">
-        <!-- 총괄 관리 -->
+        
       </div>
       <div class="main-header-section d-flex justify-content-between flex-row">
         <div class="main-header-title fs-3 fw-bold pb-5">
@@ -61,6 +61,12 @@
               </svg>
             </button>
           </div>
+          <!-- 전체 보기 버튼 추가 -->
+		  <div class="pt-2">
+		    <button class="btn btn-outline-primary btn-sm w-100" onclick="showAllEmployees()">
+		      전체 사원 보기
+		    </button>
+		  </div>
           <div class="dept-list-section pt-3">
             <div class="">
               <ul class="list-group list-group-flush" id="department-list">
@@ -296,17 +302,18 @@
 
       // 사용자 조회
       function loadEmpList(orgnztId) {
-    	let param = orgnztId ? "orgnztId=" + orgnztId : ""
+   	    let param = orgnztId ? "orgnztId=" + encodeURIComponent(orgnztId) : "";
    	    const tableBody = document.querySelector('.dept-people-section table tbody');
    	    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-3">데이터 로딩 중...</td></tr>';
 
         // AJAX 호출
         $.ajax({
-          url: "selectemp?"+param,
+          url: "selectemp?" + param,
           type: "GET",
           dataType: "json",
           success: function (datas) {
             console.log("사원 데이터:", datas); // 디버깅용
+            console.log("요청 파라미터:", param); // 디버깅용
 
             tableBody.innerHTML = '';
             
@@ -324,7 +331,9 @@
 			                     tableBody.appendChild(row);
               });
             } else {
-              tableBody.append('<td class="py-3">사원 정보가 없어요.</td>');
+            	const row = document.createElement('tr');
+                row.innerHTML = '<td colspan="8" class="text-center py-3">사원 정보가 없습니다.</td>';
+                tableBody.appendChild(row);
             }
           },
           error: function (xhr, status, error) {
@@ -413,6 +422,22 @@
         };
 
         console.log("선택된 부서:", selectedDepartment);
+        
+     	// 선택된 부서의 사원 목록 로드
+        loadEmpList(selectedDepartment.id);
+      }
+      
+   	  // 전체 사원 보기 버튼 추가
+      function showAllEmployees() {
+        // 부서 선택 해제
+        const prevSelected = document.querySelector("#department-list .bg-primary");
+        if (prevSelected) {
+          prevSelected.classList.remove("bg-primary", "text-white");
+        }
+        selectedDepartment = null;
+        
+        // 전체 사원 로드
+        loadEmpList();
       }
 
       // 부서 검색
