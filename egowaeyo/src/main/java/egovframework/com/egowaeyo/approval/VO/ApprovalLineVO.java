@@ -11,9 +11,9 @@ import oracle.sql.NCLOB;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApprovalLineVO {
-	private int lineId;
+	private long lineId;
 	private String approverId;
-	private int lineOrder;
+	private Integer lineOrder;
 	private String lineStatus;
 	private NCLOB lineOpinion;
 	private Date lineDt;

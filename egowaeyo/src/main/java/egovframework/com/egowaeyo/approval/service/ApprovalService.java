@@ -8,12 +8,13 @@ import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalFormVO;
+import egovframework.com.egowaeyo.approval.VO.ApprovalLineVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalTempVO;
 
 public interface ApprovalService {
 	List<ApprovalFormVO> getFormList();
 
-	void insertApprovalDoc(ApprovalDocVO vo);
+	void insertFullApproval(ApprovalDocVO docVO, List<ApprovalLineVO> lineList, List<ApprovalCcVO> ccList);
 
 	List<ApprovalDocVO> getReceiveList(String empId);
 
@@ -32,4 +33,6 @@ public interface ApprovalService {
 	List<EmplyrVO> getEmpListByDept(String deptId);
 	
 	List<EmplyrVO> getAllUsers();
+	
+	void insertTemp(ApprovalTempVO vo);
 }

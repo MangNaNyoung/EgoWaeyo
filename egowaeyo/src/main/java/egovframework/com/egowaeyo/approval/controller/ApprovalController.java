@@ -1,15 +1,15 @@
 package egovframework.com.egowaeyo.approval.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +25,7 @@ import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalCcVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalDocVO;
+import egovframework.com.egowaeyo.approval.VO.ApprovalLineVO;
 import egovframework.com.egowaeyo.approval.VO.ApprovalTempVO;
 import egovframework.com.egowaeyo.approval.service.ApprovalService;
 
@@ -36,31 +37,57 @@ public class ApprovalController {
 	private ApprovalService approvalService;
 
 	@GetMapping("/write")
-	public String writeForm(Model model,  HttpServletRequest req) {
+	public String writeForm(Model model, HttpServletRequest req) {
 		AdminUserVO loginUser = (AdminUserVO) req.getSession().getAttribute("loginUser");
-		if(loginUser == null) {
-		    loginUser = new AdminUserVO(); // 최소한 빈 객체라도
-		    loginUser.setUserNm("알수없음");
+		if (loginUser == null) {
+			loginUser = new AdminUserVO(); // 최소한 빈 객체라도
+			loginUser.setUserNm("알수없음");
 		}
 		model.addAttribute("loginUser", loginUser);
 		model.addAttribute("formList", approvalService.getFormList());
 		return "approval/write.html";
 	}
-	
+
 	@PostMapping("/write.do")
+	@Transactional // 
 	public String submitDoc(@RequestParam String docTitle, @RequestParam String apprformId,
-			@RequestParam String docContent, HttpSession session, Principal principal) {
-		ApprovalDocVO vo = new ApprovalDocVO();
-		vo.setDocTitle(docTitle);
-		vo.setApprformId(apprformId);
-		vo.setDocStatus("작성중");
-		vo.setEmplId(principal.getName());
-		vo.setCreatedDt(new Date());
-		vo.setDocHtml(docContent);
-		approvalService.insertApprovalDoc(vo);
+			@RequestParam String docContent, @RequestParam List<String> approverIds, 
+			@RequestParam(required = false) List<String> ccIds, 
+			Principal principal) {
+		// 1. 결재문서 정보 생성
+		ApprovalDocVO docVO = new ApprovalDocVO();
+		docVO.setDocTitle(docTitle);
+		docVO.setApprformId(apprformId);
+		docVO.setDocStatus("작성중");
+		docVO.setEmplId(principal.getName());
+		docVO.setCreatedDt(new Date());
+		docVO.setDocHtml(docContent);
+
+		// 2. 결재선 정보 생성
+		List<ApprovalLineVO> lineList = new ArrayList<>();
+		int order = 1;
+		for (String approverId : approverIds) {
+			ApprovalLineVO lineVO = new ApprovalLineVO();
+			lineVO.setApproverId(approverId);
+			lineVO.setLineOrder(order++);
+			lineVO.setLineStatus("대기");
+			lineList.add(lineVO);
+		}
+		// 3. 참조(수신)자 정보 생성
+		List<ApprovalCcVO> ccList = new ArrayList<>();
+		if (ccIds != null) {
+			for (String ccId : ccIds) {
+				ApprovalCcVO ccVO = new ApprovalCcVO();
+				ccVO.setEmplyrId(ccId);
+				ccList.add(ccVO);
+			}
+		}
+		// 4. 서비스 호출 (트랜잭션 처리!)
+		approvalService.insertFullApproval(docVO, lineList, ccList);
+
 		return "redirect:/approval/receive";
 	}
-	
+
 	// 개인 수신함 (receive.html)
 	@GetMapping("/receive")
 	public String receivePage() {
@@ -99,52 +126,68 @@ public class ApprovalController {
 		String empId = (String) session.getAttribute("loginId");
 		return approvalService.getTempList(empId);
 	}
-	
+
 	// 참조함 (reference.html)
 	@GetMapping("/reference")
 	public String referencePage() {
-	    return "approval/reference.html";
+		return "approval/reference.html";
 	}
 
 	@GetMapping("/reference/list")
 	@ResponseBody
 	public List<ApprovalCcVO> referenceList(HttpSession session) {
-	    String empId = (String) session.getAttribute("loginId");
-	    return approvalService.getReferenceList(empId);
+		String empId = (String) session.getAttribute("loginId");
+		return approvalService.getReferenceList(empId);
 	}
-	
-	//프린팅 
+
+	// 프린팅
 	@GetMapping("/approval/print/{docId}")
 	public String printApproval(@PathVariable String docId, Model model) {
-	    ApprovalDetailVO detail = approvalService.getApprovalDetail(docId);
-	    model.addAttribute("detail", detail);
-	    return "approval/print.html";
+		ApprovalDetailVO detail = approvalService.getApprovalDetail(docId);
+		model.addAttribute("detail", detail);
+		return "approval/print.html";
 	}
-	
+
 	@GetMapping("/form/{formId}")
 	@ResponseBody
 	public String getFormHtml(@PathVariable String formId) {
-	    return approvalService.getFormHtml(formId);
+		return approvalService.getFormHtml(formId);
+	}
+
+	// 부서 리스트 반환
+	@GetMapping("/dept")
+	@ResponseBody
+	public List<EgovDeptVO> getDeptList() {
+		return approvalService.getDeptList();
+	}
+
+	// 부서별 사용자 목록 조회 (JSON 반환)
+	@GetMapping("/dept/{deptId}")
+	@ResponseBody
+	public List<EmplyrVO> getEmpListByDept(@PathVariable String deptId) {
+		return approvalService.getEmpListByDept(deptId);
+	}
+
+	@GetMapping("/approval/users")
+	@ResponseBody
+	public List<EmplyrVO> getAllUsers() {
+		return approvalService.getAllUsers();
 	}
 	
-	// 부서 리스트 반환
-    @GetMapping("/dept")
-    @ResponseBody
-    public List<EgovDeptVO> getDeptList() {
-        return approvalService.getDeptList();
-    }
-    
-	// 부서별 사용자 목록 조회 (JSON 반환)
-    @GetMapping("/dept/{deptId}")
-    @ResponseBody
-    public List<EmplyrVO> getEmpListByDept(@PathVariable String deptId) {
-        return approvalService.getEmpListByDept(deptId);
-    }
-    
-    @GetMapping("/approval/users")
-    @ResponseBody
-    public List<EmplyrVO> getAllUsers() {
-        return approvalService.getAllUsers();
-    }
+	@PostMapping("/tempSave")
+	@ResponseBody
+	public String tempSave(
+	    @RequestParam String docTitle,
+	    @RequestParam String docContent,
+	    @RequestParam String drafterId,
+	    Principal principal
+	) {
+	    ApprovalTempVO tempVO = new ApprovalTempVO();
+	    tempVO.setTempTitle(docTitle);
+	    tempVO.setTempContent(docContent);
+	    tempVO.setEmplyrId(principal.getName());
+	    approvalService.insertTemp(tempVO);
+	    return "ok";
+	}
 
 }

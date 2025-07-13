@@ -11,13 +11,47 @@
 		SELECT apprform_id, aporm_name FROM approval_form
 	</select>
 
-	<insert id="insertApprovalDoc"
-		parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+	<insert id="insertApprovalDoc" parameterType="ApprovalDocVO">
+		<selectKey keyProperty="docId" order="BEFORE"
+			resultType="string">
+			SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') ||
+			LPAD(approval_doc_seq.NEXTVAL, 6, '0') FROM dual
+		</selectKey>
 		INSERT INTO approval_doc (
-		doc_id, doc_title, EMPLYR_ID, doc_status, created_dt, apprform_id
+		doc_id, doc_title, EMPLYR_ID, doc_status,
+		created_dt, apprform_id, doc_html
 		) VALUES (
-		approval_doc_seq.NEXTVAL, #{docTitle}, #{emplId}, #{docStatus}, #{createdDt}, #{apprformId}
+		#{docId}, #{docTitle},
+		#{emplId}, #{docStatus}, #{createdDt}, #{apprformId},
+		#{docHtml}
 		)
+	</insert>
+
+	<insert id="insertApprovalLine" parameterType="ApprovalLineVO">
+		INSERT INTO
+		approval_line (
+		line_id, doc_id, approver_id, line_order, line_status
+		)
+		VALUES (
+		approval_line_seq.NEXTVAL, #{docId}, #{approverId},
+		#{lineOrder}, #{lineStatus}
+		)
+	</insert>
+
+	<insert id="insertApprovalCc" parameterType="ApprovalCcVO">
+		INSERT INTO
+		approval_cc (
+		cc_id, doc_id, EMPLYR_ID
+		) VALUES (
+		approval_cc_seq.NEXTVAL, #{docId}, #{emplyrId}
+		)
+	</insert>
+
+	<insert id="insertTemp" parameterType="ApprovalTempVO">
+		INSERT INTO approval_temp
+		(temp_id, EMPLYR_ID, temp_title, temp_content, temp_dt)
+		VALUES (approval_temp_seq.NEXTVAL, #{emplyrId}, #{tempTitle},
+		#{tempContent}, SYSDATE)
 	</insert>
 
 	<!-- 개인 수신함 -->
@@ -46,7 +80,7 @@
 	<!-- 임시보관함 -->
 	<select id="selectTempList" parameterType="String"
 		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalTempVO">
-		SELECT * FROM approval_temp WHERE EMPLYR_ID = #{empId}
+		SELECT * FROM approval_doc WHERE drafter_id = #{empId}
 	</select>
 
 	<!-- 참조(공람)자로 들어간 모든 문서 -->
@@ -106,7 +140,7 @@
 		resultType="egovframework.com.egowaeyo.admin.service.EgovDeptVO">
 		SELECT orgnzt_Id,
 		orgnzt_Nm,
-		orgnzt_Dc 
+		orgnzt_Dc
 		FROM
 		COMTNORGNZTINFO
 	</select>
@@ -117,7 +151,8 @@
 		USER_NM
 		FROM
 		COMTNEMPLYRINFO
-		WHERE ORGNZT_ID = #{deptId}
+		WHERE ORGNZT_ID
+		= #{deptId}
 	</select>
 
 	<select id="selectAllUsers" parameterType="string"
@@ -126,6 +161,7 @@
 		USER_NM,
 		ORGNZT_ID
 		AS deptId
-		FROM COMTNEMPLYRINFO
+		FROM
+		COMTNEMPLYRINFO
 	</select>
 </mapper>
