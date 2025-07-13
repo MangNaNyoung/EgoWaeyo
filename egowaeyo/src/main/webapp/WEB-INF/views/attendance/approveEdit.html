@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
+
+<!-- th:block부분이 defalut.html 에서 지정한 layout:fragment="customContents" 영역에 들어간다.  -->
+
+<section layout:fragment="content">
+	<link rel="stylesheet" th:href="@{/assets/css/toastUi/toastUi.css}">
+	<style>
+.search-box {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	justify-content: flex-end;
+	margin-bottom: 10px;
+}
+
+.search-box input {
+	width: 150px;
+}
+
+#grid {
+	height: 450px;
+}
+
+.table-responsive {
+	overflow: inherit;
+}
+
+.tui-datepicker, .tui-calendar {
+	position: relative;
+	z-index: 3000 !important;
+}
+
+
+</style>
+	<div class="container mt-4">
+		<h5 class="title">내 출퇴근 내역</h5>
+		
+		
+
+		<div class="search-box">
+			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+				<input id="startpicker-input" type="date" aria-label="Date">
+				<span class="tui-ico-date"></span>
+				<div id="startpicker-container" style="margin-left: -1px;"></div>
+			</div>
+
+			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+				<input id="startpicker-input" type="date" aria-label="Date">
+				<span class="tui-ico-date"></span>
+				<div id="startpicker-container" style="margin-left: -1px;"></div>
+			</div>
+			<span>to</span>
+			<div class="tui-datepicker-input tui-datetime-input tui-has-focus">
+				<input id="endpicker-input" type="date" aria-label="Date"> <span
+					class="tui-ico-date"></span>
+				<div id="endpicker-container" style="margin-left: -1px;"></div>
+			</div>
+
+
+			<button class="btn btn-dark btn-sm">
+				<i class="bi bi-search"></i>
+			</button>
+		</div>
+
+		<div class="table-responsive">
+			<div id="grid"></div>
+		</div>
+	</div>
+
+
+<script th:inline="javascript">
+
+const grid = new Grid({
+	el: document.getElementById('grid'),
+	scrollX: false,
+	scrollY: false,
+	rowHeaders: [
+		{
+			type: 'checkbox',
+			header: `
+				<label for="all-checkbox" class="checkbox">
+					<input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+					<span class="custom-input"></span>
+				</label>
+			`
+		}
+	],
+	columns: [
+		// [Column-1] 출근일
+		{
+			header: '날짜',
+			name: 'date',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-2] 출근 
+		{
+			header: '출근시각',
+			name: 'checkin',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			editor: TimeEditor,
+			validation: {
+				validatorFn: function(value) {
+					return validateTimeFormat(value);
+				}
+			},
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-3] 출근 상태
+		{
+			header: '출근 상태',
+			name: 'instate',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-4] 퇴근 
+		{
+			header: '퇴근시각',
+			name: 'checkout',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			editor: TimeEditor,
+			validation: {
+				validatorFn: function(value) {
+					return validateTimeFormat(value);
+				}
+			},
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-5] 퇴근 상태
+		{
+			header: '퇴근상태',
+			name: 'outstate',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		},
+		// [Column-6] 정정신청 상태
+		{
+			header: '정정신청',
+			name: 'modstate',
+			sortable: true,
+			resizable: true,
+			align: 'center',
+			filter: {
+				type: 'text',
+				showApplyBtn: true,
+				showClearBtn: true
+			}
+		}
+	]
+});
+
+
+
+</script>
+</section>
+
+</html>

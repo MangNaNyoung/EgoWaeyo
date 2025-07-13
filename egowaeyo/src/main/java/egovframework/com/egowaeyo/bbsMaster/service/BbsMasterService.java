@@ -25,7 +25,7 @@ public interface BbsMasterService {
 
     // 게시판 권한 정보 삽입
     int insertBBSMasterAuth(BoardMasterVO auth);
-
+    
     // 게시판 권한 일괄 삽입
     void saveBoardAuth(List<Map<String, String>> selectedRights, String bbsId);
 
@@ -44,4 +44,13 @@ public interface BbsMasterService {
 	void insertCommonDetailCode(Map<String, Object> params);
 
 	String selectCodeByCodeNm(String codeNm);
+	
+	List<BoardMasterVO> getBbsMasterInfo(String bbsId);
+	
+	void updateBBSMaster(BoardMasterVO vo) throws Exception;
+	
+	void updateBoardWithAuth(BoardMasterVO board, List<BoardMasterVO> authList);
+    
+    void updateBoardAuth(List<Map<String, String>> selectedRights, String bbsId);
+
 }

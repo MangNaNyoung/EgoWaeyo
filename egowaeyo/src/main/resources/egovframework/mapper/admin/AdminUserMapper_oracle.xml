@@ -113,4 +113,23 @@
 		WHERE ORGNZT_ID = #{orgnztId}
 		
 	</delete>
+	
+	<!-- [부서 관리] 페이지에서의 전체 사용자 조회 -->
+	<select id="selectemp" resultType="AdminUserVO">
+		select cp.user_nm,
+		       cp.emplyr_id,
+		       co.orgnzt_nm,
+		       cp.ofcps_nm,
+		       cp.empl_no,
+		       cp.email_adres,
+		       cp.phone_number
+		from comtnemplyrinfo cp
+		join comtnorgnztinfo co on
+		cp.orgnzt_id = co.orgnzt_id
+		where cp.emplyr_id != 'TEST1' and cp.emplyr_id != 'webmaster'
+		<if test="orgnztId != null">
+			and orgnzt_id #{orgnztId}
+		</if>
+		order by empl_no asc
+	</select>
 </mapper>

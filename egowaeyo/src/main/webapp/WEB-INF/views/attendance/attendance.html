@@ -588,7 +588,21 @@ $('.btn.btn-success.btn-sm').click(function() {
 		},
 		data: JSON.stringify(data),
 		success: function(result) {
-			console.log(result)
+			if(result.result=='success'){
+				Swal.fire({
+					  icon: "success",
+					  title: "완료",
+					  text: "정정신청을 완료했습니다.",
+					});
+					grid.setValue(checkedKey,'modstate',`<button class="btn btn-sm btn-primary" disabled>진행중</button>`)
+				
+			}else{
+				Swal.fire({
+					  icon: "error",
+					  title: "에러",
+					  text: "시스템 에러",
+					});
+			}
 		},
 		error: function(request, status, error) {
 			console.log(error);

@@ -58,13 +58,20 @@ public class AttendanceController {
 	
 	@PostMapping("/rgstEdit.do")
 	@ResponseBody
-	public Map<String,String>rgstEdit(@RequestBody List<AttendVO> vo,EditAttendVO voa){
+	public Map<String,String>rgstEdit(@RequestBody List<AttendVO> vo){
 		Map<String,String>map = new HashMap<>();
 		System.out.println(vo);
-		
+		map.put("result",AttendService.rgstEdit(vo).getMessage());
 		return  map;
 	}
 	
-	
+	@GetMapping("/editAttend.do")
+	public String goToEdit(){
+		return "attendance/approveEdit.html";
+	}
+	@GetMapping("/getEditList")
+	public List<EditAttendVO> getEditList(){
+		return AttendService.getEditList();
+	}
 	
 }
