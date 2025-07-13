@@ -21,4 +21,6 @@ public interface AdminUserMapper {
 	
 	public int DeptUdt(EgovDeptVO edpt); // 부서관리 페이지 부서목록 부서수정
 	public int DeptDel(String orgnztId); // 부서관리 페이지 부서목록 부서삭제
+	
+	public List<AdminUserVO> selectemp(AdminUserVO au); // 부서관리 페이지 전체 사용자 조회
 }
