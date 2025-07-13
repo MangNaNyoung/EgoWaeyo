@@ -67,12 +67,13 @@ public class AdminUserServiceImpl implements AdminUserService {
 			int result = adminusermapper.AdminUserIns(adu);
 			
 			// 6. 권한 부여
-			DeptAuthor deptAuthor = new DeptAuthor();
-			deptAuthor.setUniqId(uniqId);
-			deptAuthor.setAuthorCode(adu.getAuthorCode());
-			deptAuthorDAO.insertDeptAuthor(deptAuthor);
 			
-			System.out.println("권한 등록 완료 : " + adu.getAuthorCode());
+			 DeptAuthor deptAuthor = new DeptAuthor(); deptAuthor.setUniqId(uniqId);
+			 deptAuthor.setAuthorCode(adu.getAuthorCode());
+			 deptAuthorDAO.insertDeptAuthor(deptAuthor);
+			 
+			 System.out.println("권한 등록 완료 : " + adu.getAuthorCode());
+			 
 			
 			return result;
 			
@@ -142,6 +143,12 @@ public class AdminUserServiceImpl implements AdminUserService {
 			e.printStackTrace();
 			throw new RuntimeException("부서 삭제 중 오류 발생하였어요. : " + e.getMessage());
 		}
+	}
+
+	// [부서관리 페이지] 전체 사용자 조회
+	@Override
+	public List<AdminUserVO> selectemp(AdminUserVO au) {
+		return adminusermapper.selectemp(au);
 	}
 
 }
