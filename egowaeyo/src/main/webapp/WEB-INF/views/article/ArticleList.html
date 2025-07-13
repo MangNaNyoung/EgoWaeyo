@@ -179,7 +179,7 @@ li.li_name {
 
 			</div>
 			<!-- 페이징 컴포넌트 -->
-			<nav aria-label="Page navigation">
+			<nav aria-label="Page navigation" class="mt-4">
 				<ul class="pagination justify-content-center" id="pagination">
 					<!-- 페이지 버튼이 동적으로 추가됩니다 -->
 				</ul>
@@ -206,6 +206,11 @@ li.li_name {
 		  let type = rt.getAttribute("data-type");
 		  let bbsId = rt.getAttribute("data-bbs-id");// data-bbs-id 값 가져오기
 		  
+		  // 모달 초기화
+		    document.querySelector(".modal-wrap").style.display = "none"; // 권한 설정 부분 숨기기
+		    document.getElementById("boardTypeSelection").hidden = false; // 게시판 유형 선택 보이기
+		    toggleParentBoard(false); // 상위 게시판 UI 비활성화
+		    
 		  //저장 버튼 이벤트 처리
 		  const saveButton = document.getElementById("saveButton");
 		  
@@ -223,8 +228,10 @@ li.li_name {
 	      }
 		  else if (type == "code") {
 			  document.querySelector('#addProjectModalLabel').textContent = "그룹게시판 관리";
+			  boardType.hidden = true
+			  const code = rt.getAttribute("data-bbs-id");
+			  insertCodeData(code); // code를 insertCodeData 함수에 전달
 			  saveButton.addEventListener("click", updateCodeClick );
-			  boardType.hidden = true;
 		  }
 		  else if (type == "bbs") {
 			  document.querySelector('#addProjectModalLabel').textContent = "게시판 관리";
@@ -282,8 +289,10 @@ li.li_name {
 									ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
 									ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
 									ulImg.setAttribute("data-bbs-id", bbsList[0].bbsId); 
+									ulImg.setAttribute("data-code", bbsList[0].code);
 
 									ulImg.setAttribute("data-type", "code"); 
+									
 									groupItem.appendChild(ulImg);
 						          }
 
@@ -393,52 +402,61 @@ li.li_name {
 				// 게시글 검색 필터 이벤트
 				  const filterButton = document.getElementById("filterButton");
 
-				    filterButton.addEventListener("click", function (e) {
-				        e.preventDefault();
+				  filterButton.addEventListener("click", function (e) {
+				      e.preventDefault();
 
-				        const bbsId = document.getElementById("formSelect").value;
-				        const searchType = document.getElementById("howSelect").value;
-				        const searchKeyword = document.getElementById("filterInput").value;
+				      const bbsId = document.getElementById("formSelect").value;
+				      const searchType = document.getElementById("howSelect").value;
+				      const searchKeyword = document.getElementById("filterInput").value;
 
-				        if (!bbsId || !searchType || !searchKeyword) {
-				            alert("모든 필드를 입력해주세요.");
-				            return;
-				        }
+				      if (!bbsId || !searchType || !searchKeyword) {
+				          alert("모든 필드를 입력해주세요.");
+				          return;
+				      }
 
-				        fetch(`/egowaeyo/article/filterArticles?bbsId=${bbsId}&searchType=${searchType}&searchKeyword=${searchKeyword}`)
-				            .then(response => response.json())
-				            .then(data => {
-				                const postListContainer = document.querySelector(".container-fluid.px-4");
-				                postListContainer.innerHTML = ""; // 기존 리스트 초기화
+				      fetch(`/egowaeyo/article/filterArticles?bbsId=${encodeURIComponent(bbsId)}&searchType=${encodeURIComponent(searchType)}&searchKeyword=${encodeURIComponent(searchKeyword)}`)
+				          .then(response => {
+				              if (!response.ok) {
+				                  throw new Error(`HTTP error! status: ${response.status}`);
+				              }
+				              return response.json();
+				          })
+				          .then(data => {
+				              const postListContainer = document.querySelector(".container-fluid.px-4");
+				              postListContainer.innerHTML = ""; // 기존 리스트 초기화
 
-				                data.forEach(post => {
-				                    const postItem = document.createElement("div");
-				                    postItem.className = "post-list-item";
-				                    
-				                    // 날짜 처리
-				                    const dateTime = post.FRST_REGIST_PNTTM;
-				                    const formattedDate = dateTime ? dateTime.split(' ')[0] : '날짜 없음';
-				                    const formattedTime = dateTime ? dateTime.split(' ')[1] : '시간 없음';
+				              const fragment = document.createDocumentFragment(); // 성능 개선을 위한 DocumentFragment 사용
 
-				                    postItem.innerHTML = `
-				                        <div class="avatar"></div>
-				                        <div>
-				                            <div class="post-title">${post.NTT_SJ}<span style="font-size:14px; color:#4a90e2; margin-left:5px;">👁 ${post.RDCNT}</span></div>
-				                            <div class="post-meta">
-				                                <span>${post.NTCR_NM}</span>
-				                                <span>${formattedDate}</span>
-				                                <span>${formattedTime}</span>
-				                            </div>
-				                        </div>
-				                    `;
-				                    postListContainer.appendChild(postItem);
-				                });
-				            })
-				            .catch(error => {
-				                console.error("Error fetching filtered articles:", error);
-				                alert("검색 중 오류가 발생했습니다.");
-				            });
-				    });
+				              data.forEach(post => {
+				                  const postItem = document.createElement("div");
+				                  postItem.className = "post-list-item";
+
+				                  const dateTime = post.FRST_REGIST_PNTTM;
+				                  const formattedDate = dateTime ? dateTime.split(' ')[0] : '날짜 없음';
+				                  const formattedTime = dateTime ? dateTime.split(' ')[1] : '시간 없음';
+
+				                  postItem.innerHTML = `
+				                      <div class="avatar"></div>
+				                      <div>
+				                          <div class="post-title">${post.NTT_SJ}<span style="font-size:14px; color:
+				  #4a90e2; margin-left:5px;">👁 ${post.RDCNT}</span></div>
+				                          <div class="post-meta">
+				                              <span>${post.NTCR_NM}</span>
+				                              <span>${formattedDate}</span>
+				                              <span>${formattedTime}</span>
+				                          </div>
+				                      </div>
+				                  `;
+				                  fragment.appendChild(postItem);
+				              });
+
+				              postListContainer.appendChild(fragment); // 한 번에 DOM 업데이트
+				          })
+				          .catch(error => {
+				              console.error("Error fetching filtered articles:", error);
+				              alert("검색 중 오류가 발생했습니다.");
+				          });
+				  });
 				    
 				});			  
 			  
@@ -601,6 +619,8 @@ li.li_name {
 			$(".addUnderBoard").click(function(){
 				manageClick = "addUnderBoard"
 			})
+			
+			
 			
 		</script>
 	</div>

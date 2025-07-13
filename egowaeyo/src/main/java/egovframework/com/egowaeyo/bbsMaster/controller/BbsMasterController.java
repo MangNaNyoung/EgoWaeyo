@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO;
 import egovframework.com.egowaeyo.bbsMaster.service.BbsMasterService;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,49 @@ public class BbsMasterController {
 	
 	@Autowired
 	final BbsMasterService bbsMasterService;
+
+	// 상위게시판 정보 업데이트
+	@PostMapping("/updateCommonCodeInfo")
+	public ResponseEntity<Map<String, Object>> updateCommonCodeInfo(@RequestBody BoardMasterVO boardMasterVO) {
+	    Map<String, Object> result = new HashMap<>();
+
+	    // 필수 값 검증
+	    if (boardMasterVO.getCode() == null || boardMasterVO.getCode().isEmpty()) {
+	        result.put("result", "fail");
+	        result.put("message", "Code 값이 비어있습니다.");
+	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
+	    }
+
+	    try {
+	        int updateCount = bbsMasterService.updateCommonCodeInfo(boardMasterVO);
+
+	        if (updateCount > 0) {
+	            result.put("result", "success");
+	            result.put("message", "코드 정보가 성공적으로 수정되었습니다.");
+	            return ResponseEntity.ok(result);
+	        } else {
+	            result.put("result", "fail");
+	            result.put("message", "코드 정보 수정에 실패했습니다.");
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+	        }
+	    } catch (Exception e) {
+	        logger.error("Error updating common code info: {}", e.getMessage(), e);
+	        result.put("result", "fail");
+	        result.put("message", "서버 오류가 발생했습니다. 관리자에게 문의하세요.");
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(result);
+	    }
+	}
+	
+	// 상위게시판관리 정보조회
+	@GetMapping("/commonCodeInfo/{code}")
+	@ResponseBody
+    public Map<String, String> getCommonCodeInfo(@PathVariable String code) {
+		Map<String, String> result = bbsMasterService.getCommonCodeInfo(code);
+	    if (result == null) {
+	        result = new HashMap<>();
+	    }
+	    return result;
+    }
 	
 	 // 현재 사용자 이름 가져오기
     private String getCurrentUserName() {
@@ -239,7 +283,7 @@ public class BbsMasterController {
 	}
 
 	private String generateBbsId() {
-		return "BBSMSTR_" + String.format("%010d", (int) (Math.random() * 100))
+		return "BBSMSTR_" + String.format("%012d", (int) (Math.random() * 100))
 				+ RandomStringUtils.randomAlphabetic(10);
 	}
 

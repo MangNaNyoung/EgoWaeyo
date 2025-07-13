@@ -52,5 +52,9 @@ public interface BbsMasterService {
 	void updateBoardWithAuth(BoardMasterVO board, List<BoardMasterVO> authList);
     
     void updateBoardAuth(List<Map<String, String>> selectedRights, String bbsId);
+    
+    Map<String, String> getCommonCodeInfo(String code);
+    
+    int updateCommonCodeInfo(BoardMasterVO boardMasterVO);
 
 }

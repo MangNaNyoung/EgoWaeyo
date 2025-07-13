@@ -48,5 +48,11 @@ public interface BbsMasterMapper {
 	
 	// 게시판 마스터 정보 업데이트	
 	void updateBBSMaster(BoardMasterVO vo);
+	
+	// 상위게시판 ID로 게시판 마스터 정보 조회
+	Map<String, String> selectCommonCodeInfo(String code);
+	
+	// 상위게시판 업데이트
+	int updateCommonCodeInfo(BoardMasterVO boardMasterVO);
 
 }

@@ -106,8 +106,7 @@ public class BbsMasterServiceImpl implements BbsMasterService {
 	}
 
 	private String generateBbsId() {
-		return "BBSMSTR_" + String.format("%012d", (int) (Math.random() * 100))
-				+ RandomStringUtils.randomAlphabetic(10);
+		 return "BBSMSTR_" + String.format("%010d", (int) (Math.random() * 1000000000));
 	}
 
 	private String determineBbsTyCode(String boardType, String parentBoard, String boardName, String useAt,
@@ -248,10 +247,13 @@ public class BbsMasterServiceImpl implements BbsMasterService {
 		List<Map<String, String>> rawData = bbsMasterMapper.selectGroupedBbsData();
 
 		// 키 이름을 소문자로 변환하여 접근
-		Map<String, List<Map<String, String>>> groupedData = rawData.stream().filter(item -> item.get("codeNm") != null)
-				// 필터링
-				.collect(Collectors.groupingBy(item -> item.get("codeNm"), // 대소문자 구분 문제 해결
-						Collectors.mapping(item -> item, Collectors.toList())));
+	    Map<String, List<Map<String, String>>> groupedData = rawData.stream()
+	        .filter(item -> item.get("codeNm") != null) // codeNm이 null이 아닌 경우만 필터링
+	        .collect(Collectors.groupingBy(
+	            item -> item.get("codeNm").toLowerCase(), // codeNm을 소문자로 변환하여 그룹화
+	            Collectors.mapping(item -> item, Collectors.toList())
+	        ));
+	    
 		return groupedData;
 	}
 
@@ -372,6 +374,29 @@ public class BbsMasterServiceImpl implements BbsMasterService {
 			logger.error("게시판 권한 수정 중 오류 발생: {}", e.getMessage(), e);
 			throw new RuntimeException("게시판 권한 수정에 실패했습니다.");
 		}
+
+	}
+
+	@Override
+	public Map<String, String> getCommonCodeInfo(String code) {
+		 Map<String, String> result = bbsMasterMapper.selectCommonCodeInfo(code);
+		    if (result == null) {
+		        result = new HashMap<>();
+		    }
+		    return result;
+	}
+
+	@Override
+	public int updateCommonCodeInfo(BoardMasterVO boardMasterVO) {
+	    if (boardMasterVO.getCode() == null || boardMasterVO.getCode().isEmpty()) {
+	        throw new IllegalArgumentException("Code 값이 비어있습니다.");
+	    }
+	    logger.debug("Updating common code info: {}", boardMasterVO);
+	    int result = bbsMasterMapper.updateCommonCodeInfo(boardMasterVO);
+	    if (result == 0) {
+	        logger.warn("No rows were updated for code: {}", boardMasterVO.getCode());
+	    }
+	    return result;
 
 	}
 
