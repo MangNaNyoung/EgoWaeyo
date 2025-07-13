@@ -4,6 +4,20 @@
 	layout:decorate="~{layout/layout}">
 <main layout:fragment="content">
 	<style>
+	
+	.edit-container textarea {
+    font-size: 14px;
+    resize: vertical;
+  }
+  .comment-item {
+    border-bottom: 1px solid #e5e5e5; /* 연한 회색 선 */
+    padding-bottom: 10px; /* 댓글 간 간격 */
+    margin-bottom: 10px; /* 댓글 간 간격 */
+}
+.comment-item:last-child {
+    border-bottom: none; /* 마지막 댓글은 선 제거 */
+}
+  
 /* 사이드바 스타일 */
 body {
 	background: #fff;
@@ -69,9 +83,9 @@ li.li_name {
 
 
 				<ul class="no_dot">
-					<li><span data-bs-toggle="modal"
-						data-bs-target="#addProjectModal" style="cursor: pointer;">+
-							게시판추가</span></li>
+					<li><span class="addBoard" data-bs-toggle="modal"
+						data-type="add" data-bs-target="#addProjectModal"
+						style="cursor: pointer;">+ 게시판추가</span></li>
 				</ul>
 			</div>
 			<!-- slide 내용 끝 -->
@@ -143,16 +157,11 @@ li.li_name {
 				<div class="mb-4">
 					<label class="comment-label d-flex align-items-center mb-2 ms-3">
 						💬 댓글 </label>
-					
+
 					<div class="d-flex align-items-start ms-3 me-3 mt-4">
-						<div class="avatar me-3"></div>
 						<div>
-							<p class="mb-1" id="comment-author"
-								style="font-size: 15px; color: #444;">이민영</p>
 							<div class="d-flex align-items-center"
 								style="font-size: 14px; color: #888; margin-top: -5px;">
-								<span id="comment-date">2025-07-10</span> <span
-									id="comment-time" class="ms-2">14:49</span>
 							</div>
 						</div>
 					</div>
@@ -163,18 +172,29 @@ li.li_name {
 							style="width: 60px; height: 40px;">등록</button>
 					</div>
 				</div>
-				
+
 				<!-- 댓글목록 -->
-				<div class="mb-4">
-    
-    <div id="commentList" class="ms-3 me-3">
-        <!-- 댓글이 동적으로 추가됩니다 -->
-    </div>
-</div>
+				<div class="mb-4 comment-item">
+
+					<div id="commentList" class="ms-3 me-3 comment-text">
+						<!-- 댓글이 동적으로 추가됩니다 -->
+					</div>
+				</div>
+
+				<nav aria-label="Page navigation" id="comment-pagination" >
+					<ul class="pagination justify-content-center">
+						<li class="page-item disabled"><a class="page-link" href="#"
+							tabindex="-1">이전</a></li>
+						<li class="page-item"><a class="page-link" href="#">1</a></li>
+						<li class="page-item active"><a class="page-link" href="#">2</a></li>
+						<li class="page-item"><a class="page-link" href="#">3</a></li>
+						<li class="page-item"><a class="page-link" href="#">다음</a></li>
+					</ul>
+				</nav>
+
 			</div>
 		</div>
 		<div th:replace="article/addProjectModal :: addProjectModal"></div>
-		<div th:replace="article/editProjectModal :: editProjectModal"></div>
 
 		<script th:inline=javaScript>
 		let barClicked = [[${barContect}]]
@@ -183,110 +203,191 @@ li.li_name {
 		console.log("barClicked:", barClicked); // 디버깅용 로그					 
 		}
 		let manageClick;
-		//모달 열기
-		function openModal() {
-			fetch('addProjectModal.html')
-				.then(response => response.text())
-				.then(html => {
-					const modalContainer = document.getElementById('modal-container');
-					modalContainer.innerHTML = html;
-					modalContainer.classList.remove('hidden');
-				})
-				.catch(error => console.error('Error loading modal:', error));
-		}
-	    // 모달 닫기 함수
-		function closeModal() {
-			const modalContainer = document.getElementById('modal-container');
-			modalContainer.classList.add('hidden');
-			modalContainer.innerHTML = ''; // 모달 내용 초기화
-		}
+		
+		var myModalEl = document.getElementById('addProjectModal')
+		myModalEl.addEventListener('show.bs.modal', function (event) {
+		  let rt = event.relatedTarget; // 디버깅용 로그
+		  let type = rt.getAttribute("data-type");
+		  let bbsId = rt.getAttribute("data-bbs-id");// data-bbs-id 값 가져오기
+		  
+		  // 모달 초기화
+		    document.querySelector(".modal-wrap").style.display = "none"; // 권한 설정 부분 숨기기
+		    document.getElementById("boardTypeSelection").hidden = false; // 게시판 유형 선택 보이기
+		    toggleParentBoard(false); // 상위 게시판 UI 비활성화
+		    
+		  //저장 버튼 이벤트 처리
+		  const saveButton = document.getElementById("saveButton");
+		  
+		  saveButton.removeEventListener("click", addClick); // 기존 이벤트 제거
+		  saveButton.removeEventListener("click", updateCodeClick); // 기존 이벤트 제거
+		  saveButton.removeEventListener("click", updateBbsClick); // 기존 이벤트 제거
+		  
+		  const boardType = document.getElementById("boardTypeSelection");
+		  
+	
+		  if(type == "add") {
+			 document.querySelector('#addProjectModalLabel').textContent = "게시판 추가";
+			 saveButton.addEventListener("click", addClick );
+			
+	      }
+		  else if (type == "code") {
+			  document.querySelector('#addProjectModalLabel').textContent = "그룹게시판 관리";
+			  boardType.hidden = true
+			  const code = rt.getAttribute("data-bbs-id");
+			  insertCodeData(code); // code를 insertCodeData 함수에 전달
+			  saveButton.addEventListener("click", updateCodeClick );
+		  }
+		  else if (type == "bbs") {
+			  document.querySelector('#addProjectModalLabel').textContent = "게시판 관리";
+			  boardType.hidden = true;
+			  //document.getElementById("type2").checked = true; // 게시판 유형을 사용자지정(type2)으로 설정
+			  toggleParentBoard(true); // 사용자지정 유형 UI를 반영 (상위 게시판 활성화 등)
+			  document.querySelector(".modal-wrap").style.display = "block"; // 권한 설정 부분(modal-wrap) 보이도록 설정
+			  insertData(type, bbsId); // bbsId를 insertData 함수에 전달
+			  saveButton.addEventListener("click", updateBbsClick);
+
+		  }
+		  });
+		  
+
+			$('document').ready(function () {
+				const urlParams = new URLSearchParams(window.location.search);
+				const paramBbsId = urlParams.get('bbsId'); 
+				const paramBbsNm = urlParams.get('bbsNm'); 
+				if (!paramBbsId) {
+					makList('BBSMSTR_000000000021kioSbKFeeb'); 
+					$(".custom-title").text("📌 공지사항"); // 기본 게시판 이름 설정)
+				} else {
+					makList(paramBbsId);
+					$(".custom-title").text(paramBbsNm);
+				}
+				});
+			// 사이드바
+			document.addEventListener("DOMContentLoaded", function () {
+				fetch('/egowaeyo/bbsMaster/groupedBbsData')
+					.then(response => response.json())
+					.then(data => {
+						console.log("Fetched Data:", data); // 디버깅 로그 추가
+
+						const parentProjectsList = document.querySelector("ul.parentsProjects");
+						if (parentProjectsList) {
+							parentProjectsList.innerHTML = ""; // 기존 내용 초기화
+
+							Object.entries(data).forEach(([codeNm, bbsList]) => {
+								const groupItem = document.createElement("li");
+								groupItem.classList.add("li_name");
+								
+								if(codeNm == "📌 공지사항" && barClicked !=null){
+									document.querySelector('.custom-title').textContent = codeNm;
+								}
+								
+								// '공지사항'일 경우 codeNm 숨기기
+						          if (codeNm !== "📌 공지사항") {
+						            groupItem.textContent = codeNm;
+						            
+						            const ulImg = document.createElement("img");
+						          
+									ulImg.setAttribute("data-bs-toggle", "modal");
+									ulImg.setAttribute("data-bs-target", "#addProjectModal");
+									ulImg.setAttribute("class", "img-icon addUnderBoard");
+									ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+									ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+									ulImg.setAttribute("data-bbs-id", bbsList[0].bbsId); 
+									ulImg.setAttribute("data-code", bbsList[0].code);
+
+									ulImg.setAttribute("data-type", "code"); 
+									
+									groupItem.appendChild(ulImg);
+						          }
+
+								// 새로운 ul 태그 생성
+								const subList = document.createElement("ul");
+
+							
 
 
-		// 프로젝트 수정 모달
-		function openModal() {
-			fetch('editProjectModal.html')
-				.then(response => response.text())
-				.then(html => {
-					const modalContainer = document.getElementById('modal-container');
-					modalContainer.innerHTML = html;
-					modalContainer.classList.remove('hidden');
-				})
-				.catch(error => console.error('Error loading modal:', error));
-		}
+								bbsList.forEach(bbs => {
+									// li 태그 생성
+									const listItem = document.createElement("li");
+									// li 태그에 no_dot 클래스 추가
+									listItem.classList.add("no_dot");
+									listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
+									listItem.setAttribute("data-bbs-id", bbs.bbsId); // bbsNm을 data 속성으로 추가
+									listItem.setAttribute("data-code", bbs.code); // bbsNm을 data 속성으로 추가
 
-		function closeModal() {
-			const modalContainer = document.getElementById('modal-container');
-			modalContainer.classList.add('hidden');
-			modalContainer.innerHTML = ''; // 모달 내용 초기화
-		}
+									// img 태그 생성
+									const img = document.createElement("img");
+									img.setAttribute("data-bs-toggle", "modal");
+									img.setAttribute("data-bs-target", "#addProjectModal");
+									img.setAttribute("class", "img-icon");
+									img.setAttribute("id", "bbsManage");
+									img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
+									img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
+									img.setAttribute("data-bbs-id", bbs.bbsId); 
+									img.setAttribute("data-type", "bbs"); 
+									// bbsNm 텍스트 추가
+									const textNode = document.createTextNode(bbs.bbsNm);
+									
+									// 공지사항의 bbsNm에 스타일 적용
+						            if (codeNm === "📌 공지사항") {
+						              listItem.style.cssText = "font-weight: bold !important; cursor: pointer; margin-left:-32px; margin-bottom: 10px;";
+						            }
 
+									// li에 텍스트와 img 추가
+									listItem.appendChild(textNode);
+									listItem.appendChild(img);
 
-		// 사이드바
-		document.addEventListener("DOMContentLoaded", function () {
-    fetch('/egowaeyo/bbsMaster/groupedBbsData')
-        .then(response => response.json())
-        .then(data => {
-            console.log("Fetched Data:", data); // 디버깅 로그 추가
+									listItem.style.fontWeight = "normal"; // li 태그에 normal 스타일 적용
+									subList.appendChild(listItem);									
+								});
 
-            const parentProjectsList = document.querySelector("ul.parentsProjects");
-            if (parentProjectsList) {
-                parentProjectsList.innerHTML = ""; // 기존 내용 초기화
+								groupItem.appendChild(subList);
+								parentProjectsList.appendChild(groupItem);
+								
+							
+							});
+						}
+					})
+					.catch(error => console.error('Error fetching grouped BBS data:', error));
+				
+			}
+			
+			);
 
-                Object.entries(data).forEach(([codeNm, bbsList]) => {
-                    const groupItem = document.createElement("li");
-                    groupItem.classList.add("li_name");
+			// 게시판명 클릭 -> 헤더명 변경
+			document.addEventListener("DOMContentLoaded", function () {
+				const parentProjectsList = document.querySelector("ul.parentsProjects");
+				const customTitle = document.querySelector(".custom-title");
+				const postListContainer = document.querySelector(".container-fluid.px-4");
+				
 
-                    // '공지사항'일 경우 codeNm 숨기기
-                    if (codeNm !== "📌 공지사항") {
-                        groupItem.textContent = codeNm;
+				// 게시판 이름(li)을 클릭했을 때
+				document.addEventListener("click", function (e) {
+					const clicked = e.target;
 
-                        const ulImg = document.createElement("img");
-                        ulImg.setAttribute("data-bs-toggle", "modal");
-                        ulImg.setAttribute("data-bs-target", "#addProjectModal");
-                        ulImg.setAttribute("class", "img-icon addUnderBoard");
-                        ulImg.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
-                        ulImg.setAttribute("style", "cursor: pointer; margin-left: 8px;");
-                        groupItem.appendChild(ulImg);
-                    }
+					// 게시판 이름(li)의 텍스트 노드를 클릭했을 때만 처리
+					if (clicked.tagName === "LI" && clicked.textContent.trim() !== "") {
+						const bbsNm = clicked.childNodes[0].nodeValue.trim(); // 게시판 이름
+						const bbsId = clicked.getAttribute("data-bbs-id"); // 게시판 ID (li에 data 속성으로 넣어야 함)
 
-                    // 새로운 ul 태그 생성
-                    const subList = document.createElement("ul");
+						if (!bbsId) {
+					        console.warn("bbsId가 없습니다.");
+					        return;
+					      }
 
-                    bbsList.forEach(bbs => {
-                        const listItem = document.createElement("li");
-                        listItem.classList.add("no_dot");
-                        listItem.setAttribute("style", "cursor: pointer; margin-left:-20px;");
-                        listItem.setAttribute("data-bbs-id", bbs.bbsId); // bbsNm을 data 속성으로 추가
-                        listItem.setAttribute("data-code", bbs.code); // bbsNm을 data 속성으로 추가
+						// 제목 변경
+						if (customTitle) {
+							customTitle.textContent = bbsNm;
+						}
 
-                        const img = document.createElement("img");
-                        img.setAttribute("data-bs-toggle", "modal");
-                        img.setAttribute("data-bs-target", "#addProjectModal");
-                        img.setAttribute("class", "img-icon");
-                        img.setAttribute("src", "/egowaeyo/assets/images/icon/manage.png");
-                        img.setAttribute("style", "cursor: pointer; margin-left: 8px;");
-
-                        const textNode = document.createTextNode(bbs.bbsNm);
-
-                        // 공지사항의 bbsNm에 스타일 적용
-                        if (codeNm === "📌 공지사항") {
-                            listItem.style.cssText = "font-weight: bold !important; cursor: pointer; margin-left:-32px; margin-bottom: 10px;";
-                        }
-
-                        listItem.appendChild(textNode);
-                        listItem.appendChild(img);
-
-                        listItem.style.fontWeight = "normal"; // li 태그에 normal 스타일 적용
-                        subList.appendChild(listItem);
-                    });
-
-                    groupItem.appendChild(subList);
-                    parentProjectsList.appendChild(groupItem);
-                });
-            }
-        })
-        .catch(error => console.error('Error fetching grouped BBS data:', error));
-});
+						
+						makList(bbsId)
+						
+						}
+						
+				});
+				
+				});
 
 document.addEventListener("DOMContentLoaded", function () {
     const parentProjectsList = document.querySelector("ul.parentsProjects");
@@ -351,10 +452,11 @@ document.addEventListener("DOMContentLoaded", function () {
 		                document.querySelector("#article-time").textContent = data.frstRegisterPnttm?.split(" ")[1] || "시간 없음";
 		                document.querySelector("#article-view").textContent = `조회 ${data.inqireCo || 0}`;
 		                document.querySelector(".custom-title").textContent = data.bbsNm || "게시판 이름 없음";
-				       
-				          // nttCn에서 양쪽 <p> 태그 제거
-			                const cleanedContent = data.nttCn.replace(/^<p>|<\/p>$/g, "");
-			                document.querySelector("#article-content").textContent = cleanedContent;
+		             	
+		                // nttCn에서 줄바꿈을 <br>로 변환하고 양쪽 <p> 태그 제거
+		                const cleanedContent = data.nttCn.replace(/\n/g, "<br>").replace(/^<p>|<\/p>$/g, "");
+		                document.querySelector("#article-content").innerHTML = cleanedContent;
+
 				        } else {
 				          console.error("데이터가 비어 있습니다.");
 				        }
@@ -451,53 +553,126 @@ document.addEventListener("DOMContentLoaded", function () {
 				    });
 				});
 			
+			 
+			 
+			// 댓글 조회
 			 document.addEventListener("DOMContentLoaded", function () {
 				    const bbsId = new URLSearchParams(window.location.search).get("bbsId");
 				    const nttId = new URLSearchParams(window.location.search).get("nttId");
 
-				    // 댓글 목록 조회
-				    function fetchComments() {
-				        fetch(`/egowaeyo/comment/list?bbsId=${bbsId}&nttId=${nttId}`)
-				            .then(response => {
-				            	if (!response.ok) {
-				            	    throw new Error("서버 응답에 문제가 있습니다.");
-				                }
-				            	return response.json()
-				            })
-				            .then(data => {
-				                const commentList = document.getElementById("commentList");
-				                commentList.innerHTML = ""; // 기존 댓글 초기화
+				    const pageSize = 10;
+				    let currentPage = 1;
 
-				                if (data.resultList && data.resultList.length > 0) {
-				                    data.resultList.forEach(comment => {
-				                        const commentItem = document.createElement("div");
-				                        commentItem.className = "comment-item mb-3";
-				                        commentItem.innerHTML = `
-				                            <div class="d-flex align-items-start">
-				                                <div class="avatar me-3"></div>
-				                                <div>
-				                                    <p class="mb-1" style="font-size: 15px; color: #444;">${comment.wrterNm}</p>
-				                                    <div style="font-size: 14px; color: #888;">
-				                                        <span>${comment.frstRegisterPnttm.split(" ")[0]}</span>
-				                                        <span>${comment.frstRegisterPnttm.split(" ")[1]}</span>
-				                                    </div>
-				                                    <p>${comment.commentCn}</p>
-				                                    <button class="btn btn-sm btn-dark me-2" onclick="editComment('${comment.commentNo}', '${comment.commentCn}')">수정</button>
-				                                    <button class="btn btn-sm btn-danger" onclick="deleteComment('${comment.commentNo}')">삭제</button>
-				                                </div>
-				                            </div>
-				                        `;
-				                        commentList.appendChild(commentItem);
-				                    });
-				                } else {
-				                    commentList.innerHTML = "<p>댓글이 없습니다.</p>";
-				                }
-				                console.log(data);
-				            })
-				            .catch(error => {console.error("Error fetching comments:", error)
-				        	alert("댓글 데이터를 불러오는 중 문제가 발생했습니다.");
-				            	});
+				    
+
+				    function escapeJs(str) {
+				    	  return (str || '')
+				    	    .replace(/\\/g, '\\\\')
+				    	    .replace(/`/g, '\\`')
+				    	    .replace(/\$/g, '\\$')
+				    	    .replace(/'/g, "\\'")
+				    	    .replace(/\n/g, '\\n')
+				    	    .replace(/\r/g, '');
+				    	}
+				    	function escapeHtml(str) {
+				    	  return (str || '')
+				    	    .replace(/&/g, '&amp;')
+				    	    .replace(/</g, '&lt;')
+				    	    .replace(/>/g, '&gt;')
+				    	    .replace(/"/g, '&quot;')
+				    	    .replace(/'/g, '&#39;');
+				    	}
+				    	function fetchComments(page = 1) {
+				    		  currentPage = page;
+				    		  const subPageIndex = page - 1;
+
+				    		  fetch(`/egowaeyo/comment/list?bbsId=${bbsId}&nttId=${nttId}&subPageIndex=${subPageIndex}&subRecordCountPerPage=${pageSize}`)
+				    		    .then(response => {
+				    		      if (!response.ok) throw new Error("서버 에러");
+				    		      return response.json();
+				    		    })
+				    		    .then(data => {
+				    		      const commentList = document.getElementById("commentList");
+				    		      commentList.innerHTML = "";
+
+				    		      if (data.resultList && data.resultList.length > 0) {
+				    		        data.resultList.forEach(comment => {
+				    		          const div = document.createElement("div");
+				    		          div.id = `comment-${comment.commentNo}`;
+				    		          div.className = "comment-item mb-3";
+
+				    		          div.innerHTML = `
+				    		            <div class="d-flex align-items-start">
+				    		              <div class="avatar me-3"></div>
+				    		              <div>
+				    		                <p class="mb-0" style="font-size: 15px; color: #444;">${escapeHtml(comment.wrterNm)}</p>
+				    		                <div style="font-size: 12px; color: #888;">
+				    		                  <span>${comment.frstRegisterPnttm.split(" ")[0]}</span>
+				    		                  <span>${comment.frstRegisterPnttm.split(" ")[1]}</span>
+				    		                </div>
+				    		                <p class="comment-text mt-2">${escapeHtml(comment.commentCn)}</p>
+				    		                <button class="btn btn-sm btn-dark me-2"
+				    		                  onclick="editComment('${comment.commentNo}', \`${escapeJs(comment.commentCn)}\`)">
+				    		                  수정
+				    		                </button>
+				    		                <button class="btn btn-sm btn-danger"
+				    		                  onclick="deleteComment('${comment.commentNo}')">
+				    		                  삭제
+				    		                </button>
+				    		              </div>
+				    		            </div>`;
+
+				    		          commentList.appendChild(div);
+				    		        });
+				    		      } else {
+				    		        commentList.innerHTML = "<p>댓글이 없습니다.</p>";
+				    		      }
+
+				    		      renderPagination(data.resultCnt, currentPage);
+				    		    })
+				    		    .catch(error => {
+				    		      console.error("Error fetching comments:", error);
+				    		      alert("댓글 로딩 중 오류가 발생했습니다.");
+				    		    });
+				    		}
+				    
+				    // 페이지네이션 렌더링
+				    function renderPagination(totalCount, currentPage) {
+				        const totalPages = Math.ceil(totalCount / pageSize);
+				        const pagination = document.querySelector("#comment-pagination .pagination");
+
+				        let html = "";
+
+				        // 이전 버튼
+				        html += `<li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
+				                    <a class="page-link" href="#" onclick="fetchComments(${currentPage - 1}); return false;">이전</a>
+				                </li>`;
+
+				        // 페이지 번호 최대 5개만 표시
+				        let start = Math.max(1, currentPage - 2);
+				        let end = Math.min(totalPages, start + 4);
+				        if (end - start < 4) start = Math.max(1, end - 4);
+
+				        for (let i = start; i <= end; i++) {
+				            html += `<li class="page-item ${i === currentPage ? 'active' : ''}">
+				                        <a class="page-link" href="#" onclick="fetchComments(${i}); return false;">${i}</a>
+				                     </li>`;
+				        }
+
+				        // 다음 버튼
+				        html += `<li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
+				                    <a class="page-link" href="#" onclick="fetchComments(${currentPage + 1}); return false;">다음</a>
+				                </li>`;
+
+				        pagination.innerHTML = html;
 				    }
+
+				    // 전역 접근을 위해 window에 등록
+				    window.fetchComments = fetchComments;
+
+				    // 초기 호출
+				    fetchComments();
+				
 
 				    // 댓글 등록
 				    document.getElementById("commentSubmitButton").addEventListener("click", function () {
@@ -513,32 +688,88 @@ document.addEventListener("DOMContentLoaded", function () {
 				            headers: { "Content-Type": "application/json" },
 				            body: JSON.stringify({ bbsId, nttId, commentCn: commentContent })
 				        })
-				            .then(response => response.text())
+				            .then(response =>  {
+				            	if (!response.ok) {
+				                return response.text().then(text => {
+				                    throw new Error(`서버 오류: ${response.status} - ${text}`);
+				                });
+				            }
+				            return response.text();
+				        })
 				            .then(message => {
 				                alert(message);
 				                fetchComments(); // 댓글 목록 갱신
 				                document.getElementById("commentContent").value = ""; // 입력 필드 초기화
 				            })
-				            .catch(error => console.error("Error adding comment:", error));
+				            .catch(error => {
+				                console.error("Error adding comment:", error);
+				                alert("댓글 등록 중 오류가 발생했습니다: " + error.message);
+				            });
 				    });
 
-				    // 댓글 수정
+				 // 댓글 수정 함수 (textarea로 인라인 수정)
 				    window.editComment = function (commentNo, commentCn) {
-				        const newContent = prompt("댓글 내용을 수정하세요:", commentCn);
-				        if (newContent === null || !newContent.trim()) return;
+  const commentDiv = document.getElementById(`comment-${commentNo}`);
+  if (!commentDiv) return;
 
-				        fetch("/egowaeyo/comment/update", {
-				            method: "PUT",
-				            headers: { "Content-Type": "application/json" },
-				            body: JSON.stringify({ commentNo, commentCn: newContent })
-				        })
-				            .then(response => response.text())
-				            .then(message => {
-				                alert(message);
-				                fetchComments(); // 댓글 목록 갱신
-				            })
-				            .catch(error => console.error("Error updating comment:", error));
-				    };
+  // 기존 텍스트 숨기기
+  const p = commentDiv.querySelector('.comment-text');
+  if (p) p.style.display = 'none';
+
+  // 이미 편집 중이면 리턴
+  if (commentDiv.querySelector('textarea')) return;
+
+  // textarea + 버튼들을 감쌀 div 생성
+  const editContainer = document.createElement('div');
+  editContainer.className = 'edit-container mt-2';
+
+  const textarea = document.createElement('textarea');
+  textarea.className = 'form-control mb-2';
+  textarea.value = commentCn;
+  textarea.rows = 3;
+
+  const btnGroup = document.createElement('div');
+  btnGroup.className = 'btn-group btn-group-sm';
+
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'btn btn-primary';
+  saveBtn.textContent = '저장';
+  saveBtn.onclick = function () {
+    const newContent = textarea.value.trim();
+    if (!newContent) return alert("내용을 입력하세요.");
+
+    fetch("/egowaeyo/comment/update", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ commentNo, commentCn: newContent })
+    })
+      .then(response => response.text())
+      .then(message => {
+        alert(message);
+        fetchComments(); // 전체 다시 불러옴
+      })
+      .catch(error => {
+        console.error("댓글 수정 오류:", error);
+        alert("댓글 수정 중 오류가 발생했습니다.");
+      });
+  };
+
+  const cancelBtn = document.createElement('button');
+  cancelBtn.className = 'btn btn-secondary';
+  cancelBtn.textContent = '취소';
+  cancelBtn.onclick = () => {
+    editContainer.remove();
+    if (p) p.style.display = 'block';
+  };
+
+  btnGroup.appendChild(saveBtn);
+  btnGroup.appendChild(cancelBtn);
+
+  editContainer.appendChild(textarea);
+  editContainer.appendChild(btnGroup);
+
+  commentDiv.appendChild(editContainer);
+};
 
 				    // 댓글 삭제
 				    window.deleteComment = function (commentNo) {
@@ -560,6 +791,7 @@ document.addEventListener("DOMContentLoaded", function () {
 				    // 초기 댓글 목록 조회
 				    fetchComments();
 				});
+			
 		</script>
 		<div>
 </main>

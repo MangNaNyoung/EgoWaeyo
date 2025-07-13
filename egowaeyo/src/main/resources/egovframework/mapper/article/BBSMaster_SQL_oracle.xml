@@ -47,6 +47,7 @@
 		A.CODE_ID = 'COM101'
 		AND B.BBS_NM IS NOT NULL
 		AND B.USE_AT = 'Y'
+		AND A.USE_AT = 'Y'
 	</select>
 
 	<!-- 상위 게시판 목록 조회(공통코드 조회) -->
@@ -95,6 +96,24 @@
 		WHERE B.BBS_ID
 		= #{bbsId}
 	</select>
+	
+	<!-- 상위 게시판 수정 -->
+	<update id="updateCommonCodeInfo" parameterType="egovframework.com.egowaeyo.bbsMaster.VO.BoardMasterVO">
+        UPDATE COMTCCMMNDETAILCODE
+    	SET CODE_NM = #{codeNm},
+        	USE_AT = #{useAt},
+        	LAST_UPDT_PNTTM = SYSDATE,
+        	LAST_UPDUSR_ID = #{lastUpdusrId}
+    	WHERE CODE = #{code}
+    </update>
+    
+	<!-- 상위 게시판 정보 조회 -->
+	<select id="selectCommonCodeInfo"
+       resultType="map">
+        SELECT CODE, CODE_NM, USE_AT 
+		FROM COMTCCMMNDETAILCODE
+		WHERE CODE = #{code}
+    </select>
 	
 	<!-- 게시판 정보 조회(권한) -->
 	<select id="selectBBSMasterAuthList"
