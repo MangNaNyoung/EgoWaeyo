@@ -25,7 +25,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @SuppressWarnings("serial")
 public class BoardMaster implements Serializable {
 
-	
+
    private String orgnztId;
    private String orgnztNm;
    private String userNm;

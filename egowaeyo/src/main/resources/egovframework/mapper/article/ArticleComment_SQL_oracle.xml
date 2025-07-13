@@ -8,7 +8,7 @@
 -->
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="ArticleComment">
+<mapper namespace="egovframework.com.egowaeyo.comment.mapper.ArticleCommentMapper">
 	
 	<resultMap id="commList" type="egovframework.com.egowaeyo.comment.VO.CommentVO">
 		<result property="commentNo" column="ANSWER_NO"/>
@@ -55,7 +55,7 @@
 			AND
 				a.USE_AT = 'Y'
 			ORDER BY a.FRST_REGIST_PNTTM ASC
-			) TB ) WHERE rn BETWEEN #{subFirstIndex} + 1 AND #{subFirstIndex} + #{subRecordCountPerPage}
+			) TB ) WHERE rn BETWEEN #{subFirstIndex} AND #{subFirstIndex} + #{subRecordCountPerPage}-1
 						
 	</select>	
 	

@@ -41,6 +41,10 @@ public class ArticleCommentServiceImpl implements ArticleCommentService {
         map.put("resultList", result);
         map.put("resultCnt", cnt);
 
+        // 디버깅 로그 추가
+        System.out.println("댓글 목록: " + result);
+        System.out.println("댓글 개수: " + cnt);
+        
         return map;
     }
 
