@@ -11,5 +11,5 @@ public interface AttendanceService {
 	
 	public EditAttendVO rgstEdit(List<AttendVO> vo); 
 	
-	public List<EditAttendVO> getEditList();
+	public List<EditAttendVO> getEditList(EditAttendVO vo);
 }

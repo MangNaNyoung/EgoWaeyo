@@ -22,9 +22,9 @@ body {
 	min-height: 100vh;
 	min-width: 800px;
 	display: flex;
-	align-items:center;
+	align-items: center;
 	justify-content: center;
-	margin : 0 auto;
+	margin: 0 auto;
 }
 
 .calendar-list-group {
@@ -106,24 +106,22 @@ body {
 				</ul>
 			</div>
 		</aside>
-		<div class="calendar-area flex-column" >
-		<div>
-		 <header class="header">
-        <nav class="">
-          <button class="button is-rounded today">Today</button>
-          <button class="button is-rounded prev">
-            <i class="bi bi-arrow-left-circle"></i>
-          </button>
-           <i class="bi bi-arrow-right-circle button is-rounded next">
-          <button class="button is-rounded next">
-           
-          </button>
-           </i>
-       
-        </nav>
-      </header>
-			<div id="calOrigin"></div>
-		</div>
+		<div class="calendar-area flex-column">
+			<div>
+				<header class="header">
+					<nav class="">
+						<button class="button is-rounded today">Today</button>
+						<button class="button is-rounded prev">
+							<i class="bi bi-arrow-left-circle"></i>
+						</button>
+						<i class="bi bi-arrow-right-circle button is-rounded next">
+							<button class="button is-rounded next"></button>
+						</i>
+
+					</nav>
+				</header>
+				<div id="calOrigin"></div>
+			</div>
 		</div>
 	</div>
 	<script>
@@ -174,9 +172,9 @@ body {
 
 		const calendar = new Calendar(container, options);
 		calendar.setOptions({
-			  month: {
-			    dayNames: ['일', '월', '화', '수', '목', '금', '토'],
-			  },
-			});
+			month : {
+				dayNames : [ '일', '월', '화', '수', '목', '금', '토' ],
+			},
+		});
 	</script>
 </main>

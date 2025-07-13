@@ -507,13 +507,7 @@ grid.on('failedValidation', function(ev) {
 	}
 });
 
-// 편집 시작 이벤트
-grid.on('editingStart', function(ev) {
-	const { columnName } = ev;
-	if (columnName === 'checkin' || columnName === 'checkout') {
-		//console.log(`${columnName} 편집 시작 - 시간 형식: HHMM`);
-	}
-});
+
 
 // 편집 완료 이벤트
 grid.on('editingFinish', function(ev) {

@@ -14,8 +14,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.egowaeyo.attendance.service.AttendanceService;
 import lombok.extern.log4j.Log4j2;
 
@@ -69,9 +72,17 @@ public class AttendanceController {
 	public String goToEdit(){
 		return "attendance/approveEdit.html";
 	}
-	@GetMapping("/getEditList")
-	public List<EditAttendVO> getEditList(){
-		return AttendService.getEditList();
+	@GetMapping("/getEditList.do")
+	public List<EditAttendVO> getEditList(@RequestParam(value="modstate", required=false) String str,
+										  @RequestParam(value="startDate", required=false) String str1,
+										  @RequestParam(value="endDate", required=false) String str2) {
+		EditAttendVO vo = new EditAttendVO();
+		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		vo.setEmplyrId(user.getId());
+		vo.setEditer(str);
+		vo.setStartDate(str1);
+		vo.setEndDate(str2);
+		return AttendService.getEditList(vo);
 	}
 	
 }
