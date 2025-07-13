@@ -9,5 +9,5 @@ import egovframework.com.egowaeyo.attendance.web.EditAttendVO;
 public interface AttendanceMapper {
 	public List<AttendVO> getAttend(AttendVO vo);
 	public EditAttendVO callAttendanceEditProcedure(EditAttendVO vo);
-	public List<EditAttendVO> getEditList();
+	public List<EditAttendVO> getEditList(EditAttendVO vo);
 }

@@ -20,5 +20,7 @@ public class EditAttendVO {
 	    private String checkout;     // 기존 퇴근 시간
 	    private String result;		// 프로시저 결과
 	    private String message;		// 프로시저 결과 메세지
+	    private String startDate;		 // 조회용 검색 시작일
+		private String endDate;			 // 조회용 마지막 조회일
 
 }

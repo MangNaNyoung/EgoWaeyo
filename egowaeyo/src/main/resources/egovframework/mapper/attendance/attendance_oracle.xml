@@ -61,29 +61,12 @@
         </if>
         <if test="checkdate != null and checkdate != ''">
             <if test="emplyrId != null and emplyrId != ''"> AND </if>
-            CHECKDATE = #{checkdate}
+           CHECKDATE BETWEEN #{startDate} AND #{endDate}
         </if>
 
         <!-- editer 존재 여부 필터 -->
-        <choose>
-            <!-- editerYn = 'Y'  : editer IS NOT NULL -->
-            <when test="editerYn == 'Y'">
-                <if test="(emplyrId != null and emplyrId != '') or (checkdate != null and checkdate != '')">
-                    AND
-                </if>
-                EDITER IS NOT NULL
-            </when>
-            <!-- editerYn = 'N'  : editer IS NULL (Oracle은 빈 문자열도 NULL로 처리) -->
-            <when test="editerYn == 'N'">
-                <if test="(emplyrId != null and emplyrId != '') or (checkdate != null and checkdate != '')">
-                    AND
-                </if>
-                EDITER IS NULL
-            </when>
-            <!-- editerYn 미지정이면 전체 조회 -->
-        </choose>
     </where>
-    ORDER BY CREATE_DT DESC
+    ORDER BY CREATE_DT,EDITER DESC
 </select>
  
 	

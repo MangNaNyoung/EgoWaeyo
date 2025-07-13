@@ -36,8 +36,8 @@ public class AttendenceServiceImpl implements AttendanceService {
 	}
 
 	@Override
-	public List<EditAttendVO> getEditList() {
-		return AttendMapper.getEditList();
+	public List<EditAttendVO> getEditList(EditAttendVO vo) {
+		return AttendMapper.getEditList(vo);
 	}
 
 }
