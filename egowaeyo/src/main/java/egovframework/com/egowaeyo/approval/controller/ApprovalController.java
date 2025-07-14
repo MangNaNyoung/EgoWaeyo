@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.transaction.Transactional;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -40,25 +41,24 @@ public class ApprovalController {
 
 	@GetMapping("/write")
 	public String writeForm(Model model, HttpServletRequest req) {
-		 AdminUserVO sessionUser = (AdminUserVO) req.getSession().getAttribute("loginUser");
-		    if (sessionUser == null) {
-		        sessionUser = new AdminUserVO();
-		        sessionUser.setUserNm("알수없음");
-		    }
-		LoginVO loginUser  = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		AdminUserVO sessionUser = (AdminUserVO) req.getSession().getAttribute("loginUser");
+		if (sessionUser == null) {
+			sessionUser = new AdminUserVO();
+			sessionUser.setUserNm("알수없음");
+		}
+		LoginVO loginUser = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		model.addAttribute("loginUser", loginUser);
-	    model.addAttribute("formList", approvalService.getFormList());
+		model.addAttribute("formList", approvalService.getFormList());
 
-	    return "approval/write.html";
+		return "approval/write.html";
 	}
 
 	@PostMapping("/write.do")
-	@Transactional // 
+	@Transactional //
 	public String submitDoc(@RequestParam String docTitle, @RequestParam String apprformId,
-			@RequestParam String docContent, @RequestParam List<String> approverIds, 
-			@RequestParam(required = false) List<String> ccIds, 
-			Principal principal) {
-		 LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+			@RequestParam String docContent, @RequestParam List<String> approverIds,
+			@RequestParam(required = false) List<String> ccIds, Principal principal) {
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		// 1. 결재문서 정보 생성
 		ApprovalDocVO docVO = new ApprovalDocVO();
 		docVO.setDocTitle(docTitle);
@@ -102,9 +102,9 @@ public class ApprovalController {
 	@GetMapping("/receive/list")
 	@ResponseBody
 	public List<ApprovalDocVO> selectReceiveList(HttpServletRequest req) {
-	    LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
-	    String empId = user.getId();
-	    return approvalService.selectReceiveList(empId);
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		String empId = user.getId();
+		return approvalService.selectReceiveList(empId);
 	}
 
 	// 부서 수신함 (deptReceive.html)
@@ -147,11 +147,13 @@ public class ApprovalController {
 	}
 
 	// 프린팅
-	@GetMapping("/approval/print/{docId}")
+	@GetMapping("/print/{docId}")
 	public String printApproval(@PathVariable String docId, Model model) {
 		ApprovalDetailVO detail = approvalService.getApprovalDetail(docId);
+		if (detail.getDocHtml() != null) {
+			detail.setDocHtml(StringEscapeUtils.unescapeHtml4(detail.getDocHtml()));
+		}
 		model.addAttribute("detail", detail);
-		System.out.println("프린트 컨트롤러 호출됨 - docId: " + docId);
 		return "approval/print.html";
 	}
 
@@ -180,21 +182,17 @@ public class ApprovalController {
 	public List<EmplyrVO> getAllUsers() {
 		return approvalService.getAllUsers();
 	}
-	
+
 	@PostMapping("/tempSave")
 	@ResponseBody
-	public String tempSave(
-	    @RequestParam String docTitle,
-	    @RequestParam String docContent,
-	    @RequestParam String drafterId,
-	    Principal principal
-	) {
-	    ApprovalTempVO tempVO = new ApprovalTempVO();
-	    tempVO.setTempTitle(docTitle);
-	    tempVO.setTempContent(docContent);
-	    tempVO.setEmplyrId(principal.getName());
-	    approvalService.insertTemp(tempVO);
-	    return "ok";
+	public String tempSave(@RequestParam String docTitle, @RequestParam String docContent,
+			@RequestParam String drafterId, Principal principal) {
+		ApprovalTempVO tempVO = new ApprovalTempVO();
+		tempVO.setTempTitle(docTitle);
+		tempVO.setTempContent(docContent);
+		tempVO.setEmplyrId(principal.getName());
+		approvalService.insertTemp(tempVO);
+		return "ok";
 	}
 
 }

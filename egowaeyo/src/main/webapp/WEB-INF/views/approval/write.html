@@ -56,7 +56,7 @@
 				<label>부서</label> <select id="deptSelect"></select>
 			</div>
 			<div>
-				<label>결재자</label> <select id="approverSelect"></select>
+				<label>결재자</label> <select id="approverSelect" multiple></select>
 			</div>
 			<div>
 				<label>참조자</label> <select id="ccSelect" multiple></select>
@@ -154,11 +154,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const approverSelect = document.getElementById("approverSelect");
     const ccSelect = document.getElementById("ccSelect");
     const approver = approverSelect.selectedOptions[0]?.textContent || "선택된 사용자 없음";
+    const approverArr = Array.from(approverSelect.selectedOptions).map(o=>o.textContent);
     const ccArr = Array.from(ccSelect.selectedOptions).map(o=>o.textContent);
-    document.querySelectorAll(".approval-box")[1].querySelector("p").textContent = approver;
+    document.querySelectorAll(".approval-box")[1].querySelector("p").textContent = approverArr.length ? approverArr.join(", ") : "선택된 사용자 없음";
     document.querySelectorAll(".approval-box")[2].querySelector("p").textContent = ccArr.length ? ccArr.join(", ") : "선택된 사용자 없음";
     //hidden 필드 동기화    
-    document.getElementById("approverIds").value = approverSelect.selectedOptions[0]?.value || "";
+    document.getElementById("approverIds").value = Array.from(approverSelect.selectedOptions).map(opt => opt.value).join(",");
     document.getElementById("ccIds").value = Array.from(ccSelect.selectedOptions).map(opt => opt.value).join(",");
     closeModal(document.getElementById("approvalLineModal"));
   });

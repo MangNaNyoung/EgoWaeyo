@@ -22,6 +22,7 @@ public class ApprovalDetailVO {
     private String retention;
     private String approvalContent;
     private Date createdDt;
+    private String docHtml;
 
  // 결재선, 첨부파일 등
  private List<ApprovalLineVO> approvalLines;
