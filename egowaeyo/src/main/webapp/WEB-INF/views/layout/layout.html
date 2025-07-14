@@ -178,10 +178,13 @@ a {
 					location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"/"+target.substring(0,target.indexOf("-"))+"List.do"
 					}
 					
-				}else if(target == 'approval'){
-					ocation.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"/receive"
+				}else if(target == 'approval-panel'){
+					location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"/receive"
+				
+				} else if(target == 'managing-panel'){
+					location.href="/egowaeyo/"+"admin/"+target.substring(0,target.indexOf("-"))+"Basic"
 				}	
-				 else if(target !='article-panel'&& target!='calendar-panel'&&target!='approval-panel') {
+				 else if(target !='article-panel'&& target!='calendar-panel'&&target!='approval-panel'&&target != 'managing') {
 					//$('#slide-panels').fadeIn('fast');
 					//$('#main').css('margin-left','330px')
 					//$('#slide-panels > div').hide();

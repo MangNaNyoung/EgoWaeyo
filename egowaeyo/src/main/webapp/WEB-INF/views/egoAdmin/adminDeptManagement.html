@@ -14,7 +14,7 @@
           부서 관리
         </div>
         <div>
-          <div class="input-group">
+          <!-- <div class="input-group">
             <div class="search-section input-group-text bg-white">
               <select class="form-select" aria-label="Default select example">
                 <option selected>전체</option>
@@ -24,7 +24,7 @@
                 <option value="4">사번</option>
                 <option value="5">내선번호</option>
               </select>
-              <!-- 검색창 -->
+              검색창
               <input type="text" class="py-1" placeholder="검색" id="all-search-input">
               <button class="border cursor-pointer bg-white border-0 ms-2" id="modal-search">
                 <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search"
@@ -34,18 +34,17 @@
                 </svg>
               </button>
             </div>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="main-second-section d-flex justify-content-between flex-row pb-4">
         <div class="button-section">
-          <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="deptInsert">부서추가</button>
-          <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="deptUpdate">부서수정</button>
+          <button class="border border-primary px-3 py-1 rounded-2 bg-primary text-white" id="deptInsert">부서추가</button>
+          <button class="border border-success px-3 py-1 rounded-2 bg-success text-white" id="deptUpdate">부서수정</button>
           <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="deptDel">부서삭제</button>
 
-          <button class="ms-4 border border-dark px-3 py-1 rounded-2 bg-white" id="positionChange"
-            data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
-          <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="passwordReset">비밀번호 초기화</button>
+          <!-- <button class="ms-4 border border-dark px-3 py-1 rounded-2 bg-white" id="positionChange" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
+          <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="passwordReset">비밀번호 초기화</button> -->
           <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="empDel">사원삭제</button>
         </div>
       </div>
@@ -79,7 +78,7 @@
             <table class="table text-dark">
               <thead>
                 <tr>
-                  <th class=""><input type="checkbox"></th>
+                  <th class=""><input type="checkbox" id="selectAll"></th>
                   <th class="">이름</th>
                   <th class="">아이디</th>
                   <th class="">부서</th>
@@ -212,21 +211,15 @@
         </div>
       </div>
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
     <script>
       // 전역 변수
       let departmentData = [];
       let selectedDepartment = null;
-
-      // 페이지 로드 시 초기화
-      document.addEventListener('DOMContentLoaded', function () {
-        console.log("페이지 로드 완료");
-        loadDepartmentList();
-        loadEmpList();
-        initializeEventListeners();
-      });
+      // 함수 부르기
+      loadDepartmentList();
+      loadEmpList();
+      initializeEventListeners();
 
       // 이벤트 리스너 초기화
       function initializeEventListeners() {
@@ -260,7 +253,11 @@
           deptUpdateBtn.addEventListener("click", function () {
             console.log("부서 수정 버튼 클릭, 선택된 부서:", selectedDepartment);
             if (!selectedDepartment) {
-              alert("수정할 부서를 선택해주세요.");
+            	Swal.fire({
+            		  title: "부서 선택 없음",
+            		  text: "수정할 부서를 선택해주세요.",
+            		  icon: "error"
+            		});
               return;
             }
             openUpdateModal();
@@ -274,14 +271,79 @@
           deptDelBtn.addEventListener("click", function () {
             console.log("부서 삭제 버튼 클릭, 선택된 부서:", selectedDepartment);
             if (!selectedDepartment) {
-              alert("삭제할 부서를 선택해주세요.");
+            	Swal.fire({
+          		  title: "부서 선택 없음",
+          		  text: "삭제할 부서를 선택해주세요.",
+          		  icon: "error"
+          		});
               return;
             }
             openDeleteModal();
           });
           console.log("메인 부서 삭제 버튼 이벤트 리스너 등록");
         }
-
+        
+        const empDelBtn = document.getElementById('empDel');
+        if(empDelBtn) {
+        	empDelBtn.addEventListener("click", function(){
+        		console.log('사원 삭제 버튼 눌렸습니다.');
+        		
+        		const checkedEmp = $('.emp-checkbox:checked');
+        		console.log('선택된 사원 수 : ', checkedEmp.length);
+        		
+        		if(checkedEmp.length === 0){
+        			Swal.fire({
+               		  title: "사원 선택 없음",
+               		  text: "삭제할 사원을 선택해주세요.",
+               		  icon: "error"
+               		});
+					return;
+        		}
+        		
+        		// 선택된 사원 정보
+        		const selectedEmp = [];
+        		checkedEmp.each(function(){
+        			const row = $(this).closest('tr');
+        			const name = row.find('td:eq(1)').text();
+        			const id = row.find('td:eq(2)').text();
+        			selectedEmp.push({
+        				name: name,
+        				id: id,
+        				element: this
+        			});
+        		});
+        		
+        		console.log("선택된 사원들 : ", selectedEmp);
+        		
+        		// SweetAlert 확인 다이얼로그
+                Swal.fire({
+                  title: "사원 삭제 확인",
+                  text: `선택한 ${selectedEmp.length}명의 사원을 삭제하시겠습니까?`,
+                  icon: "warning",
+                  showCancelButton: true,
+                  confirmButtonColor: '#d33',
+                  cancelButtonColor: '#3085d6',
+                  confirmButtonText: '삭제',
+                  cancelButtonText: '취소',
+                  html: `
+                    <p>삭제할 사원: ${selectedEmp.map(emp => `${emp.name} (${emp.id})`).join('')}</p>
+                    <p style="color: red; font-weight: bold;">삭제된 사원 정보는 복구할 수 없습니다.</p>
+                  `
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    console.log("사원 삭제 확인됨");
+                    deleteSelectedEmployees(selectedEmp);
+                  } else {
+                    console.log("사원 삭제 취소됨");
+                  }
+                });
+              });
+              console.log("사원 삭제 버튼 이벤트 리스너 등록 완료");
+            } else {
+              console.error("사원 삭제 버튼을 찾을 수 없습니다!");		
+        	}
+        }
+        
         // 검색 이벤트
         const searchInput = document.getElementById("search-input");
         if (searchInput) {
@@ -298,8 +360,60 @@
           }
           console.log("검색 이벤트 리스너 등록");
         }
+      
+      
+      // 선택된 사원들 삭제 처리
+      function deleteSelectedEmployees(selectedEmp) {
+        console.log('사원 삭제 처리 시작:', selectedEmp);
+        
+        // 로딩 표시
+        Swal.fire({
+          title: '삭제 중...',
+          text: '사원 정보를 삭제하고 있습니다.',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+        
+        
+        selectedEmp.forEach((emp, index) => {
+        // 사용자 삭제 AJAX 요청
+        $.ajax({
+          url: "deleteEmp.do",
+          type: "POST",
+          data: {
+        	 emplyrId: emp.id
+          },
+          success: function (response) {
+            console.log("사원 삭제 성공:", response);
+            
+            Swal.fire({
+              title: "삭제 완료",
+              text: `${selectedEmp.length}명의 사원이 성공적으로 삭제되었습니다.`,
+              icon: "success"
+            });
+            
+            // 테이블 새로고침
+            if (selectedDepartment) {
+              loadEmpList(selectedDepartment.id);
+            } else {
+              loadEmpList();
+            }
+          },
+          error: function (xhr, status, error) {
+            console.error("사원 삭제 실패:", error);
+            
+            Swal.fire({
+              title: "삭제 실패",
+              text: "사원 삭제 중 오류가 발생했습니다: " + error,
+              icon: "error"
+            });
+          }
+        });
+        })
       }
-
+   
       // 사용자 조회
       function loadEmpList(orgnztId) {
    	    let param = orgnztId ? "orgnztId=" + encodeURIComponent(orgnztId) : "";
@@ -320,7 +434,7 @@
             if (datas && datas.length > 0) {
               datas.forEach(emp => {
                 const row = document.createElement('tr');
-                row.innerHTML = `<td class="py-3"><input type="checkbox"></td>
+                row.innerHTML = `<td class="py-3"><input type="checkbox" class="emp-checkbox" value="${emp.emplyrId}"></td>
 			                     <td class="py-3">${emp.userNm}</td>
 			                     <td class="py-3">${emp.emplyrId}</td>
 			                     <td class="py-3">${emp.orgnztNm}</td>
@@ -344,6 +458,14 @@
           }
         });
       }
+      
+      // 테이블 전체체크 => ready, DOMContentendLoaded?, Window Onload 이 3개 차이 뭐임?
+      $(document).ready(function(){
+    	 
+      		$('#selectAll').click(function(){
+      			$('.emp-checkbox').prop('checked', this.checked);
+      		});
+      });
 
       // 부서 목록 조회
       function loadDepartmentList() {
@@ -470,7 +592,11 @@
         const deptName = deptNameInput.value.trim();
 
         if (!deptName) {
-          alert("부서명을 입력해주세요.");
+        	Swal.fire({
+      		  title: "부서명 없음",
+      		  text: "추가할 부서명을 입력해주세요.",
+      		  icon: "error"
+      		});
           deptNameInput.focus();
           return;
         }
@@ -521,7 +647,11 @@
         const deptId = deptIdInput.value;
 
         if (!deptName) {
-          alert("부서명을 입력해주세요.");
+        	Swal.fire({
+        		  title: "부서명 없음",
+        		  text: "수정할 부서명을 입력해주세요.",
+        		  icon: "error"
+        		});
           deptNameInput.focus();
           return;
         }

@@ -151,4 +151,10 @@ public class AdminUserServiceImpl implements AdminUserService {
 		return adminusermapper.selectemp(au);
 	}
 
+	// [부서관리 페이지] 사용자 삭제
+	@Override
+	public int EmpDel(String emplyrId) {
+		return adminusermapper.EmpDel(emplyrId);
+	}
+
 }
