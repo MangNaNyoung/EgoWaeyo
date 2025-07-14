@@ -28,11 +28,12 @@ public class AttendanceController {
 	
 	@Autowired AttendanceService AttendService;
 	
+	//내 출퇴근 내역 페이지 이동
 	@GetMapping("/attendanceBasic.do")
 	public String goToAttend() {		
 		return "attendance/attendance.html";
 	}
-	
+	// 내 춡퇴근 리스트 조회, 검색
 	@PostMapping("/attendList.do")
 	@ResponseBody
 	public List<AttendVO>getAttend(@RequestBody AttendVO vo, Principal principal){
@@ -59,28 +60,64 @@ public class AttendanceController {
 		return result ;
 	}
 	
+	// 정정신청 등록
 	@PostMapping("/rgstEdit.do")
 	@ResponseBody
 	public Map<String,String>rgstEdit(@RequestBody List<AttendVO> vo){
 		Map<String,String>map = new HashMap<>();
 		System.out.println(vo);
+		if(vo.get(1).getCheckout() == null) {
+			vo.get(1).setCheckout("0000");
+		}
 		map.put("result",AttendService.rgstEdit(vo).getMessage());
+		System.out.println(map.get("result"));
 		return  map;
 	}
 	
+	//관리자 정정 리스트 페이지 이동
 	@GetMapping("/editAttend.do")
 	public String goToEdit(){
 		return "attendance/approveEdit.html";
 	}
+	
+	//관리자,사용자 정정 리스트 호출, 검색
 	@GetMapping("/getEditListForAttend.do")
+	@ResponseBody
 	public List<EditAttendVO> getEditList(@RequestParam Map<String, String> params) {
 		EditAttendVO vo = new EditAttendVO();
-		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
-		vo.setEmplyrId(user.getId());
+		if(params.get("userId")!=null) {
+			vo.setEmplyrId(params.get("userId"));
+		}
 		vo.setEditer(params.get("modstate"));
-		vo.setStartDate(params.get("startDate"));
-		vo.setEndDate(params.get("endDate"));
+		vo.setStartDate(params.get("startDate").replace("-", ""));
+		vo.setEndDate(params.get("endDate").replace("-", ""));
+		System.out.println(vo.getEditer());
+		System.out.println(vo.getStartDate());
+		System.out.println(vo.getEndDate());
 		return AttendService.getEditList(vo);
 	}
 	
+	//관리자 정정요청 수락
+	@PostMapping("/editAttend.do")
+	@ResponseBody
+	public Map<String,String>editListSelected(@RequestBody List<EditAttendVO> vo){
+		Map<String,String>map= new HashMap<>();
+		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		System.out.println(user.getId());
+		vo.forEach(item -> item.setSupervisor(user.getId()));
+		List<EditAttendVO> result = AttendService.editAttendList(vo);
+		if(result==null) {
+			map.put("result","fail" );
+			return map ;
+		}else {
+			map.put("result", "success");
+			return map; 
+		}
+	}
+	
+	// 나의 정정리스트 페이지 이동
+	@GetMapping("/myAttendList.do")
+	public String goToMyList() {
+		return "attendance/myAttendList.html";
+	}
 }

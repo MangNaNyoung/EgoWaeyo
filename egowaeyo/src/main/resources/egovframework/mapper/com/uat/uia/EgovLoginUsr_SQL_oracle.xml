@@ -22,6 +22,7 @@
 		<result property="orgnztId" column="orgnztId"/>
 		<result property="uniqId" column="uniqId"/>		
 		<result property="orgnztNm" column="orgnztNm"/>		
+		<result property="ofcpsNm" column="ofcpsNm"/>		
 		<result property="empPhoto" column="emp_photo"/>		
 	</resultMap>
 	
@@ -83,6 +84,7 @@
 			     , 'USR' AS userSe
 			     , c.orgnzt_id AS orgnztId
 			     , esntl_id AS uniqId
+			      , ofcps_nm AS ofcpsNm
                  ,(select orgnzt_nm from COMTNORGNZTINFO where orgnzt_id = c.orgnzt_id) AS orgnztNm                 
 			     , EMP_PHOTO
 			  FROM COMTNEMPLYRINFO c
@@ -139,6 +141,7 @@
 			     , email_adres AS email
 			     , 'USR' AS userSe
 			     , c.orgnzt_id AS orgnztId
+			      , ofcps_nm  AS ofcpsNm
 			     , esntl_id AS uniqId
                  ,(select orgnzt_nm from COMTNORGNZTINFO where orgnzt_id = c.orgnzt_id) AS orgnztNm                
 			     , EMP_PHOTO
@@ -160,6 +163,7 @@
 		     , email_adres AS email
 		     , 'USR' AS userSe
 		     , orgnzt_id AS orgnztId
+		     ,ofcps_nm  AS ofcpsNm
 		     , esntl_id AS uniqId
 		  FROM COMTNEMPLYRINFO
 		 WHERE CRTFC_DN_VALUE = #{dn}

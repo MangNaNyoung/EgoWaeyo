@@ -10,4 +10,5 @@ public interface AttendanceMapper {
 	public List<AttendVO> getAttend(AttendVO vo);
 	public EditAttendVO callAttendanceEditProcedure(EditAttendVO vo);
 	public List<EditAttendVO> getEditList(EditAttendVO vo);
+	public int callEditProcedure (EditAttendVO vo);
 }

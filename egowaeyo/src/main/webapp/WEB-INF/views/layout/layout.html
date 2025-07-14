@@ -42,6 +42,7 @@
 <script src="https://uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+
 <style>
 body, html {
 	font-family: "42dot Sans", sans-serif;
@@ -290,7 +291,7 @@ function init() {
 					console.log(userInfo)
 					console.log(userInfo)
 					$(".empl").text(userInfo.name+" ("+userInfo.id+")")
-					$(".level").text(userInfo.orgnztNm)
+					$(".level").text(userInfo.orgnztNm + ", " + userInfo.ofcpsNm)
 					$(".email").attr('data-email',userInfo.email)
 					
 					
@@ -298,7 +299,7 @@ function init() {
 					// 프로필 사진 업데이트 추가
 	                if(userInfo.empPhoto && userInfo.empPhoto.trim() !== '') {
 	                    // 사용자가 업로드한 프로필 사진이 있는 경우
-	                	$(".user-img .avatar img").attr('src', "C:/egovframework/upload/" + userInfo.empPhoto);
+	                	$(".user-img .avatar img").attr('src', "/egowaeyo/download/" + userInfo.empPhoto);
 	                } else {
 	                    // 기본 프로필 사진 사용
 	                    $(".user-img .avatar img").attr('src', '/assets/images/faces/1.jpg');

@@ -13,6 +13,7 @@ import egovframework.com.egowaeyo.attendance.web.EditAttendVO;
 @Service
 public class AttendenceServiceImpl implements AttendanceService {
 	
+	private int count = 0;
 	@Autowired AttendanceMapper AttendMapper;
 	
 	@Override
@@ -38,6 +39,17 @@ public class AttendenceServiceImpl implements AttendanceService {
 	@Override
 	public List<EditAttendVO> getEditList(EditAttendVO vo) {
 		return AttendMapper.getEditList(vo);
+	}
+
+	@Override
+	public List<EditAttendVO> editAttendList(List<EditAttendVO> vo) {
+		
+		vo.forEach(item -> {AttendMapper.callEditProcedure(item);
+							count+=item.getRowcount();});
+		if(vo.size()==count) {
+			return vo;
+		}
+		return null;
 	}
 
 }

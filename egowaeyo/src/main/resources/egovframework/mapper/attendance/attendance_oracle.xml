@@ -20,6 +20,7 @@
 			<if test="startDate != null and startDate != '' and endDate != null and endDate !=''" >
 				AND CHECKDATE BETWEEN #{startDate} AND #{endDate}
 			</if> 
+				AND INSTATE != 'I04'
 		</where>
 		ORDER BY CHECKDATE
 	</select>
@@ -40,34 +41,48 @@
     	
 
     SELECT
-        EDIT_CD      AS editCd,
-        EDIT_IN      AS editIn,
-        EDIT_OUT     AS editOut,
-        EDIT_RS      AS editRs,
-        CREATE_DT    AS createDt,
-        EDIT_DT      AS editDt,
-        EDITER       AS editer,
-        SUPERVISOR   AS supervisor,
-        SUP_DT       AS supDt,
-        CHECKDATE    AS checkdate,
-        EMPLYR_ID    AS emplyrId,
-        CHECKIN      AS checkin,
-        CHECKOUT     AS checkout
+        EDIT_CD      ,
+        EDIT_IN     ,
+        EDIT_OUT     ,
+        EDIT_RS     ,
+        CREATE_DT    ,
+        EDIT_DT      ,
+        EDITER       ,
+        SUPERVISOR   ,
+        SUP_DT       ,
+        CHECKDATE   ,
+        EMPLYR_ID    ,
+        CHECKIN      ,
+        CHECKOUT     
     FROM EDITAPPROVAL
     <where>
+    	1=1
         <!-- 신청자, 근태일자 등 일반 필터 -->
         <if test="emplyrId != null and emplyrId != ''">
-            EMPLYR_ID = #{emplyrId}
+          and  emplyr_id = #{emplyrId}
         </if>
-        <if test="checkdate != null and checkdate != ''">
-            <if test="emplyrId != null and emplyrId != ''"> AND </if>
-           CHECKDATE BETWEEN #{startDate} AND #{endDate}
+        <if test="editer != null and editer != ''">
+          and  EDITER = #{editer}
+        </if>
+        <if test="startDate != null and startDate != ''">
+         and  CHECKDATE BETWEEN #{startDate} AND #{endDate}
         </if>
 
         <!-- editer 존재 여부 필터 -->
     </where>
     ORDER BY CREATE_DT,EDITER DESC
 </select>
- 
+  <update id="callEditProcedure" parameterType="EditAttendVO" 
+            statementType="CALLABLE" >
+        {CALL UPDATE_ATTENDANCE_TIME(
+            #{editCd, mode=IN, jdbcType=CHAR},
+            #{checkdate, mode=IN, jdbcType=CHAR},
+            #{emplyrId, mode=IN, jdbcType=VARCHAR},
+            #{supervisor, mode=IN, jdbcType=VARCHAR},
+            #{editIn, mode=IN, jdbcType=CHAR},
+            #{editOut, mode=IN, jdbcType=CHAR},
+            #{rowcount  , mode=OUT , jdbcType=NUMERIC}
+        )}
+    </update>
 	
 </mapper>
