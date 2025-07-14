@@ -154,4 +154,14 @@
 		WHERE EMPLYR_ID = #{emplyrId}
 
 	</delete>
+	
+	<!-- 사원 수정 -->
+	<update id="EmpUdt">
+	
+    UPDATE comtnemplyrinfo 
+    SET POSITION_ID = #{positionId},
+        OFCPS_NM = (SELECT position_name FROM position WHERE position_id = #{positionId})
+    WHERE EMPLYR_ID = #{emplyrId}
+    
+	</update>
 </mapper>
