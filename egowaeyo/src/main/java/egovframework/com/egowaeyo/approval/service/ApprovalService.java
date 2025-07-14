@@ -16,7 +16,7 @@ public interface ApprovalService {
 
 	void insertFullApproval(ApprovalDocVO docVO, List<ApprovalLineVO> lineList, List<ApprovalCcVO> ccList);
 
-	List<ApprovalDocVO> getReceiveList(String empId);
+	List<ApprovalDocVO> selectReceiveList(String empId);
 
 	List<ApprovalDocVO> getDeptReceiveList(String deptId);
 

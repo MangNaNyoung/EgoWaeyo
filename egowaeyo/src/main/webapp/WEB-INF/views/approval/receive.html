@@ -10,11 +10,7 @@
     <!-- 상단 버튼 -->
     <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
       <div style="display: flex; gap: 0.5rem;">
-        <button>수신접수</button>
-        <button>수신기안</button>
-        <button>기안</button>
-        <button>복사</button>
-        <button>인쇄/다운로드</button>
+        <button id="printBtn">인쇄/다운로드</button>
       </div>
       <div style="display: flex; gap: 0.5rem;">
         <select>
@@ -29,30 +25,75 @@
         <button onclick="openAdvancedSearch()">상세검색</button>
       </div>
     </div>
+    
+    <div id="advancedSearchForm"
+			style="display: none; margin-bottom: 1rem; border: 1px solid #ccc; padding: 1rem; background: #f9f9f9;">
+			<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+				<input type="text" id="searchTitle" placeholder="문서제목"> <input
+					type="text" id="searchDocId" placeholder="문서번호"> <input
+					type="text" id="searchForm" placeholder="결재양식"> <input
+					type="text" id="searchEmpName" placeholder="기안자"> <input
+					type="date" id="searchFromDt"> <input type="date"
+					id="searchToDt">
+				<button onclick="applyAdvancedSearch()">조건 검색</button>
+			</div>
+		</div>
 
     <!-- Toast UI Grid -->
     <div id="grid" style="height: 400px;"></div>
   </div>
 
-  <script>
+  <script th:inline="javascript">
+  	let receiveListUrl = /*[[@{'/receive/list'}]] */'';
+  
     const grid = new tui.Grid({
       el: document.getElementById('grid'),
       columns: [
-        { header: '문서번호', name: 'doc_id', width: 120 },
-        { header: '결재상태', name: 'doc_status', width: 100 },
-        { header: '종류', name: 'doc_type', width: 100 },
-        { header: '양식', name: 'apprform_name', width: 120 },
-        { header: '제목', name: 'doc_title', width: 250 },
-        { header: '기안부서', name: 'dept_name', width: 120 },
+        { header: '문서번호', name: 'docId', width: 120 },
+        { header: '결재상태', name: 'docStatus', width: 100 },
+        { header: '종류', name: 'docType', width: 100 },
+        { header: '양식', name: 'apprformName', width: 120 },
+        { header: '제목', name: 'docTitle', width: 250 },
+        { header: '기안부서', name: 'deptName', width: 120 },
         { header: '기안자', name: 'empno', width: 100 },
-        { header: '공개여부', name: 'open_yn', width: 100 },
-        { header: '기안일시', name: 'created_dt', width: 150 },
+        { header: '공개여부', name: 'openYn', width: 100 },
+        { header: '기안일시', name: 'createdDt', width: 150 },
        // { header: '완료일시', name: 'final_dt', width: 150 }
       ],
       data: [],
-     // rowHeaders: ['rowNum'],
+      rowHeaders: ['checkbox'],
       bodyHeight: 500
-    });
+    })
+    
+    /* fetch(receiveListUrl)
+    .then(res => res.json())
+    .then(data => {
+      console.log('받은 데이터:', data);
+      grid.resetData(data);
+    }); */
+    getData()
+    function getData(){
+    	
+    $.ajax({
+        type: 'get',
+        url: receiveListUrl+'receive/list',
+        //headers: {
+        //   "Content-Type": "application/json",
+        //},
+        //data: JSON.stringify(data),
+        success: function(result) {
+           console.log(result);
+           result.forEach(item => {
+             console.log(item);
+           });
+           grid.resetData(result);
+           grid.refreshLayout();
+        },
+        error: function(request, status, error) {
+           console.log(error);
+        }
+     });
+    }
 
     function handleSearch() {
       const keyword = document.getElementById('searchKeyword').value;
@@ -64,7 +105,41 @@
     }
 
     function openAdvancedSearch() {
-      alert('상세검색 기능 준비중');
-    }
+  	  const form = document.getElementById('advancedSearchForm');
+  	  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+  	}
+    
+    function applyAdvancedSearch() {
+  	  const params = new URLSearchParams({
+  	    title: document.getElementById('searchTitle').value,
+  	    docId: document.getElementById('searchDocId').value,
+  	    form: document.getElementById('searchForm').value,
+  	    empName: document.getElementById('searchEmpName').value,
+  	    fromDt: document.getElementById('searchFromDt').value,
+  	    toDt: document.getElementById('searchToDt').value
+  	  });
+
+  	  fetch('/approval/temp/list?' + params.toString())
+  	    .then(res => res.json())
+  	    .then(data => grid.resetData(data));
+  	}
+  
+  document.getElementById('printBtn').addEventListener('click', function () {
+  	  const selectedRows = grid.getCheckedRows();
+  	  if (selectedRows.length === 0) {
+  	    alert('인쇄할 문서를 선택해주세요.');
+  	    return;
+  	  }
+  	  if (selectedRows.length > 1) {
+  	    alert('한 번에 하나의 문서만 인쇄할 수 있습니다.');
+  	    return;
+  	  }
+
+  	  const docId = selectedRows[0].docId;
+  	  const url = '/approval/print/' + docId;
+  	  window.open(url, '_blank', 'width=900,height=1200,scrollbars=yes');
+  	})
+  	;
+  
   </script>
 </section>

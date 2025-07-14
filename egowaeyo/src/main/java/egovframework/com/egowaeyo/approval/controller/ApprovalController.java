@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import egovframework.com.cmm.LoginVO;
+import egovframework.com.cmm.util.EgovUserDetailsHelper;
 import egovframework.com.cop.smt.lsm.service.EmplyrVO;
 import egovframework.com.egowaeyo.admin.service.AdminUserVO;
 import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
@@ -38,14 +40,16 @@ public class ApprovalController {
 
 	@GetMapping("/write")
 	public String writeForm(Model model, HttpServletRequest req) {
-		AdminUserVO loginUser = (AdminUserVO) req.getSession().getAttribute("loginUser");
-		if (loginUser == null) {
-			loginUser = new AdminUserVO(); // 최소한 빈 객체라도
-			loginUser.setUserNm("알수없음");
-		}
+		 AdminUserVO sessionUser = (AdminUserVO) req.getSession().getAttribute("loginUser");
+		    if (sessionUser == null) {
+		        sessionUser = new AdminUserVO();
+		        sessionUser.setUserNm("알수없음");
+		    }
+		LoginVO loginUser  = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		model.addAttribute("loginUser", loginUser);
-		model.addAttribute("formList", approvalService.getFormList());
-		return "approval/write.html";
+	    model.addAttribute("formList", approvalService.getFormList());
+
+	    return "approval/write.html";
 	}
 
 	@PostMapping("/write.do")
@@ -54,12 +58,13 @@ public class ApprovalController {
 			@RequestParam String docContent, @RequestParam List<String> approverIds, 
 			@RequestParam(required = false) List<String> ccIds, 
 			Principal principal) {
+		 LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
 		// 1. 결재문서 정보 생성
 		ApprovalDocVO docVO = new ApprovalDocVO();
 		docVO.setDocTitle(docTitle);
 		docVO.setApprformId(apprformId);
 		docVO.setDocStatus("작성중");
-		docVO.setEmplId(principal.getName());
+		docVO.setEmplId(user.getId());
 		docVO.setCreatedDt(new Date());
 		docVO.setDocHtml(docContent);
 
@@ -82,7 +87,7 @@ public class ApprovalController {
 				ccList.add(ccVO);
 			}
 		}
-		// 4. 서비스 호출 (트랜잭션 처리!)
+		// 4. 서비스 호출 (트랜잭션 처리)
 		approvalService.insertFullApproval(docVO, lineList, ccList);
 
 		return "redirect:/approval/receive";
@@ -96,9 +101,10 @@ public class ApprovalController {
 
 	@GetMapping("/receive/list")
 	@ResponseBody
-	public List<ApprovalDocVO> receiveList(HttpSession session) {
-		String empId = (String) session.getAttribute("loginId");
-		return approvalService.getReceiveList(empId);
+	public List<ApprovalDocVO> selectReceiveList(HttpServletRequest req) {
+	    LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+	    String empId = user.getId();
+	    return approvalService.selectReceiveList(empId);
 	}
 
 	// 부서 수신함 (deptReceive.html)
@@ -145,6 +151,7 @@ public class ApprovalController {
 	public String printApproval(@PathVariable String docId, Model model) {
 		ApprovalDetailVO detail = approvalService.getApprovalDetail(docId);
 		model.addAttribute("detail", detail);
+		System.out.println("프린트 컨트롤러 호출됨 - docId: " + docId);
 		return "approval/print.html";
 	}
 
