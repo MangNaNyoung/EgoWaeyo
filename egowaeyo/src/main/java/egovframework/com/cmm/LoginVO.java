@@ -31,6 +31,7 @@ public class LoginVO implements Serializable{
 	
 	/** 아이디 */
 	private String id;
+	private String ofcpsNm;
 	/** 이름 */
 	private String name;
 	/** 주민등록번호 */
@@ -94,12 +95,18 @@ public class LoginVO implements Serializable{
 	public String getName() {
 		return name;
 	}
+	public String getOfcpsNm() {
+		return ofcpsNm;
+	}
 	/**
 	 * name attribute 값을 설정한다.
 	 * @param name String
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+	public void setOfcpsNm(String ofcpsNm) {
+		this.ofcpsNm = ofcpsNm;
 	}
 	/**
 	 * ihidNum attribute 를 리턴한다.

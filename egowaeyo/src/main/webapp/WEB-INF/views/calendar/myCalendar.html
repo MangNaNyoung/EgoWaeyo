@@ -176,5 +176,8 @@ body {
 				dayNames : [ '일', '월', '화', '수', '목', '금', '토' ],
 			},
 		});
+		calendar.once('beforeCreateEvent', (data) => {
+			  console.log(`from: ${data.start.toDateString()} to ${data.end.toDateString()}`);
+			});
 	</script>
 </main>

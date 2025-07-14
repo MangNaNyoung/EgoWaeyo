@@ -120,6 +120,14 @@
 	</bean>
 	<bean id="validator"
       class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean" />
+      <bean id="egov.propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:/egovframework/egovProps/globals.properties</value>
+                <!-- <value>file:/product/jeus/egovProps/globals.properties</value> -->
+            </list>
+        </property>
+    </bean>
 
 <mvc:annotation-driven>
   <mvc:message-converters register-defaults="true">
@@ -132,6 +140,8 @@
 	<!-- Facebook 설정 -->
 	<mvc:default-servlet-handler/>
 	<mvc:resources mapping="/assets/**" location="/assets/" />
+	<!-- <mvc:resources mapping="/download/**" location="file:///C:/egovframework/upload/" /> -->
+	<mvc:resources mapping="/download/**" location="file:///${Globals.fileStorePath}" />
 	<mvc:resources mapping="/images/**" location="/images/"
 		cache-period="3600" />
 </beans>

@@ -22,5 +22,6 @@ public class EditAttendVO {
 	    private String message;		// 프로시저 결과 메세지
 	    private String startDate;		 // 조회용 검색 시작일
 		private String endDate;			 // 조회용 마지막 조회일
+		private int rowcount;
 
 }
