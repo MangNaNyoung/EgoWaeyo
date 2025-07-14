@@ -48,7 +48,7 @@ public class ApprovalServiceImpl implements ApprovalService {
 	    }
 
 	@Override
-	public List<ApprovalDocVO> getReceiveList(String empId) {
+	public List<ApprovalDocVO> selectReceiveList(String empId) {
 		return approvalMapper.selectReceiveList(empId);
 	}
 

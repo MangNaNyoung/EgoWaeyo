@@ -38,6 +38,19 @@
         <button style="background-color: #eee; color: #333;" onclick="openAdvancedSearch()">상세검색</button>
       </div>
     </div>
+    
+    <div id="advancedSearchForm"
+			style="display: none; margin-bottom: 1rem; border: 1px solid #ccc; padding: 1rem; background: #f9f9f9;">
+			<div style="display: flex; flex-wrap: wrap; gap: 1rem;">
+				<input type="text" id="searchTitle" placeholder="문서제목"> <input
+					type="text" id="searchDocId" placeholder="문서번호"> <input
+					type="text" id="searchForm" placeholder="결재양식"> <input
+					type="text" id="searchEmpName" placeholder="기안자"> <input
+					type="date" id="searchFromDt"> <input type="date"
+					id="searchToDt">
+				<button onclick="applyAdvancedSearch()">조건 검색</button>
+			</div>
+		</div>
 
     <!-- Toast UI Grid -->
     <div id="grid" style="height: 400px;"></div>
@@ -75,8 +88,41 @@
     }
 
     function openAdvancedSearch() {
-      alert('상세검색 열기');
-    }
+    	  const form = document.getElementById('advancedSearchForm');
+    	  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    	}
+    
+    function applyAdvancedSearch() {
+  	  const params = new URLSearchParams({
+  	    title: document.getElementById('searchTitle').value,
+  	    docId: document.getElementById('searchDocId').value,
+  	    form: document.getElementById('searchForm').value,
+  	    empName: document.getElementById('searchEmpName').value,
+  	    fromDt: document.getElementById('searchFromDt').value,
+  	    toDt: document.getElementById('searchToDt').value
+  	  });
+
+  	  fetch('/approval/temp/list?' + params.toString())
+  	    .then(res => res.json())
+  	    .then(data => grid.resetData(data));
+  	}
+  
+  document.getElementById('printBtn').addEventListener('click', function () {
+  	  const selectedRows = grid.getCheckedRows();
+  	  if (selectedRows.length === 0) {
+  	    alert('인쇄할 문서를 선택해주세요.');
+  	    return;
+  	  }
+  	  if (selectedRows.length > 1) {
+  	    alert('한 번에 하나의 문서만 인쇄할 수 있습니다.');
+  	    return;
+  	  }
+
+  	  const docId = selectedRows[0].doc_id;
+  	  const url = '/approval/print/' + docId;
+  	  window.open(url, '_blank', 'width=900,height=1200,scrollbars=yes');
+  	});
+  
   </script>
 </section>
 </html>

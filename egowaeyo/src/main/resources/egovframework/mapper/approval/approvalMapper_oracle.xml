@@ -50,8 +50,10 @@
 	<insert id="insertTemp" parameterType="ApprovalTempVO">
 		INSERT INTO approval_temp
 		(temp_id, EMPLYR_ID, temp_title, temp_content, temp_dt)
-		VALUES (approval_temp_seq.NEXTVAL, #{emplyrId}, #{tempTitle},
-		#{tempContent}, SYSDATE)
+		VALUES
+		(approval_temp_seq.NEXTVAL, #{emplyrId}, #{tempTitle},
+		#{tempContent},
+		SYSDATE)
 	</insert>
 
 	<!-- 개인 수신함 -->
@@ -59,11 +61,9 @@
 		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
 		SELECT ad.*
 		FROM approval_doc ad
-		JOIN approval_line al ON
-		ad.doc_id = al.doc_id
+		JOIN approval_line al ON ad.doc_id = al.doc_id
 		WHERE al.approver_id = #{empId}
-		AND al.line_status
-		= '진행중'
+		AND al.line_status IN ('진행중', '대기')
 	</select>
 
 	<!-- 부서 수신함 -->

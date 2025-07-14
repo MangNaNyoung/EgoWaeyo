@@ -8,34 +8,34 @@
 		<form th:action="@{/approval/write.do}" method="post"
 			id="approvalForm" style="flex: 1;">
 			<h4>결재문서</h4>
-			<div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
+			<div
+				style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
 				<button type="button" id="openTemplateModalBtn">양식선택</button>
 				<button type="reset" id="resetBtn">초기화</button>
-				<button type="button" id="attachFileBtn">결재문서첨부</button>
 				<button type="button" id="tempSaveBtn">임시저장</button>
 				<button type="submit" id="submitBtn">결재</button>
 			</div>
 			<input type="hidden" name="apprformId" id="apprformId">
 			<div style="margin-bottom: 1rem;">
-				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> 
-				<input type="text" name="docTitle" required style="width: 100%;" /><br />
-			</div>			
-			<input type="hidden" name="drafterId" id="drafterId"> 
-			<input type="hidden" name="approverId" id="approverId"> 
-			<input type="hidden" name="ccIds" id="ccIds">			
+				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> <input
+					type="text" name="docTitle" required style="width: 100%;" /><br />
+			</div>
+			<input type="hidden" name="approverIds" id="approverIds"> <input
+				type="hidden" name="ccIds" id="ccIds">
 			<div id="editor"></div>
 			<textarea name="docContent" id="docContent" style="display: none;"></textarea>
 		</form>
 
-		<aside style="width: 300px; border-left: 1px solid #ccc; padding-left: 1rem; margin-top: 120px;">
-			<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+		<aside
+			style="width: 300px; border-left: 1px solid #ccc; padding-left: 1rem; margin-top: 120px;">
+			<div
+				style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
 				<h4 style="margin: 0;">결재선</h4>
 				<button type="button" id="openApprovalLineModalBtn">결재선 지정</button>
 			</div>
 			<div class="approval-box">
 				<strong>기안자</strong>
-				<input type="hidden" id="loginUserNm" th:value="${loginUser.userNm ?: '알수없음'}">
-				<p>선택된 사용자 없음</p>
+				<p th:text="${loginUser.name} ?: '알수없음'">알수없음</p>
 			</div>
 			<div class="approval-box">
 				<strong>결재자</strong>
@@ -91,7 +91,7 @@
 </section>
 
 <th:block layout:fragment="customJs">
-<script>
+	<script>
 let editor;
 let deptEventRegistered = false;
 
@@ -155,13 +155,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const ccSelect = document.getElementById("ccSelect");
     const approver = approverSelect.selectedOptions[0]?.textContent || "선택된 사용자 없음";
     const ccArr = Array.from(ccSelect.selectedOptions).map(o=>o.textContent);
-    const draftUserNm = document.getElementById("loginUserNm").value;
-    document.querySelectorAll(".approval-box")[0].querySelector("p").textContent = draftUserNm;
     document.querySelectorAll(".approval-box")[1].querySelector("p").textContent = approver;
     document.querySelectorAll(".approval-box")[2].querySelector("p").textContent = ccArr.length ? ccArr.join(", ") : "선택된 사용자 없음";
-    //hidden 필드 동기화
-    document.getElementById("drafterId").value = document.getElementById("loginUserNm").value;
-    document.getElementById("approverId").value = approverSelect.selectedOptions[0]?.value || "";
+    //hidden 필드 동기화    
+    document.getElementById("approverIds").value = approverSelect.selectedOptions[0]?.value || "";
     document.getElementById("ccIds").value = Array.from(ccSelect.selectedOptions).map(opt => opt.value).join(",");
     closeModal(document.getElementById("approvalLineModal"));
   });
@@ -186,14 +183,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("resetBtn").addEventListener("click", resetAll);
-  document.getElementById("attachFileBtn").addEventListener("click", attachedFile);
 
   // (3) 임시저장 버튼 AJAX - form 태그 submit 쓰지 않고 fetch로 전송
   document.getElementById("tempSaveBtn").addEventListener("click", function() {
     // 현재 form에서 필요한 모든 값 수집
     const docTitle = document.querySelector('input[name="docTitle"]').value;
     const docContent = editor.getHTML();
-    const drafterId = document.getElementById('drafterId').value;
     const approverId = document.getElementById('approverId').value;
     const ccIds = document.getElementById('ccIds').value;
     const apprformId = document.getElementById('apprformId').value;
@@ -203,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch('/egowaeyo/approval/tempSave', {
       method: 'POST',
       headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `docTitle=${encodeURIComponent(docTitle)}&docContent=${encodeURIComponent(docContent)}&drafterId=${drafterId}&approverId=${approverId}&ccIds=${ccIds}&apprformId=${apprformId}`
+      body: `docTitle=${encodeURIComponent(docTitle)}&docContent=${encodeURIComponent(docContent)}&approverId=${approverId}&ccIds=${ccIds}&apprformId=${apprformId}`
     })
     .then(r => r.text())
     .then(msg => alert('임시저장 완료!'));
