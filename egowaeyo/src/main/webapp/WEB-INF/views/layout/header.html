@@ -12,86 +12,79 @@
 ============================================ -->
 <html xmlns:th="http://www.thymeleaf.org">
 <div id="header" th:fragment="headerFragment">
-	<header class='mb-3'>
-		<nav class="navbar navbar-expand navbar-light ">
-			<div class="container-fluid">
-				<div class="header-logo-title"><img th:src="@{/assets/images/logo/egoWAEYO.png}" class="cursor-pointer"
+    <header class='mb-3'>
+        <nav class="navbar navbar-expand navbar-light ">
+            <div class="container-fluid">
+                <div class="header-logo-title"><img th:src="@{/assets/images/logo/egoWAEYO.png}" class="cursor-pointer"
                         style="width: 200px;" alt="LOGO 사진"></div>
-				<div class="d-flex flex-column align-items-start ms-3">
-					<div class="d-flex flex-row">
-					<span id="sessionInfo" >  남은시간 - 
-					<span id="leftTimeInfo">00:00:00</span><!-- 세션만료 남은시간 --> 
-							</span>
-					</div>
-						<a
-						id="clickInfo" class="btn02 mt-1" href="#"
-						onclick="reqTimeAjax();return false;">   시간연장</a> <!-- 시간연장 -->
-				
-				</div>
-				<div class="collapse navbar-collapse" id="navbarSupportedContent" style="width : 80%;">
-					<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-						<li class="nav-item dropdown me-1"><a
-							class="nav-link active dropdown-toggle" href="#"
-							data-bs-toggle="dropdown" aria-expanded="false"> <i
-								class='bi bi-envelope bi-sub fs-4 text-gray-600'></i>
-						</a>
-							<ul class="dropdown-menu dropdown-menu-end"
-								aria-labelledby="dropdownMenuButton">
-								<li>
-									<h6 class="dropdown-header email">Mail</h6>
-								</li>
-								<li><a class="dropdown-item" href="#">No new mail</a></li>
-							</ul></li>
-						<li class="nav-item dropdown me-3"><a
-							class="nav-link active dropdown-toggle" href="#"
-							data-bs-toggle="dropdown" aria-expanded="false"> <i
-								class='bi bi-bell bi-sub fs-4 text-gray-600'></i>
-						</a>
-							<ul class="dropdown-menu dropdown-menu-end"
-								aria-labelledby="dropdownMenuButton">
-								<li>
-									<h6 class="dropdown-header">Notifications</h6>
-								</li>
-								<li><a class="dropdown-item">No notification available</a></li>
-							</ul></li>
-					</ul>
-					<div class="dropdown">
-						<a href="#" data-bs-toggle="dropdown" aria-expanded="false">
-							<div class="user-menu d-flex">
-								<div class="user-name text-end me-3">
-									<h6 class="mb-0 text-gray-600 empl" ></h6>
-									<p class="mb-0 text-sm text-gray-600 level" >Administrator</p>
-								</div>
-								<div class="user-img d-flex align-items-center">
-									<div class="avatar avatar-md">
-										<img th:src="@{/assets/images/faces/1.jpg}">
-									</div>
-								</div>
-							</div>
-						</a>
-						<ul class="dropdown-menu dropdown-menu-end"
-							aria-labelledby="dropdownMenuButton">
-							<li>
-								<h6 class="dropdown-header">Hello, John!</h6>
-							</li>
-							<li><a class="dropdown-item" href="#"><i
-									class="icon-mid bi bi-person me-2"></i> My Profile</a></li>
-							<li><a class="dropdown-item" href="#"><i
-									class="icon-mid bi bi-gear me-2"></i> Settings</a></li>
-							<li><a class="dropdown-item" href="#"><i
-									class="icon-mid bi bi-wallet me-2"></i> Wallet</a></li>
-							<li>
-								<hr class="dropdown-divider">
-							</li>
-							<li><a class="dropdown-item" href="#"
-								onclick="logout();return false;"><i
-									class="icon-mid bi bi-box-arrow-left me-2"></i> Logout</a></li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</nav>
-	</header>
+                <div class="d-flex flex-column align-items-start ms-3">
+                    <div class="d-flex flex-row">
+                        <span id="sessionInfo"> 남은시간 -
+                            <span id="leftTimeInfo">00:00:00</span><!-- 세션만료 남은시간 -->
+                        </span>
+                    </div>
+                    <a id="clickInfo" class="btn02 mt-1" href="#" onclick="reqTimeAjax();return false;"> 시간연장</a>
+                    <!-- 시간연장 -->
+
+                </div>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent" style="width : 80%;">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown me-1"><a class="nav-link active dropdown-toggle" href="#"
+                                data-bs-toggle="dropdown" aria-expanded="false"> <i
+                                    class='bi bi-envelope bi-sub fs-4 text-gray-600'></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                <li>
+                                    <h6 class="dropdown-header email">Mail</h6>
+                                </li>
+                                <li><a class="dropdown-item" href="#">No new mail</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown me-3"><a class="nav-link active dropdown-toggle" href="#"
+                                data-bs-toggle="dropdown" aria-expanded="false"> <i
+                                    class='bi bi-bell bi-sub fs-4 text-gray-600'></i>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                                <li>
+                                    <h6 class="dropdown-header">Notifications</h6>
+                                </li>
+                                <li><a class="dropdown-item">No notification available</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="dropdown">
+                        <a href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="user-menu d-flex">
+                                <div class="user-name text-end me-3">
+                                    <h6 class="mb-0 text-gray-600 empl"></h6>
+                                    <p class="mb-0 text-sm text-gray-600 level">Administrator</p>
+                                </div>
+                                <div class="user-img d-flex align-items-center">
+                                    <div class="avatar avatar-md">
+                                        <img th:src="@{/assets/images/faces/1.jpg}">
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                            <li>
+                                <h6 class="dropdown-header">Hello, John!</h6>
+                            </li>
+                            <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-person me-2"></i> 내 프로필</a></li>
+                            <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-gear me-2"></i> 환경설정</a></li>
+                            <!-- <li><a class="dropdown-item" href="#"><i class="icon-mid bi bi-wallet me-2"></i> </a> -->
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li><a class="dropdown-item" href="#" onclick="logout();return false;"><i
+                                        class="icon-mid bi bi-box-arrow-left me-2"></i> 로그아웃</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
 </div>
 
 </html>
