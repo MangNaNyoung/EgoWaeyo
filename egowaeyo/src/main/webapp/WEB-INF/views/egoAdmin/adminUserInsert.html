@@ -8,27 +8,28 @@
   <div class="main-container">
     <div class="main-first-section">
       <div class="main-small-title">
-      <!-- 총괄 관리 -->
+        <!-- 총괄 관리 -->
       </div>
     </div>
-    <div class="main-header-title">사용자 등록</div>
-    
+    <div class="main-header-title">사원 등록</div>
+
     <form id="userForm" role="form" action="managingBasic.do" method="post" enctype="multipart/form-data">
-    <div class="d-flex justify-content-end">
-      <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0" type="submit">등록</button><!-- 부트스트랩 사용 -->
-    </div>
+      <div class="d-flex justify-content-end">
+        <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0"
+          type="submit">등록</button><!-- 부트스트랩 사용 -->
+      </div>
       <div class="admin-user-sections">
         <div class="left-admin-user-info">
           <div class="user-info-title">기본 정보</div>
           <div class="user-info-personal">
             <div class="user-info-detail">
-              <span>아이디</span> <input type="text" name="emplyrId" class=" border  border-gray-400  rounded-sm">
+              <span>아이디</span> <input type="text" name="emplyrId" class=" !border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>비밀번호</span> <input type="password" name="password" class=" border  border-gray-400  rounded-sm">
+              <span>비밀번호</span> <input type="password" name="password" class=" !border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-              <span>이름</span> <input type="text" name="userNm" class=" border  border-gray-400  rounded-sm">
+              <span>이름</span> <input type="text" name="userNm" class=" !border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail-img">
               <span>사진</span>
@@ -39,13 +40,13 @@
                     <label for="pfile">
                       <!--프로필 파일-->
                       <!-- <img src="/images/account_circle.png" class="cursor-pointer pImage" id="ppreviewImage" style="width: 130px; height: 100px;" alt="사용자 사진"> -->
-                      <img th:src="@{/assets/images/icon/account_circle.svg}" class="cursor-pointer pImage" id="ppreviewImage"
-                        style="width: 130px; height: 100px;" alt="사용자 사진">
+                      <img th:src="@{/assets/images/icon/account_circle.svg}" class="cursor-pointer pImage"
+                        id="ppreviewImage" style="width: 130px; height: 100px;" alt="사용자 사진">
                     </label>
                     <div class="image-preview">
                       <!--<img id="previewImage" src="#" alt="이미지 미리보기" style="display: none;">-->
                     </div>
-                    <button id="btnCan1" type="button" class=" border !rounded-sm !cursor-pointer">초기화</button>
+                    <button id="btnCan1" type="button" class=" !border !rounded-sm !cursor-pointer">초기화</button>
                   </div>
                   <p>* 파일 지원 형식 : png</p>
                 </div>
@@ -77,22 +78,18 @@
               <span>주소</span> <input type="text" name="houseAdres" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
-		    <span>연락처</span> 
-		    <input type="tel" 
-		           name="phoneNumber" 
-		           class="!border !border-gray-400 !rounded-sm"
-		           placeholder="010-1234-5678"
-		           pattern="01[0-9]-\d{4}-\d{4}"
-		           maxlength="13"
-		           title="휴대폰번호를 010-1234-5678 형식으로 입력해주세요">
-			</div>
+              <span>연락처</span>
+              <input type="tel" name="phoneNumber" class="!border !border-gray-400 !rounded-sm"
+                placeholder="010-1234-5678" pattern="01[0-9]-\d{4}-\d{4}" maxlength="13"
+                title="휴대폰번호를 010-1234-5678 형식으로 입력해주세요">
+            </div>
             <div class="user-info-detail">
               <span>이메일</span> <input type="email" name="emailAdres" class="!border !border-gray-400 !rounded-sm">
             </div>
             <div class="user-info-detail">
               <span class="user-sexdstnCode me-5">성별</span>
-	           	<span>남</span><input type="radio" value="M" name="sexdstnCode">
-	           	<span>여</span><input type="radio" value="F" name="sexdstnCode">
+              <span>남</span><input type="radio" value="M" name="sexdstnCode">
+              <span>여</span><input type="radio" value="F" name="sexdstnCode">
             </div>
           </div>
         </div>
@@ -103,9 +100,9 @@
               <div class="user-info-detail">
                 <span>소속</span>
                 <button id="btnIns" type="button" class="!border !rounded-sm !cursor-pointer">+</button>
-                <input type="text" name="departmentsId" class="!border !border-gray-400 !rounded-sm !text-gray-500" placeholder="소속을 선택해주세요."
-                  id="selectedDepartment" readonly>
-                  <input type="text" name="orgnztId" class="!border !border-gray-400 !rounded-sm !text-gray-500"
+                <input type="text" name="departmentsId" class="!border !border-gray-400 !rounded-sm"
+                  placeholder="소속을 선택해주세요." id="selectedDepartment" readonly>
+                <input type="text" name="orgnztId" class="!border !border-gray-400 !rounded-sm !text-gray-500"
                   id="selectedDepartmentId" style="display: none;" readonly>
               </div>
               <div class="user-info-detail">
@@ -118,7 +115,8 @@
               </div>
               <div class="user-info-detail">
                 <span>사번</span>
-                <input type="text" name="emplNo" class="!border !border-gray-400 !rounded-sm" placeholder = "자동 생성" readonly>
+                <input type="text" name="emplNo" class="!border !border-gray-400 !rounded-sm" placeholder="자동 생성"
+                  readonly>
               </div>
             </div>
           </div>
@@ -128,8 +126,8 @@
             </div>
             <div class="user-info-detail">
               <span class="ms-2 me-5">권한</span>
-	           	<span>사용자</span><input type="radio" value="ROLE_USER" name="authorCode">
-	           	<span>관리자</span><input type="radio" value="ROLE_ADMIN" name="authorCode">
+              <span>사용자</span><input type="radio" value="ROLE_USER" name="authorCode">
+              <span>관리자</span><input type="radio" value="ROLE_ADMIN" name="authorCode">
             </div>
           </div>
         </div>
@@ -230,36 +228,36 @@
     btnCan.addEventListener("click", closeModal);
 
     btnIns.addEventListener("click", () => {
-        modal.classList.remove("hidden");
-        
-        // 기존 목록 초기화
-        $('#department-list').empty();
-        
-        // AJAX 호출 모달에서 부서 리스트 확인
-        $.ajax({
-            url: "egovdeptlist",
-            type: "GET",
-            dataType: "json",
-            success: function(datas) {
-                console.log("받은 데이터:", datas); // 디버깅용
-                
-                if (datas && datas.length > 0) {
-                    datas.forEach(e => {
-                        $('#department-list').append(
-                            `<li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="${e.orgnztId}">${e.orgnztNm}</li>`
-                        );
-                    });
-                } else {
-                    $('#department-list').append('<li class="!p-2">조직 정보가 없습니다.</li>');
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX 오류:", error);
-                console.error("상태 코드:", xhr.status);
-                console.error("응답 텍스트:", xhr.responseText);
-                $('#department-list').append('<li class="!p-2 !text-red-500">조직 목록을 불러올 수 없습니다.</li>');
-            }
-        });
+      modal.classList.remove("hidden");
+
+      // 기존 목록 초기화
+      $('#department-list').empty();
+
+      // AJAX 호출 모달에서 부서 리스트 확인
+      $.ajax({
+        url: "egovdeptlist",
+        type: "GET",
+        dataType: "json",
+        success: function (datas) {
+          console.log("받은 데이터:", datas); // 디버깅용
+
+          if (datas && datas.length > 0) {
+            datas.forEach(e => {
+              $('#department-list').append(
+                `<li class="!p-2 !hover:bg-gray-300 !cursor-pointer !rounded" data-dept="${e.orgnztId}">${e.orgnztNm}</li>`
+              );
+            });
+          } else {
+            $('#department-list').append('<li class="!p-2">조직 정보가 없습니다.</li>');
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX 오류:", error);
+          console.error("상태 코드:", xhr.status);
+          console.error("응답 텍스트:", xhr.responseText);
+          $('#department-list').append('<li class="!p-2 !text-red-500">조직 목록을 불러올 수 없습니다.</li>');
+        }
+      });
     });
 
     // 모달에서 부서를 클릭했을 때
@@ -283,7 +281,7 @@
         selectedDepartment.value = prevSelected.innerHTML;
         selectedDepartment.name = "departmentsId";
         console.log(prevSelected.getAttribute("data-dept"))
-        selectedDepartmentId.value =  prevSelected.getAttribute("data-dept");
+        selectedDepartmentId.value = prevSelected.getAttribute("data-dept");
         closeModal();
       } else {
         //alert("소속을 선택해주세요.");

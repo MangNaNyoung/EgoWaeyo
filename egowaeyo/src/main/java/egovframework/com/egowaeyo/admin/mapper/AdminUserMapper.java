@@ -25,4 +25,5 @@ public interface AdminUserMapper {
 	public List<AdminUserVO> selectemp(AdminUserVO au); // 부서관리 페이지 전체 사용자 조회
 	
 	public int EmpDel(String emplyrId); // 부서관리 페이지 사용자삭제
+	public int EmpUdt(String emplyrId, String positionId); // 사용자 수정 (직급 변경)
 }

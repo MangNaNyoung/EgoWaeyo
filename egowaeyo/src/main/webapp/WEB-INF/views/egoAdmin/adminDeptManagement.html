@@ -11,7 +11,7 @@
       </div>
       <div class="main-header-section d-flex justify-content-between flex-row">
         <div class="main-header-title fs-3 fw-bold pb-5">
-          부서 관리
+          부서 - 사원 관리
         </div>
         <div>
           <!-- <div class="input-group">
@@ -45,6 +45,7 @@
 
           <!-- <button class="ms-4 border border-dark px-3 py-1 rounded-2 bg-white" id="positionChange" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
           <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="passwordReset">비밀번호 초기화</button> -->
+          <button class="ms-4 border border-success px-3 py-1 rounded-2 bg-success text-white" id="empUdt">사원수정</button>
           <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="empDel">사원삭제</button>
         </div>
       </div>
@@ -145,6 +146,40 @@
         </div>
       </div>
     </div>
+    
+    <!-- 사원수정 모달 -->
+    <div class="modal fade" id="EmpUpdateModal" tabindex="-1" aria-labelledby="EmpUpdateModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5 text-success" id="EmpUpdateModalLabel">사원 직급을 수정하시겠어요?</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form id="updateEmpForm">
+              <div class="mb-3">
+                <label class="form-label">사원 정보</label>
+                <div class="alert alert-info">
+                  <strong id="empUpdateName"></strong> (<span id="empUpdateId"></span>)
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="positionSelect" class="form-label">수정할 직급을 선택해주세요</label>
+                <select class="form-select" id="positionSelect" name="positionId">
+                  <option value="">직급을 선택하세요</option>
+                </select>
+                <input type="hidden" id="updateEmpId" name="emplyrId">
+                <input type="hidden" id="originalPosition" name="originalPosition">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success" id="UpdateEmpBtn">수정</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- 부서삭제 확인 모달 -->
     <div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
@@ -216,10 +251,45 @@
       // 전역 변수
       let departmentData = [];
       let selectedDepartment = null;
+      let originalDeptName = ''; // 기존 부서명
+      let newDeptName = ''; // 신 부서명
+      let positionData = []; // 직급 데이터
+      let selectedEmployee = null; // 선택된 사원
+      let originalPosition = ''; // 원래 직급
+      let newPosition = ''; // 새로운 직급
+      let newPositionName = ''; // 새로운 직급명
       // 함수 부르기
       loadDepartmentList();
       loadEmpList();
+      loadPositionList();
       initializeEventListeners();
+      
+      // 직급 목록 로드
+      function loadPositionList() {
+        $.ajax({
+          url: "deptpos",
+          type: "GET",
+          dataType: "json",
+          success: function (data) {
+            console.log("직급 데이터:", data);
+            positionData = data || [];
+            
+            // 직급 선택 옵션 생성
+            const positionSelect = document.getElementById("positionSelect");
+            positionSelect.innerHTML = '<option value="">직급을 선택하세요</option>';
+            
+            positionData.forEach(pos => {
+              const option = document.createElement("option");
+              option.value = pos.positionId;
+              option.textContent = pos.positionName;
+              positionSelect.appendChild(option);
+            });
+          },
+          error: function (xhr, status, error) {
+            console.error("직급 목록 로드 실패:", error);
+          }
+        });
+      }
 
       // 이벤트 리스너 초기화
       function initializeEventListeners() {
@@ -236,7 +306,7 @@
         // 부서 수정 버튼 (모달 내부)
         const UpdateDeptBtn = document.getElementById('UpdateDeptBtn');
         if (UpdateDeptBtn) {
-          UpdateDeptBtn.addEventListener("click", updateDepartment);
+          UpdateDeptBtn.addEventListener("click", showUpdateConfirmSwal);
           console.log("부서 수정 버튼 이벤트 리스너 등록");
         }
 
@@ -245,6 +315,13 @@
         if (deleteDeptBtn) {
           deleteDeptBtn.addEventListener("click", deleteDepartment);
           console.log("부서 삭제 버튼 이벤트 리스너 등록");
+        }
+        
+     	// 사원 수정 버튼 (모달 내부) - SweetAlert로 확인 및 처리
+        const UpdateEmpBtn = document.getElementById('UpdateEmpBtn');
+        if (UpdateEmpBtn) {
+          UpdateEmpBtn.addEventListener("click", showEmpUpdateConfirmSwal);
+          console.log("사원 수정 버튼 이벤트 리스너 등록");
         }
 
         // 부서 수정 버튼 (메인)
@@ -263,6 +340,47 @@
             openUpdateModal();
           });
           console.log("메인 부서 수정 버튼 이벤트 리스너 등록");
+        }
+        
+     	// 사원 수정 버튼 (메인)
+        const empUpdateBtn = document.getElementById('empUdt');
+        if (empUpdateBtn) {
+          empUpdateBtn.addEventListener("click", function () {
+            console.log("사원 수정 버튼 클릭");
+            
+            const checkedEmp = $('.emp-checkbox:checked');
+            console.log('선택된 사원 수 : ', checkedEmp.length);
+            
+            if (checkedEmp.length === 0) {
+              Swal.fire({
+                title: "사원 선택 없음",
+                text: "수정할 사원을 선택해주세요.",
+                icon: "error"
+              });
+              return;
+            }
+            
+            if (checkedEmp.length > 1) {
+              Swal.fire({
+                title: "사원 선택 오류",
+                text: "한 명의 사원만 선택해주세요.",
+                icon: "error"
+              });
+              return;
+            }
+            
+            // 선택된 사원 정보 가져오기
+            const row = checkedEmp.closest('tr');
+            selectedEmployee = {
+              id: row.find('td:eq(2)').text(),
+              name: row.find('td:eq(1)').text(),
+              position: row.find('td:eq(4)').text()
+            };
+            
+            console.log("선택된 사원:", selectedEmployee);
+            openEmpUpdateModal();
+          });
+          console.log("메인 사원 수정 버튼 이벤트 리스너 등록");
         }
 
         // 부서 삭제 버튼 (메인)
@@ -635,53 +753,298 @@
         console.log("부서 수정 모달 열기:", selectedDepartment);
         document.getElementById('deptUpdateName').value = selectedDepartment.name;
         document.getElementById('updateDeptId').value = selectedDepartment.id;
+        originalDeptName = selectedDepartment.name;
         const modal = new bootstrap.Modal(document.getElementById('UpdateModal'));
         modal.show();
       }
-
-      // 부서 수정
-      function updateDepartment() {
+      
+      // SweetAlert2로 부서 수정 확인
+      function showUpdateConfirmSwal() {
         const deptNameInput = document.getElementById("deptUpdateName");
-        const deptIdInput = document.getElementById("updateDeptId");
-        const deptName = deptNameInput.value.trim();
-        const deptId = deptIdInput.value;
+        newDeptName = deptNameInput.value.trim();
 
-        if (!deptName) {
-        	Swal.fire({
-        		  title: "부서명 없음",
-        		  text: "수정할 부서명을 입력해주세요.",
-        		  icon: "error"
-        		});
+        if (!newDeptName) {
+          Swal.fire({
+            title: "부서명 없음",
+            text: "수정할 부서명을 입력해주세요.",
+            icon: "error"
+          });
           deptNameInput.focus();
           return;
         }
 
-        console.log("부서 수정 요청:", deptId, "->", deptName);
+        // 변경사항이 없는 경우
+        if (originalDeptName === newDeptName) {
+          Swal.fire({
+            title: "변경사항 없음",
+            text: "부서명이 변경되지 않았습니다.",
+            icon: "info"
+          });
+          return;
+        }
+
+        // SweetAlert2 확인 다이얼로그
+        Swal.fire({
+          title: '부서 수정 확인',
+          html: `
+            <div style="text-align: center; font-size: 16px;">
+              <p>기존 <strong style="color: #007bff;">${originalDeptName}</strong>에서</p>
+              <p>새로 수정된 <strong style="color: #28a745;">${newDeptName}</strong>으로</p>
+              <p>부서명이 변경돼요.</p>
+              <br>
+              <p style="color: #6c757d;">수정하시겠습니까?</p>
+            </div>
+          `,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#28a745',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: '수정 완료',
+          cancelButtonText: '취소',
+          reverseButtons: false
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // 기존 모달 닫기
+            const updateModal = bootstrap.Modal.getInstance(document.getElementById('UpdateModal'));
+            if (updateModal) updateModal.hide();
+            
+            // 부서 수정 실행
+            updateDepartment();
+          }
+        });
+      }
+
+      // 부서 수정 실행
+      function updateDepartment() {
+        const deptId = document.getElementById("updateDeptId").value;
+
+        console.log("부서 수정 요청:", deptId, "->", newDeptName);
+
+        // 로딩 표시
+        Swal.fire({
+          title: '수정 중...',
+          text: '부서 정보를 수정하고 있습니다.',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
 
         $.ajax({
           url: "updateDept.do",
           type: "POST",
           data: {
             orgnztId: deptId,
-            orgnztNm: deptName
-          },
-          beforeSend: function () {
-            $("#UpdateDeptBtn").prop("disabled", true).text("수정 중...");
+            orgnztNm: newDeptName
           },
           success: function (response) {
             console.log("부서 수정 성공:", response);
-            showSuccessModal(`"${deptName}" 부서가 성공적으로 수정되었습니다.`);
-            const modal = bootstrap.Modal.getInstance(document.getElementById('UpdateModal'));
-            if (modal) modal.hide();
+            
+            // 수정 완료 SweetAlert
+            Swal.fire({
+              title: '부서명 변경 완료',
+              html: `
+                <div style="text-align: center; font-size: 16px;">
+                  <p><strong style="color: #007bff;">기존 부서명 "${originalDeptName}"</strong>이</p>
+                  <p><strong style="color: #28a745;">변경 부서명 "${newDeptName}"</strong>으로</p>
+                  <p>성공적으로 변경되었어요.</p>
+                </div>
+              `,
+              icon: 'success',
+              confirmButtonColor: '#28a745',
+              confirmButtonText: '확인'
+            });
+            
             selectedDepartment = null;
             loadDepartmentList();
           },
           error: function (xhr, status, error) {
             console.error("부서 수정 실패:", error);
-            showErrorModal("부서 수정 중 오류가 발생했습니다: " + error);
+            Swal.fire({
+              title: '수정 실패',
+              text: "부서 수정 중 오류가 발생했습니다: " + error,
+              icon: 'error',
+              confirmButtonColor: '#dc3545'
+            });
+          }
+        });
+      }
+      
+   // 사원 수정 모달 열기
+      function openEmpUpdateModal() {
+        console.log("사원 수정 모달 열기:", selectedEmployee);
+        document.getElementById('empUpdateName').textContent = selectedEmployee.name;
+        document.getElementById('empUpdateId').textContent = selectedEmployee.id;
+        document.getElementById('updateEmpId').value = selectedEmployee.id;
+        originalPosition = selectedEmployee.position; // 원래 직급 저장
+        
+        // 현재 직급을 select에서 선택
+        const positionSelect = document.getElementById('positionSelect');
+        const currentPosOption = Array.from(positionSelect.options).find(option => 
+          option.textContent === selectedEmployee.position
+        );
+        if (currentPosOption) {
+          positionSelect.value = currentPosOption.value;
+        }
+        
+        const modal = new bootstrap.Modal(document.getElementById('EmpUpdateModal'));
+        modal.show();
+      }
+      
+   // SweetAlert2로 사원 수정 확인
+      function showEmpUpdateConfirmSwal() {
+        const positionSelect = document.getElementById("positionSelect");
+        const selectedPositionId = positionSelect.value;
+        const selectedPositionText = positionSelect.options[positionSelect.selectedIndex].text;
+
+        console.log("원래 직급:", originalPosition);
+        console.log("새로운 직급 ID:", selectedPositionId);
+        console.log("새로운 직급명:", selectedPositionText);
+
+        if (!selectedPositionId) {
+          Swal.fire({
+            title: "직급 선택 없음",
+            text: "수정할 직급을 선택해주세요.",
+            icon: "error"
+          });
+          return;
+        }
+
+        // 변경사항이 없는 경우
+        if (originalPosition === selectedPositionText) {
+          Swal.fire({
+            title: "변경사항 없음",
+            text: "직급이 변경되지 않았습니다.",
+            icon: "info"
+          });
+          return;
+        }
+
+        // 선택된 직급 정보 저장
+        newPosition = selectedPositionId;
+        newPositionName = selectedPositionText;
+
+        // SweetAlert2 확인 다이얼로그
+        Swal.fire({
+          title: '직급 수정 확인',
+          html: `
+            <div style="text-align: center; font-size: 16px;">
+              <p>기존 <strong style="color: #007bff;">'${originalPosition}'</strong>에서</p>
+              <p>select option으로 수정할 직급을</p>
+              <p>선택 후 <strong style="color: #28a745;">'${selectedPositionText}'</strong>으로</p>
+              <p>직급이 변경됩니다.</p>
+              <br>
+              <p style="color: #6c757d;">수정하시겠습니까?</p>
+            </div>
+          `,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#28a745',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: '수정 완료',
+          cancelButtonText: '취소',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // 기존 모달 닫기
+            const updateModal = bootstrap.Modal.getInstance(document.getElementById('EmpUpdateModal'));
+            if (updateModal) updateModal.hide();
+            
+            // 직급 변경 확인 다이얼로그
+            showPositionChangeConfirmSwal();
+          }
+        });
+      }
+
+      // 직급 변경 최종 확인
+      function showPositionChangeConfirmSwal() {
+        Swal.fire({
+          title: '직급 변경 확인',
+          html: `
+            <div style="text-align: center; font-size: 16px;">
+              <p>직급이 변경됩니다.</p>
+              <p><strong>${selectedEmployee.name}</strong> 사원의 직급이</p>
+              <p><strong style="color: #007bff;">'${originalPosition}'</strong>에서</p>
+              <p><strong style="color: #28a745;">'${newPositionName}'</strong>으로</p>
+              <p>변경됩니다.</p>
+              <br>
+              <p style="color: #6c757d;">변경하시겠습니까?</p>
+            </div>
+          `,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#28a745',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: '변경',
+          cancelButtonText: '취소',
+          reverseButtons: true
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // 사원 수정 실행
+            updateEmployee();
+          }
+        });
+      }
+      
+   // 사원 수정 실행
+      function updateEmployee() {
+        const empId = document.getElementById("updateEmpId").value;
+
+        console.log("사원 수정 요청:", empId, "->", newPosition);
+
+        // 로딩 표시
+        Swal.fire({
+          title: '수정 중...',
+          text: '사원 정보를 수정하고 있습니다.',
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        $.ajax({
+          url: "updateEmp.do",
+          type: "POST",
+          data: {
+            emplyrId: empId,
+            positionId: newPosition
           },
-          complete: function () {
-            $("#UpdateDeptBtn").prop("disabled", false).text("수정");
+          success: function (response) {
+            console.log("사원 수정 성공:", response);
+            
+            // 수정 완료 SweetAlert
+            Swal.fire({
+              title: '직급 변경 완료!',
+              html: `
+                <div style="text-align: center; font-size: 16px;">
+                  <p><strong>${selectedEmployee.name}</strong> 사원의 직급이</p>
+                  <p><strong style="color: #007bff;">'${originalPosition}'</strong>에서</p>
+                  <p><strong style="color: #28a745;">'${newPositionName}'</strong>으로</p>
+                  <p>변경되었습니다.</p>
+                </div>
+              `,
+              icon: 'success',
+              confirmButtonColor: '#28a745',
+              confirmButtonText: '확인'
+            });
+            
+            // 테이블 새로고침
+            if (selectedDepartment) {
+              loadEmpList(selectedDepartment.id);
+            } else {
+              loadEmpList();
+            }
+            
+            selectedEmployee = null;
+          },
+          error: function (xhr, status, error) {
+            console.error("사원 수정 실패:", error);
+            Swal.fire({
+              title: '수정 실패',
+              text: "사원 수정 중 오류가 발생했습니다: " + error,
+              icon: 'error',
+              confirmButtonColor: '#dc3545'
+            });
           }
         });
       }

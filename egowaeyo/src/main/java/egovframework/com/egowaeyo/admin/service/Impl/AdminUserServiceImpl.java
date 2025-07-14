@@ -156,5 +156,16 @@ public class AdminUserServiceImpl implements AdminUserService {
 	public int EmpDel(String emplyrId) {
 		return adminusermapper.EmpDel(emplyrId);
 	}
+	
+	// [부서관리 페이지] 사용자 수정
+	@Override
+	public int EmpUdt(String emplyrId, String positionId) {
+	    try {
+	        return adminusermapper.EmpUdt(emplyrId, positionId);
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	        throw new RuntimeException("사용자 수정 중 오류 발생하였어요. : " + e.getMessage());
+	    }
+	}
 
 }
