@@ -21,6 +21,7 @@ import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.admin.service.PosVO;
 
 @Controller
+@RequestMapping("/admin")
 public class AdminUserController {
 
 	@Autowired
@@ -28,7 +29,7 @@ public class AdminUserController {
 
 	private static final String FILE_STORE_PATH = EgovProperties.getProperty("Globals.fileStorePath");
 
-	@GetMapping("/managingBasic.do")
+	@GetMapping("/managingBasic")
 	public String adminUserIns(Model model) {
 
 		List<PosVO> posilist = adminuserservice.getPos(null);
@@ -78,14 +79,14 @@ public class AdminUserController {
 				redirectAttributes.addFlashAttribute("successMessage", adu.getUserNm() + "님이 성공적으로 등록되었습니다.");
 				redirectAttributes.addFlashAttribute("userInfo", adu.getUserNm() + " (" + adu.getEmplNo() + ")");
 
-				return "redirect:/adDeptMge.do";
+				return "redirect:/admin/adDeptMge.do";
 			} else {
 				System.out.println("사용자 등록 실패");
 				redirectAttributes.addFlashAttribute("showErrorModal", true);
 				redirectAttributes.addFlashAttribute("errorMessage", "사용자 등록에 실패했습니다.");
 
 				// 등록 페이지로 이동
-				return "redirect:/managingBasic.do";
+				return "redirect:/admin/managingBasic.do";
 			}
 
 		} catch (Exception e) {
@@ -99,7 +100,7 @@ public class AdminUserController {
 		model.addAttribute("posi", posilist);
 
 		// 등록 페이지로 이동
-		return "redirect:/managingBasic.do";
+		return "redirect:/admin/managingBasic.do";
 	}
 
 	// egov 부서 목록 (모달)
@@ -202,6 +203,30 @@ public class AdminUserController {
 	@ResponseBody
 	public List<AdminUserVO> selectemp(AdminUserVO adminUserVO) {
 		return adminuserservice.selectemp(adminUserVO);
+	}
+	
+	// 사용자 삭제
+	@PostMapping("/deleteEmp.do")
+	@ResponseBody
+	public String deleteEmp(@RequestParam("emplyrId") String emplyrId) {
+		try {
+			System.out.println("사원 삭제 요청: " + emplyrId);
+
+			int result = adminuserservice.EmpDel(emplyrId);
+
+			if (result > 0) {
+				System.out.println("사원 삭제 성공");
+				return "success";
+			} else {
+				System.out.println("사원 삭제 실패");
+				return "fail";
+			}
+
+		} catch (Exception e) {
+			System.out.println("부서 삭제 중 오류 발생: " + e.getMessage());
+			e.printStackTrace();
+			return "error: " + e.getMessage();
+		}
 	}
 
 }
