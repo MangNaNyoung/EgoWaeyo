@@ -59,11 +59,23 @@
 	<!-- 개인 수신함 -->
 	<select id="selectReceiveList" parameterType="String"
 		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
-		SELECT ad.*
-		FROM approval_doc ad
-		JOIN approval_line al ON ad.doc_id = al.doc_id
-		WHERE al.approver_id = #{empId}
-		AND al.line_status IN ('진행중', '대기')
+		SELECT
+		d.doc_id AS docId,
+		d.doc_title AS docTitle,
+		d.doc_status AS docStatus,
+		d.created_dt AS createdDt,
+		u.user_nm AS drafterName,
+		o.orgnzt_nm AS deptName,
+		LISTAGG(a.user_nm, ', ') WITHIN GROUP (ORDER BY l.line_order) AS approverNames
+		FROM approval_doc d
+		JOIN comtnemplyrinfo u ON d.emplr_id = u.emplyr_id
+		LEFT JOIN comtnorgnztinfo o ON u.orgnzt_id = o.orgnzt_id
+		LEFT JOIN approval_line l ON d.doc_id = l.doc_id
+		LEFT JOIN comtnemplyrinfo a ON l.approver_id = a.emplyr_id
+		WHERE l.approver_id = #{empId}
+		GROUP BY d.doc_id, d.doc_title, d.doc_status, d.created_dt, u.user_nm,
+		o.orgnzt_nm
+		ORDER BY d.created_dt DESC
 	</select>
 
 	<!-- 부서 수신함 -->
@@ -108,24 +120,21 @@
 	<select id="selectApprovalDetail"
 		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO">
 		SELECT
-		d.doc_id,
-		d.doc_title,
-		d.doc_status,
-		d.created_dt,
-		f.approform_name,
-		u.user_nm AS emp_name,
-		dp.departments_name AS
-		dept_name,
-		d.open_yn,
-		d.sec_level,
-		d.retention,
-		d.approval_content
-		FROM
-		approval_doc d
-		JOIN approval_form f ON d.approform_id = f.approform_id
-		JOIN comtnemplyrinfo u ON d.emplyr_id = u.emplyr_id
+		d.doc_id AS docId,
+		d.doc_title AS docTitle,
+		d.doc_status AS docStatus,
+		d.created_dt AS createdDt,
+		d.doc_html AS
+		docHtml,
+		u.user_nm AS empName,
+		o.orgnzt_nm AS deptName
+		FROM approval_doc
+		d
+		JOIN approval_form f ON d.apprform_id = f.apprform_id
+		JOIN
+		comtnemplyrinfo u ON d.emplyr_id = u.emplyr_id
 		LEFT JOIN
-		departments dp ON u.departments_id = dp.departments_id
+		comtnorgnztinfo o ON u.orgnzt_id = o.orgnzt_id
 		WHERE d.doc_id =
 		#{docId}
 	</select>

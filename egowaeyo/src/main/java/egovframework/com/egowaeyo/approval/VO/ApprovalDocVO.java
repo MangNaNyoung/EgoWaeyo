@@ -11,10 +11,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ApprovalDocVO {
 	private String docId;
-	private String docTitle;
-	private String emplId;
-	private String docStatus;
-	private Date createdDt;
-	private String apprformId;
-	private String docHtml;
+    private String docTitle;
+    private String emplId;
+    private String empName;
+    private String docStatus;
+    private Date createdDt;
+    private String apprformId;
+    private String apprformName;
+    private String deptName;
+    private String openYn;
+    private String drafterName;
+    private String approverNames; 
+    private String docHtml;
 }
