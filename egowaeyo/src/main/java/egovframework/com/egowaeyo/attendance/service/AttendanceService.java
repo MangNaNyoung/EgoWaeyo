@@ -13,4 +13,5 @@ public interface AttendanceService {
 	
 	public List<EditAttendVO> getEditList(EditAttendVO vo);
 	public List<EditAttendVO> editAttendList(List<EditAttendVO> vo);
+	
 }
