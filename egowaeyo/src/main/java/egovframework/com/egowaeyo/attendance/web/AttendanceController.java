@@ -120,4 +120,9 @@ public class AttendanceController {
 	public String goToMyList() {
 		return "attendance/myAttendList.html";
 	}
+	
+	@GetMapping("/getAttend.do")
+	public AttendVO getAttend(@RequestParam Map<String, String> params) {
+		return null;
+	}
 }

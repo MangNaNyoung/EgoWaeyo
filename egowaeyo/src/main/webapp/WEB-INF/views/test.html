@@ -20,24 +20,24 @@
 											<img class="log" src="assets/images/logo/egoWAEYO.png">
 										</div>
 										<div class="player">
-											<img src="assets/images/faces/account_circle.png">
-											<h5>쬰덕</h5>
+											<img src="assets/images/faces/account_circle.png" id="plImg">
+											<h5 class="plName">쬰덕</h5>
 										</div>
 										<div  class="">
 											<div class="d-flex justify-content-sm-between align-item-center">
-												<button class="btn btn-warning btn-sm">출근</button>
-												<button class="btn btn-success btn-sm">퇴근</button>
+												<button class="btn btn-warning btn-sm" id="checkin">출근</button>
+												<button class="btn btn-success btn-sm" id="checkout">퇴근</button>
 											</div>
 											<div class="d-flex gap-5 justify-content-sm-between align-item-center">
-												<span>08:30</span> <span>18:00</span>
+												<span class="checkinTime">00:00</span> <span class="checkoutTime">00:00</span>
 											</div>
 											<div class="d-flex gap-4 jutify-content-center align-item-center">
 												<div>
-													<span>연차 총 00일</span>
+													<!-- <span>연차 총 00일</span> -->
 												</div>
 												<div class="d-flex flex-column">
-													<span>사용 00일</span>
-													<span>잔여 00일</span>
+													<!-- <span>사용 00일</span>
+													<span>잔여 00일</span> -->
 												</div>
 											</div>
 											
@@ -108,7 +108,10 @@
 			</div>
 		</section>
 	</div>
-	<script>
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+	var userInfo = [[${session.loginVO}]];
+	/*]]>*/
 
       document.addEventListener('DOMContentLoaded', function() {
     	const Calendar = tui.Calendar;
@@ -138,10 +141,42 @@
   		};
 
   		const calendar = new Calendar(container, options);
+  		setAttendance()
       })
 	
+       if(userInfo.empPhoto && userInfo.empPhoto.trim() !== '') {
+	                    // 사용자가 업로드한 프로필 사진이 있는 경우
+	                	$("#plImg").attr('src', "/egowaeyo/download/" + userInfo.empPhoto);
+	                } else {
+	                    // 기본 프로필 사진 사용
+	                    $("#plImg").attr('th:src', '/assets/images/faces/1.jpg');
+	                }
+      $(".plName").text(userInfo.name)
+      $("#checkin").click(setAttendance)
+      $("#checkout").click(setAttendance)
       
-      
+      function setAttendance(e){
+    	  let url = ''
+    	  if(e != undefine){
+    	  console.log(e.target.id)
+    	  url = '?target='+e.target.id  }
+    	  $.ajax({
+    			type: 'get',
+    			url: '/egowaeyo/getAttend.do'+url,
+    			//headers: {
+    			//	"Content-Type": "application/json",
+    			//},
+    			//data: JSON.stringify(data),
+    			success: function(result) {
+    				console.log(result);
+    			
+    				
+    			},
+    			error: function(request, status, error) {
+    				console.log(error);
+    			}
+    		});		  
+      }
     </script>
 </section>
 
