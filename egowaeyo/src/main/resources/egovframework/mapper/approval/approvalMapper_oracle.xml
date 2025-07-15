@@ -49,7 +49,7 @@
 		cc_id, doc_id, EMPLYR_ID
 		) VALUES
 		(
-		approval_cc_seq.NEXTVAL, #{docId}, #{emplyrId}
+		approval_cc_seq.NEXTVAL, #{docId}, #{empId}
 		)
 	</insert>
 
