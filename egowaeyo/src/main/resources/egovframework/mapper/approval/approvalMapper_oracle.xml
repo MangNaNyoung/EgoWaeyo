@@ -4,14 +4,15 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="ApprovalMapper">
+	namespace="egovframework.com.egowaeyo.approval.mapper.ApprovalMapper">
 
 	<select id="selectFormList"
-		resultType="ApprovalFormVO">
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalFormVO">
 		SELECT apprform_id, aporm_name FROM approval_form
 	</select>
 
-	<insert id="insertApprovalDoc" parameterType="ApprovalDocVO">
+	<insert id="insertApprovalDoc"
+		parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
 		<selectKey keyProperty="docId" order="BEFORE"
 			resultType="string">
 			SELECT TO_CHAR(SYSDATE, 'YYYYMMDDHH24MISS') ||
@@ -22,63 +23,66 @@
 		created_dt, apprform_id, doc_html
 		) VALUES (
 		#{docId}, #{docTitle},
-		#{emplId}, #{docStatus}, #{createdDt}, #{apprformId},
+		#{emplId}, #{docStatus}, SYSDATE, #{apprformId},
 		#{docHtml}
 		)
 	</insert>
 
-	<insert id="insertApprovalLine" parameterType="ApprovalLineVO">
+	<insert id="insertApprovalLine"
+		parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalLineVO">
 		INSERT INTO
 		approval_line (
-		line_id, doc_id, approver_id, line_order, line_status
+		line_id, doc_id, approver_id,
+		line_order, line_status
 		)
 		VALUES (
-		approval_line_seq.NEXTVAL, #{docId}, #{approverId},
+		approval_line_seq.NEXTVAL, #{docId},
+		#{approverId},
 		#{lineOrder}, #{lineStatus}
 		)
 	</insert>
 
-	<insert id="insertApprovalCc" parameterType="ApprovalCcVO">
+	<insert id="insertApprovalCc"
+		parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalCcVO">
 		INSERT INTO
 		approval_cc (
 		cc_id, doc_id, EMPLYR_ID
-		) VALUES (
+		) VALUES
+		(
 		approval_cc_seq.NEXTVAL, #{docId}, #{emplyrId}
 		)
 	</insert>
 
-	<insert id="insertTemp" parameterType="ApprovalTempVO">
-		INSERT INTO approval_temp
-		(temp_id, EMPLYR_ID, temp_title, temp_content, temp_dt)
-		VALUES
-		(approval_temp_seq.NEXTVAL, #{emplyrId}, #{tempTitle},
-		#{tempContent},
-		SYSDATE)
-	</insert>
-
 	<!-- 개인 수신함 -->
 	<select id="selectReceiveList" parameterType="String"
-		resultType="ApprovalDocVO">
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
 		SELECT
 		d.doc_id AS docId,
 		d.doc_title AS docTitle,
 		d.doc_status AS docStatus,
-		d.created_dt AS createdDt,
+		TO_CHAR(d.created_dt, 'YYYY-MM-DD') AS
+		createdDt,
 		drafter.user_nm AS drafterName,
 		dept.orgnzt_nm AS deptName,
 		LISTAGG(approver.user_nm,
 		', ')
-		WITHIN GROUP (ORDER BY l.line_order) AS approverNames
+		WITHIN GROUP (ORDER BY l.line_order) AS
+		approverNames
 		FROM approval_doc d
-		JOIN comtnemplyrinfo drafter ON d.EMPLYR_ID = drafter.EMPLYR_ID
+		JOIN comtnemplyrinfo drafter ON
+		d.EMPLYR_ID = drafter.EMPLYR_ID
 		LEFT JOIN
-		comtnorgnztinfo dept ON drafter.ORGNZT_ID = dept.ORGNZT_ID
+		comtnorgnztinfo dept ON
+		drafter.ORGNZT_ID = dept.ORGNZT_ID
 		JOIN
-		approval_line l ON d.doc_id = l.doc_id
+		approval_line l ON d.doc_id =
+		l.doc_id
 		LEFT JOIN comtnemplyrinfo
-		approver ON l.approver_id = approver.EMPLYR_ID
+		approver ON l.approver_id =
+		approver.EMPLYR_ID
 		GROUP BY
-		d.doc_id, d.doc_title, d.doc_status, d.created_dt,
+		d.doc_id, d.doc_title, d.doc_status,
+		d.created_dt,
 		drafter.user_nm,
 		dept.orgnzt_nm
 		ORDER BY d.created_dt DESC
@@ -96,31 +100,72 @@
 	</select>
 
 	<!-- 임시보관함 -->
-	<select id="selectTempList" parameterType="String"
-		resultType="ApprovalTempVO">
-		SELECT * FROM approval_doc WHERE drafter_id = #{empId}
+	<select id="selectTempList" parameterType="map"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalTempVO">
+		SELECT
+		t.temp_id AS tempId,
+		t.EMPLYR_ID AS empId,
+		t.temp_title AS tempTitle,
+		t.temp_content AS tempContent,
+		TO_CHAR(t.temp_dt, 'YYYY-MM-DD') AS
+		tempDt,
+		t.temp_status AS tempStatus
+		FROM approval_temp t
+		WHERE t.EMPLYR_ID = #{empId}
+		ORDER BY t.temp_dt
+		DESC
 	</select>
+
+	<update id="deleteTempDocs">
+		UPDATE approval_doc
+		SET doc_status = '삭제'
+		WHERE doc_id IN
+		<foreach collection="list" item="docId" open="(" separator=","
+			close=")">
+			#{docId}
+		</foreach>
+		AND doc_status = '임시'
+	</update>
+
+	<insert id="insertTemp"
+		parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalTempVO">
+		INSERT INTO approval_temp
+		(
+		temp_id,
+		EMPLYR_ID,
+		temp_title,
+		temp_content,
+		temp_dt,
+		temp_status
+		) VALUES
+		(
+		sys_guid(),
+		#{empId},
+		#{tempTitle},
+		#{tempContent},
+		SYSDATE,
+		#{tempStatus}
+		)
+	</insert>
 
 	<!-- 참조(공람)자로 들어간 모든 문서 -->
 	<select id="selectReferenceList" parameterType="String"
-		resultType="ApprovalCcVO">
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalCcVO">
 		SELECT
-		ac.cc_id,
-		ac.EMPLYR_ID,
-		ac.cc_status,
-		ac.read_dt,
-		ac.doc_id,
-		ad.doc_title,
-		ad.EMPLYR_ID AS drafter_name,
-		ad.doc_status,
-		ad.created_dt,
-		ad.final_dt
+		TO_CHAR(ac.cc_id) AS ccId,
+		ac.EMPLYR_ID AS empId,
+		ac.doc_id AS docId,
+		ad.doc_title AS docTitle,
+		ad.EMPLYR_ID AS
+		drafterName,
+		ad.doc_status AS docStatus,
+		TO_CHAR(ad.created_dt,
+		'YYYY-MM-DD HH24:MI:SS') AS createdDt
 		FROM approval_cc ac
-		JOIN approval_doc ad ON
-		ac.doc_id = ad.doc_id
+		JOIN
+		approval_doc ad ON ac.doc_id = ad.doc_id
 		WHERE ac.EMPLYR_ID = #{empId}
-		ORDER BY
-		ad.created_dt DESC
+		ORDER BY ad.created_dt DESC
 	</select>
 
 	<select id="selectApprovalDetailForPrint"
@@ -188,28 +233,47 @@
 		d.doc_title AS docTitle,
 		d.EMPLYR_ID AS empId,
 		d.doc_status AS docStatus,
-		d.created_dt AS createdDt,
+		d.created_dt AS
+		createdDt,
 		d.apprform_id AS apprformId,
 		f.APORM_NAME AS apprformName,
 		d.doc_html AS docHtml,
 		u.user_nm AS empName,
 		o.orgnzt_nm AS deptName
 		FROM approval_doc d
-		JOIN approval_form f ON d.apprform_id = f.apprform_id
+		JOIN approval_form f ON d.apprform_id =
+		f.apprform_id
 		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID = u.EMPLYR_ID
-		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
-		WHERE d.doc_id = #{docId}
+		LEFT
+		JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
+		WHERE d.doc_id =
+		#{docId}
 	</select>
 
 	<!-- 승인 처리 -->
-	<update id="updateApprove">
+	<update id="updateApprovalLine">
 		UPDATE approval_line
-		SET line_status = '승인',
+		SET line_status = #{status},
 		line_opinion = #{opinion},
 		line_dt = SYSDATE
 		WHERE doc_id = #{docId}
 		AND
 		approver_id = #{approverId}
+	</update>
+
+	<select id="countWaitingLines" resultType="int">
+		SELECT COUNT(*)
+		FROM
+		approval_line
+		WHERE doc_id = #{docId}
+		AND line_status != '승인'
+	</select>
+
+	<update id="updateDocStatus">
+		UPDATE approval_doc
+		SET doc_status = #{status}
+		WHERE
+		doc_id = #{docId}
 	</update>
 
 	<!-- 반려 처리 -->
@@ -223,20 +287,6 @@
 		approver_id = #{approverId}
 	</update>
 
-	<!-- 결재선 전체 승인시 본문 상태 '승인'으로 변경 -->
-	<update id="updateDocStatusIfAllApproved">
-		UPDATE approval_doc
-		SET doc_status = '승인'
-		WHERE doc_id
-		= #{docId}
-		AND NOT EXISTS (
-		SELECT 1 FROM approval_line l
-		WHERE l.doc_id
-		= #{docId}
-		AND line_status != '승인'
-		)
-	</update>
-
 	<!-- 반려시 본문 상태 '반려'로 -->
 	<update id="updateDocStatusToRejected">
 		UPDATE approval_doc
@@ -246,74 +296,168 @@
 	</update>
 
 	<select id="selectProgressList"
-		resultType="ApprovalDocVO">
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
 		SELECT
-		d.doc_id AS docId,
+		d.doc_id AS
+		docId,
 		d.doc_title AS docTitle,
-		d.EMPLYR_ID AS empId,
-		d.doc_status AS docStatus,
-		d.created_dt AS
+		d.EMPLYR_ID
+		AS empId,
+		d.doc_status AS
+		docStatus,
+		TO_CHAR(d.created_dt, 'YYYY-MM-DD')
+		AS
 		createdDt,
 		d.apprform_id AS apprformId,
-		f.apprform_name AS apprformName,
-		d.doc_html AS docHtml,
+		f.aporm_name AS apprformName,
+		d.doc_html AS
+		docHtml,
 		u.user_nm AS drafterName,
-		o.orgnzt_nm AS
-		deptName,
+		o.orgnzt_nm AS deptName,
 		(
-		SELECT LISTAGG(l.APPROVER_ID, ',') WITHIN GROUP(ORDER BY
-		l.line_order)
-		FROM approval_line l WHERE l.doc_id = d.doc_id
-		) AS
-		approverNames
-		FROM approval_doc d
-		JOIN approval_form f ON d.apprform_id
-		= f.apprform_id
-		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID = u.EMPLYR_ID
-		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
-		WHERE
-		d.EMPLYR_ID = #{loginId}
-		AND d.doc_status = '진행중'
-		ORDER BY d.created_dt
-		DESC
-	</select>
-
-	<select id="selectRejectList"
-		resultType="ApprovalDocVO">
 		SELECT
-		d.doc_id AS docId,
-		d.doc_title AS docTitle,
-		d.EMPLYR_ID AS empId,
-		d.doc_status AS docStatus,
-		d.created_dt AS
-		createdDt,
-		d.apprform_id AS apprformId,
-		f.apprform_name AS apprformName,
-		d.doc_html AS docHtml,
-		u.user_nm AS drafterName,
-		o.orgnzt_nm AS
-		deptName,
-		(
-		SELECT LISTAGG(l.APPROVER_ID, ',') WITHIN GROUP(ORDER BY
-		l.line_order)
-		FROM approval_line l WHERE l.doc_id = d.doc_id
-		) AS
-		approverNames
+		LISTAGG(e.USER_NM, ',')
+		WITHIN GROUP(ORDER BY l.line_order)
+		FROM
+		approval_line l
+		JOIN COMTNEMPLYRINFO e ON l.APPROVER_ID = e.EMPLYR_ID
+		WHERE l.doc_id = d.doc_id
+		) AS approverNames
 		FROM approval_doc d
-		JOIN approval_form f ON d.apprform_id
-		= f.apprform_id
-		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID = u.EMPLYR_ID
-		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
-		WHERE
-		d.doc_status = '반려'
-		AND (
-		d.EMPLYR_ID = #{loginId}
-		OR EXISTS (
-		SELECT 1
-		FROM approval_line l WHERE l.doc_id = d.doc_id AND l.approver_id =
-		#{loginId}
-		)
+		JOIN
+		approval_form f ON d.apprform_id = f.apprform_id
+		JOIN COMTNEMPLYRINFO u
+		ON d.EMPLYR_ID = u.EMPLYR_ID
+		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID
+		= o.ORGNZT_ID
+		WHERE d.EMPLYR_ID = #{loginId}
+		AND EXISTS (
+		SELECT 1 FROM
+		approval_line l WHERE l.doc_id = d.doc_id
 		)
 		ORDER BY d.created_dt DESC
 	</select>
+
+	<select id="selectRejectList"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		SELECT
+		d.doc_id AS
+		docId,
+		d.doc_title AS docTitle,
+		d.EMPLYR_ID
+		AS empId,
+		d.doc_status AS
+		docStatus,
+		TO_CHAR(d.created_dt, 'YYYY-MM-DD')
+		AS
+		createdDt,
+		d.apprform_id AS apprformId,
+		f.aporm_name AS apprformName,
+		d.doc_html AS
+		docHtml,
+		u.user_nm AS
+		drafterName,
+		o.orgnzt_nm AS deptName,
+		(
+		SELECT
+		LISTAGG(l.APPROVER_ID,
+		',') WITHIN GROUP(ORDER BY l.line_order)
+		FROM
+		approval_line l WHERE
+		l.doc_id = d.doc_id
+		) AS approverNames
+		FROM
+		approval_doc d
+		JOIN
+		approval_form f ON d.apprform_id = f.apprform_id
+		JOIN COMTNEMPLYRINFO u
+		ON d.EMPLYR_ID = u.EMPLYR_ID
+		LEFT JOIN
+		COMTNORGNZTINFO o ON u.ORGNZT_ID
+		= o.ORGNZT_ID
+		WHERE
+		d.doc_status = '반려'
+		AND d.EMPLYR_ID = #{loginId}
+		ORDER BY d.created_dt DESC
+	</select>
+
+	<select id="selectProgressDetail"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		SELECT
+		d.doc_id AS docId,
+		d.doc_title AS docTitle,
+		d.EMPLYR_ID AS empId,
+		d.doc_status AS docStatus,
+		TO_CHAR(d.created_dt,
+		'YYYY-MM-DD HH24:MI:SS') AS createdDt,
+		d.apprform_id AS apprformId,
+		f.aporm_name AS apprformName,
+		d.doc_html AS docHtml,
+		u.user_nm AS  drafterName,
+		u.user_nm AS empName,
+		o.orgnzt_nm AS deptName,
+		(
+		SELECT LISTAGG(e.user_nm, ',')
+		WITHIN GROUP(ORDER BY l.line_order)
+		FROM approval_line l
+		JOIN
+		COMTNEMPLYRINFO e ON l.approver_id = e.EMPLYR_ID
+		WHERE l.doc_id =
+		d.doc_id
+		) AS approverNames
+		FROM approval_doc d
+		JOIN approval_form f ON
+		d.apprform_id = f.apprform_id
+		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID =
+		u.EMPLYR_ID
+		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
+		WHERE d.doc_id = #{docId}
+	</select>
+
+	<select id="selectRejectDetail"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		SELECT
+		d.doc_id AS docId,
+		d.doc_title AS docTitle,
+		d.EMPLYR_ID AS empId,	
+		d.doc_status AS docStatus,
+		TO_CHAR(d.created_dt,
+		'YYYY-MM-DD HH24:MI:SS') AS createdDt,
+		d.apprform_id AS apprformId,
+		f.aporm_name AS apprformName,
+		d.doc_html AS docHtml,
+		u.user_nm AS drafterName,
+		u.user_nm AS empName,  
+		o.orgnzt_nm AS deptName,
+		(
+		SELECT LISTAGG(e.user_nm, ',')
+		WITHIN GROUP(ORDER BY l.line_order)
+		FROM approval_line l
+		JOIN
+		COMTNEMPLYRINFO e ON l.approver_id = e.EMPLYR_ID
+		WHERE l.doc_id =
+		d.doc_id
+		) AS approverNames
+		FROM approval_doc d
+		JOIN approval_form f ON
+		d.apprform_id = f.apprform_id
+		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID =
+		u.EMPLYR_ID
+		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
+		WHERE d.doc_id = #{docId}
+	</select>
+
+	<delete id="deleteApprovalLine" parameterType="String">
+		DELETE FROM
+		approval_line WHERE doc_id = #{docId}
+	</delete>
+	<delete id="deleteApprovalCc" parameterType="String">
+		DELETE FROM
+		approval_cc WHERE doc_id = #{docId}
+	</delete>
+	<delete id="deleteApproval" parameterType="String">
+		DELETE FROM
+		approval_doc WHERE doc_id = #{docId}
+	</delete>
+
 </mapper>

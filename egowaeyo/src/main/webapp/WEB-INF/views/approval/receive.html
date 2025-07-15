@@ -5,13 +5,14 @@
 
 <section layout:fragment="content">
 	<div class="container" style="padding: 2rem;">
-		<h3 style="margin-bottom: 0.5rem;">[개인] 수신함</h3>
+		<h3 style="margin-bottom: 0.5rem;">수신함</h3>
 
 		<!-- 상단 버튼 -->
 		<div
 			style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
 			<div style="display: flex; gap: 0.5rem;">
-				<button type="button" id="printBtn" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white">인쇄/다운로드</button>
+				<button type="button" id="printBtn"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white">인쇄/다운로드</button>
 			</div>
 			<div style="display: flex; gap: 0.5rem;">
 				<select>
@@ -20,9 +21,15 @@
 					<option value="form2">본문</option>
 					<option value="form3">기안자</option>
 				</select> <input type="text" id="searchKeyword" placeholder="검색어 입력">
-				<button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="handleSearch()">검색</button>
-				<button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="handleReset()">초기화</button>
-				<button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="openAdvancedSearch()">상세검색</button>
+				<button type="button"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+					onclick="handleSearch()">검색</button>
+				<button type="button"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+					onclick="handleReset()">초기화</button>
+				<button type="button"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+					onclick="openAdvancedSearch()">상세검색</button>
 			</div>
 		</div>
 
@@ -38,9 +45,10 @@
 				<button onclick="applyAdvancedSearch()">조건 검색</button>
 			</div>
 		</div>
-
+</div>
 		<!-- Toast UI Grid -->
-		<div id="grid" style="height: 400px;"></div>
+	<div id="grid-wrap" style="width: 1200px; margin: 0 auto;">
+		<div id="grid"></div>
 	</div>
 
 	<script th:inline="javascript">
@@ -48,14 +56,17 @@
 
   const grid = new tui.Grid({
     el: document.getElementById('grid'),
+    bodyHeight: 380,
+    scrollX: false,
     columns: [
-      { header: '문서번호', name: 'docId', width: 120 },
-      { header: '결재상태', name: 'docStatus', width: 100 },
+      { header: '문서번호', name: 'docId',  width: 170, align: 'center' },
+      { header: '양식명', name: 'apprformName', width: 120, align: 'center' },
+      { header: '결재상태', name: 'docStatus', width: 110, align: 'center' },
       { header: '제목', name: 'docTitle', width: 250 },
-      { header: '기안부서', name: 'deptName', width: 120 },
-      { header: '기안자', name: 'drafterName', width: 100 },
-      { header: '결재자', name: 'approverNames', width: 150 },
-      { header: '기안일시', name: 'createdDt', width: 150 }
+      { header: '기안부서', name: 'deptName', width: 120, align: 'center' },
+      { header: '기안자', name: 'drafterName', width: 90, align: 'center'},
+      { header: '결재자', name: 'approverNames', width: 120, align: 'center' },
+      { header: '기안일시', name: 'createdDt', width: 140, align: 'center'}
     ],
     data: [],
     rowHeaders: ['checkbox'],

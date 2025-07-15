@@ -1,7 +1,5 @@
 package egovframework.com.egowaeyo.approval.VO;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,9 +8,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApprovalCcVO {
-	private long ccId;
-	private String emplyrId;
-	private Date readDt;
-	private String ccStatus;
-	private String docId;
+		private String ccId;
+	    private String empId;
+	    private String ccStatus;
+	    private String readDt;     
+	    private String docId;
+	    private String docTitle;
+	    private String drafterName;
+	    private String docStatus;
+	    private String createdDt;  
+	    private String finalDt;
 }

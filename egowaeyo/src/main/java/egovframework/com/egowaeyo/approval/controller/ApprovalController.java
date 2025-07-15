@@ -56,7 +56,7 @@ public class ApprovalController {
 	}
 
 	@PostMapping("/write.do")
-	@Transactional //
+	@Transactional
 	public String submitDoc(@RequestParam String docTitle, @RequestParam String apprformId,
 			@RequestParam String docContent, @RequestParam List<String> approverIds,
 			@RequestParam(required = false) List<String> ccIds, Principal principal) {
@@ -65,9 +65,8 @@ public class ApprovalController {
 		ApprovalDocVO docVO = new ApprovalDocVO();
 		docVO.setDocTitle(docTitle);
 		docVO.setApprformId(apprformId);
-		docVO.setDocStatus("작성중");
+		docVO.setDocStatus("대기");
 		docVO.setEmplId(user.getId());
-		docVO.setCreatedDt(new Date());
 		docVO.setDocHtml(docContent);
 
 		// 2. 결재선 정보 생성
@@ -85,7 +84,7 @@ public class ApprovalController {
 		if (ccIds != null) {
 			for (String ccId : ccIds) {
 				ApprovalCcVO ccVO = new ApprovalCcVO();
-				ccVO.setEmplyrId(ccId);
+				ccVO.setEmpId(ccId);
 				ccList.add(ccVO);
 			}
 		}
@@ -131,8 +130,30 @@ public class ApprovalController {
 	@GetMapping("/temp/list")
 	@ResponseBody
 	public List<ApprovalTempVO> tempList(HttpSession session) {
-		String empId = (String) session.getAttribute("loginId");
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		String empId = user.getId();
 		return approvalService.getTempList(empId);
+	}
+
+	@PostMapping("/tempSave.do")
+	@ResponseBody
+	public String saveTemp(@RequestParam("tempTitle") String tempTitle,
+			@RequestParam("tempContent") String tempContent) {
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+	    ApprovalTempVO vo = new ApprovalTempVO();
+	    vo.setEmpId(user.getId());
+	    vo.setTempTitle(tempTitle);
+	    vo.setTempContent(tempContent);
+	    approvalService.getSaveTemp(vo);
+	    return "OK";
+	}
+
+
+	@PostMapping("/temp/delete")
+	@ResponseBody
+	public String deleteTempDocs(@RequestBody List<String> docIds) {
+		approvalService.deleteTempDocs(docIds);
+		return "OK";
 	}
 
 	// 참조함 (reference.html)
@@ -144,7 +165,8 @@ public class ApprovalController {
 	@GetMapping("/reference/list")
 	@ResponseBody
 	public List<ApprovalCcVO> referenceList(HttpSession session) {
-		String empId = (String) session.getAttribute("loginId");
+		LoginVO user = (LoginVO) EgovUserDetailsHelper.getAuthenticatedUser();
+		String empId = user.getId();
 		return approvalService.getReferenceList(empId);
 	}
 
@@ -185,72 +207,86 @@ public class ApprovalController {
 		return approvalService.getAllUsers();
 	}
 
-	@PostMapping("/tempSave")
+	@GetMapping("/detail")
+	public String detail(@RequestParam("docId") String docId, Model model) {
+		ApprovalDocVO doc = approvalService.getApprovalDetailForView(docId);
+		if (doc.getDocHtml() != null) {
+			doc.setDocHtml(StringEscapeUtils.unescapeHtml4(doc.getDocHtml()));
+		}
+		model.addAttribute("doc", doc);
+		return "approval/detail.html";
+	}
+
+	@PostMapping("/approve.do")
 	@ResponseBody
-	public String tempSave(@RequestParam String docTitle, @RequestParam String docContent,
-			@RequestParam String drafterId, Principal principal) {
-		ApprovalTempVO tempVO = new ApprovalTempVO();
-		tempVO.setTempTitle(docTitle);
-		tempVO.setTempContent(docContent);
-		tempVO.setEmplyrId(principal.getName());
-		approvalService.insertTemp(tempVO);
-		return "ok";
+	public String approve(@RequestBody Map<String, Object> param, Principal principal) {
+		String docId = (String) param.get("docId");
+		String opinion = (String) param.get("opinion");
+		String loginId = principal.getName(); // 현재 로그인 결재자 ID
+		approvalService.approve(docId, loginId, opinion);
+		return "OK";
+	}
+
+	@PostMapping("/reject.do")
+	@ResponseBody
+	public String reject(@RequestBody Map<String, Object> param, Principal principal) {
+		String docId = (String) param.get("docId");
+		String opinion = (String) param.get("opinion");
+		String loginId = principal.getName();
+		approvalService.reject(docId, loginId, opinion);
+		return "OK";
+	}
+
+	// 진행함
+	@GetMapping("/progress")
+	public String progress() {
+		return "approval/progress.html";
+	}
+
+	@GetMapping("/progress/list")
+	@ResponseBody
+	public List<ApprovalDocVO> progressList(Principal principal) {
+		return approvalService.selectProgressList(principal.getName());
 	}
 	
-	 @GetMapping("/detail")
-	    public String detail(@RequestParam("docId") String docId, Model model) {
-	        ApprovalDocVO doc = approvalService.getApprovalDetailForView(docId);
-	        if (doc.getDocHtml() != null) {
-	            doc.setDocHtml(StringEscapeUtils.unescapeHtml4(doc.getDocHtml()));
-	        }
-	        model.addAttribute("doc", doc);
-	        return "approval/detail.html";
-	    }
-	 
-	 @PostMapping("/approve.do")
-	 @ResponseBody
-	 public String approve(@RequestBody Map<String, Object> param, Principal principal) {
-	     String docId = (String)param.get("docId");
-	     String opinion = (String)param.get("opinion");
-	     String loginId = principal.getName(); // 현재 로그인 결재자 ID
-	     approvalService.approve(docId, loginId, opinion);
-	     return "OK";
-	 }
+	@GetMapping("/progressDetail")
+	public String progressDetail(@RequestParam("docId") String docId, Model model) {
+		ApprovalDocVO doc = approvalService.getProgressDetail(docId);
+		if (doc.getDocHtml() != null) {
+			doc.setDocHtml(StringEscapeUtils.unescapeHtml4(doc.getDocHtml()));
+		}
+		model.addAttribute("doc", doc);
+	    return "approval/progressDetail.html";
+	}
 
-	 @PostMapping("/reject.do")
-	 @ResponseBody
-	 public String reject(@RequestBody Map<String, Object> param, Principal principal) {
-	     String docId = (String)param.get("docId");
-	     String opinion = (String)param.get("opinion");
-	     String loginId = principal.getName();
-	     approvalService.reject(docId, loginId, opinion);
-	     return "OK";
-	 }
-	 
-	 // 진행함
-	    @GetMapping("/progress")
-	    public String progress() {
-	        return "approval/progress.html";
-	    }
+	// 반려함
+	@GetMapping("/reject")
+	public String reject() {
+		return "approval/reject.html";
+	}
 
-	    @GetMapping("/progress/list")
-	    @ResponseBody
-	    public List<ApprovalDocVO> progressList(Principal principal) {
-	        return approvalService.selectProgressList(principal.getName());
-	    }
-
-	    // 반려함
-	    @GetMapping("/reject")
-	    public String reject() {
-	        return "approval/reject";
-	    }
-
-	    @GetMapping("/reject/list")
-	    @ResponseBody
-	    public List<ApprovalDocVO> rejectList(Principal principal) {
-	        return approvalService.selectRejectList(principal.getName());
-	    }
-	 
-	 
+	@GetMapping("/reject/list")
+	@ResponseBody
+	public List<ApprovalDocVO> rejectList(Principal principal) {
+		return approvalService.selectRejectList(principal.getName());
+	}
+	
+	@GetMapping("/rejectDetail")
+	public String rejectDetail(@RequestParam("docId") String docId, Model model) {
+		ApprovalDocVO doc = approvalService.getRejectDetail(docId);
+		if (doc.getDocHtml() != null) {
+			doc.setDocHtml(StringEscapeUtils.unescapeHtml4(doc.getDocHtml()));
+		}
+		model.addAttribute("doc", doc);
+	    return "approval/rejectDetail.html";
+	}
+	
+	@PostMapping("/rejectDelete")
+	@ResponseBody
+	public String rejectDelete(@RequestBody Map<String, String> map) {
+	    String docId = map.get("docId");
+	    approvalService.getDeleteApproval(docId);
+	    return "success";
+	}
 
 }

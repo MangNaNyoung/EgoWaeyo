@@ -21,6 +21,10 @@ public interface ApprovalService {
 	List<ApprovalDocVO> getDeptReceiveList(String deptId);
 
 	List<ApprovalTempVO> getTempList(String empId);
+	
+	void deleteTempDocs(List<String> docIds);
+	
+	void getSaveTemp(ApprovalTempVO vo);
 
 	List<ApprovalCcVO> getReferenceList(String empId);
 
@@ -45,4 +49,11 @@ public interface ApprovalService {
 	List<ApprovalDocVO> selectProgressList(String loginId);
 
 	List<ApprovalDocVO> selectRejectList(String loginId);
+	
+	ApprovalDocVO getProgressDetail(String docId);
+		
+	ApprovalDocVO getRejectDetail(String docId);
+	
+	void getDeleteApproval(String docId);	
+
 }

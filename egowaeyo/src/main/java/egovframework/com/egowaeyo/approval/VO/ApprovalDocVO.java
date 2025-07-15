@@ -15,7 +15,7 @@ public class ApprovalDocVO {
     private String emplId;
     private String empName;
     private String docStatus;
-    private Date createdDt;
+    private String createdDt;
     private String apprformId;
     private String apprformName;
     private String deptName;
