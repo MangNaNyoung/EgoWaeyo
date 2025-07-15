@@ -21,18 +21,28 @@ public interface ApprovalService {
 	List<ApprovalDocVO> getDeptReceiveList(String deptId);
 
 	List<ApprovalTempVO> getTempList(String empId);
-	
+
 	List<ApprovalCcVO> getReferenceList(String empId);
 
 	ApprovalDetailVO getApprovalDetail(String docId);
-	
+
 	public String getFormHtml(String formId);
 
 	List<EgovDeptVO> getDeptList();
-	
+
 	List<EmplyrVO> getEmpListByDept(String deptId);
-	
+
 	List<EmplyrVO> getAllUsers();
-	
+
 	void insertTemp(ApprovalTempVO vo);
+
+	ApprovalDocVO getApprovalDocDetail(String docId);
+
+	void approve(String docId, String approverId, String opinion);
+
+	void reject(String docId, String approverId, String opinion);
+
+	List<ApprovalDocVO> selectProgressList(String loginId);
+
+	List<ApprovalDocVO> selectRejectList(String loginId);
 }

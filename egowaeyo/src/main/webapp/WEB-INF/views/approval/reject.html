@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<section layout:fragment="content">
+  <div class="container" style="padding: 2rem;">
+    <h3 style="margin-bottom: 0.5rem;">[개인] 반려함</h3>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+      <div style="display: flex; gap: 0.5rem;">
+        <button id="printBtn">인쇄/다운로드</button>
+      </div>
+      <div style="display: flex; gap: 0.5rem;">
+        <select>
+          <option value="all">전체</option>
+          <option value="form1">제목</option>
+          <option value="form2">본문</option>
+          <option value="form3">기안자</option>
+        </select>
+        <input type="text" id="searchKeyword" placeholder="검색어 입력">
+        <button onclick="handleSearch()">검색</button>
+        <button onclick="handleReset()">초기화</button>
+        <button onclick="openAdvancedSearch()">상세검색</button>
+      </div>
+    </div>
+    <div id="grid" style="height: 400px;"></div>
+  </div>
+  <script th:inline="javascript">
+    let rejectListUrl = /*[[@{'/approval/reject/list'}]]*/ '';
+    const grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      columns: [
+        { header: '문서번호', name: 'docId', width: 120 },
+        { header: '결재상태', name: 'docStatus', width: 100 },
+        { header: '제목', name: 'docTitle', width: 250 },
+        { header: '기안부서', name: 'deptName', width: 120 },
+        { header: '기안자', name: 'drafterName', width: 100 },
+        { header: '결재자', name: 'approverNames', width: 150 },
+        { header: '기안일시', name: 'createdDt', width: 150 }
+      ],
+      data: [],
+      rowHeaders: ['checkbox'],
+      bodyHeight: 500
+    });
+
+    getData();
+    function getData() {
+      $.ajax({
+        type: 'get',
+        url: rejectListUrl,
+        success: function(result) {
+          grid.resetData(result);
+          grid.refreshLayout();
+        },
+        error: function(request, status, error) {
+          console.log(error);
+        }
+      });
+    }
+
+    // 상세 이동
+    grid.on('click', ev => {
+      const row = grid.getRow(ev.rowKey);
+      if (row && row.docId) {
+        window.location.href = '/approval/detail?docId=' + row.docId;
+      }
+    });
+    
+    function handleSearch() {
+        const keyword = document.getElementById('searchKeyword').value;
+        alert(`검색 실행: ${keyword}`);
+      }
+
+      function handleReset() {
+        document.getElementById('searchKeyword').value = '';
+      }
+
+      function openAdvancedSearch() {
+    	  const form = document.getElementById('advancedSearchForm');
+    	  form.style.display = form.style.display === 'none' ? 'block' : 'none';
+    	}
+      
+      function applyAdvancedSearch() {
+    	  const params = new URLSearchParams({
+    	    title: document.getElementById('searchTitle').value,
+    	    docId: document.getElementById('searchDocId').value,
+    	    form: document.getElementById('searchForm').value,
+    	    empName: document.getElementById('searchEmpName').value,
+    	    fromDt: document.getElementById('searchFromDt').value,
+    	    toDt: document.getElementById('searchToDt').value
+    	  });
+
+    	  fetch('/approval/temp/list?' + params.toString())
+    	    .then(res => res.json())
+    	    .then(data => grid.resetData(data));
+    	}
+    
+    document.getElementById('printBtn').addEventListener('click', function () {
+    	  const selectedRows = grid.getCheckedRows();
+    	  if (selectedRows.length === 0) {
+    	    alert('인쇄할 문서를 선택해주세요.');
+    	    return;
+    	  }
+    	  if (selectedRows.length > 1) {
+    	    alert('한 번에 하나의 문서만 인쇄할 수 있습니다.');
+    	    return;
+    	  }
+
+    	  const docId = selectedRows[0].docId;
+    	const url = '/egowaeyo/approval/print/' + docId;
+    	  window.open(url, '_blank', 'width=900,height=1200,scrollbars=yes');
+    	})
+    	;
+  </script>
+</section>
