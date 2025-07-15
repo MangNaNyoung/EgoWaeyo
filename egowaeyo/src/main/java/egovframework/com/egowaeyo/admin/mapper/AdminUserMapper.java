@@ -2,8 +2,9 @@ package egovframework.com.egowaeyo.admin.mapper;
 
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import egovframework.com.egowaeyo.admin.service.AdminUserVO;
-import egovframework.com.egowaeyo.admin.service.DeptVO;
 import egovframework.com.egowaeyo.admin.service.EgovDeptVO;
 import egovframework.com.egowaeyo.admin.service.PosVO;
 
@@ -25,5 +26,5 @@ public interface AdminUserMapper {
 	public List<AdminUserVO> selectemp(AdminUserVO au); // 부서관리 페이지 전체 사용자 조회
 	
 	public int EmpDel(String emplyrId); // 부서관리 페이지 사용자삭제
-	public int EmpUdt(String emplyrId, String positionId); // 사용자 수정 (직급 변경)
+	public int EmpUdt(@Param ("emplyrId") String emplyrId, @Param("positionId") String positionId); // 사용자 수정 (직급 변경)
 }

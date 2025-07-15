@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layout/layout}">
+    layout:decorate="~{layout/layout}">
 <section layout:fragment="content">
-  <link rel="stylesheet" th:href="@{/assets/css/admin/adminDeptManagement.css}">
+    <link rel="stylesheet" th:href="@{/assets/css/admin/adminDeptManagement.css}">
 
-  <div class="main-container d-flex m-4 flex-column">
-    <div class="main-first-section">
-      <div class="main-small-title d-bolck pb-4">
-        
-      </div>
-      <div class="main-header-section d-flex justify-content-between flex-row">
-        <div class="main-header-title fs-3 fw-bold pb-5">
-          부서 - 사원 관리
-        </div>
-        <div>
-          <!-- <div class="input-group">
+    <div class="main-container d-flex m-4 flex-column">
+        <div class="main-first-section">
+            <div class="main-small-title d-bolck pb-4">
+
+            </div>
+            <div class="main-header-section d-flex justify-content-between flex-row">
+                <div class="main-header-title fs-3 fw-bold pb-5">
+                    부서 - 사원 관리
+                </div>
+                <div>
+                    <!-- <div class="input-group">
             <div class="search-section input-group-text bg-white">
               <select class="form-select" aria-label="Default select example">
                 <option selected>전체</option>
@@ -35,524 +35,520 @@
               </button>
             </div>
           </div> -->
-        </div>
-      </div>
-      <div class="main-second-section d-flex justify-content-between flex-row pb-4">
-        <div class="button-section">
-          <button class="border border-primary px-3 py-1 rounded-2 bg-primary text-white" id="deptInsert">부서추가</button>
-          <button class="border border-success px-3 py-1 rounded-2 bg-success text-white" id="deptUpdate">부서수정</button>
-          <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="deptDel">부서삭제</button>
-
-          <!-- <button class="ms-4 border border-dark px-3 py-1 rounded-2 bg-white" id="positionChange" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
-          <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="passwordReset">비밀번호 초기화</button> -->
-          <button class="ms-4 border border-success px-3 py-1 rounded-2 bg-success text-white" id="empUdt">사원수정</button>
-          <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white" id="empDel">사원삭제</button>
-        </div>
-      </div>
-      <div class="main-tf-section d-flex flex-row">
-        <div class="main-third-section me-5">
-          <div class="search-section">
-            <input type="text" class="" placeholder="검색" id="search-input">
-            <button class="cursor-pointer border border-0 ps-3 bg-white" id="dept-search">
-              <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search"
-                viewBox="0 0 16 16">
-                <path
-                  d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
-              </svg>
-            </button>
-          </div>
-          <!-- 전체 보기 버튼 추가 -->
-		  <div class="pt-2">
-		    <button class="btn btn-outline-primary btn-sm w-100" onclick="showAllEmployees()">
-		      전체 사원 보기
-		    </button>
-		  </div>
-          <div class="dept-list-section pt-3">
-            <div class="">
-              <ul class="list-group list-group-flush" id="department-list">
-              </ul>
-            </div>
-          </div>
-        </div>
-        <div class="main-fourth-section flex-fill">
-          <div class="dept-people-section">
-            <table class="table text-dark">
-              <thead>
-                <tr>
-                  <th class=""><input type="checkbox" id="selectAll"></th>
-                  <th class="">이름</th>
-                  <th class="">아이디</th>
-                  <th class="">부서</th>
-                  <th class="">직급</th>
-                  <th class="">사번</th>
-                  <th class="">이메일</th>
-                  <th class="">휴대폰</th>
-                </tr>
-              </thead>
-              <tbody>
-                
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 부서추가 모달 -->
-    <div class="modal fade" id="InsertModal" tabindex="-1" aria-labelledby="InsertModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5" id="InsertModalLabel">부서를 추가하시겠어요?</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="deptForm">
-              <div class="mb-3">
-                <label for="deptName" class="form-label">부서명을 입력해주세요. [예시 : OO팀]</label>
-                <input type="text" class="form-control" name="orgnztNm" id="deptName" required>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" id="addDeptBtn">추가</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 부서수정 모달 -->
-    <div class="modal fade" id="UpdateModal" tabindex="-1" aria-labelledby="UpdateModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5 text-success" id="UpdateModalLabel">부서명을 수정하시겠어요?</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="updateDeptForm">
-              <div class="mb-3">
-                <label for="deptUpdateName" class="form-label">부서명을 수정해주세요. [예시 : OO팀]</label>
-                <input type="text" class="form-control" name="orgnztNm" id="deptUpdateName">
-                <input type="hidden" id="updateDeptId" name="orgnztId">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" id="UpdateDeptBtn">수정</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-    <!-- 사원수정 모달 -->
-    <div class="modal fade" id="EmpUpdateModal" tabindex="-1" aria-labelledby="EmpUpdateModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5 text-success" id="EmpUpdateModalLabel">사원 직급을 수정하시겠어요?</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form id="updateEmpForm">
-              <div class="mb-3">
-                <label class="form-label">사원 정보</label>
-                <div class="alert alert-info">
-                  <strong id="empUpdateName"></strong> (<span id="empUpdateId"></span>)
                 </div>
-              </div>
-              <div class="mb-3">
-                <label for="positionSelect" class="form-label">수정할 직급을 선택해주세요</label>
-                <select class="form-select" id="positionSelect" name="positionId">
-                  <option value="">직급을 선택하세요</option>
-                </select>
-                <input type="hidden" id="updateEmpId" name="emplyrId">
-                <input type="hidden" id="originalPosition" name="originalPosition">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" id="UpdateEmpBtn">수정</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 부서삭제 확인 모달 -->
-    <div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5 text-danger" id="DeleteModalLabel">부서를 삭제하시겠어요?</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="text-center">
-              <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
-              <p class="mt-3"><strong id="deleteDeptName"></strong> 부서를 삭제하시겠습니까?</p>
-              <p class="text-muted">삭제된 부서는 복구할 수 없습니다.</p>
-              <input type="hidden" id="deleteDeptId" name="orgnztId">
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" id="deleteDeptBtn">삭제</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-          </div>
-        </div>
-      </div>
-    </div>
+            <div class="main-second-section d-flex justify-content-between flex-row pb-4">
+                <div class="button-section">
+                    <button class="border border-primary px-3 py-1 rounded-2 bg-primary text-white"
+                        id="deptInsert">부서추가</button>
+                    <button class="border border-success px-3 py-1 rounded-2 bg-success text-white"
+                        id="deptUpdate">부서수정</button>
+                    <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white"
+                        id="deptDel">부서삭제</button>
 
-    <!-- 성공 모달 -->
-    <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5 text-success" id="successModalLabel">성공</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="text-center">
-              <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-              <p class="mt-3" id="successMessage"></p>
+                    <!-- <button class="ms-4 border border-dark px-3 py-1 rounded-2 bg-white" id="positionChange" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
+          <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="passwordReset">비밀번호 초기화</button> -->
+                    <button class="ms-4 border border-success px-3 py-1 rounded-2 bg-success text-white"
+                        id="empUdt">사원수정</button>
+                    <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white"
+                        id="empDel">사원삭제</button>
+                </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" id="confirmBtn" data-bs-dismiss="modal">확인</button>
-          </div>
-        </div>
-      </div>
-    </div>
+            <div class="main-tf-section d-flex flex-row">
+                <div class="main-third-section me-5">
+                    <div class="search-section">
+                        <input type="text" class="" placeholder="검색" id="search-input">
+                        <button class="cursor-pointer border border-0 ps-3 bg-white" id="dept-search">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor"
+                                class="bi bi-search" viewBox="0 0 16 16">
+                                <path
+                                    d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                            </svg>
+                        </button>
+                    </div>
+                    <!-- 전체 보기 버튼 추가 -->
+                    <div class="pt-2">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="showAllEmployees()">
+                            전체 사원 보기
+                        </button>
+                    </div>
+                    <div class="dept-list-section pt-3">
+                        <div class="">
+                            <ul class="list-group list-group-flush" id="department-list">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-fourth-section flex-fill">
+                    <div class="dept-people-section">
+                        <table class="table text-dark">
+                            <thead>
+                                <tr>
+                                    <th class=""><input type="checkbox" id="selectAll"></th>
+                                    <th class="">이름</th>
+                                    <th class="">아이디</th>
+                                    <th class="">부서</th>
+                                    <th class="">직급</th>
+                                    <th class="">사번</th>
+                                    <th class="">이메일</th>
+                                    <th class="">휴대폰</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-    <!-- 오류 모달 -->
-    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h1 class="modal-title fs-5 text-danger" id="errorModalLabel">오류</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div class="text-center">
-              <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
-              <p class="mt-3" id="errorMessage"></p>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">확인</button>
-          </div>
         </div>
-      </div>
-    </div>
-    
-    <script>
-      // 전역 변수
-      let departmentData = [];
-      let selectedDepartment = null;
-      let originalDeptName = ''; // 기존 부서명
-      let newDeptName = ''; // 신 부서명
-      let positionData = []; // 직급 데이터
-      let selectedEmployee = null; // 선택된 사원
-      let originalPosition = ''; // 원래 직급
-      let newPosition = ''; // 새로운 직급
-      let newPositionName = ''; // 새로운 직급명
-      // 함수 부르기
-      loadDepartmentList();
-      loadEmpList();
-      loadPositionList();
-      initializeEventListeners();
-      
-      // 직급 목록 로드
-      function loadPositionList() {
-        $.ajax({
-          url: "deptpos",
-          type: "GET",
-          dataType: "json",
-          success: function (data) {
-            console.log("직급 데이터:", data);
-            positionData = data || [];
+
+        <!-- 부서추가 모달 -->
+        <div class="modal fade" id="InsertModal" tabindex="-1" aria-labelledby="InsertModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="InsertModalLabel">부서를 추가하시겠어요?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="deptForm">
+                            <div class="mb-3">
+                                <label for="deptName" class="form-label">부서명을 입력해주세요. [예시 : OO팀]</label>
+                                <input type="text" class="form-control" name="orgnztNm" id="deptName" required>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="addDeptBtn">추가</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 부서수정 모달 -->
+        <div class="modal fade" id="UpdateModal" tabindex="-1" aria-labelledby="UpdateModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 text-success" id="UpdateModalLabel">부서명을 수정하시겠어요?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateDeptForm">
+                            <div class="mb-3">
+                                <label for="deptUpdateName" class="form-label">부서명을 수정해주세요. [예시 : OO팀]</label>
+                                <input type="text" class="form-control" name="orgnztNm" id="deptUpdateName">
+                                <input type="hidden" id="updateDeptId" name="orgnztId">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="UpdateDeptBtn">수정</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 사원수정 모달 -->
+        <div class="modal fade" id="EmpUpdateModal" tabindex="-1" aria-labelledby="EmpUpdateModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 text-success" id="EmpUpdateModalLabel">사원 직급을 수정하시겠어요?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="updateEmpForm">
+                            <div class="mb-3">
+                                <label class="form-label">사원 정보</label>
+                                <div class="alert alert-success">
+                                    <strong id="empUpdateName"></strong> (<span id="empUpdateId"></span>)
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="positionSelect" class="form-label">수정할 직급을 선택해주세요.</label>
+                                <select class="form-select" id="positionSelect" name="positionId">
+                                    <option value="">직급을 선택하세요.</option>
+                                </select>
+                                <input type="hidden" id="updateEmpId" name="emplyrId">
+                                <input type="hidden" id="originalPosition" name="originalPosition">
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="UpdateEmpBtn">수정</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 부서삭제 확인 모달 -->
+        <div class="modal fade" id="DeleteModal" tabindex="-1" aria-labelledby="DeleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 text-danger" id="DeleteModalLabel">부서를 삭제하시겠어요?</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <i class="bi bi-exclamation-triangle-fill text-warning" style="font-size: 3rem;"></i>
+                            <p class="mt-3"><strong id="deleteDeptName"></strong> 부서를 삭제하시겠습니까?</p>
+                            <p class="text-muted">삭제된 부서는 복구할 수 없습니다.</p>
+                            <input type="hidden" id="deleteDeptId" name="orgnztId">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="deleteDeptBtn">삭제</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // 전역 변수
+            let departmentData = [];
+            let selectedDepartment = null;
+            let originalDeptName = ''; // 기존 부서명
+            let newDeptName = ''; // 신 부서명
+            let positionData = []; // 직급 데이터
+            let selectedEmployee = null; // 선택된 사원
+            let originalPosition = ''; // 원래 직급
+            let newPosition = ''; // 새로운 직급
+            let newPositionName = ''; // 새로운 직급명
+            // 함수 부르기
+            loadDepartmentList();
+            loadEmpList();
+            loadPositionList();
+            initializeEventListeners();
             
-            // 직급 선택 옵션 생성
-            const positionSelect = document.getElementById("positionSelect");
-            positionSelect.innerHTML = '<option value="">직급을 선택하세요</option>';
+            // 등록 완료 후 페이지 이동, 등록완료 되었다고 알럿창
+            checkRegisterEmp();
             
-            positionData.forEach(pos => {
-              const option = document.createElement("option");
-              option.value = pos.positionId;
-              option.textContent = pos.positionName;
-              positionSelect.appendChild(option);
-            });
-          },
-          error: function (xhr, status, error) {
-            console.error("직급 목록 로드 실패:", error);
-          }
-        });
-      }
+            function checkRegisterEmp() {
+            	  // URL 파라미터에서 성공 정보 확인
+            	  const urlParams = new URLSearchParams(window.location.search);
+            	  const success = urlParams.get('success');
+            	  const userName = urlParams.get('userName');
+            	  const emplNo = urlParams.get('emplNo');
+            	  
+            	  console.log('URL 파라미터 확인:', { success, userName, emplNo }); // 디버깅용
+            	  
+            	  if (success === 'true' && userName) {
+            	    Swal.fire({
+            	      title: '등록 완료',
+            	      html: `
+            	        <div style="text-align: center; font-size: 16px;">
+            	          <p><strong>${decodeURIComponent(userName)}님이 성공적으로 등록되었습니다.</strong></p>
+            	          ${emplNo ? `<p style="color: #6c757d; margin-top: 10px;">사번: ${emplNo}</p>` : ''}
+            	        </div>
+            	      `,
+            	      icon: 'success',
+            	      confirmButtonColor: '#28a745',
+            	      confirmButtonText: '확인'
+            	    }).then(() => {
+            	      // SweetAlert 닫힌 후 URL에서 파라미터 제거
+            	      const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            	      window.history.replaceState({}, document.title, cleanUrl);
+            	    });
+            	  }
+            	}
 
-      // 이벤트 리스너 초기화
-      function initializeEventListeners() {
-        console.log("이벤트 리스너 초기화 시작");
+            // 직급 목록 로드
+            function loadPositionList() {
+                $.ajax({
+                    url: "deptpos",
+                    type: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        console.log("직급 데이터:", data);
+                        positionData = data || [];
 
-        // 부서 추가 버튼
-        const addDeptBtn = document.getElementById('addDeptBtn');
-        if (addDeptBtn) {
-          addDeptBtn.addEventListener("click", addDepartment);
-          console.log("부서 추가 버튼 이벤트 리스너 등록");
-          openInsertModal();
-        }
+                        // 직급 선택 옵션 생성
+                        const positionSelect = document.getElementById("positionSelect");
+                        positionSelect.innerHTML = '<option value="">직급을 선택하세요</option>';
 
-        // 부서 수정 버튼 (모달 내부)
-        const UpdateDeptBtn = document.getElementById('UpdateDeptBtn');
-        if (UpdateDeptBtn) {
-          UpdateDeptBtn.addEventListener("click", showUpdateConfirmSwal);
-          console.log("부서 수정 버튼 이벤트 리스너 등록");
-        }
-
-        // 부서 삭제 버튼 (모달 내부)
-        const deleteDeptBtn = document.getElementById('deleteDeptBtn');
-        if (deleteDeptBtn) {
-          deleteDeptBtn.addEventListener("click", deleteDepartment);
-          console.log("부서 삭제 버튼 이벤트 리스너 등록");
-        }
-        
-     	// 사원 수정 버튼 (모달 내부) - SweetAlert로 확인 및 처리
-        const UpdateEmpBtn = document.getElementById('UpdateEmpBtn');
-        if (UpdateEmpBtn) {
-          UpdateEmpBtn.addEventListener("click", showEmpUpdateConfirmSwal);
-          console.log("사원 수정 버튼 이벤트 리스너 등록");
-        }
-
-        // 부서 수정 버튼 (메인)
-        const deptUpdateBtn = document.getElementById('deptUpdate');
-        if (deptUpdateBtn) {
-          deptUpdateBtn.addEventListener("click", function () {
-            console.log("부서 수정 버튼 클릭, 선택된 부서:", selectedDepartment);
-            if (!selectedDepartment) {
-            	Swal.fire({
-            		  title: "부서 선택 없음",
-            		  text: "수정할 부서를 선택해주세요.",
-            		  icon: "error"
-            		});
-              return;
+                        positionData.forEach(pos => {
+                            const option = document.createElement("option");
+                            option.value = pos.positionId;
+                            option.textContent = pos.positionName;
+                            positionSelect.appendChild(option);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("직급 목록 로드 실패:", error);
+                    }
+                });
             }
-            openUpdateModal();
-          });
-          console.log("메인 부서 수정 버튼 이벤트 리스너 등록");
-        }
-        
-     	// 사원 수정 버튼 (메인)
-        const empUpdateBtn = document.getElementById('empUdt');
-        if (empUpdateBtn) {
-          empUpdateBtn.addEventListener("click", function () {
-            console.log("사원 수정 버튼 클릭");
-            
-            const checkedEmp = $('.emp-checkbox:checked');
-            console.log('선택된 사원 수 : ', checkedEmp.length);
-            
-            if (checkedEmp.length === 0) {
-              Swal.fire({
-                title: "사원 선택 없음",
-                text: "수정할 사원을 선택해주세요.",
-                icon: "error"
-              });
-              return;
-            }
-            
-            if (checkedEmp.length > 1) {
-              Swal.fire({
-                title: "사원 선택 오류",
-                text: "한 명의 사원만 선택해주세요.",
-                icon: "error"
-              });
-              return;
-            }
-            
-            // 선택된 사원 정보 가져오기
-            const row = checkedEmp.closest('tr');
-            selectedEmployee = {
-              id: row.find('td:eq(2)').text(),
-              name: row.find('td:eq(1)').text(),
-              position: row.find('td:eq(4)').text()
-            };
-            
-            console.log("선택된 사원:", selectedEmployee);
-            openEmpUpdateModal();
-          });
-          console.log("메인 사원 수정 버튼 이벤트 리스너 등록");
-        }
 
-        // 부서 삭제 버튼 (메인)
-        const deptDelBtn = document.getElementById('deptDel');
-        if (deptDelBtn) {
-          deptDelBtn.addEventListener("click", function () {
-            console.log("부서 삭제 버튼 클릭, 선택된 부서:", selectedDepartment);
-            if (!selectedDepartment) {
-            	Swal.fire({
-          		  title: "부서 선택 없음",
-          		  text: "삭제할 부서를 선택해주세요.",
-          		  icon: "error"
-          		});
-              return;
-            }
-            openDeleteModal();
-          });
-          console.log("메인 부서 삭제 버튼 이벤트 리스너 등록");
-        }
-        
-        const empDelBtn = document.getElementById('empDel');
-        if(empDelBtn) {
-        	empDelBtn.addEventListener("click", function(){
-        		console.log('사원 삭제 버튼 눌렸습니다.');
-        		
-        		const checkedEmp = $('.emp-checkbox:checked');
-        		console.log('선택된 사원 수 : ', checkedEmp.length);
-        		
-        		if(checkedEmp.length === 0){
-        			Swal.fire({
-               		  title: "사원 선택 없음",
-               		  text: "삭제할 사원을 선택해주세요.",
-               		  icon: "error"
-               		});
-					return;
-        		}
-        		
-        		// 선택된 사원 정보
-        		const selectedEmp = [];
-        		checkedEmp.each(function(){
-        			const row = $(this).closest('tr');
-        			const name = row.find('td:eq(1)').text();
-        			const id = row.find('td:eq(2)').text();
-        			selectedEmp.push({
-        				name: name,
-        				id: id,
-        				element: this
-        			});
-        		});
-        		
-        		console.log("선택된 사원들 : ", selectedEmp);
-        		
-        		// SweetAlert 확인 다이얼로그
-                Swal.fire({
-                  title: "사원 삭제 확인",
-                  text: `선택한 ${selectedEmp.length}명의 사원을 삭제하시겠습니까?`,
-                  icon: "warning",
-                  showCancelButton: true,
-                  confirmButtonColor: '#d33',
-                  cancelButtonColor: '#3085d6',
-                  confirmButtonText: '삭제',
-                  cancelButtonText: '취소',
-                  html: `
+            // 이벤트 리스너 초기화
+            function initializeEventListeners() {
+                console.log("이벤트 리스너 초기화 시작");
+
+                // 부서 추가 버튼
+                const addDeptBtn = document.getElementById('addDeptBtn');
+                if (addDeptBtn) {
+                    addDeptBtn.addEventListener("click", addDepartment);
+                    console.log("부서 추가 버튼 이벤트 리스너 등록");
+                    openInsertModal();
+                }
+
+                // 부서 수정 버튼 (모달 내부)
+                const UpdateDeptBtn = document.getElementById('UpdateDeptBtn');
+                if (UpdateDeptBtn) {
+                    UpdateDeptBtn.addEventListener("click", showUpdateConfirmSwal);
+                    console.log("부서 수정 버튼 이벤트 리스너 등록");
+                }
+
+                // 부서 삭제 버튼 (모달 내부)
+                const deleteDeptBtn = document.getElementById('deleteDeptBtn');
+                if (deleteDeptBtn) {
+                    deleteDeptBtn.addEventListener("click", deleteDepartment);
+                    console.log("부서 삭제 버튼 이벤트 리스너 등록");
+                }
+
+                // 사원 수정 버튼 (모달 내부) - SweetAlert로 확인 및 처리
+                const UpdateEmpBtn = document.getElementById('UpdateEmpBtn');
+                if (UpdateEmpBtn) {
+                    UpdateEmpBtn.addEventListener("click", showEmpUpdateConfirmSwal);
+                    console.log("사원 수정 버튼 이벤트 리스너 등록");
+                }
+
+                // 부서 수정 버튼 (메인)
+                const deptUpdateBtn = document.getElementById('deptUpdate');
+                if (deptUpdateBtn) {
+                    deptUpdateBtn.addEventListener("click", function () {
+                        console.log("부서 수정 버튼 클릭, 선택된 부서:", selectedDepartment);
+                        if (!selectedDepartment) {
+                            Swal.fire({
+                                title: "부서 선택 없음",
+                                text: "수정할 부서를 선택해주세요.",
+                                icon: "error"
+                            });
+                            return;
+                        }
+                        openUpdateModal();
+                    });
+                    console.log("메인 부서 수정 버튼 이벤트 리스너 등록");
+                }
+
+                // 사원 수정 버튼 (메인)
+                const empUpdateBtn = document.getElementById('empUdt');
+                if (empUpdateBtn) {
+                    empUpdateBtn.addEventListener("click", function () {
+                        console.log("사원 수정 버튼 클릭");
+
+                        const checkedEmp = $('.emp-checkbox:checked');
+                        console.log('선택된 사원 수 : ', checkedEmp.length);
+
+                        if (checkedEmp.length === 0) {
+                            Swal.fire({
+                                title: "사원 선택 없음",
+                                text: "수정할 사원을 선택해주세요.",
+                                icon: "error"
+                            });
+                            return;
+                        }
+
+                        if (checkedEmp.length > 1) {
+                            Swal.fire({
+                                title: "사원 선택 오류",
+                                text: "한 명의 사원만 선택해주세요.",
+                                icon: "error"
+                            });
+                            return;
+                        }
+
+                        // 선택된 사원 정보 가져오기
+                        const row = checkedEmp.closest('tr');
+                        selectedEmployee = {
+                            id: row.find('td:eq(2)').text(),
+                            name: row.find('td:eq(1)').text(),
+                            position: row.find('td:eq(4)').text()
+                        };
+
+                        console.log("선택된 사원:", selectedEmployee);
+                        openEmpUpdateModal();
+                    });
+                    console.log("메인 사원 수정 버튼 이벤트 리스너 등록");
+                }
+
+                // 부서 삭제 버튼 (메인)
+                const deptDelBtn = document.getElementById('deptDel');
+                if (deptDelBtn) {
+                    deptDelBtn.addEventListener("click", function () {
+                        console.log("부서 삭제 버튼 클릭, 선택된 부서:", selectedDepartment);
+                        if (!selectedDepartment) {
+                            Swal.fire({
+                                title: "부서 선택 없음",
+                                text: "삭제할 부서를 선택해주세요.",
+                                icon: "error"
+                            });
+                            return;
+                        }
+                        openDeleteModal();
+                    });
+                    console.log("메인 부서 삭제 버튼 이벤트 리스너 등록");
+                }
+
+                const empDelBtn = document.getElementById('empDel');
+                if (empDelBtn) {
+                    empDelBtn.addEventListener("click", function () {
+                        console.log('사원 삭제 버튼 눌렸습니다.');
+
+                        const checkedEmp = $('.emp-checkbox:checked');
+                        console.log('선택된 사원 수 : ', checkedEmp.length);
+
+                        if (checkedEmp.length === 0) {
+                            Swal.fire({
+                                title: "사원 선택 없음",
+                                text: "삭제할 사원을 선택해주세요.",
+                                icon: "error"
+                            });
+                            return;
+                        }
+
+                        // 선택된 사원 정보
+                        const selectedEmp = [];
+                        checkedEmp.each(function () {
+                            const row = $(this).closest('tr');
+                            const name = row.find('td:eq(1)').text();
+                            const id = row.find('td:eq(2)').text();
+                            selectedEmp.push({
+                                name: name,
+                                id: id,
+                                element: this
+                            });
+                        });
+
+                        console.log("선택된 사원들 : ", selectedEmp);
+
+                        // SweetAlert 확인 다이얼로그
+                        Swal.fire({
+                            title: "사원 삭제 확인",
+                            text: `선택한 ${selectedEmp.length}명의 사원을 삭제하시겠습니까?`,
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: '삭제',
+                            cancelButtonText: '취소',
+                            html: `
                     <p>삭제할 사원: ${selectedEmp.map(emp => `${emp.name} (${emp.id})`).join('')}</p>
                     <p style="color: red; font-weight: bold;">삭제된 사원 정보는 복구할 수 없습니다.</p>
                   `
-                }).then((result) => {
-                  if (result.isConfirmed) {
-                    console.log("사원 삭제 확인됨");
-                    deleteSelectedEmployees(selectedEmp);
-                  } else {
-                    console.log("사원 삭제 취소됨");
-                  }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                console.log("사원 삭제 확인됨");
+                                deleteSelectedEmployees(selectedEmp);
+                            } else {
+                                console.log("사원 삭제 취소됨");
+                            }
+                        });
+                    });
+                    console.log("사원 삭제 버튼 이벤트 리스너 등록 완료");
+                } else {
+                    console.error("사원 삭제 버튼을 찾을 수 없습니다!");
+                }
+            }
+
+            // 검색 이벤트
+            const searchInput = document.getElementById("search-input");
+            if (searchInput) {
+                searchInput.addEventListener("input", searchDepartments);
+                searchInput.addEventListener("keypress", function (e) {
+                    if (e.key === 'Enter') {
+                        searchDepartments();
+                    }
                 });
-              });
-              console.log("사원 삭제 버튼 이벤트 리스너 등록 완료");
-            } else {
-              console.error("사원 삭제 버튼을 찾을 수 없습니다!");		
-        	}
-        }
-        
-        // 검색 이벤트
-        const searchInput = document.getElementById("search-input");
-        if (searchInput) {
-          searchInput.addEventListener("input", searchDepartments);
-          searchInput.addEventListener("keypress", function (e) {
-            if (e.key === 'Enter') {
-              searchDepartments();
+
+                const searchButton = document.getElementById("dept-search");
+                if (searchButton) {
+                    searchButton.addEventListener("click", searchDepartments);
+                }
+                console.log("검색 이벤트 리스너 등록");
             }
-          });
 
-          const searchButton = document.getElementById("dept-search");
-          if (searchButton) {
-            searchButton.addEventListener("click", searchDepartments);
-          }
-          console.log("검색 이벤트 리스너 등록");
-        }
-      
-      
-      // 선택된 사원들 삭제 처리
-      function deleteSelectedEmployees(selectedEmp) {
-        console.log('사원 삭제 처리 시작:', selectedEmp);
-        
-        // 로딩 표시
-        Swal.fire({
-          title: '삭제 중...',
-          text: '사원 정보를 삭제하고 있습니다.',
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
-        });
-        
-        
-        selectedEmp.forEach((emp, index) => {
-        // 사용자 삭제 AJAX 요청
-        $.ajax({
-          url: "deleteEmp.do",
-          type: "POST",
-          data: {
-        	 emplyrId: emp.id
-          },
-          success: function (response) {
-            console.log("사원 삭제 성공:", response);
-            
-            Swal.fire({
-              title: "삭제 완료",
-              text: `${selectedEmp.length}명의 사원이 성공적으로 삭제되었습니다.`,
-              icon: "success"
-            });
-            
-            // 테이블 새로고침
-            if (selectedDepartment) {
-              loadEmpList(selectedDepartment.id);
-            } else {
-              loadEmpList();
+
+            // 선택된 사원들 삭제 처리
+            function deleteSelectedEmployees(selectedEmp) {
+                console.log('사원 삭제 처리 시작:', selectedEmp);
+
+                // 로딩 표시
+                Swal.fire({
+                    title: '삭제 중...',
+                    text: '사원 정보를 삭제하고 있습니다.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+
+                selectedEmp.forEach((emp, index) => {
+                    // 사용자 삭제 AJAX 요청
+                    $.ajax({
+                        url: "deleteEmp.do",
+                        type: "POST",
+                        data: {
+                            emplyrId: emp.id
+                        },
+                        success: function (response) {
+                            console.log("사원 삭제 성공:", response);
+
+                            Swal.fire({
+                                title: "삭제 완료",
+                                text: `${selectedEmp.length}명의 사원이 성공적으로 삭제되었습니다.`,
+                                icon: "success"
+                            });
+
+                            // 테이블 새로고침
+                            if (selectedDepartment) {
+                                loadEmpList(selectedDepartment.id);
+                            } else {
+                                loadEmpList();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error("사원 삭제 실패:", error);
+
+                            Swal.fire({
+                                title: "삭제 실패",
+                                text: "사원 삭제 중 오류가 발생했습니다: " + error,
+                                icon: "error"
+                            });
+                        }
+                    });
+                })
             }
-          },
-          error: function (xhr, status, error) {
-            console.error("사원 삭제 실패:", error);
-            
-            Swal.fire({
-              title: "삭제 실패",
-              text: "사원 삭제 중 오류가 발생했습니다: " + error,
-              icon: "error"
-            });
-          }
-        });
-        })
-      }
-   
-      // 사용자 조회
-      function loadEmpList(orgnztId) {
-   	    let param = orgnztId ? "orgnztId=" + encodeURIComponent(orgnztId) : "";
-   	    const tableBody = document.querySelector('.dept-people-section table tbody');
-   	    tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-3">데이터 로딩 중...</td></tr>';
 
-        // AJAX 호출
-        $.ajax({
-          url: "selectemp?" + param,
-          type: "GET",
-          dataType: "json",
-          success: function (datas) {
-            console.log("사원 데이터:", datas); // 디버깅용
-            console.log("요청 파라미터:", param); // 디버깅용
+            // 사용자 조회
+            function loadEmpList(orgnztId) {
+                let param = orgnztId ? "orgnztId=" + encodeURIComponent(orgnztId) : "";
+                const tableBody = document.querySelector('.dept-people-section table tbody');
+                tableBody.innerHTML = '<tr><td colspan="8" class="text-center py-3">데이터 로딩 중...</td></tr>';
 
-            tableBody.innerHTML = '';
-            
-            if (datas && datas.length > 0) {
-              datas.forEach(emp => {
-                const row = document.createElement('tr');
-                row.innerHTML = `<td class="py-3"><input type="checkbox" class="emp-checkbox" value="${emp.emplyrId}"></td>
+                // AJAX 호출
+                $.ajax({
+                    url: "selectemp?" + param,
+                    type: "GET",
+                    dataType: "json",
+                    success: function (datas) {
+                        console.log("사원 데이터:", datas); // 디버깅용
+                        console.log("요청 파라미터:", param); // 디버깅용
+
+                        tableBody.innerHTML = '';
+
+                        if (datas && datas.length > 0) {
+                            datas.forEach(emp => {
+                                const row = document.createElement('tr');
+                                row.innerHTML = `<td class="py-3"><input type="checkbox" class="emp-checkbox" value="${emp.emplyrId}"></td>
 			                     <td class="py-3">${emp.userNm}</td>
 			                     <td class="py-3">${emp.emplyrId}</td>
 			                     <td class="py-3">${emp.orgnztNm}</td>
@@ -560,462 +556,463 @@
 			                     <td class="py-3">${emp.emplNo}</td>
 			                     <td class="py-3">${emp.emailAdres}</td>
 			                     <td class="py-3">${emp.phoneNumber}</td>`;
-			                     tableBody.appendChild(row);
-              });
-            } else {
-            	const row = document.createElement('tr');
-                row.innerHTML = '<td colspan="8" class="text-center py-3">사원 정보가 없습니다.</td>';
-                tableBody.appendChild(row);
+                                tableBody.appendChild(row);
+                            });
+                        } else {
+                            const row = document.createElement('tr');
+                            row.innerHTML = '<td colspan="8" class="text-center py-3">사원 정보가 없습니다.</td>';
+                            tableBody.appendChild(row);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("AJAX 오류:", error);
+                        console.error("상태 코드:", xhr.status);
+                        console.error("응답 텍스트:", xhr.responseText);
+                        tableBody.innerHTML('<td class="py-3">정보를 불러올 수 없어요, 에러입니다.</td>');
+                    }
+                });
             }
-          },
-          error: function (xhr, status, error) {
-            console.error("AJAX 오류:", error);
-            console.error("상태 코드:", xhr.status);
-            console.error("응답 텍스트:", xhr.responseText);
-            tableBody.innerHTML('<td class="py-3">정보를 불러올 수 없어요, 에러입니다.</td>');
-          }
-        });
-      }
-      
-      // 테이블 전체체크 => ready, DOMContentendLoaded?, Window Onload 이 3개 차이 뭐임?
-      $(document).ready(function(){
-    	 
-      		$('#selectAll').click(function(){
-      			$('.emp-checkbox').prop('checked', this.checked);
-      		});
-      });
 
-      // 부서 목록 조회
-      function loadDepartmentList() {
-        console.log("=== loadDepartmentList 함수 시작 ===");
-        $('#department-list').html('<li class="list-group-item p-2">데이터 로딩 중...</li>');
+            // 테이블 전체체크 => ready, DOMContentendLoaded?, Window Onload 이 3개 차이 뭐임?
+            $(document).ready(function () {
 
-        $.ajax({
-          url: "egovdeptlist",
-          type: "GET",
-          dataType: "json",
-          timeout: 10000,
-          success: function (datas) {
-            console.log("=== AJAX 성공 ===");
-            console.log("받은 데이터:", datas);
-            departmentData = datas || [];
-            displayDepartments(departmentData);
-          },
-          error: function (xhr, status, error) {
-            console.error("=== AJAX 오류 발생 ===");
-            console.error("Error:", error);
-            console.error("Status:", status);
-            console.error("Response:", xhr.responseText);
-            $('#department-list').empty();
-            $('#department-list').append('<li class="list-group-item p-2 text-danger">조직 목록을 불러올 수 없습니다: ' +
-              error + '</li>');
-          }
-        });
-      }
-
-      // 부서 목록 표시
-      function displayDepartments(deptList) {
-        const departmentList = document.getElementById("department-list");
-        departmentList.innerHTML = "";
-
-        if (deptList && deptList.length > 0) {
-          deptList.forEach(dept => {
-            const li = document.createElement("li");
-            li.className = "list-group-item p-2 dept-hover rounded-2 cursor-pointer";
-            li.setAttribute("role", "button");
-            li.setAttribute("data-dept-id", dept.orgnztId);
-            li.setAttribute("data-dept-name", dept.orgnztNm);
-            li.textContent = dept.orgnztNm;
-
-            // 클릭 이벤트 추가
-            li.addEventListener("click", function () {
-              selectDepartment(this);
+                $('#selectAll').click(function () {
+                    $('.emp-checkbox').prop('checked', this.checked);
+                });
             });
 
-            departmentList.appendChild(li);
-          });
-        } else {
-          const li = document.createElement("li");
-          li.className = "list-group-item p-2";
-          li.textContent = "조직 정보가 없습니다.";
-          departmentList.appendChild(li);
-        }
-      }
+            // 부서 목록 조회
+            function loadDepartmentList() {
+                console.log("=== loadDepartmentList 함수 시작 ===");
+                $('#department-list').html('<li class="list-group-item p-2">데이터 로딩 중...</li>');
 
-      // 부서 선택
-      function selectDepartment(element) {
-        console.log("부서 선택됨:", element.textContent);
+                $.ajax({
+                    url: "egovdeptlist",
+                    type: "GET",
+                    dataType: "json",
+                    timeout: 10000,
+                    success: function (datas) {
+                        console.log("=== AJAX 성공 ===");
+                        console.log("받은 데이터:", datas);
+                        departmentData = datas || [];
+                        displayDepartments(departmentData);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("=== AJAX 오류 발생 ===");
+                        console.error("Error:", error);
+                        console.error("Status:", status);
+                        console.error("Response:", xhr.responseText);
+                        $('#department-list').empty();
+                        $('#department-list').append(
+                            '<li class="list-group-item p-2 text-danger">조직 목록을 불러올 수 없습니다: ' +
+                            error + '</li>');
+                    }
+                });
+            }
 
-        // 이전 선택 해제
-        const prevSelected = document.querySelector("#department-list .bg-primary");
-        if (prevSelected) {
-          prevSelected.classList.remove("bg-primary", "text-white");
-        }
+            // 부서 목록 표시
+            function displayDepartments(deptList) {
+                const departmentList = document.getElementById("department-list");
+                departmentList.innerHTML = "";
 
-        // 새로운 선택 표시
-        element.classList.add("bg-primary", "text-white");
+                if (deptList && deptList.length > 0) {
+                    deptList.forEach(dept => {
+                        const li = document.createElement("li");
+                        li.className = "list-group-item p-2 dept-hover rounded-2 cursor-pointer";
+                        li.setAttribute("role", "button");
+                        li.setAttribute("data-dept-id", dept.orgnztId);
+                        li.setAttribute("data-dept-name", dept.orgnztNm);
+                        li.textContent = dept.orgnztNm;
 
-        // 선택된 부서 정보 저장
-        selectedDepartment = {
-          id: element.getAttribute("data-dept-id"),
-          name: element.getAttribute("data-dept-name")
-        };
+                        // 클릭 이벤트 추가
+                        li.addEventListener("click", function () {
+                            selectDepartment(this);
+                        });
 
-        console.log("선택된 부서:", selectedDepartment);
-        
-     	// 선택된 부서의 사원 목록 로드
-        loadEmpList(selectedDepartment.id);
-      }
-      
-   	  // 전체 사원 보기 버튼 추가
-      function showAllEmployees() {
-        // 부서 선택 해제
-        const prevSelected = document.querySelector("#department-list .bg-primary");
-        if (prevSelected) {
-          prevSelected.classList.remove("bg-primary", "text-white");
-        }
-        selectedDepartment = null;
-        
-        // 전체 사원 로드
-        loadEmpList();
-      }
+                        departmentList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement("li");
+                    li.className = "list-group-item p-2";
+                    li.textContent = "조직 정보가 없습니다.";
+                    departmentList.appendChild(li);
+                }
+            }
 
-      // 부서 검색
-      function searchDepartments() {
-        const searchInput = document.getElementById("search-input");
-        const searchTerm = searchInput.value.toLowerCase().trim();
+            // 부서 선택
+            function selectDepartment(element) {
+                console.log("부서 선택됨:", element.textContent);
 
-        if (searchTerm === "") {
-          displayDepartments(departmentData);
-          return;
-        }
+                // 이전 선택 해제
+                const prevSelected = document.querySelector("#department-list .bg-primary");
+                if (prevSelected) {
+                    prevSelected.classList.remove("bg-primary", "text-white");
+                }
 
-        const filteredDepts = departmentData.filter(dept =>
-          dept.orgnztNm.toLowerCase().includes(searchTerm)
-        );
+                // 새로운 선택 표시
+                element.classList.add("bg-primary", "text-white");
 
-        displayDepartments(filteredDepts);
-      }
+                // 선택된 부서 정보 저장
+                selectedDepartment = {
+                    id: element.getAttribute("data-dept-id"),
+                    name: element.getAttribute("data-dept-name")
+                };
 
-      function openInsertModal() {
-        document.getElementById('deptInsert').addEventListener('click', function () {
-          const modal = new bootstrap.Modal(document.getElementById('InsertModal'));
-          modal.show();
-        });
-      }
+                console.log("선택된 부서:", selectedDepartment);
 
-      // 부서 추가
-      function addDepartment() {
-        const deptNameInput = document.getElementById("deptName");
-        const deptName = deptNameInput.value.trim();
+                // 선택된 부서의 사원 목록 로드
+                loadEmpList(selectedDepartment.id);
+            }
 
-        if (!deptName) {
-        	Swal.fire({
-      		  title: "부서명 없음",
-      		  text: "추가할 부서명을 입력해주세요.",
-      		  icon: "error"
-      		});
-          deptNameInput.focus();
-          return;
-        }
+            // 전체 사원 보기 버튼 추가
+            function showAllEmployees() {
+                // 부서 선택 해제
+                const prevSelected = document.querySelector("#department-list .bg-primary");
+                if (prevSelected) {
+                    prevSelected.classList.remove("bg-primary", "text-white");
+                }
+                selectedDepartment = null;
 
-        console.log("부서 추가 요청:", deptName);
+                // 전체 사원 로드
+                loadEmpList();
+            }
 
-        $.ajax({
-          url: "adDeptMge.do",
-          type: "POST",
-          data: {
-            orgnztNm: deptName
-          },
-          beforeSend: function () {
-            $("#addDeptBtn").prop("disabled", true).text("추가 중...");
-          },
-          success: function (response) {
-            console.log("부서 추가 성공:", response);
-            showSuccessModal(`"${deptName}" 부서가 성공적으로 등록되었습니다.`);
-            const modal = bootstrap.Modal.getInstance(document.getElementById('InsertModal'));
-            if (modal) modal.hide();
-            deptNameInput.value = "";
-            loadDepartmentList();
-          },
-          error: function (xhr, status, error) {
-            console.error("부서 추가 실패:", error);
-            showErrorModal("부서 등록 중 오류가 발생했습니다: " + error);
-          },
-          complete: function () {
-            $("#addDeptBtn").prop("disabled", false).text("추가");
-          }
-        });
-      }
+            // 부서 검색
+            function searchDepartments() {
+                const searchInput = document.getElementById("search-input");
+                const searchTerm = searchInput.value.toLowerCase().trim();
 
-      // 부서 수정 모달 열기
-      function openUpdateModal() {
-        console.log("부서 수정 모달 열기:", selectedDepartment);
-        document.getElementById('deptUpdateName').value = selectedDepartment.name;
-        document.getElementById('updateDeptId').value = selectedDepartment.id;
-        originalDeptName = selectedDepartment.name;
-        const modal = new bootstrap.Modal(document.getElementById('UpdateModal'));
-        modal.show();
-      }
-      
-      // SweetAlert2로 부서 수정 확인
-      function showUpdateConfirmSwal() {
-        const deptNameInput = document.getElementById("deptUpdateName");
-        newDeptName = deptNameInput.value.trim();
+                if (searchTerm === "") {
+                    displayDepartments(departmentData);
+                    return;
+                }
 
-        if (!newDeptName) {
-          Swal.fire({
-            title: "부서명 없음",
-            text: "수정할 부서명을 입력해주세요.",
-            icon: "error"
-          });
-          deptNameInput.focus();
-          return;
-        }
+                const filteredDepts = departmentData.filter(dept =>
+                    dept.orgnztNm.toLowerCase().includes(searchTerm)
+                );
 
-        // 변경사항이 없는 경우
-        if (originalDeptName === newDeptName) {
-          Swal.fire({
-            title: "변경사항 없음",
-            text: "부서명이 변경되지 않았습니다.",
-            icon: "info"
-          });
-          return;
-        }
+                displayDepartments(filteredDepts);
+            }
 
-        // SweetAlert2 확인 다이얼로그
-        Swal.fire({
-          title: '부서 수정 확인',
-          html: `
+            function openInsertModal() {
+                document.getElementById('deptInsert').addEventListener('click', function () {
+                    const modal = new bootstrap.Modal(document.getElementById('InsertModal'));
+                    modal.show();
+                });
+            }
+
+            // 부서 추가
+            function addDepartment() {
+                const deptNameInput = document.getElementById("deptName");
+                const deptName = deptNameInput.value.trim();
+
+                if (!deptName) {
+                    Swal.fire({
+                        title: "부서명 없음",
+                        text: "추가할 부서명을 입력해주세요.",
+                        icon: "error"
+                    });
+                    deptNameInput.focus();
+                    return;
+                }
+
+                console.log("부서 추가 요청:", deptName);
+
+                $.ajax({
+                    url: "adDeptMge.do",
+                    type: "POST",
+                    data: {
+                        orgnztNm: deptName
+                    },
+                    beforeSend: function () {
+                        $("#addDeptBtn").prop("disabled", true).text("추가 중...");
+                    },
+                    success: function (response) {
+                        console.log("부서 추가 성공:", response);
+                        showSuccessModal(`"${deptName}" 부서가 성공적으로 등록되었습니다.`);
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('InsertModal'));
+                        if (modal) modal.hide();
+                        deptNameInput.value = "";
+                        loadDepartmentList();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("부서 추가 실패:", error);
+                        showErrorModal("부서 등록 중 오류가 발생했습니다: " + error);
+                    },
+                    complete: function () {
+                        $("#addDeptBtn").prop("disabled", false).text("추가");
+                    }
+                });
+            }
+
+            // 부서 수정 모달 열기
+            function openUpdateModal() {
+                console.log("부서 수정 모달 열기:", selectedDepartment);
+                document.getElementById('deptUpdateName').value = selectedDepartment.name;
+                document.getElementById('updateDeptId').value = selectedDepartment.id;
+                originalDeptName = selectedDepartment.name;
+                const modal = new bootstrap.Modal(document.getElementById('UpdateModal'));
+                modal.show();
+            }
+
+            // SweetAlert2로 부서 수정 확인
+            function showUpdateConfirmSwal() {
+                const deptNameInput = document.getElementById("deptUpdateName");
+                newDeptName = deptNameInput.value.trim();
+
+                if (!newDeptName) {
+                    Swal.fire({
+                        title: "부서명 없음",
+                        text: "수정할 부서명을 입력해주세요.",
+                        icon: "error"
+                    });
+                    deptNameInput.focus();
+                    return;
+                }
+
+                // 변경사항이 없는 경우
+                if (originalDeptName === newDeptName) {
+                    Swal.fire({
+                        title: "변경사항 없음",
+                        text: "부서명이 변경되지 않았습니다.",
+                        icon: "info"
+                    });
+                    return;
+                }
+
+                // SweetAlert2 확인 다이얼로그
+                Swal.fire({
+                    title: '부서 수정 확인',
+                    html: `
             <div style="text-align: center; font-size: 16px;">
               <p>기존 <strong style="color: #007bff;">${originalDeptName}</strong>에서</p>
               <p>새로 수정된 <strong style="color: #28a745;">${newDeptName}</strong>으로</p>
-              <p>부서명이 변경돼요.</p>
+              <p>부서명이 변경됩니다.</p>
               <br>
               <p style="color: #6c757d;">수정하시겠습니까?</p>
             </div>
           `,
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#28a745',
-          cancelButtonColor: '#6c757d',
-          confirmButtonText: '수정 완료',
-          cancelButtonText: '취소',
-          reverseButtons: false
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // 기존 모달 닫기
-            const updateModal = bootstrap.Modal.getInstance(document.getElementById('UpdateModal'));
-            if (updateModal) updateModal.hide();
-            
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '수정',
+                    cancelButtonText: '취소',
+                    reverseButtons: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // 기존 모달 닫기
+                        const updateModal = bootstrap.Modal.getInstance(document.getElementById('UpdateModal'));
+                        if (updateModal) updateModal.hide();
+
+                        // 부서 수정 실행
+                        updateDepartment();
+                    }
+                });
+            }
+
             // 부서 수정 실행
-            updateDepartment();
-          }
-        });
-      }
+            function updateDepartment() {
+                const deptId = document.getElementById("updateDeptId").value;
 
-      // 부서 수정 실행
-      function updateDepartment() {
-        const deptId = document.getElementById("updateDeptId").value;
+                console.log("부서 수정 요청:", deptId, "->", newDeptName);
 
-        console.log("부서 수정 요청:", deptId, "->", newDeptName);
+                // 로딩 표시
+                Swal.fire({
+                    title: '수정 중...',
+                    text: '부서 정보를 수정하고 있습니다.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
-        // 로딩 표시
-        Swal.fire({
-          title: '수정 중...',
-          text: '부서 정보를 수정하고 있습니다.',
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
-        });
+                $.ajax({
+                    url: "updateDept.do",
+                    type: "POST",
+                    data: {
+                        orgnztId: deptId,
+                        orgnztNm: newDeptName
+                    },
+                    success: function (response) {
+                        console.log("부서 수정 성공:", response);
 
-        $.ajax({
-          url: "updateDept.do",
-          type: "POST",
-          data: {
-            orgnztId: deptId,
-            orgnztNm: newDeptName
-          },
-          success: function (response) {
-            console.log("부서 수정 성공:", response);
-            
-            // 수정 완료 SweetAlert
-            Swal.fire({
-              title: '부서명 변경 완료',
-              html: `
+                        // 수정 완료 SweetAlert
+                        Swal.fire({
+                            title: '부서명 변경 완료',
+                            html: `
                 <div style="text-align: center; font-size: 16px;">
                   <p><strong style="color: #007bff;">기존 부서명 "${originalDeptName}"</strong>이</p>
                   <p><strong style="color: #28a745;">변경 부서명 "${newDeptName}"</strong>으로</p>
                   <p>성공적으로 변경되었어요.</p>
                 </div>
               `,
-              icon: 'success',
-              confirmButtonColor: '#28a745',
-              confirmButtonText: '확인'
-            });
-            
-            selectedDepartment = null;
-            loadDepartmentList();
-          },
-          error: function (xhr, status, error) {
-            console.error("부서 수정 실패:", error);
-            Swal.fire({
-              title: '수정 실패',
-              text: "부서 수정 중 오류가 발생했습니다: " + error,
-              icon: 'error',
-              confirmButtonColor: '#dc3545'
-            });
-          }
-        });
-      }
-      
-   // 사원 수정 모달 열기
-      function openEmpUpdateModal() {
-        console.log("사원 수정 모달 열기:", selectedEmployee);
-        document.getElementById('empUpdateName').textContent = selectedEmployee.name;
-        document.getElementById('empUpdateId').textContent = selectedEmployee.id;
-        document.getElementById('updateEmpId').value = selectedEmployee.id;
-        originalPosition = selectedEmployee.position; // 원래 직급 저장
-        
-        // 현재 직급을 select에서 선택
-        const positionSelect = document.getElementById('positionSelect');
-        const currentPosOption = Array.from(positionSelect.options).find(option => 
-          option.textContent === selectedEmployee.position
-        );
-        if (currentPosOption) {
-          positionSelect.value = currentPosOption.value;
-        }
-        
-        const modal = new bootstrap.Modal(document.getElementById('EmpUpdateModal'));
-        modal.show();
-      }
-      
-   // SweetAlert2로 사원 수정 확인
-      function showEmpUpdateConfirmSwal() {
-        const positionSelect = document.getElementById("positionSelect");
-        const selectedPositionId = positionSelect.value;
-        const selectedPositionText = positionSelect.options[positionSelect.selectedIndex].text;
+                            icon: 'success',
+                            confirmButtonColor: '#28a745',
+                            confirmButtonText: '확인'
+                        });
 
-        console.log("원래 직급:", originalPosition);
-        console.log("새로운 직급 ID:", selectedPositionId);
-        console.log("새로운 직급명:", selectedPositionText);
+                        selectedDepartment = null;
+                        loadDepartmentList();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("부서 수정 실패:", error);
+                        Swal.fire({
+                            title: '수정 실패',
+                            text: "부서 수정 중 오류가 발생했습니다: " + error,
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545'
+                        });
+                    }
+                });
+            }
 
-        if (!selectedPositionId) {
-          Swal.fire({
-            title: "직급 선택 없음",
-            text: "수정할 직급을 선택해주세요.",
-            icon: "error"
-          });
-          return;
-        }
+            // 사원 수정 모달 열기
+            function openEmpUpdateModal() {
+                console.log("사원 수정 모달 열기:", selectedEmployee);
+                document.getElementById('empUpdateName').textContent = selectedEmployee.name;
+                document.getElementById('empUpdateId').textContent = selectedEmployee.id;
+                document.getElementById('updateEmpId').value = selectedEmployee.id;
+                originalPosition = selectedEmployee.position; // 원래 직급 저장
 
-        // 변경사항이 없는 경우
-        if (originalPosition === selectedPositionText) {
-          Swal.fire({
-            title: "변경사항 없음",
-            text: "직급이 변경되지 않았습니다.",
-            icon: "info"
-          });
-          return;
-        }
+                // 현재 직급을 select에서 선택
+                const positionSelect = document.getElementById('positionSelect');
+                const currentPosOption = Array.from(positionSelect.options).find(option =>
+                    option.textContent === selectedEmployee.position
+                );
+                if (currentPosOption) {
+                    positionSelect.value = currentPosOption.value;
+                }
 
-        // 선택된 직급 정보 저장
-        newPosition = selectedPositionId;
-        newPositionName = selectedPositionText;
+                const modal = new bootstrap.Modal(document.getElementById('EmpUpdateModal'));
+                modal.show();
+            }
 
-        // SweetAlert2 확인 다이얼로그
-        Swal.fire({
-          title: '직급 수정 확인',
-          html: `
+            // SweetAlert2로 사원 수정 확인
+            function showEmpUpdateConfirmSwal() {
+                const positionSelect = document.getElementById("positionSelect");
+                const selectedPositionId = positionSelect.value;
+                const selectedPositionText = positionSelect.options[positionSelect.selectedIndex].text;
+
+                console.log("원래 직급:", originalPosition);
+                console.log("새로운 직급 ID:", selectedPositionId);
+                console.log("새로운 직급명:", selectedPositionText);
+
+                if (!selectedPositionId) {
+                    Swal.fire({
+                        title: "직급 선택 없음",
+                        text: "수정할 직급을 선택해주세요.",
+                        icon: "error"
+                    });
+                    return;
+                }
+
+                // 변경사항이 없는 경우
+                if (originalPosition === selectedPositionText) {
+                    Swal.fire({
+                        title: "변경사항 없음",
+                        text: "직급이 변경되지 않았습니다.",
+                        icon: "info"
+                    });
+                    return;
+                }
+
+                // 선택된 직급 정보 저장
+                newPosition = selectedPositionId;
+                newPositionName = selectedPositionText;
+
+                // SweetAlert2 확인 다이얼로그
+                Swal.fire({
+                    title: '직급 수정 확인',
+                    html: `
             <div style="text-align: center; font-size: 16px;">
               <p>기존 <strong style="color: #007bff;">'${originalPosition}'</strong>에서</p>
-              <p>select option으로 수정할 직급을</p>
-              <p>선택 후 <strong style="color: #28a745;">'${selectedPositionText}'</strong>으로</p>
+              <p>관리자가 수정한 직급인</p>
+              <p><strong style="color: #28a745;">'${selectedPositionText}'</strong>으로</p>
               <p>직급이 변경됩니다.</p>
               <br>
               <p style="color: #6c757d;">수정하시겠습니까?</p>
             </div>
           `,
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#28a745',
-          cancelButtonColor: '#6c757d',
-          confirmButtonText: '수정 완료',
-          cancelButtonText: '취소',
-          reverseButtons: true
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // 기존 모달 닫기
-            const updateModal = bootstrap.Modal.getInstance(document.getElementById('EmpUpdateModal'));
-            if (updateModal) updateModal.hide();
-            
-            // 직급 변경 확인 다이얼로그
-            showPositionChangeConfirmSwal();
-          }
-        });
-      }
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '수정',
+                    cancelButtonText: '취소',
+                    reverseButtons: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // 기존 모달 닫기
+                        const updateModal = bootstrap.Modal.getInstance(document.getElementById(
+                            'EmpUpdateModal'));
+                        if (updateModal) updateModal.hide();
 
-      // 직급 변경 최종 확인
-      function showPositionChangeConfirmSwal() {
-        Swal.fire({
-          title: '직급 변경 확인',
-          html: `
+                        // 직급 변경 확인 다이얼로그
+                        showPositionChangeConfirmSwal();
+                    }
+                });
+            }
+
+            // 직급 변경 최종 확인
+            function showPositionChangeConfirmSwal() {
+                Swal.fire({
+                    title: '최종 직급 변경 확인',
+                    html: `
             <div style="text-align: center; font-size: 16px;">
-              <p>직급이 변경됩니다.</p>
               <p><strong>${selectedEmployee.name}</strong> 사원의 직급이</p>
               <p><strong style="color: #007bff;">'${originalPosition}'</strong>에서</p>
               <p><strong style="color: #28a745;">'${newPositionName}'</strong>으로</p>
-              <p>변경됩니다.</p>
+              <p>최종 변경됩니다.</p>
               <br>
               <p style="color: #6c757d;">변경하시겠습니까?</p>
             </div>
           `,
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#28a745',
-          cancelButtonColor: '#6c757d',
-          confirmButtonText: '변경',
-          cancelButtonText: '취소',
-          reverseButtons: true
-        }).then((result) => {
-          if (result.isConfirmed) {
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: '변경',
+                    cancelButtonText: '취소',
+                    reverseButtons: false
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // 사원 수정 실행
+                        updateEmployee();
+                    }
+                });
+            }
+
             // 사원 수정 실행
-            updateEmployee();
-          }
-        });
-      }
-      
-   // 사원 수정 실행
-      function updateEmployee() {
-        const empId = document.getElementById("updateEmpId").value;
+            function updateEmployee() {
+                const empId = document.getElementById("updateEmpId").value;
 
-        console.log("사원 수정 요청:", empId, "->", newPosition);
+                console.log("사원 수정 요청:", empId, "->", newPosition);
 
-        // 로딩 표시
-        Swal.fire({
-          title: '수정 중...',
-          text: '사원 정보를 수정하고 있습니다.',
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
-          }
-        });
+                // 로딩 표시
+                Swal.fire({
+                    title: '수정 중...',
+                    text: '사원 정보를 수정하고 있습니다.',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
 
-        $.ajax({
-          url: "updateEmp.do",
-          type: "POST",
-          data: {
-            emplyrId: empId,
-            positionId: newPosition
-          },
-          success: function (response) {
-            console.log("사원 수정 성공:", response);
-            
-            // 수정 완료 SweetAlert
-            Swal.fire({
-              title: '직급 변경 완료!',
-              html: `
+                $.ajax({
+                    url: "updateEmp.do",
+                    type: "POST",
+                    data: {
+                        emplyrId: empId,
+                        positionId: newPosition
+                    },
+                    success: function (response) {
+                        console.log("사원 수정 성공:", response);
+
+                        // 수정 완료 SweetAlert
+                        Swal.fire({
+                            title: '직급 변경 완료',
+                            html: `
                 <div style="text-align: center; font-size: 16px;">
                   <p><strong>${selectedEmployee.name}</strong> 사원의 직급이</p>
                   <p><strong style="color: #007bff;">'${originalPosition}'</strong>에서</p>
@@ -1023,108 +1020,95 @@
                   <p>변경되었습니다.</p>
                 </div>
               `,
-              icon: 'success',
-              confirmButtonColor: '#28a745',
-              confirmButtonText: '확인'
-            });
-            
-            // 테이블 새로고침
-            if (selectedDepartment) {
-              loadEmpList(selectedDepartment.id);
-            } else {
-              loadEmpList();
+                            icon: 'success',
+                            confirmButtonColor: '#28a745',
+                            confirmButtonText: '확인'
+                        });
+
+                        // 테이블 새로고침
+                        if (selectedDepartment) {
+                            loadEmpList(selectedDepartment.id);
+                        } else {
+                            loadEmpList();
+                        }
+
+                        selectedEmployee = null;
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("사원 수정 실패:", error);
+                        Swal.fire({
+                            title: '수정 실패',
+                            text: "사원 수정 중 오류가 발생했습니다: " + error,
+                            icon: 'error',
+                            confirmButtonColor: '#dc3545'
+                        });
+                    }
+                });
             }
-            
-            selectedEmployee = null;
-          },
-          error: function (xhr, status, error) {
-            console.error("사원 수정 실패:", error);
-            Swal.fire({
-              title: '수정 실패',
-              text: "사원 수정 중 오류가 발생했습니다: " + error,
-              icon: 'error',
-              confirmButtonColor: '#dc3545'
-            });
-          }
-        });
-      }
 
-      // 부서 삭제 모달 열기
-      function openDeleteModal() {
-        console.log("부서 삭제 모달 열기:", selectedDepartment);
-        if (!selectedDepartment) {
-          alert("삭제할 부서를 선택해주세요.");
-          return;
-        }
-        document.getElementById('deleteDeptName').textContent = selectedDepartment.name;
-        document.getElementById('deleteDeptId').value = selectedDepartment.id;
-        const modal = new bootstrap.Modal(document.getElementById('DeleteModal'));
-        modal.show();
-      }
+            // 부서 삭제 모달 열기
+            function openDeleteModal() {
+                console.log("부서 삭제 모달 열기:", selectedDepartment);
+                if (!selectedDepartment) {
+                    alert("삭제할 부서를 선택해주세요.");
+                    return;
+                }
+                document.getElementById('deleteDeptName').textContent = selectedDepartment.name;
+                document.getElementById('deleteDeptId').value = selectedDepartment.id;
+                const modal = new bootstrap.Modal(document.getElementById('DeleteModal'));
+                modal.show();
+            }
 
-      // 부서 삭제
-      function deleteDepartment() {
-        const deptId = document.getElementById("deleteDeptId").value;
-        const deptName = selectedDepartment ? selectedDepartment.name : '선택된 부서';
+            // 부서 삭제
+            function deleteDepartment() {
+                const deptId = document.getElementById("deleteDeptId").value;
+                const deptName = selectedDepartment ? selectedDepartment.name : '선택된 부서';
 
-        console.log("부서 삭제 함수 시작");
-        console.log("삭제할 부서 ID:", deptId);
-        console.log("삭제할 부서 이름:", deptName);
-        console.log("선택된 부서 정보:", selectedDepartment);
+                console.log("부서 삭제 함수 시작");
+                console.log("삭제할 부서 ID:", deptId);
+                console.log("삭제할 부서 이름:", deptName);
+                console.log("선택된 부서 정보:", selectedDepartment);
 
-        if (!deptId) {
-          alert("삭제할 부서 ID가 없습니다.");
-          console.error("부서 ID가 없음");
-          return;
-        }
+                if (!deptId) {
+                    alert("삭제할 부서 ID가 없습니다.");
+                    console.error("부서 ID가 없음");
+                    return;
+                }
 
-        $.ajax({
-          url: "deleteDept.do",
-          type: "POST",
-          data: {
-            orgnztId: deptId
-          },
-          beforeSend: function () {
-            console.log("삭제 요청 전송 중...");
-            $("#deleteDeptBtn").prop("disabled", true).text("삭제 중...");
-          },
-          success: function (response) {
-            console.log("부서 삭제 성공:", response);
-            showSuccessModal(`"${deptName}" 부서가 성공적으로 삭제되었습니다.`);
-            const modal = bootstrap.Modal.getInstance(document.getElementById('DeleteModal'));
-            if (modal) modal.hide();
-            selectedDepartment = null;
-            loadDepartmentList();
-          },
-          error: function (xhr, status, error) {
-            console.error("부서 삭제 실패:");
-            console.error("Status:", status);
-            console.error("Error:", error);
-            console.error("Response Text:", xhr.responseText);
-            console.error("Response Status:", xhr.status);
-            showErrorModal("부서 삭제 중 오류가 발생했습니다: " + error);
-          },
-          complete: function () {
-            console.log("삭제 요청 완료");
-            $("#deleteDeptBtn").prop("disabled", false).text("삭제");
-          }
-        });
-      }
+                $.ajax({
+                    url: "deleteDept.do",
+                    type: "POST",
+                    data: {
+                        orgnztId: deptId
+                    },
+                    beforeSend: function () {
+                        console.log("삭제 요청 전송 중...");
+                        $("#deleteDeptBtn").prop("disabled", true).text("삭제 중...");
+                    },
+                    success: function (response) {
+                        console.log("부서 삭제 성공:", response);
+                        showSuccessModal(`"${deptName}" 부서가 성공적으로 삭제되었습니다.`);
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('DeleteModal'));
+                        if (modal) modal.hide();
+                        selectedDepartment = null;
+                        loadDepartmentList();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("부서 삭제 실패:");
+                        console.error("Status:", status);
+                        console.error("Error:", error);
+                        console.error("Response Text:", xhr.responseText);
+                        console.error("Response Status:", xhr.status);
+                        showErrorModal("부서 삭제 중 오류가 발생했습니다: " + error);
+                    },
+                    complete: function () {
+                        console.log("삭제 요청 완료");
+                        $("#deleteDeptBtn").prop("disabled", false).text("삭제");
+                    }
+                });
+            }
 
-      // 성공 모달 표시
-      function showSuccessModal(message) {
-        document.getElementById('successMessage').textContent = message;
-        const modal = new bootstrap.Modal(document.getElementById('successModal'));
-        modal.show();
-      }
-
-      // 오류 모달 표시
-      function showErrorModal(message) {
-        document.getElementById('errorMessage').textContent = message;
-        const modal = new bootstrap.Modal(document.getElementById('errorModal'));
-        modal.show();
-      }
-    </script>
+        </script>
 </section>
 
 </html>

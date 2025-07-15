@@ -75,11 +75,22 @@ public class AdminUserController {
 			if (result > 0) {
 				System.out.println("사용자 등록 성공");
 				// 성공 시 모달 표시를 위한 플래그 추가
-				redirectAttributes.addFlashAttribute("showSuccessModal", true);
-				redirectAttributes.addFlashAttribute("successMessage", adu.getUserNm() + "님이 성공적으로 등록되었습니다.");
-				redirectAttributes.addFlashAttribute("userInfo", adu.getUserNm() + " (" + adu.getEmplNo() + ")");
+				/*
+				 * redirectAttributes.addFlashAttribute("showSuccessModal", true);
+				 * redirectAttributes.addFlashAttribute("successMessage", adu.getUserNm() +
+				 * "님이 성공적으로 등록되었습니다."); redirectAttributes.addFlashAttribute("userInfo",
+				 * adu.getUserNm() + " (" + adu.getEmplNo() + ")");
+				 */
+				
+				try {
+					return "redirect:/admin/adDeptMge.do?success=true&userName=" + 
+						   java.net.URLEncoder.encode(adu.getUserNm(), "UTF-8") + 
+						   "&emplNo=" + adu.getEmplNo();
+				} catch (java.io.UnsupportedEncodingException e) {
+					return "redirect:/admin/adDeptMge.do?success=true";
+				}
 
-				return "redirect:/admin/adDeptMge.do";
+				
 			} else {
 				System.out.println("사용자 등록 실패");
 				redirectAttributes.addFlashAttribute("showErrorModal", true);
