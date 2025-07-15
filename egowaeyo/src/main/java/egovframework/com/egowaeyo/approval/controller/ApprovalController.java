@@ -151,7 +151,7 @@ public class ApprovalController {
 	// 프린팅
 	@GetMapping("/print/{docId}")
 	public String printApproval(@PathVariable String docId, Model model) {
-		ApprovalDetailVO detail = approvalService.getApprovalDetail(docId);
+		ApprovalDetailVO detail = approvalService.getApprovalDetailForPrint(docId);
 		if (detail.getDocHtml() != null) {
 			detail.setDocHtml(StringEscapeUtils.unescapeHtml4(detail.getDocHtml()));
 		}
@@ -199,9 +199,12 @@ public class ApprovalController {
 	
 	 @GetMapping("/detail")
 	    public String detail(@RequestParam("docId") String docId, Model model) {
-	        ApprovalDocVO doc = approvalService.getApprovalDocDetail(docId);
+	        ApprovalDocVO doc = approvalService.getApprovalDetailForView(docId);
+	        if (doc.getDocHtml() != null) {
+	            doc.setDocHtml(StringEscapeUtils.unescapeHtml4(doc.getDocHtml()));
+	        }
 	        model.addAttribute("doc", doc);
-	        return "approval/detail.html"; 
+	        return "approval/detail.html";
 	    }
 	 
 	 @PostMapping("/approve.do")
@@ -227,7 +230,7 @@ public class ApprovalController {
 	 // 진행함
 	    @GetMapping("/progress")
 	    public String progress() {
-	        return "approval/progress";
+	        return "approval/progress.html";
 	    }
 
 	    @GetMapping("/progress/list")

@@ -30,7 +30,7 @@ public interface ApprovalMapper {
 
 	List<ApprovalCcVO> selectReferenceList(String empId);
 
-	ApprovalDetailVO selectApprovalDetail(String docId);
+	ApprovalDetailVO selectApprovalDetailForPrint(String docId);
 
 	String selectApprFormHtml(String formId);
 
@@ -42,7 +42,7 @@ public interface ApprovalMapper {
 
 	void insertTemp(ApprovalTempVO vo);
 
-	ApprovalDocVO selectApprovalDocDetail(String docId);
+	ApprovalDocVO selectApprovalDetailForView(String docId);
 
 	void updateApprove(@Param("docId") String docId, @Param("approverId") String approverId,
 			@Param("opinion") String opinion);

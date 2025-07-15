@@ -1,58 +1,112 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layout/layout}">
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/layout}">
 
 <section layout:fragment="content">
-  <div class="container" style="padding: 2rem;">
-    <h3 style="margin-bottom: 1rem;">결재 상세</h3>
+	<div class="container" style="padding: 2rem;">
+		<h3 style="margin-bottom: 1rem;">결재 상세</h3>
 
 
-    <div style="margin-bottom:1rem;">
-      <b>문서번호:</b> <span th:text="${doc.docId}"></span>
-      &nbsp;&nbsp;
-      <b>결재양식:</b> <span th:text="${doc.apprformName}"></span>
-      &nbsp;&nbsp;
-      <b>기안자:</b> <span th:text="${doc.drafterName}"></span>
-    </div>
+		<div style="margin-bottom: 1rem;">
+			<b>문서번호:</b> <span th:text="${doc.docId}"></span> &nbsp;&nbsp; <b>결재양식:</b>
+			<span th:text="${doc.apprformName}"></span> &nbsp;&nbsp; <b>기안자:</b>
+			<span th:text="${doc.empName}"></span>
+		</div>
 
-    <!-- 결재양식(html) 랜더링 -->
-    <div id="docHtmlArea" th:utext="${doc.docHtml}" style="margin-bottom: 2rem; border: 1px solid #aaa; padding:1.5rem; background: #fff;"></div>
+		<!-- 결재양식(html) 랜더링 -->
+		<div id="docHtmlArea" class="doc-html-wrapper"
+			th:utext="${doc.docHtml}"
+			style="margin-bottom: 2rem; border: 1px solid #aaa; padding: 1.5rem; background: #fff;"></div>
 
-    <!-- 결재의견 및 결재버튼 영역 -->
-    <div style="margin-bottom: 1rem;">
-      <label for="opinion" style="font-weight:bold;">결재의견</label><br>
-      <textarea id="opinion" rows="3" style="width: 100%;" placeholder="결재의견 입력"></textarea>
-    </div>
+		<!-- 결재의견 및 결재버튼 영역 -->
+		<div style="margin-bottom: 1rem;">
+			<label for="opinion" style="font-weight: bold;">결재의견</label><br>
+			<textarea id="opinion" rows="3" style="width: 100%;"
+				placeholder="결재의견 입력"></textarea>
+		</div>
 
-    <div>
-      <button type="button" onclick="approve()" style="margin-right:0.5rem;">승인</button>
-      <button type="button" onclick="reject()">반려</button>
-    </div>
-  </div>
+		<div>
+			<button type="button"
+				class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+				onclick="approve()">승인</button>
+			<button type="button"
+				class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+				onclick="reject()">반려</button>
+		</div>
+	</div>
 
-  <script th:inline="javascript">
+	<script th:inline="javascript">
     function approve() {
       const opinion = document.getElementById('opinion').value;
-      fetch('/approval/approve', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          docId: /*[[${doc.docId}]]*/'',
-          opinion: opinion
-        })
-      }).then(res=>location.href='/approval/receive');
-    }
+      fetch(/*[[@{/approval/approve}]]*/'', {
+    	  method: 'POST',
+    	  headers: {'Content-Type': 'application/json'},
+    	  body: JSON.stringify({
+    	    docId: /*[[${doc.docId}]]*/'',
+    	    opinion: opinion
+    	  })
+    	})
+    	.then(res => res.text())
+    	.then(result => {
+    	  console.log("승인 응답:", result); // OK 출력 예상
+    	  if (result === 'OK') {
+    	    location.href = /*[[@{/approval/receive}]]*/'';
+    	  } else {
+    	    alert("승인 처리 실패: " + result);
+    	  }
+    	});
     function reject() {
       const opinion = document.getElementById('opinion').value;
-      fetch('/approval/reject', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          docId: /*[[${doc.docId}]]*/'',
-          opinion: opinion
-        })
-      }).then(res=>location.href='/approval/receive');
+      fetch(/*[[@{/approval/reject}]]*/'', {
+    	  method: 'POST',
+    	  headers: {'Content-Type': 'application/json'},
+    	  body: JSON.stringify({
+    	    docId: /*[[${doc.docId}]]*/'',
+    	    opinion: opinion
+    	  })
+    	})
+    	.then(res => res.text())
+    	.then(result => {
+    	  console.log("반려 응답:", result); // OK 출력 예상
+    	  if (result === 'OK') {
+    	    location.href = /*[[@{/approval/receive}]]*/'';
+    	  } else {
+    	    alert("반려 처리 실패: " + result);
+    	  }
+    	});
+    }
     }
   </script>
+
+	<style>
+.doc-html-wrapper {
+	border: 1px solid #ccc;
+	background: #fff;
+	padding: 1.5rem;
+	margin-bottom: 2rem;
+	font-size: 15px;
+	line-height: 1.6;
+}
+
+.doc-html-wrapper table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.doc-html-wrapper th, .doc-html-wrapper td {
+	border: 1px solid #ccc;
+	padding: 0.5rem;
+	text-align: left;
+}
+
+.doc-html-wrapper th {
+	background: #f2f2f2;
+	font-weight: bold;
+}
+
+.doc-html-wrapper td[colspan] {
+	background: #fafafa;
+}
+</style>
 </section>

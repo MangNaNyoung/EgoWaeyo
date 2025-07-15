@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <title>결재문서 출력</title>
   <style>
     @media print { .no-print { display: none; } }
@@ -13,8 +15,8 @@
 <body th:attr="data-doc-id=${detail.docId}">
 
   <div class="no-print" style="text-align:right; margin-bottom:10px;">
-    <button onclick="window.print()">인쇄</button>
-    <button onclick="downloadPDF()">PDF 저장</button>
+    <button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="window.print()">인쇄</button>
+    <button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="downloadPDF()">PDF 저장</button>
   </div>
 
   <h2 style="text-align:center;" th:text="${detail.docTitle}">문서제목</h2>

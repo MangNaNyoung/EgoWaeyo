@@ -68,8 +68,8 @@ public class ApprovalServiceImpl implements ApprovalService {
 	}
 
 	@Override
-	public ApprovalDetailVO getApprovalDetail(String docId) {
-		return approvalMapper.selectApprovalDetail(docId);
+	public ApprovalDetailVO getApprovalDetailForPrint(String docId) {
+		return approvalMapper.selectApprovalDetailForPrint(docId);
 	}
 
 	@Override
@@ -98,8 +98,8 @@ public class ApprovalServiceImpl implements ApprovalService {
 	}
 
 	@Override
-	public ApprovalDocVO getApprovalDocDetail(String docId) {
-		return approvalMapper.selectApprovalDocDetail(docId);
+	public ApprovalDocVO getApprovalDetailForView(String docId) {
+		return approvalMapper.selectApprovalDetailForView(docId);
 	}
 
 	@Override
