@@ -48,6 +48,8 @@
     let progressListUrl = /*[[@{'/approval/progress/list'}]]*/ '';
     const grid = new tui.Grid({
       el: document.getElementById('grid'),
+      scrollY: false,
+      scrollX: false,
       columns: [
         { header: '문서번호', name: 'docId', width: 170, align: 'center' },
         { header: '양식명', name: 'apprformName', width: 120, align: 'center' },

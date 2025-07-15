@@ -45,6 +45,8 @@
     let rejectListUrl = /*[[@{'/approval/reject/list'}]]*/ '';
     const grid = new tui.Grid({
       el: document.getElementById('grid'),
+      scrollY: false,
+      scrollX: false,
       columns: [
         { header: '문서번호', name: 'docId', width: 120 },
         { header: '양식명', name: 'apprformName', width: 120, align: 'center' },
