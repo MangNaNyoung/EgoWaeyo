@@ -24,7 +24,7 @@ public interface ApprovalService {
 
 	List<ApprovalCcVO> getReferenceList(String empId);
 
-	ApprovalDetailVO getApprovalDetail(String docId);
+	ApprovalDetailVO getApprovalDetailForPrint(String docId);
 
 	public String getFormHtml(String formId);
 
@@ -36,7 +36,7 @@ public interface ApprovalService {
 
 	void insertTemp(ApprovalTempVO vo);
 
-	ApprovalDocVO getApprovalDocDetail(String docId);
+	ApprovalDocVO getApprovalDetailForView(String docId);
 
 	void approve(String docId, String approverId, String opinion);
 

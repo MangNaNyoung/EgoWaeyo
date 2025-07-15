@@ -11,7 +11,7 @@
 		<div
 			style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
 			<div style="display: flex; gap: 0.5rem;">
-				<button id="printBtn">인쇄/다운로드</button>
+				<button type="button" id="printBtn" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white">인쇄/다운로드</button>
 			</div>
 			<div style="display: flex; gap: 0.5rem;">
 				<select>
@@ -20,9 +20,9 @@
 					<option value="form2">본문</option>
 					<option value="form3">기안자</option>
 				</select> <input type="text" id="searchKeyword" placeholder="검색어 입력">
-				<button onclick="handleSearch()">검색</button>
-				<button onclick="handleReset()">초기화</button>
-				<button onclick="openAdvancedSearch()">상세검색</button>
+				<button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="handleSearch()">검색</button>
+				<button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="handleReset()">초기화</button>
+				<button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="openAdvancedSearch()">상세검색</button>
 			</div>
 		</div>
 
@@ -70,6 +70,10 @@
     $.ajax({
       type: 'get',
       url: receiveListUrl + 'list',
+      //headers: {
+      //   "Content-Type": "application/json",
+      //},
+      //data: JSON.stringify(data),
       success: function (result) {
         console.log("받은 데이터:", result);
         if (!Array.isArray(result)) {
@@ -87,12 +91,13 @@
 
   //행 클릭 시 상세 페이지 이동
   grid.on('click', ev => {
-    if (ev.columnName) {
+    if (ev.columnName === '_checked') return
+    
       const row = grid.getRow(ev.rowKey);
       if (row && row.docId) {
-        window.location.href = '/approval/detail?docId=' + row.docId;
+        window.location.href = '/egowaeyo/approval/detail?docId=' + row.docId;
       }
-    }
+    
   });
 
   // 단일 검색
@@ -123,7 +128,7 @@
       toDt: document.getElementById('searchToDt').value
     });
 
-    fetch('/approval/temp/list?' + params.toString())
+    fetch('/approval/receive/list?' + params.toString())
       .then(res => res.json())
       .then(data => grid.resetData(data));
   }
@@ -145,4 +150,6 @@
     window.open(url, '_blank', 'width=900,height=1200,scrollbars=yes');
   });
 </script>
+
+
 </section>
