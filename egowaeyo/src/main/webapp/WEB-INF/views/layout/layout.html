@@ -156,7 +156,19 @@ a {
 	<!-- 페이지마다 작성될 스크립트 공간 정의 -->
 	<th:block layout:fragment="customJs"></th:block>
 	<script th:src="@{/assets/js/main.js}"></script>
-	<script>
+	<script th:inline="javascript">
+	
+	/*<![CDATA[*/
+	var userInfo = [[${session.loginVO}]];
+	/*]]>*/
+	$(".homeLogo").click(function(){
+		$(".nav-link.main-menu.p-3").removeClass("active")
+	})
+	
+	if(userInfo.ofcpsNm=='팀장'||userInfo.ofcpsNm=='사장'||userInfo.ofcpsNm=='부사장'){
+		$(".appendMenuList").append(`<li><a th:href="@{/editAttend.do}">근태 정정 신청</a></li>`)
+	}
+	
 	let currentTarget = '';
 		$(function() {
 			$('.main-menu').on('click', function(e) {
@@ -182,7 +194,15 @@ a {
 					location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"/receive"
 				
 				} else if(target == 'managing-panel'){
+					if(userInfo.ofcpsNm=='팀장'||userInfo.ofcpsNm=='사장'||userInfo.ofcpsNm=='부사장'){
 					location.href="/egowaeyo/"+"admin/"+target.substring(0,target.indexOf("-"))+"Basic"
+					}else{
+						Swal.fire({
+							  icon: "error",
+							  title: "경고",
+							  text: "팀장 이상만 접근 가능합니다.",
+							});
+					}
 				}	
 				 else if(target !='article-panel'&& target!='calendar-panel'&&target!='approval-panel'&&target != 'managing') {
 					//$('#slide-panels').fadeIn('fast');
@@ -190,7 +210,6 @@ a {
 					//$('#slide-panels > div').hide();
 					//$('#' + target).show();
 					currentTarget = target;
-					
 					location.href="/egowaeyo/"+target.substring(0,target.indexOf("-"))+"Basic.do"
 				}
 				// 드롭다운 토글 처리
@@ -212,16 +231,13 @@ a {
 			    $(document).on('click', function () {
 			      $('#bell-menu, #my-menu').slideUp(150);
 			    });
-			
 		});
 	</script>
 	
 	
 	
 	<script th:inline="javascript">
-	/*<![CDATA[*/
-	var userInfo = [[${session.loginVO}]];
-	/*]]>*/
+	
 	// 화면 호출시 로그인 한 사용자의 정보와 최근 서버시간, 세션만료 시간을 가져 온다.
 function getCookie(cname) {
 	  var name = cname + "=";
@@ -265,18 +281,16 @@ function init() {
 		
 		if(true){ 
 	 $('.nav-link.p-3.main-menu').each(function(index, item){
-		 let target = $(this).data('target')
-		 
+let target = $(this).data('target')
+		 console.log($(this))
 		 if(target != null && target == activedBtn){
-			 $(this).toggleClass('active')
-		 
+			 
 		      // managing-panel 색상 설정 추가
               if(target == 'managing-panel'){
-                   $('#slide-panels').css({"background" : "#000", "color" : "#FFF"})
-               } else {
-                   $('#slide-panels').css({"background" : "#F8F9FA", "color" : "#000"})
-               }
-			 
+ 					if(userInfo.ofcpsNm=='팀장'||userInfo.ofcpsNm=='사장'||userInfo.ofcpsNm=='부사장')   {
+ 						
+			 			$(this).toggleClass('active')
+                  		 $('#slide-panels').css({"background" : "#000", "color" : "#FFF"})
 			   if (outPanList.indexOf(target) == -1) {
 
 				  $('#main').css('margin-left','330px')
@@ -284,7 +298,22 @@ function init() {
 					$('#slide-panels > div').hide();
 					$('#' + target).show();
 					  } 
-		 }		 
+ 					}       	  
+ 					
+              
+               } else {
+			 			$(this).toggleClass('active')
+                   $('#slide-panels').css({"background" : "#F8F9FA", "color" : "#000"})
+			   if (outPanList.indexOf(target) == -1) {
+
+				  $('#main').css('margin-left','330px')
+					$('#slide-panels').fadeIn('fast');
+					$('#slide-panels > div').hide();
+					$('#' + target).show();
+					  } 
+               }
+			 
+		 }
 	 })
 	 }	 
 	 $.ajax("/egowaeyo/getSessionTime").done(

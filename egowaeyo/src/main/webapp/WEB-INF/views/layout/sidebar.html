@@ -61,7 +61,17 @@
     </div>
     <div id="approval-panel" class="p-4 mt-5" style="display: none;">
       <h5>결재함</h5>
-      <p>결재 요청 목록이 여기에 표시됩니다.</p>
+       <ul>
+        <li><a th:href="@{/approval/progress}">내 기안함</a></li>
+        <li><a th:href="@{/approval/write}">작성</a></li>
+        <li><a th:href="@{/approval/receive}">수신함</a></li>
+        <li><a th:href="@{/approval/reference}">참조</a></li>
+        <li><a th:href="@{/approval/reject}">반려</a></li>
+        <li><a th:href="@{/approval/temp}">임시저장</a></li>
+      </ul>
+      
+      
+      
     </div>
     <div id="journal-panel" class="p-4 mt-5" style="display: none;">
       <h5>일지</h5>
@@ -79,9 +89,9 @@
       <h5>근태</h5>
       <p><a th:href="@{/attendanceBasic.do}">내 출퇴근 내역</a></p>
       <p>근태문서</p>
-      <ul>
+      <ul class="appendMenuList">
         <li><a th:href="@{/myAttendList.do}">내 신청 문서</a></li>
-        <li><a th:href="@{/editAttend.do}">근태 정정 신청</a></li>
+        
       </ul>
 
     </div>
