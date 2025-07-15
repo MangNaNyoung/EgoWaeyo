@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+
+<div class="doc-print-area" style="display:none;">
+  <div style="margin: 1rem 0 2rem 0;">
+    <b>문서번호:</b> <span th:text="${doc.docId}"></span> &nbsp;&nbsp;
+    <b>결재양식:</b> <span th:text="${doc.apprformName}"></span> &nbsp;&nbsp;
+    <b>기안자:</b> <span th:text="${doc.empName}"></span>
+  </div>
+  <div class="doc-html-wrapper" th:utext="${doc.docHtml}"></div>
+</div>
+
+<body>
+<section layout:fragment="content">
+  <div class="container" style="padding: 2rem;">
+    <h3 style="margin-bottom: 1rem;">문서조회</h3>
+    <div style="margin-bottom: 1rem;">
+      <b>문서번호:</b> <span th:text="${doc.docId}"></span> &nbsp;&nbsp;
+      <b>결재양식:</b> <span th:text="${doc.apprformName}"></span> &nbsp;&nbsp;
+      <b>기안자:</b> <span th:text="${doc.empName}"></span>
+    </div>
+    <!-- 결재양식(html) 랜더링 -->
+    <div id="docHtmlArea" class="doc-html-wrapper"
+         th:utext="${doc.docHtml}"
+         style="margin-bottom: 2rem; border: 1px solid #aaa; padding: 1.5rem; background: #fff;">
+    </div>
+    <div style="display: flex; justify-content: flex-end;">
+      <!-- <button type="button"
+              class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+              id="btnPrint">인쇄</button> -->
+    </div>
+  </div>
+  
+<script>
+document.getElementById("btnPrint").onclick = function() {
+    window.print();
+  };
+</script>
+  
+</section>
+<style>
+.doc-html-wrapper {
+  border: 1px solid #ccc;
+  background: #fff;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  font-size: 15px;
+  line-height: 1.6;
+}
+.doc-html-wrapper table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.doc-html-wrapper th, .doc-html-wrapper td {
+  border: 1px solid #ccc;
+  padding: 0.5rem;
+  text-align: left;
+}
+.doc-html-wrapper th {
+  background: #f2f2f2;
+  font-weight: bold;
+}
+.doc-html-wrapper td[colspan] {
+  background: #fafafa;
+}
+/* 인쇄 관련 */
+.doc-print-area { display: none; }
+@media print {
+  body > *:not(.doc-print-area) { display: none !important; }
+  .doc-print-area { display: block !important; }
+  .doc-print-area .doc-html-wrapper { page-break-inside: avoid; }
+}
+</style>

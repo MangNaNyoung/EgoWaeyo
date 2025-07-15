@@ -4,21 +4,30 @@
 	layout:decorate="~{layout/layout}">
 
 <section layout:fragment="content">
-	<div style="display: flex; gap: 2rem; align-items: flex-start;">
+	<div class="page-container"
+		style="display: flex; gap: 2rem; align-items: flex-start; padding: 2rem;">
 		<form th:action="@{/approval/write.do}" method="post"
 			id="approvalForm" style="flex: 1;">
 			<h4>결재문서</h4>
 			<div
 				style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-bottom: 1rem;">
-				<button type="button" id="openTemplateModalBtn">양식선택</button>
-				<button type="reset" id="resetBtn">초기화</button>
-				<button type="button" id="tempSaveBtn">임시저장</button>
-				<button type="submit" id="submitBtn">결재</button>
-			</div>
+				<button type="button"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+					id="openTemplateModalBtn">양식선택</button>
+				<button type="reset"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+					id="resetBtn">초기화</button>
+				<button type="button"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+					id="tempSaveBtn">임시저장</button>
+				<button type="submit"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+					id="submitBtn">결재</button>
+			</div>			
 			<input type="hidden" name="apprformId" id="apprformId">
 			<div style="margin-bottom: 1rem;">
-				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> <input
-					type="text" name="docTitle" required style="width: 100%;" /><br />
+				<label for="docTitle" style="margin-right: 0.5rem;">제목:</label> 
+				<input type="text" name="docTitle" id="docTitle" required style="width: 100%;" /><br />
 			</div>
 			<input type="hidden" name="approverIds" id="approverIds"> <input
 				type="hidden" name="ccIds" id="ccIds">
@@ -31,7 +40,9 @@
 			<div
 				style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
 				<h4 style="margin: 0;">결재선</h4>
-				<button type="button" id="openApprovalLineModalBtn">결재선 지정</button>
+				<button type="button"
+					class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
+					id="openApprovalLineModalBtn">결재선 지정</button>
 			</div>
 			<div class="approval-box">
 				<strong>기안자</strong>
@@ -184,26 +195,25 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   document.getElementById("resetBtn").addEventListener("click", resetAll);
-
-  // (3) 임시저장 버튼 AJAX - form 태그 submit 쓰지 않고 fetch로 전송
+	//(3) 임시저장 버튼 
   document.getElementById("tempSaveBtn").addEventListener("click", function() {
-    // 현재 form에서 필요한 모든 값 수집
-    const docTitle = document.querySelector('input[name="docTitle"]').value;
-    const docContent = editor.getHTML();
-    const approverId = document.getElementById('approverId').value;
-    const ccIds = document.getElementById('ccIds').value;
-    const apprformId = document.getElementById('apprformId').value;
-    // 추가 데이터 필요시 같이
-    if (!docTitle || !docContent) return alert("제목/내용 입력!");
+  const docTitle = document.getElementById('docTitle').value;
+  const docContent = editor.getHTML();
+  const apprformId = document.getElementById('apprformId').value;
 
-    fetch('/egowaeyo/approval/tempSave', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: `docTitle=${encodeURIComponent(docTitle)}&docContent=${encodeURIComponent(docContent)}&approverId=${approverId}&ccIds=${ccIds}&apprformId=${apprformId}`
-    })
-    .then(r => r.text())
-    .then(msg => alert('임시저장 완료!'));
-  });
+  if (!docTitle || !docContent) {
+    Swal.fire('알림', '제목과 내용을 입력하세요!', 'warning');
+    return;
+  }
+  fetch('/egowaeyo/approval/tempSave.do', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: `tempTitle=${encodeURIComponent(docTitle)}&tempContent=${encodeURIComponent(docContent)}`
+  })
+  .then(r => r.text())
+  .then(msg => Swal.fire('완료', '임시저장 완료!', 'success'));
+});
+
 
   // (4) 결재 submit 전에 editor HTML 값 textarea에 세팅
   document.getElementById("submitBtn").addEventListener("click", () => {

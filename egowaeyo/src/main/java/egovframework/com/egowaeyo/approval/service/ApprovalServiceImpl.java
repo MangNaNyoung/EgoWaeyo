@@ -63,6 +63,17 @@ public class ApprovalServiceImpl implements ApprovalService {
 	}
 
 	@Override
+	@Transactional
+	public void deleteTempDocs(List<String> docIds) {
+		approvalMapper.deleteTempDocs(docIds);
+	}
+
+	 @Override
+	    public void getSaveTemp(ApprovalTempVO vo) {
+		 approvalMapper.insertTemp(vo);
+	    }
+
+	@Override
 	public List<ApprovalCcVO> getReferenceList(String empId) {
 		return approvalMapper.selectReferenceList(empId);
 	}
@@ -102,11 +113,21 @@ public class ApprovalServiceImpl implements ApprovalService {
 		return approvalMapper.selectApprovalDetailForView(docId);
 	}
 
+	@Transactional
 	@Override
 	public void approve(String docId, String approverId, String opinion) {
-		approvalMapper.updateApprove(docId, approverId, opinion);
-		// 추가: 모든 결재선이 승인 상태면 approval_doc의 상태도 '승인'으로 변경!
-		approvalMapper.updateDocStatusIfAllApproved(docId);
+		// 1. 결재라인 상태/의견 업데이트 (이 결재자가 승인한 것 처리)
+		approvalMapper.updateApprovalLine(docId, approverId, opinion, "승인");
+
+		// 2. 이 문서의 미승인 결재자 카운트
+		int waitingCount = approvalMapper.countWaitingLines(docId);
+
+		// 3. 남은 결재자가 없으면 문서 상태 '완료', 있으면 '진행중'
+		if (waitingCount == 0) {
+			approvalMapper.updateDocStatus(docId, "완료");
+		} else {
+			approvalMapper.updateDocStatus(docId, "진행중");
+		}
 	}
 
 	@Override
@@ -124,6 +145,24 @@ public class ApprovalServiceImpl implements ApprovalService {
 	@Override
 	public List<ApprovalDocVO> selectRejectList(String loginId) {
 		return approvalMapper.selectRejectList(loginId);
+	}
+
+	@Override
+	public ApprovalDocVO getProgressDetail(String docId) {
+		return approvalMapper.selectProgressDetail(docId);
+	}
+
+	@Override
+	public ApprovalDocVO getRejectDetail(String docId) {
+		return approvalMapper.selectRejectDetail(docId);
+	}
+
+	@Override
+	@Transactional
+	public void getDeleteApproval(String docId) {
+		approvalMapper.deleteApprovalLine(docId);
+		approvalMapper.deleteApprovalCc(docId);
+		approvalMapper.deleteApproval(docId);
 	}
 
 }

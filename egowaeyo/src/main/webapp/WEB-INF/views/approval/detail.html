@@ -5,7 +5,7 @@
 
 <section layout:fragment="content">
 	<div class="container" style="padding: 2rem;">
-		<h3 style="margin-bottom: 1rem;">결재 상세</h3>
+		<h3 style="margin-bottom: 1rem;">상세</h3>
 
 
 		<div style="margin-bottom: 1rem;">
@@ -26,59 +26,58 @@
 				placeholder="결재의견 입력"></textarea>
 		</div>
 
-		<div>
+		<div style="display: flex; justify-content: flex-end; gap: 0.5rem; margin-top: 1rem;">
 			<button type="button"
 				class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
-				onclick="approve()">승인</button>
+				id="approveBtn">승인</button>
 			<button type="button"
 				class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white"
-				onclick="reject()">반려</button>
+				id="rejectBtn">반려</button>
 		</div>
 	</div>
 
-	<script th:inline="javascript">
-    function approve() {
-      const opinion = document.getElementById('opinion').value;
-      fetch(/*[[@{/approval/approve}]]*/'', {
-    	  method: 'POST',
-    	  headers: {'Content-Type': 'application/json'},
-    	  body: JSON.stringify({
-    	    docId: /*[[${doc.docId}]]*/'',
-    	    opinion: opinion
-    	  })
-    	})
-    	.then(res => res.text())
-    	.then(result => {
-    	  console.log("승인 응답:", result); // OK 출력 예상
-    	  if (result === 'OK') {
-    	    location.href = /*[[@{/approval/receive}]]*/'';
-    	  } else {
-    	    alert("승인 처리 실패: " + result);
-    	  }
-    	});
-    function reject() {
-      const opinion = document.getElementById('opinion').value;
-      fetch(/*[[@{/approval/reject}]]*/'', {
-    	  method: 'POST',
-    	  headers: {'Content-Type': 'application/json'},
-    	  body: JSON.stringify({
-    	    docId: /*[[${doc.docId}]]*/'',
-    	    opinion: opinion
-    	  })
-    	})
-    	.then(res => res.text())
-    	.then(result => {
-    	  console.log("반려 응답:", result); // OK 출력 예상
-    	  if (result === 'OK') {
-    	    location.href = /*[[@{/approval/receive}]]*/'';
-    	  } else {
-    	    alert("반려 처리 실패: " + result);
-    	  }
-    	});
-    }
-    }
-  </script>
+<script th:inline="javascript">
+let DOC_ID = /*[[${doc.docId}]]*/ "";
 
+$("#approveBtn").on("click", function() {
+    $.ajax({
+        type: "POST",
+        url: "/egowaeyo/approval/approve.do",
+        data: JSON.stringify({ docId: DOC_ID, opinion: $("#opinion").val() }),
+        contentType: "application/json; charset=utf-8",
+        success: function(result) {
+            if(result === "OK") {
+                Swal.fire({ icon: "success", title: "승인 완료!", text: "승인 처리되었습니다." }).then(()=>location.href='/egowaeyo/approval/receive');
+            } else {
+                Swal.fire({ icon: "error", title: "승인 실패!", text: "처리 중 오류가 발생했습니다." });
+            }
+        },
+        error: function(xhr, status, err) {
+            Swal.fire({ icon: "error", title: "승인 실패!", text: "서버 오류가 발생했습니다." });
+        }
+    });
+});
+
+// 반려
+$("#rejectBtn").on("click", function() {
+    $.ajax({
+        type: "POST",
+        url: "/egowaeyo/approval/reject.do",
+        data: JSON.stringify({ docId: DOC_ID, opinion: $("#opinion").val() }),
+        contentType: "application/json; charset=utf-8",
+        success: function(result) {
+            if(result === "OK") {
+                Swal.fire({ icon: "success", title: "반려 완료!", text: "반려 처리되었습니다." }).then(()=>location.href='/egowaeyo/approval/receive');
+            } else {
+                Swal.fire({ icon: "error", title: "반려 실패!", text: "처리 중 오류가 발생했습니다." });
+            }
+        },
+        error: function(xhr, status, err) {
+            Swal.fire({ icon: "error", title: "반려 실패!", text: "서버 오류가 발생했습니다." });
+        }
+    });
+});
+</script>
 	<style>
 .doc-html-wrapper {
 	border: 1px solid #ccc;

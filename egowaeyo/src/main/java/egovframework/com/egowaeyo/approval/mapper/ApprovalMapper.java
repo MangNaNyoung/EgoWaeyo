@@ -27,6 +27,10 @@ public interface ApprovalMapper {
 	List<ApprovalDocVO> selectDeptReceiveList(String deptId);
 
 	List<ApprovalTempVO> selectTempList(String empId);
+	
+	void insertTemp(ApprovalTempVO vo);
+	
+	void deleteTempDocs(List<String> docIds);
 
 	List<ApprovalCcVO> selectReferenceList(String empId);
 
@@ -40,22 +44,35 @@ public interface ApprovalMapper {
 
 	List<EmplyrVO> selectAllUsers();
 
-	void insertTemp(ApprovalTempVO vo);
-
 	ApprovalDocVO selectApprovalDetailForView(String docId);
+	
+	//승인
+	void updateApprovalLine(@Param("docId") String docId, @Param("approverId") String approverId,
+			@Param("opinion") String opinion, @Param("status") String status);
 
-	void updateApprove(@Param("docId") String docId, @Param("approverId") String approverId,
-			@Param("opinion") String opinion);
+	int countWaitingLines(@Param("docId") String docId);
 
+	void updateDocStatus(@Param("docId") String docId, @Param("status") String status);
+
+	// 반려
 	void updateReject(@Param("docId") String docId, @Param("approverId") String approverId,
 			@Param("opinion") String opinion);
 
-	void updateDocStatusIfAllApproved(@Param("docId") String docId);
+//	void updateDocStatusIfAllApproved(@Param("docId") String docId);
 
 	void updateDocStatusToRejected(@Param("docId") String docId);
 
 	List<ApprovalDocVO> selectProgressList(String loginId);
 
 	List<ApprovalDocVO> selectRejectList(String loginId);
+	
+	ApprovalDocVO selectProgressDetail(String docId);
+	
+	ApprovalDocVO selectRejectDetail(String docId);
+	
+	void deleteApproval(String docId);
+	
+	void deleteApprovalLine(String docId);
 
+	void deleteApprovalCc(String docId);
 }
