@@ -64,20 +64,19 @@
 		d.doc_title AS docTitle,
 		d.doc_status AS docStatus,
 		d.created_dt AS createdDt,
-		drafter.user_nm AS drafterName,
+        drafter.user_nm AS drafterName,
 		dept.orgnzt_nm AS deptName,
 		LISTAGG(approver.user_nm, ', ')
 		WITHIN GROUP (ORDER BY l.line_order) AS approverNames
-		FROM approval_doc d
-		JOIN comtnemplyrinfo drafter ON d.EMPLYR_ID = drafter.EMPLYR_ID
+        FROM approval_doc d
+        JOIN comtnemplyrinfo drafter ON d.EMPLYR_ID = drafter.EMPLYR_ID
 		LEFT JOIN comtnorgnztinfo dept ON drafter.ORGNZT_ID = dept.ORGNZT_ID
 		JOIN approval_line l ON d.doc_id = l.doc_id
 		LEFT JOIN comtnemplyrinfo approver ON l.approver_id = approver.EMPLYR_ID
-		WHERE l.approver_id = #{empId}
-		GROUP BY
+        GROUP BY
 		d.doc_id, d.doc_title, d.doc_status, d.created_dt,
 		drafter.user_nm, dept.orgnzt_nm
-		ORDER BY d.created_dt DESC
+		ORDER BY d.created_dt DESC;
 	</select>
 
 	<!-- 부서 수신함 -->
@@ -174,5 +173,140 @@
 		AS deptId
 		FROM
 		COMTNEMPLYRINFO
+	</select>
+
+	<select id="selectApprovalDetail"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		SELECT
+		d.doc_id AS docId,
+		d.doc_title AS docTitle,
+		d.EMPLYR_ID AS empId,
+		d.doc_status AS docStatus,
+		d.created_dt AS
+		createdDt,
+		d.apprform_id AS apprformId,
+		f.apprform_name AS apprformName,
+		d.doc_html AS docHtml,
+		u.user_nm AS empName,
+		o.orgnzt_nm AS deptName
+		FROM approval_doc d
+		JOIN approval_form f ON d.apprform_id =
+		f.apprform_id
+		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID = u.EMPLYR_ID
+		LEFT
+		JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
+		WHERE d.doc_id =
+		#{docId}
+	</select>
+
+	<!-- 승인 처리 -->
+	<update id="updateApprove">
+		UPDATE approval_line
+		SET line_status = '승인',
+		line_opinion = #{opinion},
+		line_dt = SYSDATE
+		WHERE doc_id = #{docId}
+		AND approver_id = #{approverId}
+	</update>
+
+	<!-- 반려 처리 -->
+	<update id="updateReject">
+		UPDATE approval_line
+		SET line_status = '반려',
+		line_opinion = #{opinion},
+		line_dt = SYSDATE
+		WHERE doc_id = #{docId}
+		AND approver_id = #{approverId}
+	</update>
+
+	<!-- 결재선 전체 승인시 본문 상태 '승인'으로 변경 -->
+	<update id="updateDocStatusIfAllApproved">
+		UPDATE approval_doc
+		SET doc_status = '승인'
+		WHERE doc_id = #{docId}
+		AND NOT EXISTS (
+		SELECT 1 FROM approval_line l
+		WHERE l.doc_id = #{docId}
+		AND line_status != '승인'
+		)
+	</update>
+
+	<!-- 반려시 본문 상태 '반려'로 -->
+	<update id="updateDocStatusToRejected">
+		UPDATE approval_doc
+		SET doc_status = '반려'
+		WHERE doc_id = #{docId}
+	</update>
+	
+	<select id="selectProgressList"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		SELECT
+		d.doc_id AS docId,
+		d.doc_title AS docTitle,
+		d.EMPLYR_ID AS empId,
+		d.doc_status AS docStatus,
+		d.created_dt AS
+		createdDt,
+		d.apprform_id AS apprformId,
+		f.apprform_name AS apprformName,
+		d.doc_html AS docHtml,
+		u.user_nm AS drafterName,
+		o.orgnzt_nm AS
+		deptName,
+		(
+		SELECT LISTAGG(l.APPROVER_ID, ',') WITHIN GROUP(ORDER BY
+		l.line_order)
+		FROM approval_line l WHERE l.doc_id = d.doc_id
+		) AS
+		approverNames
+		FROM approval_doc d
+		JOIN approval_form f ON d.apprform_id
+		= f.apprform_id
+		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID = u.EMPLYR_ID
+		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
+		WHERE
+		d.EMPLYR_ID = #{loginId}
+		AND d.doc_status = '진행중'
+		ORDER BY d.created_dt
+		DESC
+	</select>
+
+	<select id="selectRejectList"
+		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		SELECT
+		d.doc_id AS docId,
+		d.doc_title AS docTitle,
+		d.EMPLYR_ID AS empId,
+		d.doc_status AS docStatus,
+		d.created_dt AS
+		createdDt,
+		d.apprform_id AS apprformId,
+		f.apprform_name AS apprformName,
+		d.doc_html AS docHtml,
+		u.user_nm AS drafterName,
+		o.orgnzt_nm AS
+		deptName,
+		(
+		SELECT LISTAGG(l.APPROVER_ID, ',') WITHIN GROUP(ORDER BY
+		l.line_order)
+		FROM approval_line l WHERE l.doc_id = d.doc_id
+		) AS
+		approverNames
+		FROM approval_doc d
+		JOIN approval_form f ON d.apprform_id
+		= f.apprform_id
+		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID = u.EMPLYR_ID
+		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
+		WHERE
+		d.doc_status = '반려'
+		AND (
+		d.EMPLYR_ID = #{loginId}
+		OR EXISTS (
+		SELECT 1
+		FROM approval_line l WHERE l.doc_id = d.doc_id AND l.approver_id =
+		#{loginId}
+		)
+		)
+		ORDER BY d.created_dt DESC
 	</select>
 </mapper>
