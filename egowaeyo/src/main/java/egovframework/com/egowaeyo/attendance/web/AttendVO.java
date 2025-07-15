@@ -19,5 +19,5 @@ public class AttendVO {
 	private String strIn;				// 출근 시간 상태
 	private String strOut;				// 퇴근 시간 상태
 	private String modstate;				// 정정 상태
-	//private boolean pick;			// 정정 선택
+	private String result;			// 결과
 }

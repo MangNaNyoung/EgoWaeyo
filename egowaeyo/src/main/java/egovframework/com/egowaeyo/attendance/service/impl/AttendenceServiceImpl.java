@@ -9,6 +9,7 @@ import egovframework.com.egowaeyo.attendance.mapper.AttendanceMapper;
 import egovframework.com.egowaeyo.attendance.service.AttendanceService;
 import egovframework.com.egowaeyo.attendance.web.AttendVO;
 import egovframework.com.egowaeyo.attendance.web.EditAttendVO;
+import egovframework.com.egowaeyo.attendance.web.GetInfoVO;
 
 @Service
 public class AttendenceServiceImpl implements AttendanceService {
@@ -50,6 +51,35 @@ public class AttendenceServiceImpl implements AttendanceService {
 			return vo;
 		}
 		return null;
+	}
+
+	@Override
+	public AttendVO checkAttend(GetInfoVO vo) {
+		AttendVO res = new AttendVO();
+		if(vo.getStatus()==null) {
+			res = AttendMapper.getAttendance(vo);
+			res.setResult("E00");
+		}else {
+			try {
+				AttendMapper.callCheckAttendanceProcedure(vo);
+			}catch(Exception e){
+				System.out.println(e);
+			}
+			System.out.println(vo.getStatus());
+			if(vo.getStatus().equals("checkin")) {
+				System.out.println(vo.getStatus());
+				res.setCheckin(vo.getResult());
+			}else if(vo.getStatus().equals("checkout")){
+				res.setCheckout(vo.getResult());
+			}
+			res.setResult(vo.getResult());
+		}
+		return res;
+	}
+
+	@Override
+	public AttendVO getToday(GetInfoVO vo) {
+		return AttendMapper.getAttendance( vo);
 	}
 
 }

@@ -6,6 +6,7 @@
 <!-- th:block부분이 defalut.html 에서 지정한 layout:fragment="customContents" 영역에 들어간다.  -->
 
 <section layout:fragment="content">
+
 	<div class="page-content">
 		<section class="row">
 			<div class="col-12 col-lg-8">
@@ -112,7 +113,25 @@
 	/*<![CDATA[*/
 	var userInfo = [[${session.loginVO}]];
 	/*]]>*/
-
+		  $.ajax({
+    			type: 'get',
+    			url: '/egowaeyo/getAttendToday.do',
+    			//headers: {
+    			//	"Content-Type": "application/json",
+    			//},
+    			//data: JSON.stringify(data),
+    			success: function(result) {
+    				console.log(result)
+    				$('.checkinTime').text(result.checkin)
+    				$('.checkoutTime').text(result.checkout)
+    			},
+    			error: function(request, status, error) {
+    				console.log(error);
+    			}
+    		});		  
+	
+	
+	
       document.addEventListener('DOMContentLoaded', function() {
     	const Calendar = tui.Calendar;
   		const container = document.getElementById('calendar');
@@ -141,7 +160,7 @@
   		};
 
   		const calendar = new Calendar(container, options);
-  		setAttendance()
+  		
       })
 	
        if(userInfo.empPhoto && userInfo.empPhoto.trim() !== '') {
@@ -151,15 +170,22 @@
 	                    // 기본 프로필 사진 사용
 	                    $("#plImg").attr('th:src', '/assets/images/faces/1.jpg');
 	                }
+      $("#plImg").css({
+          'width': '100px',
+          'height': '100px', 
+          'border-radius': '50%',
+          'object-fit': 'cover'
+      });
       $(".plName").text(userInfo.name)
       $("#checkin").click(setAttendance)
       $("#checkout").click(setAttendance)
-      
       function setAttendance(e){
+    	  console.log("시작")
     	  let url = ''
-    	  if(e != undefine){
-    	  console.log(e.target.id)
-    	  url = '?target='+e.target.id  }
+    	  let status;
+    	  if(e != 'undefine'){
+    	  status = e.target.id
+    	  url = '?target='+status }
     	  $.ajax({
     			type: 'get',
     			url: '/egowaeyo/getAttend.do'+url,
@@ -169,8 +195,41 @@
     			//data: JSON.stringify(data),
     			success: function(result) {
     				console.log(result);
-    			
-    				
+    				if(status == 'checkin'){
+    					//출근일때
+    				if(result.result=='E01') {
+    					Swal.fire({
+  						  icon: "error",
+  						  title: "경고",
+  						  text: "이미 출근 했습니다.",
+  						});
+    					return
+    				}
+    					
+    				Swal.fire({
+						  icon: "success",
+						  title: "출근",
+						  text: "출근 하셨습니다.",
+						});
+    				$('.checkinTime').text(result.checkin)
+    				}else if(status =='checkout'){
+    					//퇴근일때
+    					if(result.result=='E01') {
+    					Swal.fire({
+  						  icon: "error",
+  						  title: "경고",
+  						  text: "이미 퇴근 했습니다.",
+  						});
+    					return
+    				}
+    					
+    				Swal.fire({
+						  icon: "success",
+						  title: "퇴근",
+						  text: "퇴근 하셨습니다.",
+						});
+    				$('.checkoutTime').text(result.checkout)
+    				}
     			},
     			error: function(request, status, error) {
     				console.log(error);
