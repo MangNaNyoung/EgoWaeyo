@@ -24,15 +24,19 @@
 											<img src="assets/images/faces/account_circle.png" id="plImg">
 											<h5 class="plName">쬰덕</h5>
 										</div>
-										<div  class="">
-											<div class="d-flex justify-content-sm-between align-item-center">
+										<div class="">
+											<div
+												class="d-flex justify-content-sm-between align-item-center">
 												<button class="btn btn-warning btn-sm" id="checkin">출근</button>
 												<button class="btn btn-success btn-sm" id="checkout">퇴근</button>
 											</div>
-											<div class="d-flex gap-5 justify-content-sm-between align-item-center">
-												<span class="checkinTime">00:00</span> <span class="checkoutTime">00:00</span>
+											<div
+												class="d-flex gap-5 justify-content-sm-between align-item-center">
+												<span class="checkinTime">00:00</span> <span
+													class="checkoutTime">00:00</span>
 											</div>
-											<div class="d-flex gap-4 jutify-content-center align-item-center">
+											<div
+												class="d-flex gap-4 jutify-content-center align-item-center">
 												<div>
 													<!-- <span>연차 총 00일</span> -->
 												</div>
@@ -41,7 +45,7 @@
 													<span>잔여 00일</span> -->
 												</div>
 											</div>
-											
+
 										</div>
 									</div>
 								</div>
@@ -51,9 +55,42 @@
 									<h4>메일</h4>
 								</div>
 								<div class="card-content pb-4">
-									
-									
-								</div>
+								 <table class="table">
+                     <thead>
+                         <tr>
+                             <th>보낸사람</th>
+                             <th>제목</th>
+                             <th class="date">날짜</th>
+                         </tr>
+                     </thead>
+                     <tbody>
+                         <tr>
+                             <td class="sender">김민준</td>
+                             <td class="subject">다음 주 프로젝트..</td>
+                             <td class="date">2025-07-15</td>
+                         </tr>
+                         <tr>
+                             <td class="sender">이수진 팀장</td>
+                             <td class="subject">2분기 실적 보고서...</td>
+                             <td class="date">2025-07-15</td>
+                         </tr>
+                        <tr>
+                            <td class="sender">박서연</td>
+                            <td class="subject">워크샵 관련...</td>
+                            <td class="date">2025-07-14</td>
+                        </tr>
+                        <tr>
+                            <td class="sender">최지훈</td>
+                            <td class="subject">점심 식사 ..</td>
+                            <td class="date">2025-07-14</td>
+                        </tr>
+                         <tr>
+                            <td class="sender">인사팀</td>
+                            <td class="subject">2025년 ..</td>
+                            <td class="date">2025-07-13</td>
+                        </tr>
+                    </tbody>
+                </table></div>
 							</div>
 
 						</div>
@@ -61,12 +98,12 @@
 					<div class="col-12 col-xl-8 dash-hi">
 						<div class="col-12 h-100">
 							<div class="card h-50">
-							<div class="card-header">
+								<div class="card-header">
 									<h4>공지사항</h4>
 								</div>
 								<div class="card-body py-4 px-5">
 									<div class="d-flex align-items-center" id="bulletBoard">
-										
+
 									</div>
 								</div>
 							</div>
@@ -75,7 +112,59 @@
 									<h4>미승인 전자결재</h4>
 								</div>
 								<div class="card-content pb-4">
-									
+									<table class="table">
+
+										<thead>
+
+											<tr>
+
+												<th>문서 제목</th>
+												<th>기안자</th>
+												<th>요청일</th>
+											</tr>
+
+										</thead>
+
+										<tbody>
+
+											<tr>
+
+												<td class="ellipsis">[지출결의서] 사무용품 구매 건</td>
+												<td>박현우</td>
+												<td class="date">07-15</td>
+											</tr>
+
+											<tr>
+
+												<td class="ellipsis">[휴가신청서] 김철수 (7/21~7/25)</td>
+												<td>김철수</td>
+												<td class="date">07-15</td>
+											</tr>
+
+											<tr>
+
+												<td class="ellipsis">[업무협조전] 신규 서비스 개발 관련</td>
+												<td>이하나</td>
+												<td class="date">07-14</td>
+											</tr>
+
+											<tr>
+
+												<td class="ellipsis">[기획안] 3분기 마케팅 전략 보고</td>
+												<td>정다은</td>
+												<td class="date">07-14</td>
+											</tr>
+
+											<tr>
+
+												<td class="ellipsis">[품의서] 외부 교육 참가 신청</td>
+												<td>강동호</td>
+												<td class="date">07-13</td>
+											</tr>
+
+										</tbody>
+
+									</table>
 								</div>
 							</div>
 
@@ -90,16 +179,44 @@
 
 							<div class="card h-75">
 								<div class="card-body py-4 px-5">
-									 <div id='calendar' style="height:300px;"></div>
+									<div id='calendar' style="height: 300px;"></div>
+									<div class="mt-5">오늘 일정</div>
 								</div>
 							</div>
 
 							<div class="card h-25">
-								<div class="card-header">
+								<div class="card-header pb-1">
 									<h4>신규 게시글</h4>
 								</div>
 								<div class="card-body">
-									<div id="chart-visitors-profile"></div>
+									<div id="chart-visitors-profile">
+										<table class="table">
+									
+											<thead>
+												<tr>
+													<th>제목</th>
+													<th>게시판</th>
+													<th>작성자</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr>
+													<td class="ellipsis">이번 주 스터디 자료입니다.</td>
+													<td>개발팀</td> 
+													<td>송지아</td> 
+												</tr>
+										
+												<tr>
+													
+													<td class="ellipsis">사내 동호회 회원 모집합니다! (볼링)</td>
+													<td>자유게시판</td> 
+													<td>윤태영</td>
+												</tr>
+												
+												
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
 
