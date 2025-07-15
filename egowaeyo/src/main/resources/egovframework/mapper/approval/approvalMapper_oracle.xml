@@ -175,30 +175,6 @@
 		COMTNEMPLYRINFO
 	</select>
 
-	<select id="selectApprovalDetail"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
-		SELECT
-		d.doc_id AS docId,
-		d.doc_title AS docTitle,
-		d.EMPLYR_ID AS empId,
-		d.doc_status AS docStatus,
-		d.created_dt AS
-		createdDt,
-		d.apprform_id AS apprformId,
-		f.apprform_name AS apprformName,
-		d.doc_html AS docHtml,
-		u.user_nm AS empName,
-		o.orgnzt_nm AS deptName
-		FROM approval_doc d
-		JOIN approval_form f ON d.apprform_id =
-		f.apprform_id
-		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID = u.EMPLYR_ID
-		LEFT
-		JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
-		WHERE d.doc_id =
-		#{docId}
-	</select>
-
 	<!-- 승인 처리 -->
 	<update id="updateApprove">
 		UPDATE approval_line
