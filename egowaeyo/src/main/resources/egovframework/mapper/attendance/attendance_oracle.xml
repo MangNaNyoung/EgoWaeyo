@@ -84,5 +84,18 @@
             #{rowcount  , mode=OUT , jdbcType=NUMERIC}
         )}
     </update>
+    <select id="callCheckAttendanceProcedure" parameterType="GetInfoVO" 
+            statementType="CALLABLE" >
+        {CALL ATTENDANCE_CHECK(
+            #{id, mode=IN, jdbcType=VARCHAR},
+            #{status, mode=IN, jdbcType=CHAR},
+            #{result, mode=OUT, jdbcType=VARCHAR}
+        )}
+    </select>
+    <select id="getAttendance" parameterType="GetInfoVO" resultType="AttendVO">
+    	select checkin, checkout
+    	from attendance
+    	where emplyr_id = #{id} AND checkdate = to_char(sysdate,'yyyymmdd')
+    </select>
 	
 </mapper>

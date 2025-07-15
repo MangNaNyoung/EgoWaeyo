@@ -122,7 +122,21 @@ public class AttendanceController {
 	}
 	
 	@GetMapping("/getAttend.do")
+	@ResponseBody
 	public AttendVO getAttend(@RequestParam Map<String, String> params) {
-		return null;
+		GetInfoVO vo = new GetInfoVO();
+		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		vo.setId(user.getId());
+		vo.setStatus(params.get("target"));
+		System.out.println(vo.getStatus());
+		return AttendService.checkAttend(vo);
+	}
+	@GetMapping("/getAttendToday.do")
+	@ResponseBody
+	public AttendVO  getToday() {
+		GetInfoVO vo = new GetInfoVO();
+		LoginVO user = (LoginVO)EgovUserDetailsHelper.getAuthenticatedUser();
+		vo.setId(user.getId());
+		return AttendService.getToday(vo);
 	}
 }
