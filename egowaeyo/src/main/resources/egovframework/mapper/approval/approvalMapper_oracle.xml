@@ -64,17 +64,19 @@
 		d.doc_title AS docTitle,
 		d.doc_status AS docStatus,
 		d.created_dt AS createdDt,
-		u.user_nm AS drafterName,
-		o.orgnzt_nm AS deptName,
-		LISTAGG(a.user_nm, ', ') WITHIN GROUP (ORDER BY l.line_order) AS approverNames
+		drafter.user_nm AS drafterName,
+		dept.orgnzt_nm AS deptName,
+		LISTAGG(approver.user_nm, ', ')
+		WITHIN GROUP (ORDER BY l.line_order) AS approverNames
 		FROM approval_doc d
-		JOIN comtnemplyrinfo u ON d.emplr_id = u.emplyr_id
-		LEFT JOIN comtnorgnztinfo o ON u.orgnzt_id = o.orgnzt_id
-		LEFT JOIN approval_line l ON d.doc_id = l.doc_id
-		LEFT JOIN comtnemplyrinfo a ON l.approver_id = a.emplyr_id
+		JOIN comtnemplyrinfo drafter ON d.EMPLYR_ID = drafter.EMPLYR_ID
+		LEFT JOIN comtnorgnztinfo dept ON drafter.ORGNZT_ID = dept.ORGNZT_ID
+		JOIN approval_line l ON d.doc_id = l.doc_id
+		LEFT JOIN comtnemplyrinfo approver ON l.approver_id = approver.EMPLYR_ID
 		WHERE l.approver_id = #{empId}
-		GROUP BY d.doc_id, d.doc_title, d.doc_status, d.created_dt, u.user_nm,
-		o.orgnzt_nm
+		GROUP BY
+		d.doc_id, d.doc_title, d.doc_status, d.created_dt,
+		drafter.user_nm, dept.orgnzt_nm
 		ORDER BY d.created_dt DESC
 	</select>
 
