@@ -91,6 +91,15 @@
         }
      });
     }
+    
+    grid.on('click', ev => {
+    	  if(ev.columnName) { // row 영역 클릭만 허용
+    	    const row = grid.getRow(ev.rowKey);
+    	    if(row && row.docId) {
+    	      window.location.href = '/approval/detail?docId=' + row.docId;
+    	    }
+    	  }
+    	});
 
     function handleSearch() {
       const keyword = document.getElementById('searchKeyword').value;

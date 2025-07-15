@@ -4,6 +4,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -16,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -194,5 +196,58 @@ public class ApprovalController {
 		approvalService.insertTemp(tempVO);
 		return "ok";
 	}
+	
+	 @GetMapping("/detail")
+	    public String detail(@RequestParam("docId") String docId, Model model) {
+	        ApprovalDocVO doc = approvalService.getApprovalDocDetail(docId);
+	        model.addAttribute("doc", doc);
+	        return "approval/detail.html"; 
+	    }
+	 
+	 @PostMapping("/approve.do")
+	 @ResponseBody
+	 public String approve(@RequestBody Map<String, Object> param, Principal principal) {
+	     String docId = (String)param.get("docId");
+	     String opinion = (String)param.get("opinion");
+	     String loginId = principal.getName(); // 현재 로그인 결재자 ID
+	     approvalService.approve(docId, loginId, opinion);
+	     return "OK";
+	 }
+
+	 @PostMapping("/reject.do")
+	 @ResponseBody
+	 public String reject(@RequestBody Map<String, Object> param, Principal principal) {
+	     String docId = (String)param.get("docId");
+	     String opinion = (String)param.get("opinion");
+	     String loginId = principal.getName();
+	     approvalService.reject(docId, loginId, opinion);
+	     return "OK";
+	 }
+	 
+	 // 진행함
+	    @GetMapping("/progress")
+	    public String progress() {
+	        return "approval/progress";
+	    }
+
+	    @GetMapping("/progress/list")
+	    @ResponseBody
+	    public List<ApprovalDocVO> progressList(Principal principal) {
+	        return approvalService.selectProgressList(principal.getName());
+	    }
+
+	    // 반려함
+	    @GetMapping("/reject")
+	    public String reject() {
+	        return "approval/reject";
+	    }
+
+	    @GetMapping("/reject/list")
+	    @ResponseBody
+	    public List<ApprovalDocVO> rejectList(Principal principal) {
+	        return approvalService.selectRejectList(principal.getName());
+	    }
+	 
+	 
 
 }
