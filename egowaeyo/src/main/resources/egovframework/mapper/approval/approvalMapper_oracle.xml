@@ -4,10 +4,10 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper
-	namespace="egovframework.com.egowaeyo.approval.mapper.ApprovalMapper">
+	namespace="ApprovalMapper">
 
 	<select id="selectFormList"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalFormVO">
+		resultType="ApprovalFormVO">
 		SELECT apprform_id, aporm_name FROM approval_form
 	</select>
 
@@ -58,7 +58,7 @@
 
 	<!-- 개인 수신함 -->
 	<select id="selectReceiveList" parameterType="String"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		resultType="ApprovalDocVO">
 		SELECT
 		d.doc_id AS docId,
 		d.doc_title AS docTitle,
@@ -87,7 +87,7 @@
 
 	<!-- 부서 수신함 -->
 	<select id="selectDeptReceiveList" parameterType="String"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		resultType="ApprovalDocVO">
 		SELECT ad.*
 		FROM approval_doc ad
 		JOIN emp e ON ad.EMPLYR_ID =
@@ -98,13 +98,13 @@
 
 	<!-- 임시보관함 -->
 	<select id="selectTempList" parameterType="String"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalTempVO">
+		resultType="ApprovalTempVO">
 		SELECT * FROM approval_doc WHERE drafter_id = #{empId}
 	</select>
 
 	<!-- 참조(공람)자로 들어간 모든 문서 -->
 	<select id="selectReferenceList" parameterType="String"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalCcVO">
+		resultType="ApprovalCcVO">
 		SELECT
 		ac.cc_id,
 		ac.EMPLYR_ID,
@@ -125,7 +125,7 @@
 	</select>
 
 	<select id="selectApprovalDetail"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDetailVO">
+		resultType="ApprovalDetailVO">
 		SELECT
 		d.doc_id AS docId,
 		d.doc_title AS docTitle,
@@ -162,7 +162,7 @@
 	</select>
 
 	<select id="selectEmpListByDept" parameterType="string"
-		resultType="egovframework.com.egowaeyo.admin.service.AdminUserVO">
+		resultType="AdminUserVO">
 		SELECT EMPLYR_ID,
 		USER_NM
 		FROM
@@ -172,7 +172,7 @@
 	</select>
 
 	<select id="selectAllUsers" parameterType="string"
-		resultType="egovframework.com.egowaeyo.admin.service.AdminUserVO">
+		resultType="AdminUserVO">
 		SELECT EMPLYR_ID AS empId,
 		USER_NM,
 		ORGNZT_ID
@@ -182,7 +182,7 @@
 	</select>
 
 	<select id="selectApprovalDetail"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		resultType="ApprovalDocVO">
 		SELECT
 		d.doc_id AS docId,
 		d.doc_title AS docTitle,
@@ -245,7 +245,7 @@
 	</update>
 	
 	<select id="selectProgressList"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		resultType="ApprovalDocVO">
 		SELECT
 		d.doc_id AS docId,
 		d.doc_title AS docTitle,
@@ -278,7 +278,7 @@
 	</select>
 
 	<select id="selectRejectList"
-		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
+		resultType="ApprovalDocVO">
 		SELECT
 		d.doc_id AS docId,
 		d.doc_title AS docTitle,
