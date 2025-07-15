@@ -393,8 +393,8 @@
 		d.apprform_id AS apprformId,
 		f.aporm_name AS apprformName,
 		d.doc_html AS docHtml,
-		u.user_nm AS
-		drafterName,
+		u.user_nm AS  drafterName,
+		u.user_nm AS empName,
 		o.orgnzt_nm AS deptName,
 		(
 		SELECT LISTAGG(e.user_nm, ',')
@@ -419,15 +419,15 @@
 		SELECT
 		d.doc_id AS docId,
 		d.doc_title AS docTitle,
-		d.EMPLYR_ID AS empId,
+		d.EMPLYR_ID AS empId,	
 		d.doc_status AS docStatus,
 		TO_CHAR(d.created_dt,
 		'YYYY-MM-DD HH24:MI:SS') AS createdDt,
 		d.apprform_id AS apprformId,
 		f.aporm_name AS apprformName,
 		d.doc_html AS docHtml,
-		u.user_nm AS
-		drafterName,
+		u.user_nm AS drafterName,
+		u.user_nm AS empName,  
 		o.orgnzt_nm AS deptName,
 		(
 		SELECT LISTAGG(e.user_nm, ',')
