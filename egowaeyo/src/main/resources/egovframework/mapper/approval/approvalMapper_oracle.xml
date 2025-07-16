@@ -64,27 +64,27 @@
 		createdDt,
 		drafter.user_nm AS drafterName,
 		dept.orgnzt_nm AS deptName,
-		LISTAGG(approver.user_nm,
-		', ')
+		LISTAGG(approver.user_nm, ', ')
 		WITHIN GROUP (ORDER BY l.line_order) AS
 		approverNames
 		FROM approval_doc d
 		JOIN comtnemplyrinfo drafter ON
 		d.EMPLYR_ID = drafter.EMPLYR_ID
-		LEFT JOIN
-		comtnorgnztinfo dept ON
+		LEFT JOIN comtnorgnztinfo dept ON
 		drafter.ORGNZT_ID = dept.ORGNZT_ID
-		JOIN
-		approval_line l ON d.doc_id =
+		JOIN approval_line l ON d.doc_id =
 		l.doc_id
-		LEFT JOIN comtnemplyrinfo
-		approver ON l.approver_id =
+		LEFT JOIN comtnemplyrinfo approver ON l.approver_id =
 		approver.EMPLYR_ID
+
+		WHERE l.approver_id = #{emplId}
+
 		GROUP BY
-		d.doc_id, d.doc_title, d.doc_status,
-		d.created_dt,
-		drafter.user_nm,
+		d.doc_id,
+		d.doc_title, d.doc_status,
+		d.created_dt, drafter.user_nm,
 		dept.orgnzt_nm
+
 		ORDER BY d.created_dt DESC
 	</select>
 
@@ -116,16 +116,15 @@
 		DESC
 	</select>
 
-	<update id="deleteTempDocs">
-		UPDATE approval_doc
-		SET doc_status = '삭제'
-		WHERE doc_id IN
-		<foreach collection="list" item="docId" open="(" separator=","
-			close=")">
-			#{docId}
+	<delete id="deleteTempDocs" parameterType="java.util.List">
+		DELETE FROM approval_temp
+		WHERE temp_id IN
+		<foreach collection="list" item="tempId" open="("
+			separator="," close=")">
+			#{tempId}
 		</foreach>
-		AND doc_status = '임시'
-	</update>
+		AND temp_status = '임시'
+	</delete>
 
 	<insert id="insertTemp"
 		parameterType="egovframework.com.egowaeyo.approval.VO.ApprovalTempVO">
@@ -154,18 +153,24 @@
 		SELECT
 		TO_CHAR(ac.cc_id) AS ccId,
 		ac.EMPLYR_ID AS empId,
+		cei.USER_NM AS empName,
 		ac.doc_id AS docId,
 		ad.doc_title AS docTitle,
-		ad.EMPLYR_ID AS
-		drafterName,
+		ad.EMPLYR_ID AS drafterId,
+		drafter.USER_NM AS drafterName,
 		ad.doc_status AS docStatus,
-		TO_CHAR(ad.created_dt,
-		'YYYY-MM-DD HH24:MI:SS') AS createdDt
+		TO_CHAR(ad.created_dt, 'YYYY-MM-DD
+		HH24:MI:SS') AS createdDt
 		FROM approval_cc ac
-		JOIN
-		approval_doc ad ON ac.doc_id = ad.doc_id
+		JOIN approval_doc ad ON
+		ac.doc_id = ad.doc_id
+		JOIN COMTNEMPLYRINFO cei ON ac.EMPLYR_ID =
+		cei.EMPLYR_ID
+		JOIN COMTNEMPLYRINFO drafter ON ad.EMPLYR_ID =
+		drafter.EMPLYR_ID
 		WHERE ac.EMPLYR_ID = #{empId}
-		ORDER BY ad.created_dt DESC
+		ORDER BY ad.created_dt
+		DESC
 	</select>
 
 	<select id="selectApprovalDetailForPrint"
@@ -393,24 +398,30 @@
 		d.apprform_id AS apprformId,
 		f.aporm_name AS apprformName,
 		d.doc_html AS docHtml,
-		u.user_nm AS  drafterName,
+		u.user_nm AS
+		drafterName,
 		u.user_nm AS empName,
 		o.orgnzt_nm AS deptName,
 		(
-		SELECT LISTAGG(e.user_nm, ',')
+		SELECT
+		LISTAGG(e.user_nm, ',')
 		WITHIN GROUP(ORDER BY l.line_order)
-		FROM approval_line l
+		FROM
+		approval_line l
 		JOIN
 		COMTNEMPLYRINFO e ON l.approver_id = e.EMPLYR_ID
 		WHERE l.doc_id =
 		d.doc_id
 		) AS approverNames
 		FROM approval_doc d
-		JOIN approval_form f ON
+		JOIN
+		approval_form f ON
 		d.apprform_id = f.apprform_id
-		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID =
+		JOIN COMTNEMPLYRINFO u
+		ON d.EMPLYR_ID =
 		u.EMPLYR_ID
-		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
+		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID
+		= o.ORGNZT_ID
 		WHERE d.doc_id = #{docId}
 	</select>
 
@@ -419,32 +430,45 @@
 		SELECT
 		d.doc_id AS docId,
 		d.doc_title AS docTitle,
-		d.EMPLYR_ID AS empId,	
+		d.EMPLYR_ID AS empId,
 		d.doc_status AS docStatus,
 		TO_CHAR(d.created_dt,
-		'YYYY-MM-DD HH24:MI:SS') AS createdDt,
+		'YYYY-MM-DD HH24:MI:SS') AS
+		createdDt,
 		d.apprform_id AS apprformId,
 		f.aporm_name AS apprformName,
 		d.doc_html AS docHtml,
-		u.user_nm AS drafterName,
-		u.user_nm AS empName,  
+		u.user_nm AS
+		drafterName,
+		u.user_nm AS empName,
 		o.orgnzt_nm AS deptName,
 		(
-		SELECT LISTAGG(e.user_nm, ',')
-		WITHIN GROUP(ORDER BY l.line_order)
-		FROM approval_line l
+		SELECT
+		LISTAGG(e.user_nm, ',')
+		WITHIN
+		GROUP(ORDER BY l.line_order)
+		FROM
+		approval_line l
 		JOIN
-		COMTNEMPLYRINFO e ON l.approver_id = e.EMPLYR_ID
+		COMTNEMPLYRINFO e
+		ON l.approver_id = e.EMPLYR_ID
 		WHERE l.doc_id =
 		d.doc_id
-		) AS approverNames
+		) AS
+		approverNames
 		FROM approval_doc d
-		JOIN approval_form f ON
-		d.apprform_id = f.apprform_id
-		JOIN COMTNEMPLYRINFO u ON d.EMPLYR_ID =
+		JOIN
+		approval_form f ON
+		d.apprform_id =
+		f.apprform_id
+		JOIN COMTNEMPLYRINFO u
+		ON d.EMPLYR_ID =
 		u.EMPLYR_ID
-		LEFT JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID = o.ORGNZT_ID
-		WHERE d.doc_id = #{docId}
+		LEFT
+		JOIN COMTNORGNZTINFO o ON u.ORGNZT_ID =
+		o.ORGNZT_ID
+		WHERE d.doc_id =
+		#{docId}
 	</select>
 
 	<delete id="deleteApprovalLine" parameterType="String">

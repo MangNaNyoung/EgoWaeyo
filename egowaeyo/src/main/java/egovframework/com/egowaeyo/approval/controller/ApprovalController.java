@@ -144,6 +144,7 @@ public class ApprovalController {
 	    vo.setEmpId(user.getId());
 	    vo.setTempTitle(tempTitle);
 	    vo.setTempContent(tempContent);
+	    vo.setTempStatus("임시");
 	    approvalService.getSaveTemp(vo);
 	    return "OK";
 	}
@@ -151,9 +152,9 @@ public class ApprovalController {
 
 	@PostMapping("/temp/delete")
 	@ResponseBody
-	public String deleteTempDocs(@RequestBody List<String> docIds) {
-		approvalService.deleteTempDocs(docIds);
-		return "OK";
+	public String deleteTempDocs(@RequestBody List<String> tempIds) {
+	    approvalService.deleteTempDocs(tempIds);
+	    return "OK";
 	}
 
 	// 참조함 (reference.html)

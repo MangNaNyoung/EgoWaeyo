@@ -2,9 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout/layout}">
-
+<link rel="stylesheet" th:href="@{/assets/css/toastUi/toastUi.css}">
 <section layout:fragment="content">
-	<div class="container" style="padding: 2rem;">
+	<div class="container" style="padding: 2rem; ">
 		<h3 style="margin-bottom: 0.5rem;">수신함</h3>
 
 		<!-- 상단 버튼 -->
@@ -162,6 +162,8 @@
     window.open(url, '_blank', 'width=900,height=1200,scrollbars=yes');
   });
 </script>
-
+<style>
+body{background-color: #fff;}
+</style>
 
 </section>

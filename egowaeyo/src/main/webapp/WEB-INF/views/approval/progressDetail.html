@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/layout}">
-
+<link rel="stylesheet" th:href="@{/assets/css/toastUi/toastUi.css}">
 <div class="doc-print-area" style="display:none;">
   <div style="margin: 1rem 0 2rem 0;">
     <b>문서번호:</b> <span th:text="${doc.docId}"></span> &nbsp;&nbsp;
@@ -72,4 +72,7 @@ document.getElementById("btnPrint").onclick = function() {
   .doc-print-area { display: block !important; }
   .doc-print-area .doc-html-wrapper { page-break-inside: avoid; }
 }
+
+body{background-color: #fff;}
+
 </style>

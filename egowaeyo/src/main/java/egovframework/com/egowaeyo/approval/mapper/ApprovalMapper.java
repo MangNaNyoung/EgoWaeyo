@@ -30,7 +30,7 @@ public interface ApprovalMapper {
 	
 	void insertTemp(ApprovalTempVO vo);
 	
-	void deleteTempDocs(List<String> docIds);
+	void deleteTempDocs(List<String> tempIds);
 
 	List<ApprovalCcVO> selectReferenceList(String empId);
 

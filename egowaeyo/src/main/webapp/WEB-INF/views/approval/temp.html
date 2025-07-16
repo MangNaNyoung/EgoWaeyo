@@ -1,7 +1,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layout/layout}">
-
+	layout:decorate="~{layout/layout}">	
+<link rel="stylesheet" th:href="@{/assets/css/toastUi/toastUi.css}">
 <section layout:fragment="content">
 	<div class="page-container" style="padding: 2rem;">
 		<h3 style="margin-bottom: 1rem;">임시보관함</h3>
@@ -152,7 +152,7 @@
     	    cancelButtonText: '취소'
     	  }).then((result) => {
     	    if (result.isConfirmed) {
-    	      const ids = selected.map(row => row.docId); // docId 컬럼명 주의!
+    	    	const ids = selected.map(row => row.tempId);
     	      fetch('/approval/temp/delete', {
     	        method: 'POST',
     	        headers: { 'Content-Type': 'application/json' },
@@ -170,5 +170,9 @@
     	    }
     	  });
     	}
+    console.log("삭제할 tempId 목록:", ids);
   </script>
+  <style>
+body{background-color: #fff;}
+</style>
 </section>

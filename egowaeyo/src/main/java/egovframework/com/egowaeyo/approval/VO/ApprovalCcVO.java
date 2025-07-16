@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class ApprovalCcVO {
 		private String ccId;
 	    private String empId;
+	    private String empName;
 	    private String ccStatus;
 	    private String readDt;     
 	    private String docId;

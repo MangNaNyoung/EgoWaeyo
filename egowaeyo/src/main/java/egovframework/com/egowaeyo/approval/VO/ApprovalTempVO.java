@@ -15,6 +15,6 @@ public class ApprovalTempVO {
 	private String tempDt;
 	private String tempStatus;
 	
-	public String getTempContent() { return tempContent; }
+	
 	public void setTempContent(String tempContent) { this.tempContent = tempContent; }
 }
