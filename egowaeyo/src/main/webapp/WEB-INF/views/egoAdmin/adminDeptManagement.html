@@ -49,7 +49,7 @@
                     <!-- <button class="ms-4 border border-dark px-3 py-1 rounded-2 bg-white" id="positionChange" data-bs-toggle="modal" data-bs-target="#exampleModal">직급변경</button>
           <button class="border border-dark px-3 py-1 rounded-2 bg-white" id="passwordReset">비밀번호 초기화</button> -->
                     <button class="ms-4 border border-success px-3 py-1 rounded-2 bg-success text-white"
-                        id="empUdt">사원수정</button>
+                        id="empUdt">직급수정</button>
                     <button class="border border-danger px-3 py-1 rounded-2 bg-danger text-white"
                         id="empDel">사원삭제</button>
                 </div>
@@ -170,9 +170,9 @@
                                 </div>
                             </div>
                             <div class="mb-3">
-                                <label for="positionSelect" class="form-label">수정할 직급을 선택해주세요.</label>
+                                <label for="positionSelect" class="form-label">수정할 직급을 선택해주세요</label>
                                 <select class="form-select" id="positionSelect" name="positionId">
-                                    <option value="">직급을 선택하세요.</option>
+                                    <option value="">직급을 선택하세요</option>
                                 </select>
                                 <input type="hidden" id="updateEmpId" name="emplyrId">
                                 <input type="hidden" id="originalPosition" name="originalPosition">
@@ -211,6 +211,49 @@
             </div>
         </div>
 
+        <!-- 성공 모달 -->
+        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 text-success" id="successModalLabel">처리 완료</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                            <p class="mt-3" id="successMessage"></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-success" id="confirmBtn"
+                            data-bs-dismiss="modal">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 오류 모달 -->
+        <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5 text-danger" id="errorModalLabel">처리 실패</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 3rem;"></i>
+                            <p class="mt-3" id="errorMessage"></p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script>
             // 전역 변수
             let departmentData = [];
@@ -222,43 +265,41 @@
             let originalPosition = ''; // 원래 직급
             let newPosition = ''; // 새로운 직급
             let newPositionName = ''; // 새로운 직급명
-            // 함수 부르기
-            loadDepartmentList();
-            loadEmpList();
-            loadPositionList();
-            initializeEventListeners();
-            
-            // 등록 완료 후 페이지 이동, 등록완료 되었다고 알럿창
-            checkRegisterEmp();
-            
-            function checkRegisterEmp() {
-            	  // URL 파라미터에서 성공 정보 확인
-            	  const urlParams = new URLSearchParams(window.location.search);
-            	  const success = urlParams.get('success');
-            	  const userName = urlParams.get('userName');
-            	  const emplNo = urlParams.get('emplNo');
-            	  
-            	  console.log('URL 파라미터 확인:', { success, userName, emplNo }); // 디버깅용
-            	  
-            	  if (success === 'true' && userName) {
-            	    Swal.fire({
-            	      title: '등록 완료',
-            	      html: `
-            	        <div style="text-align: center; font-size: 16px;">
-            	          <p><strong>${decodeURIComponent(userName)}님이 성공적으로 등록되었습니다.</strong></p>
-            	          ${emplNo ? `<p style="color: #6c757d; margin-top: 10px;">사번: ${emplNo}</p>` : ''}
-            	        </div>
-            	      `,
-            	      icon: 'success',
-            	      confirmButtonColor: '#28a745',
-            	      confirmButtonText: '확인'
-            	    }).then(() => {
-            	      // SweetAlert 닫힌 후 URL에서 파라미터 제거
-            	      const cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
-            	      window.history.replaceState({}, document.title, cleanUrl);
-            	    });
-            	  }
-            	}
+         // 페이지 로드 시 URL 파라미터 확인하여 성공 메시지 표시
+            $(document).ready(function() {
+                // URL 파라미터 확인
+                const urlParams = new URLSearchParams(window.location.search);
+                const success = urlParams.get('success');
+                const userName = urlParams.get('userName');
+                const emplNo = urlParams.get('emplNo');
+                
+                // 사원 등록 성공 메시지 표시
+                if (success === 'true' && userName) {
+                    Swal.fire({
+                        title: '사원 등록 완료',
+                        html: `
+                            <div style="text-align: center; font-size: 16px;">
+                                <p><strong style="color: #28a745;">${decodeURIComponent(userName)}</strong> 사원이</p>
+                                <p>성공적으로 등록되었습니다.</p>
+                                ${emplNo ? `<p style="color: #6c757d;">사번: ${emplNo}</p>` : ''}
+                            </div>
+                        `,
+                        icon: 'success',
+                        confirmButtonColor: '#28a745',
+                        confirmButtonText: '확인'
+                    }).then(() => {
+                        // URL에서 파라미터 제거 (뒤로가기 시 중복 표시 방지)
+                        const newUrl = window.location.pathname;
+                        window.history.replaceState({}, document.title, newUrl);
+                    });
+                }
+                
+                // 기존 코드들...
+                loadDepartmentList();
+                loadEmpList();
+                loadPositionList();
+                initializeEventListeners();
+            });
 
             // 직급 목록 로드
             function loadPositionList() {
@@ -787,7 +828,7 @@
             <div style="text-align: center; font-size: 16px;">
               <p>기존 <strong style="color: #007bff;">${originalDeptName}</strong>에서</p>
               <p>새로 수정된 <strong style="color: #28a745;">${newDeptName}</strong>으로</p>
-              <p>부서명이 변경됩니다.</p>
+              <p>부서명이 변경돼요.</p>
               <br>
               <p style="color: #6c757d;">수정하시겠습니까?</p>
             </div>
@@ -796,7 +837,7 @@
                     showCancelButton: true,
                     confirmButtonColor: '#28a745',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: '수정',
+                    confirmButtonText: '수정 완료',
                     cancelButtonText: '취소',
                     reverseButtons: false
                 }).then((result) => {
@@ -927,8 +968,8 @@
                     html: `
             <div style="text-align: center; font-size: 16px;">
               <p>기존 <strong style="color: #007bff;">'${originalPosition}'</strong>에서</p>
-              <p>관리자가 수정한 직급인</p>
-              <p><strong style="color: #28a745;">'${selectedPositionText}'</strong>으로</p>
+              <p>select option으로 수정할 직급을</p>
+              <p>선택 후 <strong style="color: #28a745;">'${selectedPositionText}'</strong>으로</p>
               <p>직급이 변경됩니다.</p>
               <br>
               <p style="color: #6c757d;">수정하시겠습니까?</p>
@@ -938,9 +979,9 @@
                     showCancelButton: true,
                     confirmButtonColor: '#28a745',
                     cancelButtonColor: '#6c757d',
-                    confirmButtonText: '수정',
+                    confirmButtonText: '수정 완료',
                     cancelButtonText: '취소',
-                    reverseButtons: false
+                    reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // 기존 모달 닫기
@@ -957,13 +998,13 @@
             // 직급 변경 최종 확인
             function showPositionChangeConfirmSwal() {
                 Swal.fire({
-                    title: '최종 직급 변경 확인',
+                    title: '직급 변경 확인',
                     html: `
             <div style="text-align: center; font-size: 16px;">
               <p><strong>${selectedEmployee.name}</strong> 사원의 직급이</p>
               <p><strong style="color: #007bff;">'${originalPosition}'</strong>에서</p>
               <p><strong style="color: #28a745;">'${newPositionName}'</strong>으로</p>
-              <p>최종 변경됩니다.</p>
+              <p>변경됩니다.</p>
               <br>
               <p style="color: #6c757d;">변경하시겠습니까?</p>
             </div>
@@ -974,7 +1015,7 @@
                     cancelButtonColor: '#6c757d',
                     confirmButtonText: '변경',
                     cancelButtonText: '취소',
-                    reverseButtons: false
+                    reverseButtons: true
                 }).then((result) => {
                     if (result.isConfirmed) {
                         // 사원 수정 실행
@@ -1108,6 +1149,19 @@
                 });
             }
 
+            // 성공 모달 표시
+            function showSuccessModal(message) {
+                document.getElementById('successMessage').textContent = message;
+                const modal = new bootstrap.Modal(document.getElementById('successModal'));
+                modal.show();
+            }
+
+            // 오류 모달 표시
+            function showErrorModal(message) {
+                document.getElementById('errorMessage').textContent = message;
+                const modal = new bootstrap.Modal(document.getElementById('errorModal'));
+                modal.show();
+            }
         </script>
 </section>
 
