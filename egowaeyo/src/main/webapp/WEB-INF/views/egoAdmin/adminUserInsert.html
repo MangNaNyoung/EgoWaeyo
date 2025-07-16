@@ -16,7 +16,7 @@
     <form id="userForm" role="form" action="managingBasic.do" method="post" enctype="multipart/form-data">
       <div class="d-flex justify-content-end">
         <button class="border border-dark px-4 py-2 rounded-2 bg-primary text-white border-0"
-          type="submit">등록</button><!-- 부트스트랩 사용 -->
+          type="submit">사원등록</button><!-- 부트스트랩 사용 -->
       </div>
       <div class="admin-user-sections">
         <div class="left-admin-user-info">
@@ -84,7 +84,9 @@
                 title="휴대폰번호를 010-0000-0000 형식으로 입력해주세요.">
             </div>
             <div class="user-info-detail">
-              <span>이메일</span> <input type="email" name="emailAdres" class="!border !border-gray-400 !rounded-sm">
+              <span>이메일</span> <input type="email" name="emailAdres" class="!border !border-gray-400 !rounded-sm"
+              					  placeholder="abcd@abcd.com" pattern="[a-zA-Z0-9]+[@][a-zA-Z0-9]+[.]+[a-zA-Z]+[.]*[a-zA-Z]*"
+              					  title="이메일을 abcd@abcd.com 형식으로 입력해주세요.">
             </div>
             <div class="user-info-detail">
               <span class="user-sexdstnCode me-5">성별</span>
@@ -115,7 +117,7 @@
               </div>
               <div class="user-info-detail">
                 <span>사번</span>
-                <input type="text" name="emplNo" class="!border !border-gray-400 !rounded-sm" placeholder="자동 생성"
+                <input type="text" name="emplNo" class="!border !border-gray-400 !rounded-sm" placeholder="자동 생성됩니다."
                   readonly>
               </div>
             </div>
