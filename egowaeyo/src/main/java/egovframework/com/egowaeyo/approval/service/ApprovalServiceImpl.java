@@ -64,8 +64,8 @@ public class ApprovalServiceImpl implements ApprovalService {
 
 	@Override
 	@Transactional
-	public void deleteTempDocs(List<String> tempIds) {
-	    approvalMapper.deleteTempDocs(tempIds);
+	public int getDeleteTempList(List<String> ids) {
+	    return approvalMapper.deleteTempList(ids);
 	}
 
 	 @Override

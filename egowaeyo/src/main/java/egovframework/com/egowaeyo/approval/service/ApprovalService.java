@@ -22,7 +22,7 @@ public interface ApprovalService {
 
 	List<ApprovalTempVO> getTempList(String empId);
 	
-	void deleteTempDocs(List<String> tempIds);
+	public int getDeleteTempList(List<String> ids);
 	
 	void getSaveTemp(ApprovalTempVO vo);
 

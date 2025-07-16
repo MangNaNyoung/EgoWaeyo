@@ -1,7 +1,5 @@
 package egovframework.com.egowaeyo.approval.VO;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

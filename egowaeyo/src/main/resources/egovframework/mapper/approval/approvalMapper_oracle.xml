@@ -64,28 +64,37 @@
 		createdDt,
 		drafter.user_nm AS drafterName,
 		dept.orgnzt_nm AS deptName,
+		f.aporm_name AS apprformName,
 		LISTAGG(approver.user_nm, ', ')
-		WITHIN GROUP (ORDER BY l.line_order) AS
+		WITHIN
+		GROUP (ORDER BY l.line_order) AS
 		approverNames
 		FROM approval_doc d
-		JOIN comtnemplyrinfo drafter ON
+		JOIN
+		comtnemplyrinfo drafter ON
 		d.EMPLYR_ID = drafter.EMPLYR_ID
-		LEFT JOIN comtnorgnztinfo dept ON
+		LEFT JOIN
+		comtnorgnztinfo dept ON
 		drafter.ORGNZT_ID = dept.ORGNZT_ID
-		JOIN approval_line l ON d.doc_id =
+		JOIN
+		approval_line l ON d.doc_id =
 		l.doc_id
-		LEFT JOIN comtnemplyrinfo approver ON l.approver_id =
+		LEFT JOIN comtnemplyrinfo
+		approver ON l.approver_id =
 		approver.EMPLYR_ID
-
-		WHERE l.approver_id = #{emplId}
+		LEFT JOIN approval_form f
+		ON d.apprform_id = f.apprform_id
+		WHERE
+		l.approver_id = #{empId}
 
 		GROUP BY
 		d.doc_id,
 		d.doc_title, d.doc_status,
 		d.created_dt, drafter.user_nm,
-		dept.orgnzt_nm
+		dept.orgnzt_nm, f.aporm_name
 
-		ORDER BY d.created_dt DESC
+		ORDER BY
+		d.created_dt DESC
 	</select>
 
 	<!-- 부서 수신함 -->
@@ -116,14 +125,12 @@
 		DESC
 	</select>
 
-	<delete id="deleteTempDocs" parameterType="java.util.List">
-		DELETE FROM approval_temp
-		WHERE temp_id IN
-		<foreach collection="list" item="tempId" open="("
-			separator="," close=")">
-			#{tempId}
+	<delete id="deleteTempList" parameterType="java.util.List">
+		DELETE FROM approval_temp WHERE temp_id IN
+		<foreach collection="list" item="id" open="(" separator=","
+			close=")">
+			#{id}
 		</foreach>
-		AND temp_status = '임시'
 	</delete>
 
 	<insert id="insertTemp"
@@ -346,42 +353,37 @@
 	<select id="selectRejectList"
 		resultType="egovframework.com.egowaeyo.approval.VO.ApprovalDocVO">
 		SELECT
-		d.doc_id AS
-		docId,
+		d.doc_id AS docId,
 		d.doc_title AS docTitle,
-		d.EMPLYR_ID
-		AS empId,
-		d.doc_status AS
-		docStatus,
-		TO_CHAR(d.created_dt, 'YYYY-MM-DD')
-		AS
-		createdDt,
+		d.EMPLYR_ID AS empId,
+		d.doc_status AS docStatus,
+		TO_CHAR(d.created_dt,
+		'YYYY-MM-DD') AS createdDt,
 		d.apprform_id AS apprformId,
-		f.aporm_name AS apprformName,
-		d.doc_html AS
-		docHtml,
-		u.user_nm AS
-		drafterName,
+		f.aporm_name AS
+		apprformName,
+		d.doc_html AS docHtml,
+		u.user_nm AS drafterName,
 		o.orgnzt_nm AS deptName,
+
 		(
-		SELECT
-		LISTAGG(l.APPROVER_ID,
-		',') WITHIN GROUP(ORDER BY l.line_order)
-		FROM
-		approval_line l WHERE
-		l.doc_id = d.doc_id
+		SELECT LISTAGG(e.user_nm, ', ')
+		WITHIN GROUP
+		(ORDER BY l.line_order)
+		FROM approval_line l
+		JOIN comtnemplyrinfo e ON
+		l.approver_id = e.EMPLYR_ID
+		WHERE l.doc_id = d.doc_id
 		) AS approverNames
-		FROM
-		approval_doc d
-		JOIN
-		approval_form f ON d.apprform_id = f.apprform_id
-		JOIN COMTNEMPLYRINFO u
-		ON d.EMPLYR_ID = u.EMPLYR_ID
-		LEFT JOIN
-		COMTNORGNZTINFO o ON u.ORGNZT_ID
-		= o.ORGNZT_ID
-		WHERE
-		d.doc_status = '반려'
+
+		FROM approval_doc d
+		JOIN approval_form f ON d.apprform_id =
+		f.apprform_id
+		JOIN comtnemplyrinfo u ON d.EMPLYR_ID = u.EMPLYR_ID
+		LEFT
+		JOIN comtnorgnztinfo o ON u.ORGNZT_ID = o.ORGNZT_ID
+		WHERE d.doc_status
+		= '반려'
 		AND d.EMPLYR_ID = #{loginId}
 		ORDER BY d.created_dt DESC
 	</select>

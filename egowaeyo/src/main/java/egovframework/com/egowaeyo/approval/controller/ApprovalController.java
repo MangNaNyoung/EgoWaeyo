@@ -152,9 +152,8 @@ public class ApprovalController {
 
 	@PostMapping("/temp/delete")
 	@ResponseBody
-	public String deleteTempDocs(@RequestBody List<String> tempIds) {
-	    approvalService.deleteTempDocs(tempIds);
-	    return "OK";
+	public int deleteTempList(@RequestBody List<String> ids) {
+	    return approvalService.getDeleteTempList(ids);
 	}
 
 	// 참조함 (reference.html)

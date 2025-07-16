@@ -4,11 +4,10 @@
 <link rel="stylesheet" th:href="@{/assets/css/toastUi/toastUi.css}">
 <section layout:fragment="content">
 	<div class="page-container" style="padding: 2rem;">
-		<h3 style="margin-bottom: 1rem;">임시보관함</h3>
+		<h3 style="margin-bottom: 0.5rem;">임시보관함</h3>
 
 		<!-- 버튼 영역 -->
-		<div
-			style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+		<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
 			<!-- 좌측 버튼 -->
 			<div style="display: flex; gap: 0.5rem;">				
 				<button type="button" class="btn border border-primary px-3 py-1 rounded-2 text-black bg-white" onclick="handleDelete()">삭제</button>
@@ -152,7 +151,8 @@
     	    cancelButtonText: '취소'
     	  }).then((result) => {
     	    if (result.isConfirmed) {
-    	    	const ids = selected.map(row => row.tempId);
+    	      const ids = selected.map(row => row.tempId);
+    	      console.log("삭제할 tempId 목록:", ids); // ← 여기에 있어야 함
     	      fetch('/approval/temp/delete', {
     	        method: 'POST',
     	        headers: { 'Content-Type': 'application/json' },
@@ -170,7 +170,6 @@
     	    }
     	  });
     	}
-    console.log("삭제할 tempId 목록:", ids);
   </script>
   <style>
 body{background-color: #fff;}
