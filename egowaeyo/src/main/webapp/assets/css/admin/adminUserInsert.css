@@ -176,3 +176,36 @@ body {
 	align-items: center;
 	text-align: center;
 }
+
+.address-container {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+    
+    .address-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    
+    .address-row input[type="text"] {
+      margin-left: auto;
+    }
+    
+    .address-row input[type="button"] {
+      cursor: pointer;
+      white-space: nowrap;
+      width: 100px;
+      height: 25px;
+    }
+    
+    .address-row input[type="button"]:hover {
+      background-color: #e9ecef;
+    }
+    
+    #guide {
+      font-size: 12px;
+      margin-top: 4px;
+    }
