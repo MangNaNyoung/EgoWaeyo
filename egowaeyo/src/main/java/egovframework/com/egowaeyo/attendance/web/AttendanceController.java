@@ -141,14 +141,14 @@ public class AttendanceController {
 	}
 	@GetMapping("/meetingBasic.do")
 	public String goToMeeting() {
-		return "attendance/disscution.html";
+		return "dumm/disscution.html";
 	}
 	@GetMapping("/bookingBasic.do")
 	public String goToBook() {
-		return "attendance/book.html";
+		return "dumm/book.html";
 	}
 	@GetMapping("/journalBasic.do")
 	public String goToDiary() {
-		return "attendance/diary.html";
+		return "dumm/diary.html";
 	}
 }
