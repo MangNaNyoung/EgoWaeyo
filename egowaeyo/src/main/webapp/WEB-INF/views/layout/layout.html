@@ -166,7 +166,7 @@ a {
 	})
 	
 	if(userInfo.ofcpsNm=='팀장'||userInfo.ofcpsNm=='사장'||userInfo.ofcpsNm=='부사장'){
-		$(".appendMenuList").append(`<li><a th:href="@{/editAttend.do}">근태 정정 신청</a></li>`)
+		$(".appendMenuList").append(`<li><a href="/egowaeyo/editAttend.do">근태 정정 신청</a></li>`)
 	}
 	
 	let currentTarget = '';
