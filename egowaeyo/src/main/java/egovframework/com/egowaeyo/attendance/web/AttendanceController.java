@@ -139,4 +139,16 @@ public class AttendanceController {
 		vo.setId(user.getId());
 		return AttendService.getToday(vo);
 	}
+	@GetMapping("/meetingBasic.do")
+	public String goToMeeting() {
+		return "attendance/disscution.html";
+	}
+	@GetMapping("/bookingBasic.do")
+	public String goToBook() {
+		return "attendance/book.html";
+	}
+	@GetMapping("/journalBasic.do")
+	public String goToDiary() {
+		return "attendance/diary.html";
+	}
 }
