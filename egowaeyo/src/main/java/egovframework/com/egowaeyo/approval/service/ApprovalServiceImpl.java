@@ -30,13 +30,14 @@ public class ApprovalServiceImpl implements ApprovalService {
 
 	@Override
 	@Transactional
-	public void insertFullApproval(ApprovalDocVO docVO, List<ApprovalLineVO> lineList, List<ApprovalCcVO> ccList) {
+	public void insertFullApproval(ApprovalDocVO docVO, 
+			List<ApprovalLineVO> lineList, List<ApprovalCcVO> ccList) {
 		// 1. 결재문서 등록
-		approvalMapper.insertApprovalDoc(docVO); // doc_id는 selectKey로 생성했다고 가정
+		approvalMapper.insertApprovalDoc(docVO); //
 
 		// 2. 결재선 등록
 		for (ApprovalLineVO lineVO : lineList) {
-			lineVO.setDocId(docVO.getDocId()); // doc_id 세팅
+			lineVO.setDocId(docVO.getDocId()); //
 			approvalMapper.insertApprovalLine(lineVO);
 		}
 

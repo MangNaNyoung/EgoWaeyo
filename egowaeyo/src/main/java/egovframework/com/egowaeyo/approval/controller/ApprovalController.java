@@ -68,7 +68,6 @@ public class ApprovalController {
 		docVO.setDocStatus("대기");
 		docVO.setEmplId(user.getId());
 		docVO.setDocHtml(docContent);
-
 		// 2. 결재선 정보 생성
 		List<ApprovalLineVO> lineList = new ArrayList<>();
 		int order = 1;
@@ -88,9 +87,8 @@ public class ApprovalController {
 				ccList.add(ccVO);
 			}
 		}
-		// 4. 서비스 호출 (트랜잭션 처리)
+		// 4. 서비스 호출
 		approvalService.insertFullApproval(docVO, lineList, ccList);
-
 		return "redirect:/approval/receive";
 	}
 

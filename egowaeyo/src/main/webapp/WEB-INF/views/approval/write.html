@@ -220,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-  // (4) 결재 submit 전에 editor HTML 값 textarea에 세팅
+  // (4) submit 전에 editor HTML 값 textarea에 세팅
   document.getElementById("submitBtn").addEventListener("click", () => {
     document.querySelector("#docContent").value = editor.getHTML();
   });
