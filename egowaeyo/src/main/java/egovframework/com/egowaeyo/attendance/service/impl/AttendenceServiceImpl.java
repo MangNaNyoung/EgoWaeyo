@@ -48,6 +48,9 @@ public class AttendenceServiceImpl implements AttendanceService {
 		vo.forEach(item -> {AttendMapper.callEditProcedure(item);
 							count+=item.getRowcount();});
 		if(vo.size()==count) {
+			System.out.println(vo.size());
+			System.out.println(count);
+			count = 0;
 			return vo;
 		}
 		return null;
