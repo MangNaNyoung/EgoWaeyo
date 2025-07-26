@@ -120,7 +120,7 @@
 	</delete>
 
 	<!-- [부서 관리] 페이지에서의 전체 사용자 조회 -->
-	<select id="selectemp" resultType="AdminUserVO">
+	<select id="selectemp" resultType="AdminUserVO"> <!-- [부서 관리] 페이지에서의 전체 사용자 조회 -->
 		SELECT cp.user_nm,
 		cp.emplyr_id,
 		co.orgnzt_nm,

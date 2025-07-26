@@ -240,26 +240,26 @@ public class AdminUserController {
 		}
 	}
 	
-	// 사용자 수정
+	// 사용자 직급 수정
 	@PostMapping("/updateEmp.do")
 	@ResponseBody
 	public String updateEmployee(@RequestParam("emplyrId") String emplyrId,
 	                           @RequestParam("positionId") String positionId) {
 	    try {
-	        System.out.println("사용자 수정 요청: " + emplyrId + " -> " + positionId);
+	        System.out.println("사용자 직급 수정 요청: " + emplyrId + " -> " + positionId);
 
 	        int result = adminuserservice.EmpUdt(emplyrId, positionId);
 
 	        if (result > 0) {
-	            System.out.println("사용자 수정 성공");
+	            System.out.println("사용자 직급 수정 성공");
 	            return "success";
 	        } else {
-	            System.out.println("사용자 수정 실패");
+	            System.out.println("사용자 직급 수정 실패");
 	            return "fail";
 	        }
 
 	    } catch (Exception e) {
-	        System.out.println("사용자 수정 중 오류 발생: " + e.getMessage());
+	        System.out.println("사용자 직급 수정 중 오류 발생: " + e.getMessage());
 	        e.printStackTrace();
 	        return "error: " + e.getMessage();
 	    }
